@@ -27,7 +27,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 // Routing untuk website utama
 Route::get('/', function () {
-    return Redirect::to('/index');
+    return Redirect::to('/');
 });
 
 // Routing untuk autentifikasi menggunakan Google OAuth
@@ -53,7 +53,7 @@ Route::controller(Emails::class)->group(function () {
 
 // Routing untuk menu utama landing website Vi Star Indonesia
 Route::controller(MainWebsite::class, VerifyCsrfToken::class)->group(function () {
-    Route::get('/index', 'index')->name('mainweb.index');
+    Route::get('/', 'index')->name('mainweb.index');
     Route::get('/profil-saya', 'profil')->name('mainweb.profil-saya')->middleware(PanelRouting::class);
     Route::get('/produk-berbayar', 'produkBerbayar')->name('mainweb.produk-berbayar');
     Route::get('/produk-gratis', 'produkGratis')->name('mainweb.produk-gratis');
