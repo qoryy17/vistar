@@ -56,7 +56,7 @@ class MainWebsite extends Controller
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
                 ->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get()
         ];
-        // return view('main-web.produk.tryout-berbayar', $data);
+        return view('main-web.produk.tryout-berbayar', $data);
     }
 
     public function produkGratis()
