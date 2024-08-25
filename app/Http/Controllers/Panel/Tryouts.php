@@ -554,7 +554,7 @@ class Tryouts extends Controller
             $hasilUjian->whereYear('ujian.waktu_mulai', $request->tahun);
         }
 
-        $hasilUjian = $hasilUjian->paginate(1);
+        $hasilUjian = $hasilUjian->paginate(10);
 
         $data = [
             'page_title' => 'Peserta Tryout',
