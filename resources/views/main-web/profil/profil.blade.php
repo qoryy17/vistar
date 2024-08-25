@@ -126,27 +126,23 @@
                                                      required>
                                                      <option value="">Pilih Jenis Kelamin</option>
                                                      @if ($customer)
-                                                         @if ($customer->jenis_kelamin == 'LK')
-                                                             <option value="LK" selected>Laki-Laki</option>
-                                                             <option value="PR">Perempuan</option>
-                                                         @elseif ($customer->jenis_kelamin == 'PR')
-                                                             <option value="LK">Laki-Laki</option>
-                                                             <option value="PR" selected>Perempuan</option>
-                                                         @else
-                                                             <option value="LK">Laki-Laki</option>
-                                                             <option value="PR">Perempuan</option>
-                                                         @endif
+                                                         <option value="LK"
+                                                             @if ($customer->jenis_kelamin == 'LK') selected @endif>
+                                                             Laki-Laki
+                                                         </option>
+                                                         <option value="PR"
+                                                             @if ($customer->jenis_kelamin == 'PR') selected @endif>
+                                                             Perempuan
+                                                         </option>
                                                      @else
-                                                         @if (old('jenisKelamin') == 'LK')
-                                                             <option value="LK" selected>Laki-Laki</option>
-                                                             <option value="PR">Perempuan</option>
-                                                         @elseif (old('jenisKelamin') == 'PR')
-                                                             <option value="LK">Laki-Laki</option>
-                                                             <option value="PR" selected>Perempuan</option>
-                                                         @else
-                                                             <option value="LK">Laki-Laki</option>
-                                                             <option value="PR">Perempuan</option>
-                                                         @endif
+                                                         <option value="LK"
+                                                             @if (old('jenisKelamin') == 'LK') selected @endif>
+                                                             Laki-Laki
+                                                         </option>
+                                                         <option value="PR"
+                                                             @if (old('jenisKelamin') == 'PR') selected @endif>
+                                                             Perempuan
+                                                         </option>
                                                      @endif
                                                  </select>
                                              </div>
@@ -250,7 +246,8 @@
                                                              @if (old('pendidikan') == 'SLTA') selected @endif>
                                                              SLTA(SMA/SMK)</option>
                                                          <option value="D3"
-                                                             @if (old('pendidikan') == 'D3') selected @endif>Diploma (D3)
+                                                             @if (old('pendidikan') == 'D3') selected @endif>Diploma
+                                                             (D3)
                                                          </option>
                                                          <option value="D4/S1"
                                                              @if (old('pendidikan') == 'D4/S1') selected @endif>Sarjana

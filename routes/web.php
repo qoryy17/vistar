@@ -82,7 +82,7 @@ Route::middleware(LoggedCustomer::class)->group(function () {
 Route::middleware(PanelRouting::class)->group(function () {
     Route::controller(Profils::class)->group(function () {
         Route::post('/update-foto', 'ubahFoto')->name('profils.ubah-foto');
-        Route::post('/update-profil', 'ubahProfil')->name('profils.ubah-profil');
+        Route::post('/update-profil-pengguna', 'ubahProfil')->name('profils.ubah-profil');
         Route::post('/update-password', 'ubahPassword')->name('profils.ubah-password');
     });
 });
