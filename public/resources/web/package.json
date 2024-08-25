@@ -1,0 +1,53 @@
+{
+  "private": true,
+  "name": "landrick",
+  "version": "4.8.0",
+  "description": "Bootstrap 5 Multipurpose App, Saas & Software Landing & Admin Dashboard Template",
+  "main": "gulpfile.js",
+  "author": "ShreeThemes",
+  "browserslist": [
+    "last 2 version",
+    "> 2%"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "del": "4.1.1",
+    "gulp": "4.0.2",
+    "gulp-autoprefixer": "^6.1.0",
+    "gulp-cached": "1.1.1",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-cssnano": "2.1.3",
+    "gulp-file-include": "2.0.1",
+    "gulp-if": "2.0.2",
+    "gulp-npm-dist": "^1.0.3",
+    "gulp-rename": "^1.4.0",
+    "gulp-replace": "1.0.0",
+    "gulp-rtlcss": "^1.4.1",
+    "gulp-sass": "^5.1.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "3.0.2",
+    "gulp-useref-plus": "0.0.8",
+    "sass": "^1.49.0"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^41.2.0",
+    "@iconscout/unicons": "^4.0.8",
+    "@mdi/font": "^7.4.47",
+    "animate.css": "^4.1.1",
+    "apexcharts": "^3.47.0",
+    "bootstrap": "^5.3.3",
+    "feather-icons": "^4.29.1",
+    "gumshoejs": "^5.1.2",
+    "jarallax": "^2.2.0",
+    "js-datepicker": "^5.18.2",
+    "shufflejs": "^6.1.1",
+    "simplebar": "^6.2.5",
+    "swiper": "4.5.0",
+    "tiny-slider": "^2.9.4",
+    "tobii": "^2.0.0-alpha",
+    "wow.js": "^1.2.2"
+  }
+}

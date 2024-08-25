@@ -1,0 +1,93 @@
+<?php
+
+namespace App\Http\Controllers\Panel;
+
+use App\Helpers\BerandaUI;
+use App\Helpers\Notifikasi;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\LimitTryout;
+use App\Models\PengaturanWeb;
+use Illuminate\Support\Facades\Auth;
+
+class Main extends Controller
+{
+
+    public function index()
+    {
+        $data = [
+            'page_title' => session('user')->name,
+            'breadcumb' => 'Beranda Vi Star Indonesia',
+            'notifTryoutGratis' => Notifikasi::tryoutGratis(),
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
+            'countStatistikCPNS' => BerandaUI::statistikTryout('CPNS'),
+            'countStatistikPPPK' => BerandaUI::statistikTryout('PPK'),
+            'countStatistikKedinasan' => BerandaUI::statistikTryout('Kedinasan'),
+            'countCustomer' => BerandaUI::customerTerdaftar(),
+            'countCustomerPerhari' => BerandaUI::customerTerdaftarPerhari(),
+            'countTryout' => BerandaUI::tryoutTerjual(),
+            'countTryoutPerhari' => BerandaUI::customerTerdaftarPerhari(),
+            'sumTryout' => BerandaUI::sumTryout(),
+            'sumTryoutPerhari' => BerandaUI::sumTryoutPerhari()
+        ];
+        return view('main-panel.home.beranda', $data);
+    }
+
+    public function pengaturan()
+    {
+        $data = [
+            'page_title' => 'Pengaturan Web',
+            'breadcumb' => 'Pengaturan Situs Web',
+            'pengaturan' => PengaturanWeb::all()->first(),
+            'notifTryoutGratis' => Notifikasi::tryoutGratis(),
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+        ];
+        return view('main-panel.pengaturan.form-pengaturan-situs', $data);
+    }
+
+    public function banner()
+    {
+        $data = [
+            'page_title' => 'Banner Carousel',
+            'breadcumb' => 'Manajemen Banner',
+            'notifTryoutGratis' => Notifikasi::tryoutGratis(),
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+        ];
+        return view('main-panel.pengaturan.banner-web', $data);
+    }
+
+    public function faq()
+    {
+        $data = [
+            'page_title' => 'FAQ',
+            'breadcumb' => 'Frequently Asked Questions',
+            'notifTryoutGratis' => Notifikasi::tryoutGratis(),
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+        ];
+        return view('main-panel.pengaturan.faq-web', $data);
+    }
+
+    public function logs()
+    {
+        $data = [
+            'page_title' => 'Logs',
+            'breadcumb' => 'Logs Aktivitas Pengguna',
+            'logs' => DB::table('logs')->select('logs.*', 'users.name')->leftJoin('users', 'logs.user_id', '=', 'users.id')->get(),
+            'notifTryoutGratis' => Notifikasi::tryoutGratis(),
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+        ];
+        return view('main-panel.pengaturan.logs-web', $data);
+    }
+
+    public function profilPengguna()
+    {
+        $data = [
+            'page_title' => 'Profil Pengguna',
+            'bc1' => 'Profil Pengguna',
+            'bc2' => Auth::user()->name,
+            'notifTryoutGratis' => Notifikasi::tryoutGratis(),
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+        ];
+        return view('main-panel.profil.profil-pengguna', $data);
+    }
+}

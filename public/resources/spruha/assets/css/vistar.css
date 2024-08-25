@@ -1,0 +1,98 @@
+@media only screen and (max-width: 600px) {
+    .title-web {
+        padding: 0px;
+        margin: 0px;
+        display: none;
+    }
+
+    .address-web {
+        display: none;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+    .title-web {
+        padding: 0px;
+        margin: 0px;
+        font-size: 16px;
+        /* display: none; */
+    }
+
+    .address-web {
+        display: none;
+    }
+}
+
+@media (min-width: 1025px) {
+    .title-web {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .address-web {
+        /* display: none; */
+    }
+}
+
+.btn-web {
+    background-color: #0075b8;
+    color: white;
+}
+
+.btn-web:hover {
+    background-color: #0184cf;
+    color: white;
+}
+
+.btn-web1 {
+    background-color: #f8aa3b;
+    color: black;
+}
+
+.btn-web1:hover {
+    background-color: #ffba58;
+    color: black;
+}
+
+.box-soal-container {
+    display: flex;
+    flex-wrap: wrap;
+    /* max-width: 250px; */
+    /* max-height: 900px;
+    overflow-y: scroll; */
+}
+
+.box-soal-web {
+    border: 1px solid #f8aa3b;
+    border-radius: 5px;
+    padding: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    background-color: #f8aa3b;
+    margin: 5px;
+    width: 40px;
+    text-align: center;
+}
+
+.box-soal-web:hover {
+    color: white;
+    border: 1px solid #0075b8;
+    background-color: #0075b8;
+}
+
+.box-active {
+    color: black;
+    border: 1px solid #15a552;
+    background-color: #15a552;
+}
+
+#header-accordion-web:hover {
+    background-color: #0075b8;
+    border-color: #0075b8;
+    color: #ffffff;
+}
+
+.line-top-web {
+    border-top: 1px solid black;
+}
