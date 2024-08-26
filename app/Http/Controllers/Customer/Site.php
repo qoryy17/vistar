@@ -155,6 +155,7 @@ class Site extends Controller
             ->orWhereDate('order_tryout.created_at', $request->input('tahun'))
             ->where('order_tryout.customer_id', Auth::user()->customer_id)
             ->orderBy('order_tryout.created_at', 'DESC')->get();
+
         $data = [
             'page_title' => 'Pembelian',
             'breadcumb' => 'Pembelian Produk',
