@@ -30,8 +30,8 @@
                             <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <strong>Informasi !</strong> Dapatkan akses menyeluruh untuk paket tryout dan bimbel dengan
-                            membeli produk kami.
+                            <strong>Informasi !</strong> Dapatkan akses menyeluruh untuk paket tryout CPNS, PPPK, dan
+                            Kedinasan dengan hanya sekali beli !
                         </div>
 
                         {{-- Testimoni --}}
