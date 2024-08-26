@@ -35,7 +35,7 @@
                         </div>
 
                         {{-- Testimoni --}}
-                        <div class="card custom-card">
+                        <div class="card custom-card d-none d-sm-block">
                             <div class="card-body">
                                 <div class="row row-sm">
                                     <div class="col-12">
@@ -175,7 +175,8 @@
                                     <span class="text-muted tx-14">{{ $tryoutTerbaru->keterangan }}</span>
                                     <a href="{{ route('mainweb.produk-berbayar') }}"
                                         class="btn btn-block btn-default mt-2 btn-web1"><i
-                                            class="fa fa-shopping-cart"></i> Beli Sekarang</a>
+                                            class="fa fa-shopping-cart"></i>
+                                        Beli Sekarang</a>
                                 </div>
                             </div>
                         </div>

@@ -66,7 +66,7 @@
                             <div class="dropdown main-profile-menu">
                                 <a class="d-flex" href="javascript:void(0)">
                                     <span class="main-img-user"><img alt="avatar"
-                                            src="{{ asset('storage/user/' . $customer->foto) }}"></span>
+                                            src="{{ $customer->foto ? asset('storage/user/' . $customer->foto) : asset('storage/user/user-default.png') }}"></span>
                                 </a>
                                 <div class="dropdown-menu">
                                     <div class="header-navheading">

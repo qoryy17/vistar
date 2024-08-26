@@ -18,15 +18,16 @@ class Site extends Controller
     {
         $data = [
             'page_title' => Waktu::sesiWaktu() . ' ' . Auth::user()->name,
-            'breadcumb' => 'Vi Star Indonesia | Ujian Tryout Terpercaya',
+            'breadcumb' => 'Vi Star Indonesia',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
             'countCustomer' => Customer::all()->count(),
             'countCustomerPerhari' => Customer::whereDate('created_at', Carbon::today())->count(),
             'countTryout' => OrderTryout::all()->count(),
             'countTryoutPerhari' => OrderTryout::whereDate('created_at', Carbon::today())->count(),
             'tryoutTerbaru' => DB::table('produk_tryout')->select('produk_tryout.*', 'kategori_produk.status')->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->where('kategori_produk.status', 'Berbayar')->first(),
-            'testimoni' => DB::table('testimoni')->select('testimoni.*', 'customer.nama_lengkap')->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')->where('publish', 'Y')->orderBy('updated_at'),
+            'testimoni' => DB::table('testimoni')->select('testimoni.*', 'customer.nama_lengkap')->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')->where('publish', 'Y')->orderBy('updated_at', 'desc')
         ];
+
         return view('customer-panel.home.beranda', $data);
     }
 
@@ -94,12 +95,18 @@ class Site extends Controller
             ->leftJoin('limit_tryout', 'ujian.limit_tryout_id', '=', 'limit_tryout.id')
             ->where('ujian.status_ujian', 'Selesai')
             ->where('limit_tryout.customer_id', Auth::user()->customer_id);
+
+        if ($ujianGratis->first()) {
+            $limitUjian =  Ujian::where('limit_tryout_id', $ujianGratis->first()->id)->where('status_ujian', 'Selesai')->first();
+        } else {
+            $limitUjian = null;
+        }
         $data = [
             'page_title' => 'Tryout Gratis',
             'breadcumb' => 'Tryout Gratis',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
             'ujianGratis' => $ujianGratis->get(),
-            'limitUjian' => Ujian::where('limit_tryout_id', $ujianGratis->first()->id)->where('status_ujian', 'Selesai')->first(),
+            'limitUjian' => $limitUjian,
             'hasilUjian' => $hasilUjian->get()
         ];
 
