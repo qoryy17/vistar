@@ -29,10 +29,6 @@ class GoogleOauth extends Controller
             if ($finduser) {
                 Auth::login($finduser);
                 Auth::user();
-                session(['user' => $finduser['name']]);
-                if (session('getOrder.status') == 'keranjangOrder') {
-                    return redirect()->intended('/order-tryout');
-                }
                 return redirect()->intended('/');
             }
 
