@@ -57,12 +57,6 @@ class GoogleOauth extends Controller
             ]);
 
             Auth::login($newUser);
-            session(['user' => $user->name]);
-
-            if (session('getOrder.status') == 'keranjangOrder') {
-                return redirect()->intended('/order-tryout');
-            }
-
             return redirect()->intended('/');
         } catch (\Throwable $th) {
             return Redirect::to('/');
