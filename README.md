@@ -2,7 +2,8 @@
 
 ## Tentang Vi Start
 
-Platform Education Technology yang menggabungkan VI(6) unsur “Si” baik Kompetisi, Kompetensi, Konferensi, Literasi, Prestasi, dan Sertifikasi. Yang beralamat di Jl. Mawar No.58, Sari Rejo, Kec. Medan Polonia, Kota Medan, Sumatera Utara 20219
+Vistar merupakan Pusat Kegiatan Akademik Bidang ICT dan Science Terbaik #1 di Indonesia dengan mengedepankan VI (6 angka Romawi) dan Star (Bintang dalam Inggris) “6 Bintang” dibidang Si yaitu : KompetenSi, KompetiSi, LiteraSi, OkupaSi, PrestaSi, dan SertifikaSi
+
 
 ## Produk & Layanan
 - Ujian Tryout Berbasis CAT/CBT
