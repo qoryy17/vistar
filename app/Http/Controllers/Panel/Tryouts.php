@@ -53,7 +53,7 @@ class Tryouts extends Controller
             $tryout = ProdukTryout::findOrFail(Crypt::decrypt($id));
             $pengaturan = PengaturanTryout::findOrFail($tryout->pengaturan_tryout_id);
         } else {
-            return Redirect::to('/produk-tryout')->with('error', 'Parameter tidak valid !');
+            return Redirect::route('tryouts.index')->with('error', 'Parameter tidak valid !');
         }
 
         $data = [
@@ -188,15 +188,15 @@ class Tryouts extends Controller
             $message = 'Produk tryout berhasil diperbarui !';
             $error = 'Produk tryout gagal diperbarui !';
         } else {
-            return Redirect::to('/produk-tryout')->with('error', 'Parameter tidak valid !');
+            return Redirect::route('tryouts.index')->with('error', 'Parameter tidak valid !');
         }
 
         if ($pengaturanTryout->save() and $produkTryout->save()) {
             // Simpan logs aktivitas pengguna
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/produk-tryout')->with('message', $message);
+            return Redirect::route('tryouts.index')->with('message', $message);
         } else {
-            return Redirect::to('/produk-tryout')->with('error', $error)->withInput();
+            return Redirect::route('tryouts.index')->with('error', $error)->withInput();
         }
     }
 
@@ -208,12 +208,12 @@ class Tryouts extends Controller
             $pengaturanTryout = PengaturanTryout::findOrFail($produkTryout->pengaturan_tryout_id);
 
             if (!$pengaturanTryout) {
-                return Redirect::to('/produk-tryout')->with('error', 'ID pengaturan tidak ditemukan !');
+                return Redirect::route('tryouts.index')->with('error', 'ID pengaturan tidak ditemukan !');
             }
 
             $soalUjian = DB::table('soal_ujian')->where('kode_soal', '=', $produkTryout->kode)->first();
             if (!$soalUjian) {
-                return Redirect::to('/produk-tryout')->with('error', 'Soal tidak ditemukan !');
+                return Redirect::route('tryouts.index')->with('error', 'Soal tidak ditemukan !');
             }
             $produkTryout->delete();
             $pengaturanTryout->delete();
@@ -221,9 +221,9 @@ class Tryouts extends Controller
             // Simpan logs aktivitas pengguna
             $logs = $users->name . ' telah menghapus produk tryout dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/produk-tryout')->with('message', 'Produk tryout berhasil dihapus !');
+            return Redirect::route('tryouts.index')->with('message', 'Produk tryout berhasil dihapus !');
         }
-        return Redirect::to('/produk-tryout')->with('error', 'Produk tryout gagal dihapus !');
+        return Redirect::route('tryouts.index')->with('error', 'Produk tryout gagal dihapus !');
     }
 
     public function soalTryout($id = null)
@@ -251,7 +251,7 @@ class Tryouts extends Controller
             $formParam = Crypt::encrypt('update');
             $soal = DB::table('soal_ujian')->select('soal_ujian.*', 'klasifikasi_soal.judul', 'klasifikasi_soal.alias')->leftJoin('klasifikasi_soal', 'klasifikasi_soal.id', '=', 'soal_ujian.klasifikasi_soal_id')->where('soal_ujian.id', '=', Crypt::decrypt($soal))->get();
         } else {
-            return Redirect::to('/soal-tryout')->with('error', 'Parameter tidak valid !');
+            return Redirect::route('tryouts.soal')->with('error', 'Parameter tidak valid !');
         }
 
         $data = [
@@ -340,15 +340,15 @@ class Tryouts extends Controller
             $message = 'Soal ujian berhasil diperbarui !';
             $error = 'Soal ujian gagal diperbarui !';
         } else {
-            return Redirect::to('/soal-tryout')->with('error', 'Parameter tidak valid !');
+            return Redirect::route('tryouts.soal')->with('error', 'Parameter tidak valid !');
         }
 
         if ($soal->save()) {
             // Simpan logs aktivitas pengguna
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/soal-tryout' . '/' . Crypt::encrypt($request->input('kodeSoal')))->with('message', $message);
+            return Redirect::route('tryouts.soal', ['id' => Crypt::encrypt($request->input('kodeSoal'))])->with('message', $message);
         } else {
-            return Redirect::to('/soal-tryout' . '/' . Crypt::encrypt($request->input('kodeSoal')))->with('error', $error)->withInput();
+            return Redirect::route('tryouts.soal', ['id' => Crypt::encrypt($request->input('kodeSoal'))])->with('error', $error);
         }
     }
 
@@ -361,9 +361,9 @@ class Tryouts extends Controller
             // Simpan logs aktivitas pengguna
             $logs = $users->name . ' telah menghapus soal ujian dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/soal-tryout' . '/' . Crypt::encrypt($soalUjian->kode_soal))->with('message', 'Soal berhasil dihapus !');
+            return Redirect::route('tryouts.soal', ['id' => Crypt::encrypt($soalUjian->kode_soal)])->with('message', 'Soal berhasil dihapus !');
         }
-        return Redirect::to('/soal-tryout' . '/' . Crypt::encrypt($soalUjian->kode_soal))->with('error', 'Soal gagal dihapus !');
+        return Redirect::route('tryouts.soal', ['id' => Crypt::encrypt($soalUjian->kode_soal)])->with('error', 'Soal gagal dihapus !');
     }
 
     public function duplikatProdukTryout(Request $request): RedirectResponse
@@ -448,11 +448,11 @@ class Tryouts extends Controller
         }
 
         if (!$soal) {
-            return Redirect::to('/produk-tryout')->with('error', 'Produk tryout gagal diduplikasi !');
+            return Redirect::route('tryouts.index')->with('error', 'Produk tryout gagal diduplikasi !');
         }
         $logs = Auth::user()->name . ' telah menduplikasi produk tryout dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
         RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-        return Redirect::to('/produk-tryout')->with('message', 'Produk tryout berhasil diduplikasi !');
+        return Redirect::route('tryouts.index')->with('message', 'Produk tryout berhasil diduplikasi !');
     }
 
     public function pesertaTryout(Request $request)
@@ -584,7 +584,7 @@ class Tryouts extends Controller
         return view('main-panel.tryout.data-pengajuan-tryout-gratis', $data);
     }
 
-    public function validasiTryoutGratis(Request $request) //: RedirectResponse
+    public function validasiTryoutGratis(Request $request): RedirectResponse
     {
         // Cek Permohonan
         $permohonan = LimitTryout::findOrFail(Crypt::decrypt($request->id));

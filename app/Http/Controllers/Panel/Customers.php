@@ -96,9 +96,9 @@ class Customers extends Controller
             // Simpan logs aktivitas pengguna
             $logs = $users->name . ' telah menghapus customer dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/user-customer')->with('message', 'Customer berhasil dihapus !');
+            return Redirect::route('customer.main')->with('message', 'Customer berhasil dihapus !');
         }
-        return Redirect::to('/user-customer')->with('error', 'Customer gagal dihapus !');
+        return Redirect::route('customer.main')->with('error', 'Customer gagal dihapus !');
     }
 
     public function blokirCustomer(Request $request): RedirectResponse
@@ -112,16 +112,16 @@ class Customers extends Controller
                 // Simpan logs aktivitas pengguna
                 $logs = $users->name . ' telah memblokir customer dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::to('/user-customer')->with('message', 'Customer berhasil diblokir !');
+                return Redirect::route('customer.main')->with('message', 'Customer berhasil diblokir !');
             } else {
                 $user->blokir = 'Y';
                 $user->save();
                 // Simpan logs aktivitas pengguna
                 $logs = $users->name . ' telah membuka blokir customer dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::to('/user-customer')->with('message', 'Customer berhasil diunblokir !');
+                return Redirect::route('customer.main')->with('message', 'Customer berhasil diunblokir !');
             }
         }
-        return Redirect::to('/user-customer')->with('error', 'Customer gagal diubah !');
+        return Redirect::route('customer.main')->with('error', 'Customer gagal diubah !');
     }
 }

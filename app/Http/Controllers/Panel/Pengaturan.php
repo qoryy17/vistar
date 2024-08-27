@@ -25,7 +25,7 @@ class Pengaturan extends Controller
         } elseif (htmlentities($param) == 'update') {
             $form_title = 'Edit Banner Carousel';
         } else {
-            return Redirect::to('/banner')->with('error', 'Parameter tidak valid !');
+            return Redirect::route('main.banner')->with('error', 'Parameter tidak valid !');
         }
         $data = [
             'form_title' => $form_title,

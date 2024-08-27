@@ -18,9 +18,6 @@ class Kategoris extends Controller
 {
     public function index($produk = null)
     {
-        if (htmlentities($produk) != 'tryout') {
-            return Redirect::to('/')->with('error', 'Parameter tidak valid !');
-        }
         $data = [
             'page_title' => 'Kategori Produk',
             'bc1' => 'Manajemen Produk',
@@ -87,15 +84,15 @@ class Kategoris extends Controller
             $message = 'Kategori produk berhasil diperbarui !';
             $error = 'Kategori produk gagal diperbarui !';
         } else {
-            return Redirect::to('/kategori-produk-tryout/tryout')->with('error', 'Parameter tidak valid !');
+            return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('error', 'Parameter tidak valid !');
         }
 
         if ($kategori->save()) {
             // Simpan logs aktivitas pengguna
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/kategori-produk-tryout/tryout')->with('message', $message);
+            return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('message', $message);
         } else {
-            return Redirect::to('/kategori-produk-tryout/tryout')->with('error', $error)->withInput();
+            return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('error', $error)->withInput();
         }
     }
 
@@ -110,17 +107,17 @@ class Kategoris extends Controller
                 // Simpan logs aktivitas pengguna
                 $logs = $users->name . ' telah menonaktifkan kategori dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::to('/kategori-produk-tryout/tryout')->with('message', 'Kategori produk berhasil dinonaktifkan !');
+                return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('message', 'Kategori produk berhasil dinonaktifkan !');
             } else {
                 $kategori->aktif = 'Y';
                 $kategori->save();
                 // Simpan logs aktivitas pengguna
                 $logs = $users->name . ' telah mengaktifkan kategori dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::to('/kategori-produk-tryout/tryout')->with('message', 'Kategori produk berhasil diaktifkan !');
+                return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('message', 'Kategori produk berhasil diaktifkan !');
             }
         }
-        return Redirect::to('/kategori-produk-tryout/tryout')->with('error', 'Kategori gagal diubah !');
+        return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('error', 'Kategori gagal diubah !');
     }
 
     public function hapusKategori(Request $request): RedirectResponse
@@ -132,8 +129,8 @@ class Kategoris extends Controller
             // Simpan logs aktivitas pengguna
             $logs = $users->name . ' telah menghapus kategori dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/kategori-produk-tryout/tryout')->with('message', 'Kategori berhasil dihapus !');
+            return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('message', 'Kategori berhasil dihapus !');
         }
-        return Redirect::to('/kategori-produk-tryout/tryout')->with('error', 'Kategori gagal dihapus !');
+        return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('error', 'Kategori gagal dihapus !');
     }
 }

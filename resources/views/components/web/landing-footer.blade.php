@@ -53,8 +53,7 @@
                         <div class="col-lg-3 col-md-4 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0">
                             <h5 class="footer-head">Pembayaran</h5>
 
-                            <img height="20" src="{{ asset('resources/midtrans.png') }}" alt="">
-
+                            <img height="20" src="{{ asset('resources/midtrans.png') }}" alt="midtrans">
                         </div><!--end col-->
                     </div><!--end row-->
                 </div>

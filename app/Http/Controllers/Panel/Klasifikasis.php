@@ -86,15 +86,15 @@ class Klasifikasis extends Controller
             $message = 'Klasifikasi soal berhasil diperbarui !';
             $error = 'Klasifikasi soal gagal diperbarui !';
         } else {
-            return Redirect::to('/klasifikasi-soal')->with('error', 'Parameter tidak valid !');
+            return Redirect::route('klasifikasi.index')->with('error', 'Parameter tidak valid !');
         }
 
         if ($klasifikasiSoal->save()) {
             // Simpan logs aktivitas pengguna
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/klasifikasi-soal')->with('message', $message);
+            return Redirect::route('klasifikasi.index')->with('message', $message);
         } else {
-            return Redirect::to('/klasifikasi-soal')->with('error', $error)->withInput();
+            return Redirect::route('klasifikasi.index')->with('error', $error)->withInput();
         }
     }
 
@@ -109,17 +109,17 @@ class Klasifikasis extends Controller
                 // Simpan logs aktivitas pengguna
                 $logs = $users->name . ' telah menonaktifkan klasifikasi soal dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::to('/klasifikasi-soal')->with('message', 'Klasifikasi soal berhasil dinonaktifkan !');
+                return Redirect::route('klasifikasi.index')->with('message', 'Klasifikasi soal berhasil dinonaktifkan !');
             } else {
                 $klasifikasiSoal->aktif = 'Y';
                 $klasifikasiSoal->save();
                 // Simpan logs aktivitas pengguna
                 $logs = $users->name . ' telah mengaktifkan klasifikasi soal dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::to('/klasifikasi-soal')->with('message', 'Klasifikasi soal berhasil diaktifkan !');
+                return Redirect::route('klasifikasi.index')->with('message', 'Klasifikasi soal berhasil diaktifkan !');
             }
         }
-        return Redirect::to('/klasifikasi-soal')->with('error', 'Klasifikasi Soal gagal diubah !');
+        return Redirect::route('klasifikasi.index')->with('error', 'Klasifikasi Soal gagal diubah !');
     }
 
     public function hapusKlasifikasi(Request $request): RedirectResponse
@@ -131,8 +131,8 @@ class Klasifikasis extends Controller
             // Simpan logs aktivitas pengguna
             $logs = $users->name . ' telah menghapus klasifikasi soal dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/klasifikasi-soal')->with('message', 'Klasifikasi soal berhasil dihapus !');
+            return Redirect::route('klasifikasi.index')->with('message', 'Klasifikasi soal berhasil dihapus !');
         }
-        return Redirect::to('/klasifikasi-soal')->with('error', 'Klasifikasi soal gagal dihapus !');
+        return Redirect::route('klasifikasi.index')->with('error', 'Klasifikasi soal gagal dihapus !');
     }
 }

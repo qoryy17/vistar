@@ -41,7 +41,7 @@ class Users extends Controller
             $formParam = Crypt::encrypt('update');
             $user = User::findOrFail(Crypt::decrypt($id));
         } else {
-            return Redirect::to('/user-all')->with('error', 'Parameter tidak valid !');
+            return Redirect::route('user.main')->with('error', 'Parameter tidak valid !');
         }
         $data = [
             'form_title' => $form_title,
@@ -116,15 +116,15 @@ class Users extends Controller
             $message = 'Pengguna berhasil diperbarui !';
             $error = 'Pengguna gagal diperbarui !';
         } else {
-            return Redirect::to('/user-all')->with('error', 'Parameter tidak valid !');
+            return Redirect::route('user.main')->with('error', 'Parameter tidak valid !');
         }
 
         if ($user->save()) {
             // Simpan logs aktivitas pengguna
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/user-all')->with('message', $message);
+            return Redirect::route('user.main')->with('message', $message);
         } else {
-            return Redirect::to('/user-all')->with('error', $error)->withInput();
+            return Redirect::route('user.main')->with('error', $error)->withInput();
         }
     }
 
@@ -143,9 +143,9 @@ class Users extends Controller
             // Simpan logs aktivitas pengguna
             $logs = $users->name . ' telah memperbarui password pengguna dengan ID ' . $request->input('userID') . ' waktu tercatat :  ' . now();
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/user-all')->with('message', 'Password berhasil diubah');
+            return Redirect::route('user.main')->with('message', 'Password berhasil diubah');
         }
-        return Redirect::to('/user-all')->with('error', 'Password gagal diubah !');
+        return Redirect::route('user.main')->with('error', 'Password gagal diubah !');
     }
 
     public function hapusUsers(Request $request): RedirectResponse
@@ -154,16 +154,16 @@ class Users extends Controller
         if ($user) {
             $users = Auth::user();
             if ($user->role == session('user')->role) {
-                return Redirect::to('/user-all')->with('error', 'Tidak dapat menghapus akun sendiri !');
+                return Redirect::route('user.main')->with('error', 'Tidak dapat menghapus akun sendiri !');
             } else {
                 $user->delete();
                 // Simpan logs aktivitas pengguna
                 $logs = $users->name . ' telah menghapus pengguna dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::to('/user-all')->with('message', 'Pengguna berhasil dihapus !');
+                return Redirect::route('user.main')->with('message', 'Pengguna berhasil dihapus !');
             }
         }
-        return Redirect::to('/user-all')->with('error', 'Pengguna gagal dihapus !');
+        return Redirect::route('user.main')->with('error', 'Pengguna gagal dihapus !');
     }
 
     public function blokirUser(Request $request): RedirectResponse
@@ -171,7 +171,7 @@ class Users extends Controller
         $user = User::findOrFail(Crypt::decrypt($request->id));
         if ($user) {
             if ($user->role == session('user')->role) {
-                return Redirect::to('/user-all')->with('error', 'Tidak dapat memblokir akun sendiri !');
+                return Redirect::route('user.main')->with('error', 'Tidak dapat memblokir akun sendiri !');
             } else {
                 $users = Auth::user();
                 if ($user->blokir == 'Y') {
@@ -180,17 +180,17 @@ class Users extends Controller
                     // Simpan logs aktivitas pengguna
                     $logs = $users->name . ' telah meblokir pengguna dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                     RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                    return Redirect::to('/user-all')->with('message', 'Pengguna berhasil diblokir !');
+                    return Redirect::route('user.main')->with('message', 'Pengguna berhasil diblokir !');
                 } else {
                     $user->blokir = 'Y';
                     $user->save();
                     // Simpan logs aktivitas pengguna
                     $logs = $users->name . ' telah membuka blokir pengguna dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                     RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                    return Redirect::to('/user-all')->with('message', 'Pengguna berhasil diunblokir !');
+                    return Redirect::route('user.main')->with('message', 'Pengguna berhasil diunblokir !');
                 }
             }
         }
-        return Redirect::to('/user-all')->with('error', 'Pengguna gagal diubah !');
+        return Redirect::route('user.main')->with('error', 'Pengguna gagal diubah !');
     }
 }
