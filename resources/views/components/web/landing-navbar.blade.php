@@ -3,8 +3,10 @@
     <div class="container">
         <!-- Logo container-->
         <a class="logo" href="{{ url('/') }}">
-            <img src="{{ url('resources/Vistar.png') }}" height="40" class="logo-light-mode" alt="">
-            <img src="{{ url('resources/Vistar.png') }}" height="40" class="logo-dark-mode" alt="">
+            <img src="{{ asset('public/' . $web->logo ? $web->logo : '') }}" height="40" class="logo-light-mode"
+                alt="">
+            <img src="{{ asset('public/' . $web->logo ? $web->logo : '') }}" height="40" class="logo-dark-mode"
+                alt="">
         </a>
         <!-- Logo End -->
 
@@ -59,7 +61,6 @@
             <ul class="navigation-menu">
                 <li><a href="{{ route('mainweb.index') }}" class="sub-menu-item">Home</a></li>
                 <li><a href="{{ route('mainweb.produk-berbayar') }}" class="sub-menu-item">Produk</a></li>
-                <li><a href="#" class="sub-menu-item">Testimoni</a></li>
                 <li><a href="#" class="sub-menu-item">Bantuan</a></li>
                 <li><a href="#" class="sub-menu-item">Tentang</a></li>
                 <li><a href="#" class="sub-menu-item">Kontak</a></li>

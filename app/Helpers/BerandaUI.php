@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Payment;
 use App\Models\Customer;
 use App\Models\OrderTryout;
+use App\Models\PengaturanWeb;
 use Illuminate\Support\Facades\DB;
 
 class BerandaUI
@@ -47,5 +48,10 @@ class BerandaUI
     public static function sumTryoutPerhari()
     {
         return Payment::whereDate('created_at', today())->sum('nominal');
+    }
+
+    public static function web()
+    {
+        return PengaturanWeb::all()->first();
     }
 }

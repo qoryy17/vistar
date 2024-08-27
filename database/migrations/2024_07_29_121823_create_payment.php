@@ -15,11 +15,14 @@ return new class extends Migration
         Schema::create('payment', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(Str::uucid());
             $table->string('ref_order_id')->nullable();
+            $table->string('transaksi_id')->nullable();
             $table->integer('nominal');
-            $table->string('jenis_pembayaran')->nullable();
+            $table->string('metode')->nullable();
             $table->integer('biaya_admin')->nullable();
-            $table->string('status')->nullable();
+            $table->string('status_transaksi')->nullable();
+            $table->string('status_fraud');
             $table->string('snap_token')->nullable();
+            $table->json('metadata')->nullable();
             $table->timestamps();
         });
     }

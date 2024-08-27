@@ -2,8 +2,8 @@
 <!-- Page -->
 <div class="page">
     @php
-        use App\Models\PengaturanWeb;
-        $web = PengaturanWeb::all()->first();
+        use App\Helpers\BerandaUI;
+        $web = BerandaUI::web();
     @endphp
     <!-- Main Header-->
     <div class="main-header side-header hor-header">
@@ -12,10 +12,10 @@
                 <a class="main-header-menu-icon" href="javascript:void(0)" id="mainSidebarToggle"><span></span></a>
                 <div class="hor-logo">
                     <a class="main-logo" href="{{ route('site.main') }}">
-                        <img src="{{ asset('storage/' . $web->logo) }}" class="header-brand-img desktop-logo"
+                        <img src="{{ asset('storage/' . isset($web->logo)) }}" class="header-brand-img desktop-logo"
                             alt="logo" style="max-width: 200px;">
-                        <img src="{{ asset('storage/' . $web->logo) }}" class="header-brand-img desktop-logo-dark"
-                            alt="logo" style="max-width: 200px;">
+                        <img src="{{ asset('storage/' . isset($web->logo)) }}"
+                            class="header-brand-img desktop-logo-dark" alt="logo" style="max-width: 200px;">
                     </a>
                 </div>
                 <div class="mt-2 p-3">
@@ -27,9 +27,9 @@
             </div>
             <div class="main-header-center">
                 <div class="responsive-logo">
-                    <a href="{{ route('site.main') }}"><img src="{{ asset('storage/' . $web->logo) }}"
+                    <a href="{{ route('site.main') }}"><img src="{{ asset('storage/' . isset($web->logo)) }}"
                             class="mobile-logo" alt="logo" style="max-width: 120px;"></a>
-                    <a href="{{ route('site.main') }}"><img src="{{ url('resources/Vistar-white.png') }}"
+                    <a href="{{ route('site.main') }}"><img src="{{ asset('storage/' . isset($web->logo)) }}"
                             class="mobile-logo-dark" alt="logo" style="max-width: 120px;"></a>
                 </div>
             </div>
@@ -100,14 +100,14 @@
             <div class="main-sidebar-header main-container-1 active">
                 <div class="sidemenu-logo">
                     <a class="main-logo" href="{{ route('site.main') }}">
-                        <img src="{{ asset('storage/' . $web->logo) }}" class="header-brand-img desktop-logo"
+                        <img src="{{ asset('storage/' . isset($web->logo)) }}" class="header-brand-img desktop-logo"
                             alt="logo">
-                        <img src="{{ asset('storage/' . $web->logo) }}" class="header-brand-img icon-logo"
+                        <img src="{{ asset('storage/' . isset($web->logo)) }}" class="header-brand-img icon-logo"
                             alt="logo">
-                        <img src="{{ asset('storage/' . $web->logo) }}"
+                        <img src="{{ asset('storage/' . isset($web->logo)) }}"
                             class="header-brand-img desktop-logo theme-logo" alt="logo">
-                        <img src="{{ asset('storage/' . $web->logo) }}" class="header-brand-img icon-logo theme-logo"
-                            alt="logo">
+                        <img src="{{ asset('storage/' . isset($web->logo)) }}"
+                            class="header-brand-img icon-logo theme-logo" alt="logo">
                     </a>
                 </div>
                 <div class="main-sidebar-body main-body-1">
@@ -146,21 +146,6 @@
                                 <span class="sidemenu-label">Tryout Gratis</span>
                             </a>
                         </li>
-                        {{-- <li class="nav-item">
-                            <a class="nav-link with-sub" href="javascript:void(0)">
-                                <span class="shape1"></span>
-                                <span class="shape2"></span>
-                                <i class="ti-calendar sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Event</span>
-                                <i class="angle fe fe-chevron-right"></i>
-                            </a>
-                            <ul class="nav-sub">
-                                <li class="side-menu-label1"><a href="javascript:void(0)">Submenu</a></li>
-                                <li class="nav-sub-item">
-                                    <a class="nav-sub-link" href="{{ route('site.event-tryout') }}">Tryout</a>
-                                </li>
-                            </ul>
-                        </li> --}}
                     </ul>
                     <div class="slide-right" id="slide-right"><i class="fe fe-chevron-right"></i></div>
                 </div>
@@ -201,7 +186,7 @@
             <div class="row row-sm">
                 <div class="col-md-12">
                     <span>Copyright © 2024 - {{ date('Y') }} Design & Develop
-                        <a target="_blank" href="{{ route('mainweb.index') }}">Vi Star</a>.
+                        <a target="_blank" href="{{ route('mainweb.index') }}">{{ $web->nama_bisnis }}</a>.
                         All rights reserved.</span>
                 </div>
             </div>

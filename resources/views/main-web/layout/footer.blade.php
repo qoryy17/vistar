@@ -4,21 +4,21 @@
 <!-- Back to top -->
 
 <!-- JAVASCRIPT -->
-<script src="{{ url('resources/web/dist/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ url('resources/web/dist/assets/js/jquery-3.7.1.min.js') }}"></script>
-<script src="{{ url('resources/web/dist/assets/js/select2.min.js') }}"></script>
+<script src="{{ asset('resources/web/dist/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('resources/web/dist/assets/js/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ asset('resources/web/dist/assets/js/select2.min.js') }}"></script>
 <!-- Lightbox -->
-<script src="{{ url('resources/web/dist/assets/libs/tobii/js/tobii.min.js') }}"></script>
+<script src="{{ asset('resources/web/dist/assets/libs/tobii/js/tobii.min.js') }}"></script>
 <!-- Slider -->
-<script src="{{ url('resources/web/dist/assets/libs/tiny-slider/min/tiny-slider.js') }}"></script>
-<script src="{{ url('resources/web/dist/assets/libs/swiper/js/swiper.min.js') }}"></script>
+<script src="{{ asset('resources/web/dist/assets/libs/tiny-slider/min/tiny-slider.js') }}"></script>
+<script src="{{ asset('resources/web/dist/assets/libs/swiper/js/swiper.min.js') }}"></script>
 <!-- Parallax -->
-<script src="{{ url('resources/web/dist/assets/libs/jarallax/jarallax.min.js') }}"></script>
+<script src="{{ asset('resources/web/dist/assets/libs/jarallax/jarallax.min.js') }}"></script>
 <!-- Main Js -->
-<script src="{{ url('resources/web/dist/assets/libs/feather-icons/feather.min.js') }}"></script>
-<script src="{{ url('resources/web/dist/assets/js/plugins.init.js') }}"></script>
-<script src="{{ url('resources/web/dist/assets/js/api.js') }}"></script>
-<script src="{{ url('resources/web/dist/assets/js/app.js') }}"></script>
+<script src="{{ asset('resources/web/dist/assets/libs/feather-icons/feather.min.js') }}"></script>
+<script src="{{ asset('resources/web/dist/assets/js/plugins.init.js') }}"></script>
+<script src="{{ asset('resources/web/dist/assets/js/api.js') }}"></script>
+<script src="{{ asset('resources/web/dist/assets/js/app.js') }}"></script>
 
 <script type="text/javascript">
     var selectedProvinsi = "{{ $customer->provinsi ?? null }}"; // ID provinsi dari tabel

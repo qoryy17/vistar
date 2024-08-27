@@ -44,7 +44,7 @@ class Pengaturan extends Controller
         } elseif (htmlentities($param) == 'update') {
             $form_title = 'Edit FAQ';
         } else {
-            return Redirect::to('/faq')->with('error', 'Parameter tidak valid !');
+            return Redirect::route('main.faq')->with('error', 'Parameter tidak valid !');
         }
         $data = [
             'form_title' => $form_title,
@@ -67,6 +67,12 @@ class Pengaturan extends Controller
         $request->validated();
 
         // Cek apakah sudah terdapat pengaturan
+
+        $checkPengaturan = PengaturanWeb::all()->first();
+        if ($checkPengaturan) {
+            $cekPengaturan->delete();
+        }
+
         $pengaturanWeb = new PengaturanWeb();
         $pengaturanWeb->id = rand(1, 99);
         $pengaturanWeb->nama_bisnis = htmlspecialchars($request->input('namaBisnis'));
@@ -86,7 +92,7 @@ class Pengaturan extends Controller
 
             $fileUpload = $fileLogo->storeAs('public', $fileHashname);
             if (!$fileUpload) {
-                return Redirect::to('/pengaturan')->with('error', 'Unggah logo gagal !');
+                return Redirect::route('main.pengaturan')->with('error', 'Unggah logo gagal !');
             }
             $pengaturanWeb->logo = $fileHashname;
         } else {
@@ -101,9 +107,9 @@ class Pengaturan extends Controller
             // Simpan logs aktivitas pengguna
             $logs = Auth::user()->name . ' telah memperbarui pengaturan web waktu tercatat :  ' . now();
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/pengaturan')->with('message', 'Pengaturan berhasil dihapus !');
+            return Redirect::route('main.pengaturan')->with('message', 'Pengaturan berhasil dihapus !');
         } else {
-            return Redirect::to('/pengaturan')->with('error', 'Pengaturan gagal dihapus !');
+            return Redirect::route('main.pengaturan')->with('error', 'Pengaturan gagal dihapus !');
         }
     }
 
@@ -112,9 +118,9 @@ class Pengaturan extends Controller
         $logs = Logs::findOrFail(Crypt::decrypt($request->id));
         if ($logs) {
             $logs->delete();
-            return Redirect::to('/logs')->with('message', 'Log berhasil dihapus !');
+            return Redirect::route('main.logs')->with('message', 'Log berhasil dihapus !');
         } else {
-            return Redirect::to('/logs')->with('error', 'Log gagal dihapus !');
+            return Redirect::route('main.logs')->with('error', 'Log gagal dihapus !');
         }
     }
 

@@ -1,19 +1,21 @@
 <?php
 
-namespace App\View\Components\Web;
+namespace App\View\Components\web;
 
 use Closure;
-use Illuminate\Contracts\View\View;
+use App\Helpers\BerandaUI;
 use Illuminate\View\Component;
+use Illuminate\Contracts\View\View;
 
-class SectionFeature extends Component
+class ContainerCounterPerserta extends Component
 {
+    public $web;
     /**
      * Create a new component instance.
      */
     public function __construct()
     {
-        //
+        $this->web = BerandaUI::web();
     }
 
     /**
@@ -21,6 +23,6 @@ class SectionFeature extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components..web.section-feature');
+        return view('components..web.container-counter-perserta');
     }
 }

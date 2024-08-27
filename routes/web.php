@@ -7,6 +7,7 @@ use App\Http\Controllers\Customer\Site;
 use App\Http\Controllers\Panel\Tryouts;
 use App\Http\Controllers\Landing\Emails;
 use App\Http\Controllers\Landing\Orders;
+use App\Http\Controllers\Panel\Referral;
 use App\Http\Middleware\Auth\ProdukAuth;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\Landing\Profils;
@@ -21,8 +22,8 @@ use App\Http\Controllers\Panel\Klasifikasis;
 use App\Http\Controllers\Landing\GoogleOauth;
 use App\Http\Controllers\Landing\MainWebsite;
 use App\Http\Controllers\Landing\Autentifikasi;
-use App\Http\Controllers\Panel\Referral;
 use App\Http\Middleware\Customer\LoggedCustomer;
+use App\Http\Controllers\Landing\CallbackLanding;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 // Routing untuk website utama
@@ -64,6 +65,10 @@ Route::controller(MainWebsite::class, VerifyCsrfToken::class)->group(function ()
     Route::delete('/hapus-item-pesanan', 'hapusItemPesanan')->name('mainweb.hapus-item')->middleware(PanelRouting::class);
 
     Route::get('/daftar-tryout-gratis', 'daftarTryoutGratis')->name('mainweb.daftar-tryout-gratis')->middleware(ProdukAuth::class);
+});
+
+Route::controller(CallbackLanding::class)->group(function () {
+    Route::get('/midtrans/callback', 'callbackPaymentSuccess')->name('midtrans.callback-pembayaran-berhasil');
 });
 
 // Routing untuk untuk order produk tryout dan pembayaran order tryout

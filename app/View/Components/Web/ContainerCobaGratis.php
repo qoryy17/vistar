@@ -1,15 +1,14 @@
 <?php
 
-namespace App\View\Components\Web;
+namespace App\View\Components\web;
 
-use Closure;
 use App\Helpers\BerandaUI;
-use Illuminate\View\Component;
+use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\View\Component;
 
-class LandingNavbar extends Component
+class ContainerCobaGratis extends Component
 {
-
     public $web;
     /**
      * Create a new component instance.
@@ -24,6 +23,6 @@ class LandingNavbar extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components..web.landing-navbar');
+        return view('components..web.container-coba-gratis');
     }
 }

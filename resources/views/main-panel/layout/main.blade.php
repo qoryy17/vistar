@@ -2,8 +2,8 @@
 <!-- Page -->
 <div class="page">
     @php
-        use App\Models\PengaturanWeb;
-        $web = PengaturanWeb::all()->first();
+        use App\Helpers\BerandaUI;
+        $web = BerandaUI::web();
     @endphp
     <!-- Main Header-->
     <div class="main-header side-header hor-header">
@@ -11,27 +11,27 @@
             <div class="main-header-left">
                 <a class="main-header-menu-icon" href="javascript:void(0)" id="mainSidebarToggle"><span></span></a>
                 <div class="hor-logo">
-                    <a class="main-logo" href="{{ route('site.main') }}">
-                        <img src="{{ asset('storage/' . $web->logo) }}" class="header-brand-img desktop-logo"
-                            alt="logo" style="max-width: 200px;">
-                        <img src="{{ asset('storage/' . $web->logo) }}" class="header-brand-img desktop-logo-dark"
-                            alt="logo" style="max-width: 200px;">
+                    <a class="main-logo" href="{{ route('mainweb.index') }}">
+                        <img src="{{ asset('storage/' . $web->logo ? $web->logo : '') }}"
+                            class="header-brand-img desktop-logo" alt="logo" style="max-width: 200px;">
+                        <img src="{{ asset('storage/' . $web->logo ? $web->logo : '') }}"
+                            class="header-brand-img desktop-logo-dark" alt="logo" style="max-width: 200px;">
                     </a>
                 </div>
                 <div class="mt-2 p-3">
                     <h5 class="title-web">
-                        {{ $web->tagline }}
+                        {{ $web->tagline ? $web->tagline : '' }}
                     </h5>
                     <span class="address-web">
-                        {{ $web->alamat }}
+                        {{ $web->tagline ? $web->alamat : '' }}
                     </span>
                 </div>
             </div>
             <div class="main-header-center">
                 <div class="responsive-logo">
-                    <a href="{{ route('site.main') }}"><img src="{{ asset('storage/' . $web->logo) }}"
+                    <a href="{{ route('site.main') }}"><img src="{{ asset('storage/' . $web->logo ? $web->logo : '') }}"
                             class="mobile-logo" alt="logo" style="max-width: 120px;"></a>
-                    <a href="{{ route('site.main') }}"><img src="{{ url('resources/Vistar-white.png') }}"
+                    <a href="{{ route('site.main') }}"><img src="{{ asset('storage/' . $web->logo ? $web->logo : '') }}"
                             class="mobile-logo-dark" alt="logo" style="max-width: 120px;"></a>
                 </div>
             </div>
@@ -270,43 +270,6 @@
                                 </ul>
                             </li>
                         @endif
-
-                        {{-- <li class="nav-item">
-                            <a class="nav-link with-sub" href="javascript:void(0)">
-                                <span class="shape1"></span>
-                                <span class="shape2"></span>
-                                <i class="ti-menu sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Submenu</span>
-                                <i class="angle fe fe-chevron-right"></i>
-                            </a>
-                            <ul class="nav-sub">
-                                <li class="side-menu-label1"><a href="javascript:void(0)">Submenu</a></li>
-                                <li class="nav-sub-item"><a class="nav-sub-link"
-                                        href="javascript:void(0)">Submenu-01</a></li>
-                                <li class="nav-sub-item">
-                                    <a class="nav-sub-link sub-with-sub" href="javascript:void(0)">
-                                        <span class="sidemenu-label">Submenu-02</span>
-                                        <i class="angle fe fe-chevron-right"></i>
-                                    </a>
-                                    <ul class="sub-nav-sub">
-                                        <li class="nav-sub-item"><a class="nav-sub-link"
-                                                href="javascript:void(0)">Level-01</a></li>
-                                        <li class="nav-sub-item">
-                                            <a class="nav-sub-link sub-with-sub" href="javascript:void(0)">
-                                                <span class="sidemenu-label">Level-02</span>
-                                                <i class="angle fe fe-chevron-right"></i>
-                                            </a>
-                                            <ul class="sub-nav-sub">
-                                                <li class="nav-sub-item"><a class="nav-sub-link"
-                                                        href="javascript:void(0)">Level-11</a></li>
-                                                <li class="nav-sub-item"><a class="nav-sub-link"
-                                                        href="javascript:void(0)">Level-12</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li> --}}
                     </ul>
                     <div class="slide-right" id="slide-right"><i class="fe fe-chevron-right"></i></div>
                 </div>
@@ -348,7 +311,7 @@
             <div class="row row-sm">
                 <div class="col-md-12">
                     <span>Copyright © 2024 - {{ date('Y') }} Design & Develop
-                        <a target="_blank" href="{{ route('mainweb.index') }}"> Vi Star</a>.
+                        <a target="_blank" href="{{ route('mainweb.index') }}"> {{ $web->nama_bisnis }}</a>.
                         All Rights Reserved.</span>
                 </div>
             </div>

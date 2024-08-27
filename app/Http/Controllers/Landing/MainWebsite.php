@@ -9,6 +9,7 @@ use App\Models\KategoriProduk;
 use App\Models\KeranjangOrder;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Helpers\BerandaUI;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
@@ -25,10 +26,14 @@ class MainWebsite extends Controller
             'customer.jurusan',
             'customer.foto'
         )->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')
-            ->where('publish', 'Y')->orderBy('updated_at')->limit(10);
+            ->where('publish', 'Y')->orderBy('updated_at', 'desc')->limit(10);
+
+        $web = BerandaUI::web();
+
         $data  = [
-            'title' => 'Vi Star Indonesia - Center Of Visi',
-            'testimoni' => $testimoni
+            'title' => $web->nama_bisnis . " " . $web->tagline,
+            'testimoni' => $testimoni,
+            'web' => $web
         ];
         return view('main-web.home.beranda', $data);
     }
