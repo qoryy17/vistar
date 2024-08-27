@@ -65,6 +65,7 @@ Route::controller(MainWebsite::class, VerifyCsrfToken::class)->group(function ()
     Route::delete('/hapus-item-pesanan', 'hapusItemPesanan')->name('mainweb.hapus-item')->middleware(PanelRouting::class);
 
     Route::get('/daftar-tryout-gratis', 'daftarTryoutGratis')->name('mainweb.daftar-tryout-gratis')->middleware(ProdukAuth::class);
+    Route::get('/kebijakan-privasi', 'kebijakanPrivasi')->name('mainweb.kebijakan-privasi');
 });
 
 Route::controller(CallbackLanding::class)->group(function () {

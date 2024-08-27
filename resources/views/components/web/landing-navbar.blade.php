@@ -33,7 +33,7 @@
                     <form id="formLogout" action="{{ route('auth.signout-proses') }}" method="POST">
                         @csrf
                         @method('POST')
-                        <a href="#" class="btn btn-sm btn-soft-primary btn-pills" onclick="submitForm()">
+                        <a href="#" class="btn btn-primary btn-pills" onclick="submitForm()">
                             Keluar
                         </a>
                     </form>
@@ -46,7 +46,7 @@
                 </li>
             @else
                 <li class="list-inline-item ps-1 mb-0">
-                    <a href="{{ route('auth.signin') }}" class="btn btn-sm btn-soft-primary btn-pills">
+                    <a href="{{ route('auth.signin') }}" class="btn btn-primary btn-pills">
                         Masuk
                     </a>
                 </li>
@@ -58,7 +58,7 @@
 
         <div id="navigation">
             <!-- Navigation Menu-->
-            <ul class="navigation-menu">
+            <ul class="navigation-menu nav-right">
                 <li><a href="{{ route('mainweb.index') }}" class="sub-menu-item">Home</a></li>
                 <li><a href="{{ route('mainweb.produk-berbayar') }}" class="sub-menu-item">Produk</a></li>
                 <li><a href="#" class="sub-menu-item">Bantuan</a></li>

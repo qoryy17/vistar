@@ -207,4 +207,13 @@ class MainWebsite extends Controller
         ];
         return view('main-web.profil.profil', $data);
     }
+
+    public function kebijakanPrivasi()
+    {
+        $data  = [
+            'title' => 'Kebijakan Privasi',
+            'web' => BerandaUI::web()
+        ];
+        return view('main-web.tentang.kebijakan-privasi', $data);
+    }
 }
