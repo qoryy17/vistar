@@ -1,4 +1,4 @@
-<p align="center"><a href="https://vistar.id" target="_blank"><img src="public/resources/Vistar.png" width="350" alt="Logo"></a></p>
+<p align="center"><a href="https://vistar.id" target="_blank"><img src="public/resources/vistar-indonesia.png" width="350" alt="Logo"></a></p>
 
 ## Tentang Vi Start
 
@@ -10,6 +10,9 @@ Platform Education Technology yang menggabungkan VI(6) unsur “Si” baik Kompe
 ## Author & Kontribusi
 
 - Dr. Dicky Nofriansyah, S.Kom.,M.Kom.,CITP
+- Ahmad Yusri
+- Rahmadsyah
+- Qori Chairawan
 
 ## Versi Web
 
