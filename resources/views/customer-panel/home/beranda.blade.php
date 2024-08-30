@@ -137,7 +137,7 @@
                                                 <span class="d-block tx-12 mb-0 text-muted">Tersedia Untuk CPNS,
                                                     PPPK, Kedinasan</span>
                                             </div>
-                                            <p class="mb-0 tx-24 mt-2"><b style="color: #0075B8;">Rp. 50.000</b>
+                                            <p class="mb-0 tx-24 mt-2"><b style="color: #0075B8;">Rp. 100.000</b>
                                             </p>
                                         </div>
                                     </div>

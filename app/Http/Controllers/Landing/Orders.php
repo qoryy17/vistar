@@ -116,6 +116,11 @@ class Orders extends Controller
                     $referral->produk_tryout_id = $referensiOrderID;
                     $referral->save();
                 }
+                // Hapus Keranjang
+                $keranjang = KeranjangOrder::find($request->id);
+                if ($keranjang) {
+                    $keranjang->delete();
+                }
 
                 return response()->json([
                     'status'     => 'success',

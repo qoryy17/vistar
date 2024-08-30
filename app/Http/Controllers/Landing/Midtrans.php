@@ -4,15 +4,21 @@ namespace App\Http\Controllers\Landing;
 
 use Midtrans\Config;
 use App\Models\Payment;
+use App\Mail\EmailFaktur;
+use Midtrans\Notification;
 use App\Models\OrderTryout;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class Midtrans extends Controller
 {
     public function callbackTransaction()
     {
+        // Kirim email invoice
+        // Mail::to(Auth::user()->email)->send(new EmailFaktur($order));
         return view('main-web.callback.callback-transaction');
     }
 
@@ -24,6 +30,8 @@ class Midtrans extends Controller
         Config::$isProduction = config('services.midtrans.is_production');
         Config::$isSanitized = config('services.midtrans.is_sanitized');
         Config::$is3ds = config('services.midtrans.is_3ds');
+
+        $notification = new Notification();
 
         // Ambil notifikasi dari Midtrans
         $notification = $request->all();

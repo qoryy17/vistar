@@ -154,7 +154,6 @@ class MainWebsite extends Controller
 
     public function pesanTryoutBerbayar(Request $request): RedirectResponse
     {
-
         // Check apakah pernah memesan produk yang sama
         $tryout = OrderTryout::where('produk_tryout_id', Crypt::decrypt($request->idProdukTryout))->where('customer_id', Auth::user()->customer_id)->first();
         if ($tryout) {
@@ -184,6 +183,7 @@ class MainWebsite extends Controller
                 ->where('keranjang_order.customer_id', '=', Auth::user()->customer_id)
                 ->whereNot('kategori_produk.status', 'Gratis')->orderBy('keranjang_order.updated_at', 'DESC')->get(),
         ];
+
         return view('main-web.produk.keranjang-order', $data);
     }
 
@@ -228,5 +228,14 @@ class MainWebsite extends Controller
             'web' => BerandaUI::web()
         ];
         return view('main-web.tentang.kebijakan-privasi', $data);
+    }
+
+    public function kontak()
+    {
+        $data  = [
+            'title' => 'Kontak',
+            'web' => BerandaUI::web()
+        ];
+        return view('main-web.tentang.kontak', $data);
     }
 }

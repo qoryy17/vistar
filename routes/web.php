@@ -41,9 +41,8 @@ Route::controller(GoogleOauth::class)->group(function () {
 // Routing untuk handling Midtrans
 Route::controller(Midtrans::class)->group(function () {
     Route::get('/payment/finish', 'callbackTransaction')->name('midtrans.finish-payment');
-    Route::post('/handler/callback', 'notificationHandler')->name('midtrans.handler-callback');
+    Route::post('/payment/notification/handler', 'notificationHandler')->name('midtrans.handler-callback');
 });
-
 
 // Routing untuk autentifikasi manual melalui form
 Route::controller(Autentifikasi::class)->group(function () {
@@ -76,6 +75,7 @@ Route::controller(MainWebsite::class, VerifyCsrfToken::class)->group(function ()
 
     Route::get('/daftar-tryout-gratis', 'daftarTryoutGratis')->name('mainweb.daftar-tryout-gratis')->middleware(ProdukAuth::class);
     Route::get('/kebijakan-privasi', 'kebijakanPrivasi')->name('mainweb.kebijakan-privasi');
+    Route::get('/kontak', 'kontak')->name('mainweb.kontak');
 });
 
 
