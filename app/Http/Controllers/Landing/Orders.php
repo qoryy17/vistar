@@ -21,6 +21,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Customer\TryoutGratisRequest;
+use App\Models\ReferralCustomer;
 
 class Orders extends Controller
 {
@@ -98,7 +99,6 @@ class Orders extends Controller
         $snapToken = Snap::getSnapToken($payload);
 
         try {
-
             // Buat Order
             $buatOrder = new OrderTryout();
             $buatOrder->id = $orderID;
@@ -108,6 +108,15 @@ class Orders extends Controller
             $buatOrder->produk_tryout_id = $referensiOrderID;
 
             if ($buatOrder->save()) {
+                // Catata referral jika ada
+                if ($request->referralCode) {
+                    $referral = new ReferralCustomer();
+                    $referral->id = rand(1, 999) . rand(1, 99);
+                    $referral->kode_referral = $request->referralCode;
+                    $referral->produk_tryout_id = $referensiOrderID;
+                    $referral->save();
+                }
+
                 return response()->json([
                     'status'     => 'success',
                     'snap_token' => $snapToken,

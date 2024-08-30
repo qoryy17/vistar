@@ -148,19 +148,23 @@
           $('#pay-button').click(function(event) {
               event.preventDefault();
 
+              const referralCodeInput = document.getElementById('kodeReferral');
+              const referralCode = referralCodeInput.value.trim();
+
               $.post("{{ route('orders.pay-order') }}", {
                       _method: 'POST',
                       _token: '{{ csrf_token() }}',
                       id: "{{ Crypt::encrypt($order->id) }}",
+                      referralCode: referralCode,
                   },
                   function(data, status) {
 
                       snap.pay(data.snap_token, {
                           onSuccess: function(result) {
                               /* You may add your own js here, this is just example */
-                              document.getElementById('result-json').innerHTML += JSON.stringify(
-                                  result, null, 2);
-                              //   window.location.href = "{{ route('midtrans.finish-payment') }}";
+                              //   document.getElementById('result-json').innerHTML += JSON.stringify(
+                              //       result, null, 2);
+                              window.location.href = "{{ route('midtrans.finish-payment') }}";
                           },
                           // Optional
                           onPending: function(result) {

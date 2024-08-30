@@ -21,6 +21,7 @@ class OrderTryout extends Model
         'customer_id',
         'produk_tryout_id',
         'payment_id',
+        'status_order'
     ];
 
     public $incrementing = false;

@@ -22,7 +22,7 @@ Production 1.0.1
 ## Pembaruan & Perbaikan
 
 - Memperbaiki optimasi loading setiap halaman aplikasi
-- Menambahkan fitur pembayaran menggunakan QRIS
+- Menambahkan fitur pembayaran menggunakan API Midtrans
 
 ## License & Copyright
 

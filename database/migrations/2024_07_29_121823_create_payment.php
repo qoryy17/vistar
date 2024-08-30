@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('metode')->nullable();
             $table->integer('biaya_admin')->nullable();
             $table->string('status_transaksi')->nullable();
-            $table->string('status_fraud');
-            $table->string('snap_token')->nullable();
+            $table->string('status_fraud')->nullable();
+            $table->datetime('wwaktu_transaksi')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
         });

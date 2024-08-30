@@ -33,11 +33,14 @@ Route::get('/', function () {
 });
 
 // Routing untuk autentifikasi menggunakan Google OAuth
-Route::get('/auth-google', [GoogleOauth::class, 'redirectToGoogleProvider'])->name('auth.google');
-Route::get('/callback', [GoogleOauth::class, 'handleGoogleCallback'])->name('auth.callback');
+Route::controller(GoogleOauth::class)->group(function () {
+    Route::get('/auth-google', 'redirectToGoogleProvider')->name('auth.google');
+    Route::get('/callback', 'handleGoogleCallback')->name('auth.callback');
+});
 
+// Routing untuk handling Midtrans
 Route::controller(Midtrans::class)->group(function () {
-    Route::get('/payment/finish', 'callbackPaymentSuccess')->name('midtrans.finish-payment');
+    Route::get('/payment/finish', 'callbackTransaction')->name('midtrans.finish-payment');
     Route::post('/handler/callback', 'notificationHandler')->name('midtrans.handler-callback');
 });
 
