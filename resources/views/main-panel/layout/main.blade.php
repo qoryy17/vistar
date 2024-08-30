@@ -12,9 +12,9 @@
                 <a class="main-header-menu-icon" href="javascript:void(0)" id="mainSidebarToggle"><span></span></a>
                 <div class="hor-logo">
                     <a class="main-logo" href="{{ route('mainweb.index') }}">
-                        <img src="{{ asset('storage/' . $web->logo ? $web->logo : '') }}"
+                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
                             class="header-brand-img desktop-logo" alt="logo" style="max-width: 200px;">
-                        <img src="{{ asset('storage/' . $web->logo ? $web->logo : '') }}"
+                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
                             class="header-brand-img desktop-logo-dark" alt="logo" style="max-width: 200px;">
                     </a>
                 </div>
@@ -29,9 +29,9 @@
             </div>
             <div class="main-header-center">
                 <div class="responsive-logo">
-                    <a href="{{ route('site.main') }}"><img src="{{ asset('storage/' . $web->logo ? $web->logo : '') }}"
+                    <a href="{{ route('site.main') }}"><img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
                             class="mobile-logo" alt="logo" style="max-width: 120px;"></a>
-                    <a href="{{ route('site.main') }}"><img src="{{ asset('storage/' . $web->logo ? $web->logo : '') }}"
+                    <a href="{{ route('site.main') }}"><img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
                             class="mobile-logo-dark" alt="logo" style="max-width: 120px;"></a>
                 </div>
             </div>
@@ -133,14 +133,14 @@
             <div class="main-sidebar-header main-container-1 active">
                 <div class="sidemenu-logo">
                     <a class="main-logo" href="{{ route('site.main') }}">
-                        <img src="{{ asset('storage/' . $web->logo) }}" class="header-brand-img desktop-logo"
-                            alt="logo">
-                        <img src="{{ asset('storage/' . $web->logo) }}" class="header-brand-img icon-logo"
-                            alt="logo">
-                        <img src="{{ asset('storage/' . $web->logo) }}"
+                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
+                            class="header-brand-img desktop-logo" alt="logo">
+                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
+                            class="header-brand-img icon-logo" alt="logo">
+                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
                             class="header-brand-img desktop-logo theme-logo" alt="logo">
-                        <img src="{{ asset('storage/' . $web->logo) }}" class="header-brand-img icon-logo theme-logo"
-                            alt="logo">
+                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
+                            class="header-brand-img icon-logo theme-logo" alt="logo">
                     </a>
                 </div>
                 <div class="main-sidebar-body main-body-1">

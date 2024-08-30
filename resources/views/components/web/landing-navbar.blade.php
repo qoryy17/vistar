@@ -3,9 +3,9 @@
     <div class="container">
         <!-- Logo container-->
         <a class="logo" href="{{ url('/') }}">
-            <img src="{{ asset('public/' . $web->logo ? $web->logo : '') }}" height="40" class="logo-light-mode"
+            <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}" height="40" class="logo-light-mode"
                 alt="">
-            <img src="{{ asset('public/' . $web->logo ? $web->logo : '') }}" height="40" class="logo-dark-mode"
+            <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}" height="40" class="logo-dark-mode"
                 alt="">
         </a>
         <!-- Logo End -->

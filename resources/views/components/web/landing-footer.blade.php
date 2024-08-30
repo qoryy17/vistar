@@ -11,7 +11,7 @@
                     <div class="row">
                         <div class="col-lg-4 col-12 mb-0 mb-md-4 pb-0 pb-md-2">
                             <a href="#" class="logo-footer">
-                                <img src="{{ asset('public/' . $web->logo ? $web->logo : '') }}" height="50"
+                                <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}" height="50"
                                     alt="">
                             </a>
                             <p class="mt-4">{{ $web->nama_bisnis }} {{ $web->tagline }}, Ujian Tryout untuk CPNS, PPPK
