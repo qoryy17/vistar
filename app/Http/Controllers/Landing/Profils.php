@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\Password;
 use App\Http\Requests\Customer\FotoRequest;
 use App\Http\Requests\Customer\ProfilRequest;
 use Illuminate\Validation\ValidationException;
@@ -84,49 +85,75 @@ class Profils extends Controller
         }
     }
 
-    public function ubahPassword(Request $request): RedirectResponse
+    public function ubahPassword(Request $request) //: RedirectResponse
     {
         // Autentifikasi user
         $user = Auth::user();
 
-        if ($request->filled('passwordLama')) {
-            $request->validate([
-                'passwordLama' => [
-                    'password',
-                    'string',
-                ],
-                'passwordBaru' => [
-                    'password',
-                    'confirmed',
-                    'string',
-                    'min:8',
-                    'string',
-                    'regex:/[A-Z]/',       // must contain at least one uppercase letter
-                    'regex:/[a-z]/',       // must contain at least one lowercase letter
-                    'regex:/[0-9]/',       // must contain at least one digit
-                    'regex:/[@$!%*?&]/'   // must contain a special character
-                ],
-            ], [
-                'passwordBaru.min' => 'Password harus mengandung 8 karakter.',
-                'passwordBaru.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
-                'passwordBaru.confirmed' => 'Password konfirmasi tidak cocok'
-            ]);
-
-            if (!Hash::check($request->passwordLama, $user->password)) {
-                throw ValidationException::withMessages([
-                    'passwordLama' => 'Password lama tidak cocok.',
-                ]);
-            }
+        if ($user->google_id != null) {
             if ($request->filled('passwordBaru')) {
+                $request->validate([
+                    'passwordBaru' => [
+                        'string',
+                        'min:8',
+                        'regex:/[A-Z]/',       // must contain at least one uppercase letter
+                        'regex:/[a-z]/',       // must contain at least one lowercase letter
+                        'regex:/[0-9]/',       // must contain at least one digit
+                        'regex:/[@$!%*?&]/',   // must contain a special character,
+                        'same:konfirmasiPassword', // mencocokkan dengan konfirmasi password
+                    ],
+                ], [
+                    'passwordBaru.min' => 'Password harus mengandung 8 karakter.',
+                    'passwordBaru.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
+                    'passwordBaru.same' => 'Password konfirmasi tidak cocok'
+                ]);
 
                 $passwordUser = User::findOrFail($user->id);
-                $user->password = Hash::make($request->passwordBaru);
+                $passwordUser->password = Hash::make($request->input('passwordBaru'));
 
                 $passwordUser->save();
                 // // Simpan logs aktivitas pengguna
                 $logs = Auth::user()->name . ' telah memperbarui password waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
                 return redirect()->route('mainweb.profil-saya')->with('profilMessage', 'Password berhasil disimpan !');
+            }
+        } else {
+            if ($request->filled('passwordBaru')) {
+                if ($request->filled('passwordLama')) {
+                    $request->validate([
+                        'passwordLama' => [
+                            'string',
+                        ],
+                        'passwordBaru' => [
+                            'string',
+                            'min:8',
+                            'regex:/[A-Z]/',       // must contain at least one uppercase letter
+                            'regex:/[a-z]/',       // must contain at least one lowercase letter
+                            'regex:/[0-9]/',       // must contain at least one digit
+                            'regex:/[@$!%*?&]/',   // must contain a special character,
+                            'same:konfirmasiPassword', // mencocokkan dengan konfirmasi password
+                        ],
+                    ], [
+                        'passwordBaru.min' => 'Password harus mengandung 8 karakter.',
+                        'passwordBaru.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
+                        'passwordBaru.same' => 'Password konfirmasi tidak cocok'
+                    ]);
+
+                    if (!Hash::check($request->passwordLama, $user->password)) {
+                        throw ValidationException::withMessages([
+                            'passwordLama' => 'Password lama tidak cocok.',
+                        ]);
+                    }
+
+                    $passwordUser = User::findOrFail($user->id);
+                    $passwordUser->password = Hash::make($request->input('passwordBaru'));
+
+                    $passwordUser->save();
+                    // // Simpan logs aktivitas pengguna
+                    $logs = Auth::user()->name . ' telah memperbarui password waktu tercatat :  ' . now();
+                    RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+                    return redirect()->route('mainweb.profil-saya')->with('profilMessage', 'Password berhasil disimpan !');
+                }
             }
         }
         return redirect()->route('mainweb.profil-saya')->with('profilMessage', 'Password tidak diubah !');

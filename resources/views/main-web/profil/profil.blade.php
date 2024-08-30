@@ -32,10 +32,9 @@
                                              <h3 class="title mb-0">
                                                  {{ $customer ? $customer->nama_lengkap : Auth::user()->name }}
                                              </h3>
-                                             <small
-                                                 class="text-muted h6 me-2">({{ $customer ? $customer->pendidikan : '' }})
+                                             <small class="text-muted h6 me-2">{{ $customer ? $customer->pendidikan : '' }}
                                                  {{ $customer ? $customer->jurusan : '' }} - Kode Referral :
-                                                 {{ Auth::user()->kode_referral }}
+                                                 <strong class="text-primary"> {{ Auth::user()->kode_referral }}</strong>
                                              </small>
 
                                              <form action="{{ route('profils.ubah-foto') }}" method="POST"
@@ -44,9 +43,9 @@
                                                  @method('POST')
                                                  <div class="mt-2">
                                                      <input type="file" required class="form-control" name="foto" />
-                                                     <button type="submit" class="btn btn-sm btn-primary mt-2">Ubah
-                                                         Foto</button>
                                                  </div>
+                                                 <button type="submit" class="btn btn-sm btn-primary mt-2">Ubah
+                                                     Foto</button>
                                                  @error('foto')
                                                      <small class="text-danger mt-3">* {{ $message }}</small>
                                                  @enderror
@@ -296,24 +295,43 @@
                                          @csrf
                                          @method('POST')
                                          <div class="row mt-4">
-                                             <div class="col-lg-12">
-                                                 <div class="mb-3">
-                                                     <label class="form-label" for="passwordLama">Password Lama <small
-                                                             class="text-danger">*
-                                                             Kosongkan jika tidak ingin
-                                                             mengganti</small></label>
-                                                     <div class="form-icon position-relative">
-                                                         <i data-feather="key" class="fea icon-sm icons"></i>
-                                                         <input type="password" class="form-control ps-5"
-                                                             placeholder="Password Lama" id="passwordLama"
-                                                             autocomplete="off" name="passwordLama">
+                                             @if (Auth::user()->google_id == null and Auth::user()->password != null)
+                                                 <div class="col-lg-12">
+                                                     <div class="mb-3">
+                                                         <label class="form-label" for="passwordLama">Password Lama <small
+                                                                 class="text-danger">*
+                                                                 Kosongkan jika tidak ingin
+                                                                 mengganti</small></label>
+                                                         <div class="form-icon position-relative">
+                                                             <i data-feather="key" class="fea icon-sm icons"></i>
+                                                             <input type="password" class="form-control ps-5"
+                                                                 placeholder="Password Lama" id="passwordLama"
+                                                                 autocomplete="off" name="passwordLama">
+                                                         </div>
+                                                         @error('passwordLama')
+                                                             <small class="text-danger">* {{ $message }}</small>
+                                                         @enderror
                                                      </div>
-                                                     @error('passwordLama')
-                                                         <small class="text-danger">* {{ $message }}</small>
-                                                     @enderror
-                                                 </div>
-                                             </div><!--end col-->
-
+                                                 </div><!--end col-->
+                                             @elseif(Auth::user()->google_id != null and Auth::user()->password != null)
+                                                 <div class="col-lg-12">
+                                                     <div class="mb-3">
+                                                         <label class="form-label" for="passwordLama">Password Lama <small
+                                                                 class="text-danger">*
+                                                                 Kosongkan jika tidak ingin
+                                                                 mengganti</small></label>
+                                                         <div class="form-icon position-relative">
+                                                             <i data-feather="key" class="fea icon-sm icons"></i>
+                                                             <input type="password" class="form-control ps-5"
+                                                                 placeholder="Password Lama" id="passwordLama"
+                                                                 autocomplete="off" name="passwordLama">
+                                                         </div>
+                                                         @error('passwordLama')
+                                                             <small class="text-danger">* {{ $message }}</small>
+                                                         @enderror
+                                                     </div>
+                                                 </div><!--end col-->
+                                             @endif
                                              <div class="col-lg-12">
                                                  <div class="mb-3">
                                                      <label class="form-label" for="passwordBaru">Password Baru <small
@@ -323,7 +341,7 @@
                                                      <div class="form-icon position-relative">
                                                          <i data-feather="key" class="fea icon-sm icons"></i>
                                                          <input type="password" class="form-control ps-5"
-                                                             placeholder="New password" name="passwordBaru"
+                                                             placeholder="New Password" name="passwordBaru"
                                                              id="passwordBaru">
                                                      </div>
                                                      @error('passwordBaru')

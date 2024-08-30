@@ -54,7 +54,7 @@ class Autentifikasi extends Controller
                 $logs = $user->name . ' telah login aplikasi, waktu tercatat : ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
                 session(['user' => $user]);
-                return redirect()->intended('/main');
+                return redirect()->intended('/main/dashboard');
             }
             // Jika bukan alihkan kehalaman utama landing website
             return redirect()->intended('/');

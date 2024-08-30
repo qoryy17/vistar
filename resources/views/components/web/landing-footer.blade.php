@@ -11,10 +11,11 @@
                     <div class="row">
                         <div class="col-lg-4 col-12 mb-0 mb-md-4 pb-0 pb-md-2">
                             <a href="#" class="logo-footer">
-                                <img src="{{ asset('storage/' . $web->logo ? $web->logo : '') }}" height="50"
+                                <img src="{{ asset('public/' . $web->logo ? $web->logo : '') }}" height="50"
                                     alt="">
                             </a>
-                            <p class="mt-4">Vi Star Indonesia. Center Of Visi, Ujian Tryout untuk CPNS, PPPK dan
+                            <p class="mt-4">{{ $web->nama_bisnis }} {{ $web->tagline }}, Ujian Tryout untuk CPNS, PPPK
+                                dan
                                 Kedinasan Terpercaya Seluruh Indonesia.</p>
                             <ul class="list-unstyled social-icon foot-social-icon mb-0 mt-4">
                                 <li class="list-inline-item mb-0"><a href="{{ $web->facebook }}" target="_blank"

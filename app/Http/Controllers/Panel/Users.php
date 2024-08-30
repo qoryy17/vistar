@@ -74,6 +74,14 @@ class Users extends Controller
                 ],
                 'role' => ['required'],
                 'blokir' => ['required']
+            ], [
+                'namaLengkap.required' => 'Nama lengkap wajib di isi',
+                'email.required' => 'Email wajib di isi',
+                'email.email' => 'Email harus valid',
+                'role' => 'Role wajib di pilih',
+                'blokir' => 'Blokir wajib di pilih',
+                'password.min' => 'Password harus mengandung 8 karakter.',
+                'password.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
             ]);
 
 
@@ -94,12 +102,21 @@ class Users extends Controller
             if ($request->input('password')) {
                 $request->validated();
             } else {
-                $request->validate([
-                    'namaLengkap' => ['required'],
-                    'email' => ['required', 'email'],
-                    'role' => ['required'],
-                    'blokir' => ['required']
-                ]);
+                $request->validate(
+                    [
+                        'namaLengkap' => ['required'],
+                        'email' => ['required', 'email'],
+                        'role' => ['required'],
+                        'blokir' => ['required']
+                    ],
+                    [
+                        'namaLengkap.required' => 'Nama lengkap wajib di isi',
+                        'email.required' => 'Email wajib di isi',
+                        'email.email' => 'Email harus valid',
+                        'role' => 'Role wajib di pilih',
+                        'blokir' => 'Blokir wajib di pilih'
+                    ]
+                );
             }
 
             $user = User::findOrFail($request->input('userID'));

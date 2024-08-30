@@ -83,7 +83,8 @@ return new class extends Migration
             $table->string('faktur_id', 12);
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('produk_tryout_id');
-            $table->uuid('payment_id');
+            $table->uuid('payment_id')->nullable();
+            $table->string('status_order')->nullable();
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('customer')->onDelete('set null')->onUpdate('cascade');

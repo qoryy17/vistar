@@ -10,6 +10,7 @@ use App\Models\KeranjangOrder;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Helpers\BerandaUI;
+use App\Models\OrderTryout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
@@ -66,9 +67,14 @@ class MainWebsite extends Controller
     {
         // Cek apakah sudah pilih produk tryout gratis
         $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Disetujui')->first();
-        if ($cekGratisan->produk_tryout_id != null) {
-            return redirect()->route('site.tryout-gratis');
+        if ($cekGratisan) {
+            if ($cekGratisan->produk_tryout_id != null) {
+                return redirect()->route('site.tryout-gratis');
+            }
+        } else {
+            return redirect()->route('mainweb.index', '#coba-gratis');
         }
+
         $data  = [
             'title' => 'Produk Paket Tryout Gratis',
             'kategoriProduk' => KategoriProduk::all()->where('aktif', 'Y')->where('status', 'Gratis'),
@@ -148,6 +154,13 @@ class MainWebsite extends Controller
 
     public function pesanTryoutBerbayar(Request $request): RedirectResponse
     {
+
+        // Check apakah pernah memesan produk yang sama
+        $tryout = OrderTryout::where('produk_tryout_id', Crypt::decrypt($request->idProdukTryout))->where('customer_id', Auth::user()->customer_id)->first();
+        if ($tryout) {
+            return redirect()->route('mainweb.keranjang')->with('errorMessage', 'Tidak dapat memesan produk yang sama sebelumnya !');
+        }
+
         $keranjangOrder = new KeranjangOrder();
         $keranjangOrder->id = rand(1, 99) . rand(1, 999);
         $keranjangOrder->produk_tryout_id = Crypt::decrypt($request->idProdukTryout);

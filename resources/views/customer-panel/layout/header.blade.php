@@ -3,7 +3,7 @@
 
 <head>
     @php
-        use App\Helpers\PengaturanWeb;
+        use App\Helpers\BerandaUI;
         $web = BerandaUI::web();
     @endphp
     <meta name="csrf-token" content="{{ csrf_token() }}">

@@ -24,6 +24,7 @@ use App\Http\Controllers\Landing\MainWebsite;
 use App\Http\Controllers\Landing\Autentifikasi;
 use App\Http\Middleware\Customer\LoggedCustomer;
 use App\Http\Controllers\Landing\CallbackLanding;
+use App\Http\Controllers\Landing\Midtrans;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 // Routing untuk website utama
@@ -34,6 +35,12 @@ Route::get('/', function () {
 // Routing untuk autentifikasi menggunakan Google OAuth
 Route::get('/auth-google', [GoogleOauth::class, 'redirectToGoogleProvider'])->name('auth.google');
 Route::get('/callback', [GoogleOauth::class, 'handleGoogleCallback'])->name('auth.callback');
+
+Route::controller(Midtrans::class)->group(function () {
+    Route::get('/payment/finish', 'callbackPaymentSuccess')->name('midtrans.finish-payment');
+    Route::post('/handler/callback', 'notificationHandler')->name('midtrans.handler-callback');
+});
+
 
 // Routing untuk autentifikasi manual melalui form
 Route::controller(Autentifikasi::class)->group(function () {
@@ -68,9 +75,6 @@ Route::controller(MainWebsite::class, VerifyCsrfToken::class)->group(function ()
     Route::get('/kebijakan-privasi', 'kebijakanPrivasi')->name('mainweb.kebijakan-privasi');
 });
 
-Route::controller(CallbackLanding::class)->group(function () {
-    Route::get('/midtrans/callback', 'callbackPaymentSuccess')->name('midtrans.callback-pembayaran-berhasil');
-});
 
 // Routing untuk untuk order produk tryout dan pembayaran order tryout
 Route::middleware(LoggedCustomer::class)->group(function () {
@@ -97,7 +101,7 @@ Route::middleware(PanelRouting::class)->group(function () {
 // Routing untuk main panel kendali
 Route::middleware(PanelRouting::class)->group(function () {
     Route::controller(Main::class)->group(function () {
-        Route::get('/main', 'index')->name('main.beranda');
+        Route::get('/main/dashboard', 'index')->name('main.beranda');
         // Route::get('/profil', 'profilPengguna')->name('main.profil');
         Route::get('/profil-admin', 'profilPengguna')->name('main.profil-admin');
         Route::get('/pengaturan', 'pengaturan')->name('main.pengaturan');
@@ -216,7 +220,7 @@ Route::middleware(PanelRouting::class)->group(function () {
 // Route customer main panel
 Route::middleware(PanelRouting::class)->group(function () {
     Route::controller(Site::class)->group(function () {
-        Route::get('/site', 'index')->name('site.main');
+        Route::get('/site/dashboard', 'index')->name('site.main');
         Route::get('/tryout-berbayar', 'tryoutBerbayar')->name('site.tryout-berbayar');
         Route::get('/tryout-gratis', 'tryoutGratis')->name('site.tryout-gratis');
         Route::get('/event-tryout', 'eventTryout')->name('site.event-tryout');

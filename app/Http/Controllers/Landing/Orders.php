@@ -65,6 +65,7 @@ class Orders extends Controller
             ->whereNot('kategori_produk.status', 'Gratis')->first();
 
         $referensiOrderID = $tryout->idProduk;
+        $orderID = Str::uuid();
 
         // Cekk apakah harga ada promo
         if ($tryout->harga_promo != null) {
@@ -75,7 +76,7 @@ class Orders extends Controller
 
         $payload = [
             'transaction_details' => [
-                'order_id' => rand(1, 999),
+                'order_id' => $orderID,
                 'gross_amount' => intval($gross_amount)
             ],
             'item_details' => [
@@ -99,38 +100,28 @@ class Orders extends Controller
         try {
 
             // Buat Order
-            // $sendDataOrder = [
-            //     'keranjang_id' => Crypt::decrypt($request->id),
-            //     'customer_id' => Auth::user()->customer_id,
-            //     'nama' => $customer->nama_lengkap,
-            //     'produk_id' => $referensiOrderID,
-            //     'nominal' => $gross_amount,
-            //     'snap_token' => $snapToken,
-            // ];
-            // $this->simpanOrder($sendDataOrder);
+            $buatOrder = new OrderTryout();
+            $buatOrder->id = $orderID;
+            $buatOrder->faktur_id = 'F' . rand(1, 999);
+            $buatOrder->customer_id = Auth::user()->customer_id;
+            $buatOrder->nama = $customer->nama_lengkap;
+            $buatOrder->produk_tryout_id = $referensiOrderID;
 
-
-            return response()->json([
-                'status'     => 'success',
-                'snap_token' => $snapToken,
-            ]);
-            // if ($buatOrder->save() and $payment->save()) {
-            //     return response()->json([
-            //         'status'     => 'success',
-            //         'snap_token' => $snapToken,
-            //     ]);
-            // } else {
-            //     return response()->json([
-            //         'status'     => 'error',
-            //         'snap_token' => null
-            //     ]);
-            // }
+            if ($buatOrder->save()) {
+                return response()->json([
+                    'status'     => 'success',
+                    'snap_token' => $snapToken,
+                ]);
+            } else {
+                return response()->json([
+                    'status'     => 'error',
+                    'snap_token' => null
+                ]);
+            }
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
-
-    public function callback(Request $request) {}
 
     protected function simpanOrder($sendDataOrder)
     {

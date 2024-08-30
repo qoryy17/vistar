@@ -47,7 +47,6 @@ class GoogleOauth extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'email_verified_at' => now(),
-                'password' => Hash::make(Str::random(5)),
                 'remember_token' => Str::random(10),
                 'role' => 'Customer',
                 'google_id' => $user->id,

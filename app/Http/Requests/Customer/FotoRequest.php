@@ -22,7 +22,7 @@ class FotoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'foto' => ['required', 'image', 'mimes:png,jpg', 'max:2048']
+            'foto' => ['required', 'image', 'mimes:png,jpg,jpeg', 'max:2048']
         ];
     }
 
@@ -30,7 +30,7 @@ class FotoRequest extends FormRequest
     {
         return [
             'foto.required' => 'Foto tidak boleh kosong',
-            'foto.mimes' => 'Foto hanya boleh bertipe png/jpg',
+            'foto.mimes' => 'Foto hanya boleh bertipe png/jpg/jpeg',
             'foto.max' => 'Ukuran file hanya boleh maksimal 2MB'
         ];
     }
