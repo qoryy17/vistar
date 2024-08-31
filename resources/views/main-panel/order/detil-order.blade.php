@@ -1,5 +1,5 @@
 @extends('main-panel.layout.main')
-@section('title', 'Vi Star Indonesia | ' . $page_title)
+@section('title', $page_title)
 @section('content')
     <div class="main-content pt-0 hor-content">
 
@@ -39,7 +39,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Order ID</td>
+                                            <td width="500px">Order ID</td>
                                             <td>{{ $detilOrder->id }}</td>
                                         </tr>
                                         <tr>
@@ -68,11 +68,13 @@
                                         </tr>
                                         <tr>
                                             <td>Status</td>
-                                            <td>{{ $detilOrder->status }}</td>
+                                            <td>{{ $detilOrder->status_transaksi }}</td>
                                         </tr>
                                         <tr>
-                                            <td>SNAP Token MidTrans</td>
-                                            <td>{{ $detilOrder->snap_token }}</td>
+                                            <td>JSON</td>
+                                            <td>
+                                                {{ $detilOrder->metadata }}
+                                            </td>
                                         </tr>
                                     </table>
                                 </div>

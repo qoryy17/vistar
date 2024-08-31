@@ -77,7 +77,8 @@
                      <td>
                          Nama Lengkap : <strong>{{ $row->nama }}</strong><br>
                          Produk Tryout : <strong>{{ $row->nama_tryout }}</strong> <br>
-                         Harga : <strong>{{ Number::currency($row->nominal, in: 'IDR') }}</strong>
+                         Harga : <strong>{{ Number::currency($row->nominal, in: 'IDR') }}</strong> <br>
+                         Status <strong>{{ $row->status_transaksi }}</strong>
                      </td>
                      <td>{{ $row->created_at }}</td>
                  </tr>

@@ -1,5 +1,5 @@
 @extends('main-panel.layout.main')
-@section('title', 'Vi Star Indonesia | ' . $page_title)
+@section('title', $page_title)
 @section('content')
     <div class="main-content pt-0 hor-content">
 

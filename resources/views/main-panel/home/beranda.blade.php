@@ -1,5 +1,5 @@
 @extends('main-panel.layout.main')
-@section('title', 'Vi Star | Panel Utama')
+@section('title', 'Vistar Indonesia | Panel Utama')
 @section('content')
     <div class="main-content pt-0 hor-content">
 

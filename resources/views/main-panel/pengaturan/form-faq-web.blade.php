@@ -1,5 +1,5 @@
 @extends('main-panel.layout.main')
-@section('title', 'Vi Star Indonesia | ' . $form_title)
+@section('title', $form_title)
 @section('content')
     <div class="main-content pt-0 hor-content">
 
