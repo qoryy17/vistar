@@ -258,9 +258,9 @@
                                     {{-- <li class="nav-sub-item">
                                     <a class="nav-sub-link" href="{{ route('main.banner') }}">Banner</a>
                                 </li> --}}
-                                    <li class="nav-sub-item">
+                                    {{-- <li class="nav-sub-item">
                                         <a class="nav-sub-link" href="{{ route('main.faq') }}">FAQ</a>
-                                    </li>
+                                    </li> --}}
                                     <li class="nav-sub-item">
                                         <a class="nav-sub-link" href="{{ route('main.logs') }}">Logs</a>
                                     </li>
