@@ -14,7 +14,7 @@
     <meta name="description" content="{{ $web->meta_description ? $web->meta_description : '' }}">
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('storage/' . $web->logo ? $web->logo : '') }}" type="image/png" />
+    <link rel="icon" href="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}" type="image/png" />
 
     <!-- Title -->
     <title>@yield('title')</title>
