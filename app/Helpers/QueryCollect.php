@@ -18,8 +18,8 @@ class QueryCollect
             'order_tryout.*',
             'payment.ref_order_id',
             'payment.nominal',
-            'payment.status',
-            'payment.snap_token',
+            'payment.status_transaksi',
+            'payment.metadata',
             'produk_tryout.nama_tryout'
         )->leftJoin('payment', 'order_tryout.payment_id', '=', 'payment.id')
             ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')

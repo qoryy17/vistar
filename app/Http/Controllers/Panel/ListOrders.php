@@ -10,9 +10,6 @@ use Illuminate\Http\Request;
 use App\Helpers\QueryCollect;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\RedirectResponse;
 use PDF;
 
 class ListOrders extends Controller
@@ -54,8 +51,8 @@ class ListOrders extends Controller
             'order_tryout.*',
             'payment.ref_order_id',
             'payment.nominal',
-            'payment.status',
-            'payment.snap_token',
+            'payment.status_transaksi',
+            'payment.metadata',
             'produk_tryout.nama_tryout'
         )->leftJoin('payment', 'order_tryout.payment_id', '=', 'payment.id')
             ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')

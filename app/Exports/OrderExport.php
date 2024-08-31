@@ -34,7 +34,7 @@ class OrderExport implements FromQuery, WithHeadings
             'payment.ref_order_id',
             'order_tryout.nama',
             'payment.nominal',
-            'payment.snap_token',
+            'payment.status_transaksi',
             'order_tryout.created_at',
         )->leftJoin('payment', 'order_tryout.payment_id', '=', 'payment.id')
             ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
@@ -53,7 +53,7 @@ class OrderExport implements FromQuery, WithHeadings
             'Ref Order ID',
             'Nama',
             'Nominal',
-            'Snap Token',
+            'Status',
             'Created At',
         ];
     }
