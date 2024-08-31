@@ -93,7 +93,11 @@ class Orders extends Controller
                 'email' => Auth::user()->email,
                 'phone' => $customer->kontak,
                 'billing_address' => $customer->alamat
-            ]
+            ],
+            'callbacks' => [
+                'finish' => 'https://vistar.test/payment/finish',
+                'notification' => 'https://vistar.test/payment/finish',
+            ],
         ];
 
         $snapToken = Snap::getSnapToken($payload);
@@ -117,7 +121,7 @@ class Orders extends Controller
                     $referral->save();
                 }
                 // Hapus Keranjang
-                $keranjang = KeranjangOrder::find($request->id);
+                $keranjang = KeranjangOrder::find(Crypt::decrypt($request->id));
                 if ($keranjang) {
                     $keranjang->delete();
                 }

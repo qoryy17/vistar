@@ -13,13 +13,13 @@ class EmailFaktur extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $order;
+    public $orderDetail;
     /**
      * Create a new message instance.
      */
-    public function __construct($order)
+    public function __construct($orderDetail)
     {
-        $this->order = $order;
+        $this->orderDetail = $orderDetail;
     }
 
     /**
@@ -38,7 +38,7 @@ class EmailFaktur extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'main-web.produk.inovice-email',
+            view: 'main-web.produk.invoice-email',
         );
     }
 

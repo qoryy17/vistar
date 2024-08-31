@@ -10,16 +10,106 @@ use App\Models\OrderTryout;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendInoviceJob;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class Midtrans extends Controller
 {
-    public function callbackTransaction()
+    public function callbackTransaction(Request $request)
     {
-        // Kirim email invoice
-        // Mail::to(Auth::user()->email)->send(new EmailFaktur($order));
-        return view('main-web.callback.callback-transaction');
+        $notification = $request->all();
+        $orderId = $notification['order_id'];
+        $transactionStatus = $notification['transaction_status'];
+        $fraudStatus = $notification['fraud_status'];
+
+        // Temukan order berdasarkan order_id
+        $payID = Str::uuid();
+        $order = OrderTryout::where('id', $orderId)->first();
+        $order->payment_id = $payID;
+
+        // Konversi ke integer
+        $amount = (int) $notification['gross_amount'];
+
+        $payment = new Payment();
+        $payment->id = $payID;
+        $payment->ref_order_id = $orderId;
+        $payment->transaksi_id = $notification['transaction_id'];
+        $payment->nominal = $amount;
+        $payment->metode = $notification['payment_type'];
+
+        $orderEmail = [
+            'customer_id' => Auth::user()->customer_id,
+            'email' => Auth::user()->email,
+            'order_id' => $orderId
+        ];
+
+        if ($order) {
+            if ($transactionStatus == 'capture') {
+                if ($fraudStatus == 'accept') {
+                    // Pembayaran berhasil
+                    $order->status_order = 'paid';
+                    $title = 'Pembayaran Berhasil';
+                    $message = 'Terimakasih telah melakukan pembayaran, kini anda dapat menikmati ujian Tryout Berbayar. Silahkan klik tombol dibawah ini untuk melanjutkan';
+                    $payment->status_transaksi = $transactionStatus;
+                    $payment->status_fraud = $fraudStatus;
+                    $redirectWeb = 'site.tryout-berbayar';
+
+                    // Job Send Email Invoice
+                    SendInoviceJob::dispatch($orderEmail);
+                } else if ($fraudStatus == 'deny') {
+                    // Pembayaran ditolak
+                    $order->status_order = 'failed';
+                    $title = 'Pembayaran Ditolak';
+                    $message = 'Pembayaran anda ditolak, silahkan hubungi kami lebih lanjut';
+                    $payment->status_transaksi = $transactionStatus;
+                    $payment->status_fraud = $fraudStatus;
+                    $redirectWeb = 'mainweb.index';
+                }
+            } else if ($transactionStatus == 'settlement') {
+                // Pembayaran berhasil dan settled
+                $order->status_order = 'paid';
+                $title = 'Pembayaran Berhasil';
+                $message = 'Terimakasih telah melakukan pembayaran, kini anda dapat menikmati ujian Tryout Berbayar. Silahkan klik tombol dibawah ini untuk melanjutkan';
+                $payment->status_transaksi = $transactionStatus;
+                $payment->status_fraud = $fraudStatus;
+                $redirectWeb = 'site.tryout-berbayar';
+                // Job Send Email Invoice
+                SendInoviceJob::dispatch($orderEmail);
+            } else if ($transactionStatus == 'cancel' || $transactionStatus == 'deny' || $transactionStatus == 'expire') {
+                // Pembayaran dibatalkan, ditolak, atau expired
+                $order->status_order = 'failed';
+                $title = 'Pembayaran Gagal';
+                $message = 'Pembayaran gagal, silahkan hubungi kami lebih lanjut';
+                $payment->status_transaksi = $transactionStatus;
+                $payment->status_fraud = $fraudStatus;
+                $redirectWeb = 'mainweb.index';
+            } else if ($transactionStatus == 'pending') {
+                // Pembayaran masih menunggu
+                $order->status_order = 'pending';
+                $title = 'Pembayaran Pending';
+                $message = 'Pembayaran pending, silahkan hubungi kami lebih lanjut';
+                $payment->status_transaksi = $transactionStatus;
+                $payment->status_fraud = $fraudStatus;
+                $redirectWeb = 'mainweb.index';
+            }
+
+            // Simpan perubahan status order dan pembayaran
+            $payment->waktu_transaksi = $notification['transaction_time'];
+            $payment->metadata = json_encode($notification);
+            $payment->save();
+            $order->save();
+            $data  = [
+                'title' => $title,
+                'message' => $message,
+                'redirect' => $redirectWeb
+            ];
+            return view('main-web.callback.callback-response', $data);
+        } else {
+            return redirect()->route('mainweb.keranjang')->with('error', 'Pembayaran gagal !');
+        }
+
+        return $request->all();
     }
 
     public function notificationHandler(Request $request)
@@ -63,6 +153,8 @@ class Midtrans extends Controller
                     $payment->status_transaksi = $transactionStatus;
                     $payment->status_fraud = $fraudStatus;
                     $redirectWeb = 'site.tryout-berbayar';
+                    // Kirim email invoice
+                    Mail::to(Auth::user()->email)->send(new EmailFaktur($order));
                 } else if ($fraudStatus == 'deny') {
                     // Pembayaran ditolak
                     $order->status_order = 'failed';
@@ -80,6 +172,8 @@ class Midtrans extends Controller
                 $payment->status_transaksi = $transactionStatus;
                 $payment->status_fraud = $fraudStatus;
                 $redirectWeb = 'mainweb.index';
+                // Kirim email invoice
+                Mail::to(Auth::user()->email)->send(new EmailFaktur($order));
             } else if ($transactionStatus == 'cancel' || $transactionStatus == 'deny' || $transactionStatus == 'expire') {
                 // Pembayaran dibatalkan, ditolak, atau expired
                 $order->status_order = 'failed';
@@ -99,17 +193,12 @@ class Midtrans extends Controller
             }
 
             // Simpan perubahan status order dan pembayaran
-            $order->save();
             $payment->waktu_transaksi = $notification['transaction_time'];
             $payment->metadata = json_encode($notification);
             $payment->save();
+            $order->save();
 
-            $data  = [
-                'title' => $title,
-                'message' => $message,
-                'redirect' => $redirectWeb
-            ];
-            return view('main-web.callback.callback-response', $data);
+            return response()->json(['message' => 'success']);
         } else {
             return response()->json(['message' => 'Order not found'], 404);
         }
