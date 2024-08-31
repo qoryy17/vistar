@@ -75,6 +75,7 @@ Route::controller(MainWebsite::class, VerifyCsrfToken::class)->group(function ()
 
     Route::get('/daftar-tryout-gratis', 'daftarTryoutGratis')->name('mainweb.daftar-tryout-gratis')->middleware(ProdukAuth::class);
     Route::get('/kebijakan-privasi', 'kebijakanPrivasi')->name('mainweb.kebijakan-privasi');
+    Route::get('/tentang', 'tentang')->name('mainweb.tentang');
     Route::get('/kontak', 'kontak')->name('mainweb.kontak');
 });
 

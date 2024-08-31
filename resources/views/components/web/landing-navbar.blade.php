@@ -61,7 +61,7 @@
             <ul class="navigation-menu nav-right">
                 <li><a href="{{ route('mainweb.index') }}" class="sub-menu-item">Home</a></li>
                 <li><a href="{{ route('mainweb.produk-berbayar') }}" class="sub-menu-item">Produk</a></li>
-                <li><a href="#" class="sub-menu-item">Tentang</a></li>
+                <li><a href="{{ route('mainweb.tentang') }}" class="sub-menu-item">Tentang</a></li>
                 <li><a href="{{ route('mainweb.kontak') }}" class="sub-menu-item">Kontak</a></li>
                 @if (Auth::check())
                     @if (Auth::user()->role == 'Customer')

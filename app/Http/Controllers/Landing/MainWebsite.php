@@ -230,6 +230,15 @@ class MainWebsite extends Controller
         return view('main-web.tentang.kebijakan-privasi', $data);
     }
 
+    public function tentang()
+    {
+        $data  = [
+            'title' => 'Tentang Vistar Indonesia',
+            'web' => BerandaUI::web()
+        ];
+        return view('main-web.tentang.tentang', $data);
+    }
+
     public function kontak()
     {
         $data  = [
