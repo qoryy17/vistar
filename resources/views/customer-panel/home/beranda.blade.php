@@ -144,7 +144,6 @@
                                 </div>
                             </div>
                         </a>
-
                         <a href="{{ route('mainweb.index') }}">
                             <div class="card custom-card">
                                 <div class="card-body">

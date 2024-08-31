@@ -50,19 +50,19 @@
                                 </tr>
                                 <tr>
                                     <td style="min-width: 130px; padding-bottom: 8px;">Faktur ID. :</td>
-                                    <td style="color: #8492a6;">{{ $order->faktur_id }}</td>
+                                    <td style="color: #8492a6;">{{ $orderDetail->faktur_id }}</td>
                                 </tr>
                                 <tr>
                                     <td style="min-width: 130px; padding-bottom: 8px;">Order ID. :</td>
-                                    <td style="color: #8492a6;">{{ $order->id }}</td>
+                                    <td style="color: #8492a6;">{{ $orderDetail->id }}</td>
                                 </tr>
                                 <tr>
                                     <td style="min-width: 130px; padding-bottom: 8px;">Nama :</td>
-                                    <td style="color: #8492a6;">{{ $order->nama }}</td>
+                                    <td style="color: #8492a6;">{{ $orderDetail->nama }}</td>
                                 </tr>
                                 <tr>
                                     <td style="min-width: 130px; padding-bottom: 8px;">Waktu :</td>
-                                    <td style="color: #8492a6;">{{ $order->created_at }}</td>
+                                    <td style="color: #8492a6;">{{ $orderDetail->created_at }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -87,15 +87,15 @@
                                 <tbody>
                                     <tr>
                                         <td style="text-align: left; padding: 12px; border-top: 1px solid #dee2e6;">
-                                            {{ $order->nama_tryout }}
+                                            {{ $orderDetail->nama_tryout }}
                                         </td>
                                         <td style="text-align: end; padding: 12px; border-top: 1px solid #dee2e6;">
-                                            {{ Number::currency($order->nominal, in: 'IDR') }}
+                                            {{ Number::currency($orderDetail->nominal, in: 'IDR') }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="text-align:center;">
-                                            Keterangan : {{ $order->keterangan }}
+                                            Keterangan : {{ $orderDetail->keterangan }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -106,7 +106,7 @@
                 <tr>
                     <td style="text-align: center;">
                         <small>
-                            Vi Star Indonesia. Center Of Visi <br>
+                            {{ $web->nama_bisnis }} {{ $web->tagline }}<br>
                             Ujian Tryout untuk CPNS, PPPK dan Kedinasan Terpercaya Seluruh Indonesia.
                         </small>
                     </td>
@@ -116,10 +116,10 @@
                         <table width="100%">
                             <tr style="font-size: 10px;">
                                 <td style="text-align: center">Follow Instagram Kami <a
-                                        href="{{ $web->instagram }}">{{ $web->nama_bisnis }}</a>
-                                </td>
-                                <td style="text-align: center">Follow Instagram Kami <a
                                         href="{{ $web->facebook }}">{{ $web->nama_bisnis }}</a>
+                                </td>
+                                <td style="text-align: center">Email Kami <a
+                                        href="{{ $web->email }}">{{ $web->email }}</a>
                                 </td>
                             </tr>
                         </table>

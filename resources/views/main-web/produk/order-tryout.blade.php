@@ -164,13 +164,17 @@
                               /* You may add your own js here, this is just example */
                               //   document.getElementById('result-json').innerHTML += JSON.stringify(
                               //       result, null, 2);
-                              window.location.href = "{{ route('midtrans.finish-payment') }}";
+                              // Convert result JSON to a query string
+                              const params = new URLSearchParams(result).toString();
+                              window.location.href = "{{ route('midtrans.finish-payment') }}?" +
+                                  params;
                           },
                           // Optional
                           onPending: function(result) {
                               /* You may add your own js here, this is just example */
                               //   document.getElementById('result-json').innerHTML += JSON.stringify(
                               //       result, null, 2);
+                              window.location.href = "{{ route('mainweb.keranjang') }}";
 
                           },
                           // Optional
@@ -178,6 +182,7 @@
                               /* You may add your own js here, this is just example */
                               //   document.getElementById('result-json').innerHTML += JSON.stringify(
                               //       result, null, 2);
+                              window.location.href = "{{ route('mainweb.keranjang') }}";
                           }
 
                       });
