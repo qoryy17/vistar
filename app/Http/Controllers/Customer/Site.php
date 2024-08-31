@@ -48,10 +48,12 @@ class Site extends Controller
                 'ujian.sisa_waktu',
                 'ujian.status_ujian',
                 'order_tryout.customer_id',
-                'order_tryout.produk_tryout_id'
+                'order_tryout.produk_tryout_id',
+                'order_tryout.status_order'
             )->leftJoin('ujian', 'hasil_ujian.ujian_id', '=', 'ujian.id')
             ->leftJoin('order_tryout', 'ujian.order_tryout_id', '=', 'order_tryout.id')
             ->where('ujian.status_ujian', 'Selesai')
+            ->where('order_tryout.status_order', 'paid')
             ->where('order_tryout.customer_id', Auth::user()->customer_id);
 
         $data = [

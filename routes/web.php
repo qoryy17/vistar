@@ -78,7 +78,6 @@ Route::controller(MainWebsite::class, VerifyCsrfToken::class)->group(function ()
     Route::get('/kontak', 'kontak')->name('mainweb.kontak');
 });
 
-
 // Routing untuk untuk order produk tryout dan pembayaran order tryout
 Route::middleware(LoggedCustomer::class)->group(function () {
     Route::controller(Orders::class)->group(function () {
