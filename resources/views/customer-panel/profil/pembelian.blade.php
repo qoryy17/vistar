@@ -72,12 +72,39 @@
                 <!-- Row -->
                 <div class="row sidemenu-height">
                     @foreach ($search as $pembelian)
+                        @php
+                            $statusCheck = null;
+                            if (array_key_exists($pembelian->status_order, $transactionStatusList)) {
+                                $statusCheck = $transactionStatusList[$pembelian->status_order];
+                            }
+                        @endphp
                         <div class="col-lg-4">
                             {{-- Informasi Paket Tryout --}}
                             <div class="card custom-card">
                                 <div class="card-body">
                                     <div>
-                                        <h6>Informasi Paket</h6>
+                                        <h6>
+                                            Informasi Paket
+                                        </h6>
+
+                                        {{--  Show Transaction Status  --}}
+                                        @if ($statusCheck)
+                                            <span class="badge"
+                                                style="background: {{ $statusCheck['bg-color'] }}; color: {{ $statusCheck['color'] }}">{{ $statusCheck['title'] }}</span>
+                                        @endif
+
+                                        {{--  Note: This is shouldn't be here
+                                            It should be another page to show transaction status.
+                                        --}}
+                                        @if ($pembelian->status_order === 'pending' && $pembelian->snap_token)
+                                            {{--  Please change the design to fit the template  --}}
+                                            <button onclick="showSnap('{{ $pembelian->snap_token }}')" id="pay-button"
+                                                class="btn btn-pills btn-soft-primary">
+                                                Bayar Sekarang <i class="mdi mdi-arrow-right"></i>
+                                            </button>
+                                        @endif
+
+                                        {{--  Show Transaction Status  --}}
                                         <h6 class="mb-2 text-primary">
                                             <span class="fs-30 me-2">{{ $pembelian->nama_tryout }}</span><br>
                                             <span class="badge bg-success">{{ $pembelian->keterangan }}</span>
@@ -96,4 +123,25 @@
             </div>
         </div>
     </div>
+
+    <script src="{{ url('resources/web/dist/assets/js/jquery-3.7.1.min.js') }}"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+    <script type="text/javascript">
+        function showSnap(snap_token) {
+            snap.pay(snap_token, {
+                onSuccess: function(result) {
+                    window.location.href = "{{ route('site.pembelian') }}";
+                },
+                onPending: function(result) {
+                    window.location.href = "{{ route('site.pembelian') }}";
+
+                },
+                onError: function(result) {
+                    window.location.href = "{{ route('site.pembelian') }}";
+                }
+
+            });
+        };
+    </script>
 @endsection
