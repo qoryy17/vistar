@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payment extends Model
 {
@@ -17,7 +17,12 @@ class Payment extends Model
 
     protected $fillable = [
         'id',
+        'customer_id',
         'ref_order_id',
+        'snap_token',
+        'status_transaksi',
+
+
         'status_order',
         'status_pesan',
         'nominal',
@@ -25,10 +30,32 @@ class Payment extends Model
         'jenis_pembayaran',
         'biaya_admin',
         'status',
-        'snap_token'
     ];
 
-    // public $incrementing = false;
+    public $incrementing = false;
+
+    public static $transactionStatus = [
+        'pending' => [
+            'title' => 'Menunggu Pembayaran',
+            'color' => '#ffffff',
+            'bg-color' => '#d7a701'
+        ],
+        'paid' => [
+            'title' => 'Sudah Dibayar',
+            'color' => '#ffffff',
+            'bg-color' => '#27a168'
+        ],
+        'failed' => [
+            'title' => 'Pembayaran Gagal',
+            'color' => '#ffffff',
+            'bg-color' => '#27a168'
+        ],
+        'expired' => [
+            'title' => 'Pembayaran Kadaluarsa',
+            'color' => '#ffffff',
+            'bg-color' => '#27a168'
+        ],
+    ];
 
     public $timestamps = true;
 

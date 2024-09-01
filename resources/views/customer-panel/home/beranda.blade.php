@@ -55,19 +55,24 @@
                                                 @endforeach
                                             </ol>
                                             <div class="carousel-inner bg-dark">
-                                                <div class="carousel-item active">
-                                                    <img alt="img" class="d-block w-100 op-3"
-                                                        src="{{ url('resources/bg-img.jpg') }}">
-                                                    <div class="carousel-caption d-none d-md-block">
-                                                        <h5>{{ $testimoni->first()->nama_lengkap }}</h5>
-                                                        <p class="tx-14">
-                                                            {{ $testimoni->first()->testimoni }}
-                                                        </p>
-                                                        @for ($i = 0; $i < $testimoni->first()->rating; $i++)
-                                                            <i class="fa fa-star" style="color: rgb(255, 207, 16);"></i>
-                                                        @endfor
+                                                @php
+                                                    $latestTestimoni = $testimoni->first();
+                                                @endphp
+                                                @if ($latestTestimoni)
+                                                    <div class="carousel-item active">
+                                                        <img alt="img" class="d-block w-100 op-3"
+                                                            src="{{ url('resources/bg-img.jpg') }}">
+                                                        <div class="carousel-caption d-none d-md-block">
+                                                            <h5>{{ $latestTestimoni->nama_lengkap }}</h5>
+                                                            <p class="tx-14">
+                                                                {{ $latestTestimoni->testimoni }}
+                                                            </p>
+                                                            @for ($i = 0; $i < $latestTestimoni->rating; $i++)
+                                                                <i class="fa fa-star" style="color: rgb(255, 207, 16);"></i>
+                                                            @endfor
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                @endif
                                                 @foreach ($testimoni->get() as $slideTestimoni)
                                                     <div class="carousel-item">
                                                         <img alt="img" class="d-block w-100 op-3"

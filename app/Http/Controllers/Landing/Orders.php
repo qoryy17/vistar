@@ -2,26 +2,25 @@
 
 namespace App\Http\Controllers\Landing;
 
-use Midtrans\Snap;
-use App\Models\User;
-use Midtrans\Config;
-use App\Models\Payment;
-use App\Models\Customer;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Customer\TryoutGratisRequest;
 use App\Mail\EmailFaktur;
+use App\Models\Customer;
+use App\Models\KeranjangOrder;
 use App\Models\LimitTryout;
 use App\Models\OrderTryout;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Models\KeranjangOrder;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\Customer\TryoutGratisRequest;
+use App\Models\Payment;
 use App\Models\ReferralCustomer;
+use App\Models\User;
+use App\Services\Payment\MidtransService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 
 class Orders extends Controller
 {
@@ -49,13 +48,6 @@ class Orders extends Controller
         // Cari data customer
         $customer = Customer::findOrFail(Auth::user()->customer_id);
 
-        // Setup konfigurasi Midtrans
-        Config::$serverKey = config('services.midtrans.server_key');
-        Config::$clientKey = config('services.midtrans.client_key');
-        Config::$isProduction = config('services.midtrans.is_production');
-        Config::$isSanitized = config('services.midtrans.is_sanitized');
-        Config::$is3ds = config('services.midtrans.is_3ds');
-
         // Cari data produk tryout
         $tryout = DB::table('keranjang_order')->select('keranjang_order.*', 'produk_tryout.id as idProduk', 'produk_tryout.nama_tryout', 'produk_tryout.keterangan', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status')
             ->leftJoin('produk_tryout', 'keranjang_order.produk_tryout_id', '=', 'produk_tryout.id')
@@ -68,74 +60,81 @@ class Orders extends Controller
         $referensiOrderID = $tryout->idProduk;
         $orderID = Str::uuid();
 
+        $grossAmount = $tryout->harga;
         // Cekk apakah harga ada promo
         if ($tryout->harga_promo != null) {
-            $gross_amount = $tryout->harga_promo;
-        } else {
-            $gross_amount = $tryout->harga;
+            $grossAmount = $tryout->harga_promo;
         }
+        $grossAmount = intval($grossAmount);
 
-        $payload = [
-            'transaction_details' => [
-                'order_id' => $orderID,
-                'gross_amount' => intval($gross_amount)
-            ],
-            'item_details' => [
+        $midtransService = new MidtransService();
+        $snapToken = $midtransService->createOrder([
+            'orderID' => $orderID,
+            'grossAmount' => $grossAmount,
+            'customerFullName' => $customer->nama_lengkap,
+            'customerEmail' => Auth::user()->email,
+            'customerPhone' => $customer->kontak,
+            'customerBillingAddress' => $customer->alamat,
+            'itemDetails' => [
                 [
                     'id' => $referensiOrderID,
-                    'price' => intval($gross_amount),
+                    'price' => intval($grossAmount),
                     'quantity' => 1,
-                    'name' => 'Pembayaran : ' . $tryout->nama_tryout
+                    'name' => 'Pembayaran : ' . $tryout->nama_tryout,
                 ],
             ],
-            'customer_details' => [
-                'first_name' => $customer->nama_lengkap,
-                'email' => Auth::user()->email,
-                'phone' => $customer->kontak,
-                'billing_address' => $customer->alamat
-            ],
-            'callbacks' => [
-                'finish' => 'https://vistar.test/payment/finish',
-                'notification' => 'https://vistar.test/payment/finish',
-            ],
-        ];
-
-        $snapToken = Snap::getSnapToken($payload);
+        ]);
 
         try {
-            // Buat Order
+            $status = 'pending';
+
+            // Add Order Data
             $buatOrder = new OrderTryout();
             $buatOrder->id = $orderID;
             $buatOrder->faktur_id = 'F' . rand(1, 999);
             $buatOrder->customer_id = Auth::user()->customer_id;
             $buatOrder->nama = $customer->nama_lengkap;
             $buatOrder->produk_tryout_id = $referensiOrderID;
+            $buatOrder->status_order = $status;
 
-            if ($buatOrder->save()) {
-                // Catata referral jika ada
-                if ($request->referralCode) {
-                    $referral = new ReferralCustomer();
-                    $referral->id = rand(1, 999) . rand(1, 99);
-                    $referral->kode_referral = $request->referralCode;
-                    $referral->produk_tryout_id = $referensiOrderID;
-                    $referral->save();
-                }
-                // Hapus Keranjang
-                $keranjang = KeranjangOrder::find(Crypt::decrypt($request->id));
-                if ($keranjang) {
-                    $keranjang->delete();
-                }
-
+            if (!$buatOrder->save()) {
                 return response()->json([
-                    'status'     => 'success',
-                    'snap_token' => $snapToken,
-                ]);
-            } else {
-                return response()->json([
-                    'status'     => 'error',
-                    'snap_token' => null
+                    'status' => 'error',
+                    'snap_token' => null,
                 ]);
             }
+
+            // Add Payment Data
+            Payment::create([
+                'id' => Str::uuid(),
+                'customer_id' => Auth::user()->customer_id,
+                'ref_order_id' => $orderID,
+                'snap_token' => $snapToken,
+                'transaksi_id' => null,
+                'nominal' => $grossAmount,
+                'status_transaksi' => $status,
+            ]);
+
+            // Catata referral jika ada
+            if ($request->referralCode) {
+                $referral = new ReferralCustomer();
+                $referral->id = rand(1, 999) . rand(1, 99);
+                $referral->kode_referral = $request->referralCode;
+                $referral->produk_tryout_id = $referensiOrderID;
+                $referral->save();
+            }
+
+            // Hapus Keranjang
+            $keranjang = KeranjangOrder::find(Crypt::decrypt($request->id));
+            if ($keranjang) {
+                $keranjang->delete();
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'snap_token' => $snapToken,
+            ]);
+
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -167,6 +166,7 @@ class Orders extends Controller
 
         $payment = new Payment();
         $payment->id = $payID;
+        $payment->customer_id = $sendDataOrder['customer_id'];
         $payment->ref_order_id = $sendDataOrder['produk_id'];
         $payment->nominal = $sendDataOrder['nominal'];
         $payment->status = 'success';
