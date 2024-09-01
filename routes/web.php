@@ -154,12 +154,12 @@ Route::middleware(PanelRouting::class)->group(function () {
 Route::middleware(PanelRouting::class)->group(function () {
     Route::controller(Tryouts::class)->group(function () {
         Route::get('/produk-tryout', 'index')->name('tryouts.index');
+        Route::get('/detail-produk/{id}', 'detailProduk')->name('tryouts.detail-produk');
         Route::get('/form-produk-tryout/{param}/{id}', 'formProdukTryout')->name('tryouts.form');
 
         Route::post('/simpan-produk-tryout', 'simpanProdukTryout')->name('tryouts.simpan');
         Route::delete('/hapus-produk-tryout', 'hapusProdukTryout')->name('tryouts.hapus');
         Route::post('/duplikat-produk-tryout', 'duplikatProdukTryout')->name('tryouts.duplikat');
-
 
         Route::get('/soal-tryout/{id}', 'soalTryout')->name('tryouts.soal');
         Route::get('/form-soal-tryout/{param}/{id}/{soal}', 'formSoalTryout')->name('tryouts.form-soal');

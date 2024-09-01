@@ -84,12 +84,23 @@
                                                             title="Soal" class="btn btn-default btn-sm btn-web">
                                                             <i class="fa fa-layer-group"></i>
                                                         </a>
-                                                        <button title="Duplikasi" class="btn btn-dark btn-sm"
-                                                            onclick="document.getElementById('duplikasi-form{{ $no }}').submit()">
+                                                        <button title="Duplikat" class="btn btn-dark btn-sm"
+                                                            onclick='swal({
+                                                                        title: "Duplikat",
+                                                                        text: "Apa anda ingin menduplikat produk tryout ?",
+                                                                        type: "info",
+                                                                        showCancelButton: true,
+                                                                        closeOnConfirm: false,
+                                                                        showLoaderOnConfirm: true }, function () 
+                                                                        { 
+                                                                        setTimeout(function(){  
+                                                                           document.getElementById("duplikasi-form{{ $no }}").submit();
+                                                                        }, 2000); });'>
                                                             <i class="fa fa-copy"></i>
                                                         </button>
 
-                                                        <a href="#" title="Detil" class="btn btn-success btn-sm">
+                                                        <a href="{{ route('tryouts.detail-produk', ['id' => Crypt::encrypt($row->id)]) }}"
+                                                            title="Detil" class="btn btn-success btn-sm">
                                                             <i class="fa fa-search"></i>
                                                         </a>
                                                         <a href="{{ route('tryouts.form', ['param' => 'update', 'id' => Crypt::encrypt($row->id)]) }}"

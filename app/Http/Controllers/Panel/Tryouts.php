@@ -226,6 +226,27 @@ class Tryouts extends Controller
         return Redirect::route('tryouts.index')->with('error', 'Produk tryout gagal dihapus !');
     }
 
+    public function detailProduk($id = null)
+    {
+        $tryout = ProdukTryout::findOrFail(Crypt::decrypt($id));
+        $pengaturan = PengaturanTryout::findOrFail($tryout->pengaturan_tryout_id);
+        $kategori = KategoriProduk::findOrFail($tryout->kategori_produk_id);
+        $klasifikasiSoal = KlasifikasiSoal::all();
+
+        $data = [
+            'page_title' => 'Detail Produk Tryout',
+            'bc1' => 'Manajemen Tryout',
+            'bc2' => 'Detail Produk Tryout',
+            'tryout' => $tryout,
+            'kategori' => $kategori,
+            'pengaturan' => $pengaturan,
+            'klasifikasi' => $klasifikasiSoal,
+            'notifTryoutGratis' => Notifikasi::tryoutGratis(),
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+        ];
+        return view('main-panel.tryout.detail-produk-tryout', $data);
+    }
+
     public function soalTryout($id = null)
     {
         $data = [
