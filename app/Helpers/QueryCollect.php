@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\OrderTryout;
 use Illuminate\Support\Facades\DB;
 
 class QueryCollect
@@ -25,5 +26,10 @@ class QueryCollect
             ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
             ->where('order_tryout.id', $id)
             ->first();
+    }
+
+    public static function countPembelian($customer)
+    {
+        return OrderTryout::where('customer_id', $customer)->count();
     }
 }

@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Helpers\QueryCollect;
 use App\Helpers\Waktu;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
-use App\Models\OrderTryout;
 use App\Models\Payment;
 use App\Models\Ujian;
 use App\Services\Payment\PaymentService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,10 +21,7 @@ class Site extends Controller
             'page_title' => Waktu::sesiWaktu() . ' ' . Auth::user()->name,
             'breadcumb' => 'Vi Star Indonesia',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
-            'countCustomer' => Customer::all()->count(),
-            'countCustomerPerhari' => Customer::whereDate('created_at', Carbon::today())->count(),
-            'countTryout' => OrderTryout::all()->count(),
-            'countTryoutPerhari' => OrderTryout::whereDate('created_at', Carbon::today())->count(),
+            'countPembelian' => QueryCollect::countPembelian(Auth::user()->customer_id),
             'tryoutTerbaru' => DB::table('produk_tryout')->select('produk_tryout.*', 'kategori_produk.status')->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->where('kategori_produk.status', 'Berbayar')->first(),
             'testimoni' => DB::table('testimoni')->select('testimoni.*', 'customer.nama_lengkap')->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')->where('publish', 'Y')->orderBy('updated_at', 'desc')
         ];
@@ -163,7 +159,7 @@ class Site extends Controller
                 }
 
                 if (array_key_exists('year', $filter)) {
-                    $query->created_at('kategori_produk.created_at', $filter['year']);
+                    $query->whereDate('kategori_produk.created_at', $filter['year']);
                 }
             });
         }

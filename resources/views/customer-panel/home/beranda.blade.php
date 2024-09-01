@@ -96,79 +96,67 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="card custom-card">
-                                    <div class="card-body">
-                                        <div class="card-order ">
-                                            <label class="main-content-label mb-3 pt-1">Total Pengguna</label>
-                                            <h2 class="text-end card-item-icon card-icon">
-                                                <i style="color: #0075B8;"
-                                                    class="mdi mdi-account-multiple icon-size float-start"></i>
-                                                <span class="font-weight-bold">{{ $countCustomer }}</span>
-                                            </h2>
-                                            <p class="mb-0 mt-4 text-muted">Pengguna Hari Ini<span
-                                                    class="float-end">{{ $countCustomerPerhari }}</span>
-                                            </p>
+                                <a href="{{ route('mainweb.produk-berbayar') }}">
+                                    <div class="card custom-card">
+                                        <div class="card-body">
+                                            <div class="row row-sm">
+                                                <div class="col-12">
+                                                    <div class="card-item-title">
+                                                        <label class="main-content-label tx-13 font-weight-bold mb-2">
+                                                            <h4 style="padding: 0px; margin:0px;">Paket Tryout</h4>
+                                                        </label>
+                                                        <span class="d-block tx-12 mb-0 text-muted">Tersedia Untuk CPNS,
+                                                            PPPK, Kedinasan</span>
+                                                    </div>
+                                                    <p class="mb-0 tx-24 mt-2"><b style="color: #0075B8;">Rp. 100.000</b>
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                             <div class="col-md-6">
-                                <div class="card custom-card">
-                                    <div class="card-body">
-                                        <div class="card-order">
-                                            <label class="main-content-label mb-3 pt-1">Tryout Terjual</label>
-                                            <h2 class="text-end"><i style="color: #0075B8;"
-                                                    class="icon-size mdi mdi-poll-box   float-start"></i>
-                                                <span class="font-weight-bold">{{ $countTryout }}</span>
-                                            </h2>
-                                            <p class="mb-0 mt-4 text-muted">Tryout Terjual Hari Ini<span
-                                                    class="float-end">{{ $countTryoutPerhari }}</span></p>
+                                <a href="{{ route('mainweb.index') }}">
+                                    <div class="card custom-card">
+                                        <div class="card-body">
+                                            <div class="row row-sm">
+                                                <div class="col-12">
+                                                    <div class="card-item-title">
+                                                        <label class="main-content-label tx-13 font-weight-bold mb-2">
+                                                            <h4 style="padding: 0px; margin:0px;">Tryout Gratis</h4>
+                                                        </label>
+                                                        <span class="d-block tx-12 mb-0 text-muted">Tersedia Untuk CPNS,
+                                                            PPPK, Kedinasan</span>
+                                                    </div>
+                                                    <p style="text-decoration: line-through;" class="mb-0 tx-24 mt-2"><b
+                                                            style="color: #0075B8;">Rp. 0</b>
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <a href="{{ route('mainweb.produk-berbayar') }}">
-                            <div class="card custom-card">
-                                <div class="card-body">
-                                    <div class="row row-sm">
-                                        <div class="col-12">
-                                            <div class="card-item-title">
-                                                <label class="main-content-label tx-13 font-weight-bold mb-2">
-                                                    <h4 style="padding: 0px; margin:0px;">Paket Tryout</h4>
-                                                </label>
-                                                <span class="d-block tx-12 mb-0 text-muted">Tersedia Untuk CPNS,
-                                                    PPPK, Kedinasan</span>
-                                            </div>
-                                            <p class="mb-0 tx-24 mt-2"><b style="color: #0075B8;">Rp. 100.000</b>
-                                            </p>
-                                        </div>
-                                    </div>
+                        {{-- Pembelian --}}
+
+                        <div class="card custom-card" style="background-color: #F8AA3B">
+                            <div class="card-body">
+                                <div>
+                                    <h5 class="text-white">Pembelian Anda</h5>
+                                    <h6 style="padding: 0px; margin:0px;" class="mb-2">
+                                        <span class="fs-30 me-2">Total : {{ $countPembelian }} Pembelian</span>
+                                    </h6>
+                                    <span class="text-white tx-14">Klik tombol dibawah untuk melihat pembelian</span>
+                                    <a href="{{ route('site.pembelian') }}"
+                                        class="btn btn-block btn-default btn-white mt-2"><i class="fa fa-list"></i>
+                                        Lihat Semua</a>
                                 </div>
                             </div>
-                        </a>
-                        <a href="{{ route('mainweb.index') }}">
-                            <div class="card custom-card">
-                                <div class="card-body">
-                                    <div class="row row-sm">
-                                        <div class="col-12">
-                                            <div class="card-item-title">
-                                                <label class="main-content-label tx-13 font-weight-bold mb-2">
-                                                    <h4 style="padding: 0px; margin:0px;">Tryout Gratis</h4>
-                                                </label>
-                                                <span class="d-block tx-12 mb-0 text-muted">Tersedia Untuk CPNS,
-                                                    PPPK, Kedinasan</span>
-                                            </div>
-                                            <p style="text-decoration: line-through;" class="mb-0 tx-24 mt-2"><b
-                                                    style="color: #0075B8;">Rp. 0</b>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
+                        </div>
                         {{-- Notif Event --}}
                         <div class="card custom-card">
                             <div class="card-body">
@@ -179,8 +167,7 @@
                                     </h6>
                                     <span class="text-muted tx-14">{{ $tryoutTerbaru->keterangan }}</span>
                                     <a href="{{ route('mainweb.produk-berbayar') }}"
-                                        class="btn btn-block btn-default mt-2 btn-web1"><i
-                                            class="fa fa-shopping-cart"></i>
+                                        class="btn btn-block btn-default mt-2 btn-web1"><i class="fa fa-shopping-cart"></i>
                                         Beli Sekarang</a>
                                 </div>
                             </div>

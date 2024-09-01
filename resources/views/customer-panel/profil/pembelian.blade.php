@@ -93,25 +93,24 @@
                                                 style="background: {{ $statusCheck['bg-color'] }}; color: {{ $statusCheck['color'] }}">{{ $statusCheck['title'] }}</span>
                                         @endif
 
+                                        {{--  Show Transaction Status  --}}
+                                        <h6 class="mb-2 text-primary">
+                                            <span class="fs-25 me-2">{{ $pembelian->nama_tryout }}</span><br>
+                                            <span class="pt-4 text-muted fw-normal">{{ $pembelian->keterangan }}</span>
+                                        </h6>
+                                        <span class="text-muted tx-12">
+                                            Waktu Pembelian : {{ $pembelian->created_at }}
+                                        </span>
                                         {{--  Note: This is shouldn't be here
                                             It should be another page to show transaction status.
                                         --}}
                                         @if ($pembelian->status_order === 'pending' && $pembelian->snap_token)
                                             {{--  Please change the design to fit the template  --}}
                                             <button onclick="showSnap('{{ $pembelian->snap_token }}')" id="pay-button"
-                                                class="btn btn-pills btn-soft-primary">
+                                                class="mt-2 btn btn-block btn-primary">
                                                 Bayar Sekarang <i class="mdi mdi-arrow-right"></i>
                                             </button>
                                         @endif
-
-                                        {{--  Show Transaction Status  --}}
-                                        <h6 class="mb-2 text-primary">
-                                            <span class="fs-30 me-2">{{ $pembelian->nama_tryout }}</span><br>
-                                            <span class="badge bg-success">{{ $pembelian->keterangan }}</span>
-                                        </h6>
-                                        <span class="text-muted tx-12">
-                                            Waktu Pembelian : {{ $pembelian->created_at }}
-                                        </span>
                                     </div>
                                 </div>
                             </div>
