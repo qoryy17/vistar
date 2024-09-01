@@ -15,7 +15,5 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'payment/*/notification/handler',
         ]);
-
-        $middleware->append(VerifyCsrfToken::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {})->create();
