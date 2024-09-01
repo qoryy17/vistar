@@ -1,4 +1,4 @@
-<x-web.header-auth :title="'Vi Star Indonesia | Sign Up'" />
+<x-web.header-auth :title="'Vistar Indonesia | Sign Up'" />
 
 <body>
     @if (session()->has('message'))
@@ -161,7 +161,7 @@
 
                 <div id="bg-paralax" class="col-lg-8 offset-lg-4 padding-less img order-1 jarallax" data-jarallax
                     data-speed="0.5"
-                    style="background-image:url('{{ url('resources/web/dist/assets/images/signin-background.jpg') }}')">
+                    style="background-image:url('{{ asset('resources/images/signin-background.jpg') }}')">
                 </div>
                 <!-- end col -->
             </div><!--end row-->

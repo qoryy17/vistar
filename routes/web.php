@@ -23,8 +23,6 @@ use App\Http\Controllers\Landing\GoogleOauth;
 use App\Http\Controllers\Landing\MainWebsite;
 use App\Http\Controllers\Landing\Autentifikasi;
 use App\Http\Middleware\Customer\LoggedCustomer;
-use App\Http\Controllers\Landing\CallbackLanding;
-use App\Http\Controllers\Landing\Midtrans;
 use App\Http\Controllers\Payment\TransactionController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
