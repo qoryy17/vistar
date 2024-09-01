@@ -33,7 +33,7 @@ class QueryCollect
         return OrderTryout::where('customer_id', $customer)->count();
     }
 
-    public static function hasilUjian($customer)
+    public static function hasilUjianBerbayar($customer)
     {
         return
             DB::table('hasil_ujian')
@@ -67,5 +67,29 @@ class QueryCollect
             ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
             ->where('order_tryout.status_order', 'paid')
             ->where('customer_id', '=', $customer);
+    }
+
+    public static function hasilUjianGratis($customer)
+    {
+        return DB::table('hasil_ujian')
+            ->select(
+                'hasil_ujian.id',
+                'hasil_ujian.durasi_selesai',
+                'hasil_ujian.benar',
+                'hasil_ujian.salah',
+                'hasil_ujian.terjawab',
+                'hasil_ujian.tidak_terjawab',
+                'hasil_ujian.total_nilai as skd',
+                'hasil_ujian.keterangan',
+                'ujian.id as ujianID',
+                'ujian.waktu_mulai',
+                'ujian.sisa_waktu',
+                'ujian.status_ujian',
+                'limit_tryout.customer_id',
+                'limit_tryout.produk_tryout_id'
+            )->leftJoin('ujian', 'hasil_ujian.ujian_id', '=', 'ujian.id')
+            ->leftJoin('limit_tryout', 'ujian.limit_tryout_id', '=', 'limit_tryout.id')
+            ->where('ujian.status_ujian', 'Selesai')
+            ->where('limit_tryout.customer_id', $customer);
     }
 }

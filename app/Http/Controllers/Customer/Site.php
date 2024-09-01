@@ -36,7 +36,7 @@ class Site extends Controller
             'breadcumb' => 'Tryout Berbayar',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
             'pembelian' => QueryCollect::pembelian(Auth::user()->customer_id)->get(),
-            'hasilUjian' => QueryCollect::hasilUjian(Auth::user()->customer_id)->get()
+            'hasilUjian' => QueryCollect::hasilUjianBerbayar(Auth::user()->customer_id)->get()
         ];
         return view('customer-panel.tryout.tryout-berbayar', $data);
     }
@@ -49,39 +49,19 @@ class Site extends Controller
             ->where('status_validasi', 'Disetujui')
             ->where('customer_id', '=', Auth::user()->customer_id);
 
-        $hasilUjian = DB::table('hasil_ujian')
-            ->select(
-                'hasil_ujian.id',
-                'hasil_ujian.durasi_selesai',
-                'hasil_ujian.benar',
-                'hasil_ujian.salah',
-                'hasil_ujian.terjawab',
-                'hasil_ujian.tidak_terjawab',
-                'hasil_ujian.total_nilai as skd',
-                'hasil_ujian.keterangan',
-                'ujian.id as ujianID',
-                'ujian.waktu_mulai',
-                'ujian.sisa_waktu',
-                'ujian.status_ujian',
-                'limit_tryout.customer_id',
-                'limit_tryout.produk_tryout_id'
-            )->leftJoin('ujian', 'hasil_ujian.ujian_id', '=', 'ujian.id')
-            ->leftJoin('limit_tryout', 'ujian.limit_tryout_id', '=', 'limit_tryout.id')
-            ->where('ujian.status_ujian', 'Selesai')
-            ->where('limit_tryout.customer_id', Auth::user()->customer_id);
-
         if ($ujianGratis->first()) {
             $limitUjian =  Ujian::where('limit_tryout_id', $ujianGratis->first()->id)->where('status_ujian', 'Selesai')->first();
         } else {
             $limitUjian = null;
         }
+
         $data = [
             'page_title' => 'Tryout Gratis',
             'breadcumb' => 'Tryout Gratis',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
             'ujianGratis' => $ujianGratis->get(),
             'limitUjian' => $limitUjian,
-            'hasilUjian' => $hasilUjian->get()
+            'hasilUjian' => QueryCollect::hasilUjianGratis(Auth::user()->customer_id)->get()
         ];
 
         return view('customer-panel.tryout.tryout-gratis', $data);
