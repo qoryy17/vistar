@@ -87,7 +87,7 @@ return new class extends Migration
             $table->string('status_order')->nullable();
             $table->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customer')->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('customer_id')->references('id')->on('customer')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('produk_tryout_id')->references('id')->on('produk_tryout')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('payment_id')->references('id')->on('payment')->onDelete('cascade')->onUpdate('cascade');
         });
