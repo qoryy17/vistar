@@ -54,4 +54,22 @@ class BerandaUI
     {
         return PengaturanWeb::all()->first();
     }
+
+    public static function countPenjualan($kategori, $tahun)
+    {
+        return DB::table('order_tryout')
+            ->select(
+                DB::raw('MONTH(order_tryout.created_at) as month'),
+                DB::raw('COUNT(*) as total_orders')
+            )
+            ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
+            ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
+            ->where('kategori_produk.judul', $kategori)
+            ->whereNot('kategori_produk.status', 'Gratis')
+            ->whereNot('kategori_produk.aktif', 'T')
+            ->whereYear('order_tryout.created_at', $tahun)
+            ->groupBy(DB::raw('MONTH(order_tryout.created_at)'))
+            ->orderBy(DB::raw('MONTH(order_tryout.created_at)'))
+            ->pluck('total_orders', 'month');
+    }
 }

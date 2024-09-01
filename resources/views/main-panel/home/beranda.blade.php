@@ -45,9 +45,9 @@
                         <div class="card custom-card overflow-hidden">
                             <div class="card-body">
                                 <div class="mb-2">
-                                    <h6 class="main-content-label mb-1">Profit Penjualan</h6>
+                                    <h6 class="main-content-label mb-1">Total Penjualan</h6>
                                     <p class="text-muted  card-sub-title">Tahun 2024</p>
-                                    <select name="" id="" class="form-control">
+                                    <select name="" id="yearSelect" class="form-control">
                                         <option value="">Pilih Tahun</option>
                                         @for ($tahun = 2024; $tahun <= 2026; $tahun++)
                                             <option value="{{ $tahun }}">{{ $tahun }}</option>
@@ -173,73 +173,126 @@
     <!-- Internal Chartjs charts js-->
     <script src="{{ url('resources/spruha/assets/plugins/chart.js/Chart.bundle.min.js') }}"></script>
     <script>
-        /* Bar-Chart1 */
-        var ctx = document.getElementById("chartBar1").getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
-                datasets: [{
-                    label: 'CPNS',
-                    data: [200, 450, 290, 367, 256, 543, 345],
-                    borderWidth: 2,
-                    backgroundColor: '#0075B8',
-                    borderColor: '#0075B8',
-                    borderWidth: 2.0,
-                    pointBackgroundColor: '#ffffff',
-
-                }, {
-                    label: 'PPK',
-                    data: [300, 400, 250, 370, 200, 500, 400],
-                    borderWidth: 2,
-                    backgroundColor: '#F8AA3B',
-                    borderColor: '#F8AA3B',
-                    borderWidth: 2.0,
-                    pointBackgroundColor: '#ffffff',
-                }, {
-                    label: 'Kedinasan',
-                    data: [300, 400, 250, 370, 200, 500, 400],
-                    borderWidth: 2,
-                    backgroundColor: '#2ECA8B',
-                    borderColor: '#2ECA8B',
-                    borderWidth: 2.0,
-                    pointBackgroundColor: '#ffffff',
-                }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                legend: {
-                    display: true
-                },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            stepSize: 150,
-                            fontColor: "#77778e",
-                        },
-                        gridLines: {
-                            color: 'rgba(119, 119, 142, 0.2)'
-                        }
+        function loadChart(data) {
+            var ctx = document.getElementById("chartBar1").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    datasets: [{
+                        label: 'CPNS',
+                        data: [
+                            data.CPNS[1] || 0,
+                            data.CPNS[2] || 0,
+                            data.CPNS[3] || 10,
+                            data.CPNS[4] || 0,
+                            data.CPNS[5] || 0,
+                            data.CPNS[6] || 0,
+                            data.CPNS[7] || 0,
+                            data.CPNS[8] || 0,
+                            data.CPNS[9] || 0,
+                            data.CPNS[10] || 0,
+                            data.CPNS[11] || 0,
+                            data.CPNS[12] || 0
+                        ],
+                        borderWidth: 2,
+                        backgroundColor: '#0075B8',
+                        borderColor: '#0075B8',
+                        pointBackgroundColor: '#ffffff',
+                    }, {
+                        label: 'PPK',
+                        data: [
+                            data.PPK[1] || 0,
+                            data.PPK[2] || 0,
+                            data.PPK[3] || 0,
+                            data.PPK[4] || 0,
+                            data.PPK[5] || 0,
+                            data.PPK[6] || 0,
+                            data.PPK[7] || 0,
+                            data.PPK[8] || 0,
+                            data.PPK[9] || 0,
+                            data.PPK[10] || 0,
+                            data.PPK[11] || 0,
+                            data.PPK[12] || 0
+                        ],
+                        borderWidth: 2,
+                        backgroundColor: '#F8AA3B',
+                        borderColor: '#F8AA3B',
+                        pointBackgroundColor: '#ffffff',
+                    }, {
+                        label: 'Kedinasan',
+                        data: [
+                            data.Kedinasan[1] || 0,
+                            data.Kedinasan[2] || 0,
+                            data.Kedinasan[3] || 0,
+                            data.Kedinasan[4] || 0,
+                            data.Kedinasan[5] || 0,
+                            data.Kedinasan[6] || 0,
+                            data.Kedinasan[7] || 0,
+                            data.Kedinasan[8] || 0,
+                            data.Kedinasan[9] || 0,
+                            data.Kedinasan[10] || 0,
+                            data.Kedinasan[11] || 0,
+                            data.Kedinasan[12] || 0
+                        ],
+                        borderWidth: 2,
+                        backgroundColor: '#2ECA8B',
+                        borderColor: '#2ECA8B',
+                        pointBackgroundColor: '#ffffff',
                     }],
-                    xAxes: [{
-                        ticks: {
-                            display: true,
-                            fontColor: "#77778e",
-                        },
-                        gridLines: {
-                            display: false,
-                            color: 'rgba(119, 119, 142, 0.2)'
-                        }
-                    }]
                 },
-                legend: {
-                    labels: {
-                        fontColor: "#77778e"
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 150,
+                                fontColor: "#77778e",
+                            },
+                            gridLines: {
+                                color: 'rgba(119, 119, 142, 0.2)'
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                display: true,
+                                fontColor: "#77778e",
+                            },
+                            gridLines: {
+                                display: false,
+                                color: 'rgba(119, 119, 142, 0.2)'
+                            }
+                        }]
                     },
+                    legend: {
+                        labels: {
+                            fontColor: "#77778e"
+                        },
+                    },
+                }
+            });
+        }
+
+
+        document.getElementById('yearSelect').addEventListener('change', function() {
+            var selectedYear = this.value;
+
+            // Fetch new data via AJAX
+            $.ajax({
+                url: "{{ route('main.chart') }}",
+                method: 'GET',
+                data: {
+                    year: selectedYear
                 },
-            }
+                success: function(data) {
+                    loadChart(data);
+                },
+                error: function() {
+                    alert('Failed to retrieve data. Please try again.');
+                }
+            });
         });
     </script>
 @endsection

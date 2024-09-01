@@ -106,7 +106,7 @@ Route::middleware(PanelRouting::class)->group(function () {
 Route::middleware(PanelRouting::class)->group(function () {
     Route::controller(Main::class)->group(function () {
         Route::get('/main/dashboard', 'index')->name('main.beranda');
-        // Route::get('/profil', 'profilPengguna')->name('main.profil');
+        Route::get('/main/chart', 'getChart')->name('main.chart');
         Route::get('/profil-admin', 'profilPengguna')->name('main.profil-admin');
         Route::get('/pengaturan', 'pengaturan')->name('main.pengaturan');
         Route::get('/banner', 'banner')->name('main.banner');

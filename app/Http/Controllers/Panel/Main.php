@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\LimitTryout;
 use App\Models\PengaturanWeb;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class Main extends Controller
@@ -30,7 +31,29 @@ class Main extends Controller
             'sumTryout' => BerandaUI::sumTryout(),
             'sumTryoutPerhari' => BerandaUI::sumTryoutPerhari()
         ];
+
         return view('main-panel.home.beranda', $data);
+    }
+
+    public function getChart(Request $request)
+    {
+        $year = $request->year;
+        $data = [
+            'CPNS' => BerandaUI::countPenjualan('CPNS', $year),
+            'PPK' => BerandaUI::countPenjualan('PPPK', $year),
+            'Kedinasan' => BerandaUI::countPenjualan('Kedinasan', $year),
+        ];
+
+        // Fill missing months with 0
+        for ($i = 1; $i <= 12; $i++) {
+            foreach ($data as $key => $values) {
+                if (!isset($values[$i])) {
+                    $data[$key][$i] = 0;
+                }
+            }
+        }
+
+        return response()->json($data);
     }
 
     public function pengaturan()
