@@ -128,9 +128,9 @@
                                          </li>
                                      @endif
 
-                                     <li class="h6 text-muted mb-0"><span class="icon h5 me-2"><i
+                                     {{-- <li class="h6 text-muted mb-0"><span class="icon h5 me-2"><i
                                                  class="uil uil-check-circle align-middle"></i></span>Akses Bagikan Referal
-                                     </li>
+                                     </li> --}}
                                      <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
                                              <i class="uil uil-check-circle align-middle"></i></span>Masa Aktif
                                          {{ $row->masa_aktif }} Bulan

@@ -115,14 +115,14 @@ class Orders extends Controller
                 'status_transaksi' => $status,
             ]);
 
-            // Catata referral jika ada
-            if ($request->referralCode) {
+            // Catata referral jika ada : note : referral disable sementara
+            /*if ($request->referralCode) {
                 $referral = new ReferralCustomer();
                 $referral->id = rand(1, 999) . rand(1, 99);
                 $referral->kode_referral = $request->referralCode;
                 $referral->produk_tryout_id = $referensiOrderID;
                 $referral->save();
-            }
+            }*/
 
             // Hapus Keranjang
             $keranjang = KeranjangOrder::find(Crypt::decrypt($request->id));
@@ -134,7 +134,6 @@ class Orders extends Controller
                 'status' => 'success',
                 'snap_token' => $snapToken,
             ]);
-
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }

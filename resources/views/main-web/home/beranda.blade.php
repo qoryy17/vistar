@@ -88,9 +88,9 @@
                                 <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
                                         <i class="uil uil-check-circle align-middle"></i></span>Review Pembahasan Soal
                                 </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
+                                {{-- <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
                                         <i class="uil uil-check-circle align-middle"></i></span>Akses Bagikan Referal
-                                </li>
+                                </li> --}}
                             </ul>
 
                             <div class="mt-4">
@@ -128,9 +128,9 @@
                                 <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
                                         <i class="uil uil-check-circle align-middle"></i></span>Review Pembahasan Soal
                                 </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
+                                {{-- <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
                                         <i class="uil uil-check-circle align-middle"></i></span>Akses Bagikan Referal
-                                </li>
+                                </li> --}}
                             </ul>
 
                             <div class="mt-4">
@@ -166,9 +166,9 @@
                                 <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
                                         <i class="uil uil-check-circle align-middle"></i></span>Review Pembahasan Soal
                                 </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
+                                {{-- <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
                                         <i class="uil uil-check-circle align-middle"></i></span>Akses Bagikan Referal
-                                </li>
+                                </li> --}}
                             </ul>
 
                             <div class="mt-4">
