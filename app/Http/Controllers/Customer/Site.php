@@ -113,7 +113,7 @@ class Site extends Controller
                 }
 
                 if (array_key_exists('year', $filter)) {
-                    $query->whereDate('kategori_produk.created_at', $filter['year']);
+                    $query->whereYear('kategori_produk.created_at', $filter['year']);
                 }
             });
         }
