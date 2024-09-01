@@ -89,19 +89,6 @@
              </div>
          </div><!--end col-->
 
-         <div class="col-md-4 col-12 mt-5 pt-4">
-             <div class="features feature-primary">
-                 <div class="image position-relative d-inline-block">
-                     <i class="uil uil-share h2 text-primary"></i>
-                 </div>
-                 <div class="content mt-4">
-                     <h5>Bagikan Kode Referal</h5>
-                     <p class="text-muted mb-0" style="text-align: justify">Dapatkan keuntungan ujian tryout secara
-                         gratis dengan fitur lengkap
-                         ,bagikan kode referal Anda kepada teman-teman.</p>
-                 </div>
-             </div>
-         </div><!--end col-->
      </div><!--end row-->
  </div><!--end container-->
  <!-- End Keunggulan -->
