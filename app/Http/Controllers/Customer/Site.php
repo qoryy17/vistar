@@ -31,39 +31,12 @@ class Site extends Controller
 
     public function tryoutBerbayar()
     {
-        $hasilUjian = DB::table('hasil_ujian')
-            ->select(
-                'hasil_ujian.id',
-                'hasil_ujian.durasi_selesai',
-                'hasil_ujian.benar',
-                'hasil_ujian.salah',
-                'hasil_ujian.terjawab',
-                'hasil_ujian.tidak_terjawab',
-                'hasil_ujian.total_nilai as skd',
-                'hasil_ujian.keterangan',
-                'ujian.id as ujianID',
-                'ujian.waktu_mulai',
-                'ujian.sisa_waktu',
-                'ujian.status_ujian',
-                'order_tryout.customer_id',
-                'order_tryout.produk_tryout_id',
-                'order_tryout.status_order'
-            )->leftJoin('ujian', 'hasil_ujian.ujian_id', '=', 'ujian.id')
-            ->leftJoin('order_tryout', 'ujian.order_tryout_id', '=', 'order_tryout.id')
-            ->where('ujian.status_ujian', 'Selesai')
-            ->where('order_tryout.status_order', 'paid')
-            ->where('order_tryout.customer_id', Auth::user()->customer_id);
-
         $data = [
             'page_title' => 'Tryout Berbayar',
             'breadcumb' => 'Tryout Berbayar',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
-            'pembelian' => DB::table('order_tryout')->select('order_tryout.*', 'produk_tryout.nama_tryout', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'pengaturan_tryout.masa_aktif')
-                ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
-                ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                ->where('order_tryout.status_order', 'paid')
-                ->where('customer_id', '=', Auth::user()->customer_id)->get(),
-            'hasilUjian' => $hasilUjian->get()
+            'pembelian' => QueryCollect::pembelian(Auth::user()->customer_id)->get(),
+            'hasilUjian' => QueryCollect::hasilUjian(Auth::user()->customer_id)->get()
         ];
         return view('customer-panel.tryout.tryout-berbayar', $data);
     }
