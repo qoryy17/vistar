@@ -28,7 +28,7 @@ class EmailFaktur extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Faktur Pembelian Tryout Vi Star Indonesia',
+            subject: 'Faktur Pembelian Tryout Vistar Indonesia',
         );
     }
 
