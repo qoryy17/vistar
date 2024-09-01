@@ -31,8 +31,8 @@ class DatabaseSeeder extends Seeder
             'blokir' => 'T',
         ], [
             'id' => rand(1, 999) . rand(1, 99),
-            'name' => 'Agung',
-            'email' => 'agung@gmail.com',
+            'name' => 'Ahmad Yusri',
+            'email' => 'ahmadyusri@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('123'),
             'remember_token' => Str::random(10),
