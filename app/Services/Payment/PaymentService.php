@@ -2,6 +2,7 @@
 
 namespace App\Services\Payment;
 
+use App\Jobs\SendInoviceJob;
 use App\Models\OrderTryout;
 use App\Models\Payment;
 use App\Services\Payment\MidtransService;
@@ -98,11 +99,15 @@ class PaymentService
 
         /* IDEA: Send Email transaction completed and other necessary action after transaction finished
         with checking the status first
-
-        if ( $status === 'paid' ) {
-            // TODO
-        }
         */
+
+        if ($status === 'paid') {
+            // Send emai invoice ke customer
+            $orderInvoice = [
+                'order_id' => $payment->ref_order_id
+            ];
+            SendInoviceJob::dispatch($orderInvoice);
+        }
 
         return [
             'result' => 'success',

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Mail\EmailFaktur;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\SerializesModels;
@@ -16,13 +17,13 @@ class SendInoviceJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 10;
-    protected $orderEmail;
+    protected $orderInvoice;
     /**
      * Create a new job instance.
      */
-    public function __construct(array $orderEmail)
+    public function __construct(array $orderInvoice)
     {
-        $this->orderEmail = $orderEmail;
+        $this->orderInvoice = $orderInvoice;
     }
 
     /**
@@ -42,11 +43,13 @@ class SendInoviceJob implements ShouldQueue
         )->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
             ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
             ->leftJoin('payment', 'produk_tryout.id', '=', 'payment.ref_order_id')
-            ->where('order_tryout.id', '=', $this->orderEmail['order_id'])
-            ->where('customer_id', '=', $this->orderEmail['customer_id'])->first();
+            ->where('order_tryout.id', '=', $this->orderInvoice['order_id'])
+            ->where('order.status_order', 'paid')->first();
 
+        // Customer
+        $userEmail = User::find($orderDetail->customer_id);
 
         // Kirim email invoice
-        Mail::to($this->orderEmail['email'])->send(new EmailFaktur($orderDetail));
+        Mail::to($userEmail->email)->send(new EmailFaktur($orderDetail));
     }
 }
