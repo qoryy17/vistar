@@ -25,6 +25,7 @@ use App\Http\Controllers\Landing\Autentifikasi;
 use App\Http\Middleware\Customer\LoggedCustomer;
 use App\Http\Controllers\Landing\CallbackLanding;
 use App\Http\Controllers\Landing\Midtrans;
+use App\Http\Controllers\Payment\TransactionController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 // Routing untuk website utama
@@ -38,10 +39,12 @@ Route::controller(GoogleOauth::class)->group(function () {
     Route::get('/callback', 'handleGoogleCallback')->name('auth.callback');
 });
 
-// Routing untuk handling Midtrans
-Route::controller(Midtrans::class)->group(function () {
-    Route::get('/payment/finish', 'callbackTransaction')->name('midtrans.finish-payment');
-    Route::post('/payment/notification/handler', 'notificationHandler')->name('midtrans.handler-callback');
+// Payment Routing
+Route::controller(TransactionController::class)->group(function () {
+    Route::post('/payment/{vendor}/notification/handler', 'notificationHandler')->name('payment.notification.handler');
+    Route::get('/payment/finish', 'callbackFinish')->name('payment.finish');
+    Route::get('/payment/unfinish', 'callbackUnFinish')->name('payment.unfinish');
+    Route::get('/payment/error', 'callbackError')->name('payment.error');
 });
 
 // Routing untuk autentifikasi manual melalui form

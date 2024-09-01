@@ -161,28 +161,14 @@
 
                       snap.pay(data.snap_token, {
                           onSuccess: function(result) {
-                              /* You may add your own js here, this is just example */
-                              //   document.getElementById('result-json').innerHTML += JSON.stringify(
-                              //       result, null, 2);
-                              // Convert result JSON to a query string
-                              const params = new URLSearchParams(result).toString();
-                              window.location.href = "{{ route('midtrans.finish-payment') }}?" +
-                                  params;
+                              window.location.href = "{{ route('site.pembelian') }}";
                           },
-                          // Optional
                           onPending: function(result) {
-                              /* You may add your own js here, this is just example */
-                              //   document.getElementById('result-json').innerHTML += JSON.stringify(
-                              //       result, null, 2);
-                              window.location.href = "{{ route('mainweb.keranjang') }}";
+                              window.location.href = "{{ route('site.pembelian') }}";
 
                           },
-                          // Optional
                           onError: function(result) {
-                              /* You may add your own js here, this is just example */
-                              //   document.getElementById('result-json').innerHTML += JSON.stringify(
-                              //       result, null, 2);
-                              window.location.href = "{{ route('mainweb.keranjang') }}";
+                              window.location.href = "{{ route('site.pembelian') }}";
                           }
 
                       });
