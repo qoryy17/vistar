@@ -3,7 +3,7 @@
  @section('content')
      <!-- Hero Start -->
      <section class="bg-profile d-table w-100 bg-primary"
-         style="background: url('{{ url('resources/web/dist/assets/images/account/bg.png') }}') center center;">
+         style="background: url('{{ asset('resources/images/bg.png') }}') center center;">
          <div class="container">
              <div class="row">
                  <div class="col-lg-12">
