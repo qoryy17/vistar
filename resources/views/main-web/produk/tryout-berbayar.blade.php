@@ -6,7 +6,7 @@
              <div class="row justify-content-center">
                  <div class="col-12 text-center">
                      <div class="section-title mb-4 pb-2">
-                         <h4 class="title mb-4">Pilih Paket Ujian Tryout</h4>
+                         <h4 class="title mb-4">Bidang Kompetensi Pilih Paket Ujian</h4>
                          <p class="text-muted para-desc mb-0 mx-auto">Temukan paket ujian tryout yang sempurna untuk Anda!
                              Dengan berbagai pilihan paket yang dirancang sesuai kebutuhan, <span
                                  class="text-primary fw-bold">Vi Star Indonesia</span> memberikan
