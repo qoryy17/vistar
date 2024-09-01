@@ -42,7 +42,7 @@
                                         sukses!"
                                         <br>
                                         <br>
-                                        <a class="btn btn-primary" href="{{ route('mainweb.index') }}">
+                                        <a class="btn btn-primary" href="{{ route('mainweb.index') }}/#coba-gratis">
                                             Pengajuan Tryout Gratis
                                         </a>
                                     </p>

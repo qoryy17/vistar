@@ -15,7 +15,8 @@
 
                  <div class="col-lg-7 col-md-7 mt-4 pt-2 mt-sm-0 pt-sm-0">
                      <div class="section-title ms-lg-4">
-                         <h4 class="title mb-4">{{ $web->nama_bisnis }}</h4>
+                         <h4 class="title mb-4 fw-bold" style="text-transform: uppercase; color: #0075B8;">
+                             {{ $web->nama_bisnis }}</h4>
                          <p class="text-muted" style="text-align: justify">
                              Selamat datang di {{ $web->nama_bisnis }}, Pusat Kegiatan Akademik yang menghadirkan inovasi
                              dan keunggulan di
@@ -59,7 +60,7 @@
              </div><!--end row-->
              <div class="row mt-50">
                  <div class="col-md-6">
-                     <div class="card border-0 text-center features feature-primary feature-clean">
+                     <div class="card border-0 text-center features feature-primary feature-clean p-2">
                          <div class="icons text-center mx-auto">
                              <i class="uil uil-phone rounded h3 mb-0"></i>
                          </div>
@@ -72,7 +73,7 @@
                      </div>
                  </div>
                  <div class="col-md-6">
-                     <div class="card border-0 text-center features feature-primary feature-clean">
+                     <div class="card border-0 text-center features feature-primary feature-clean p-2">
                          <div class="icons text-center mx-auto">
                              <i class="uil uil-envelope rounded h3 mb-0"></i>
                          </div>

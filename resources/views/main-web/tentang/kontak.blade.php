@@ -45,7 +45,7 @@
         <div class="container mt-100 mt-60">
             <div class="row">
                 <div class="col-md-4">
-                    <div class="card border-0 text-center features feature-primary feature-clean">
+                    <div class="card border-0 text-center features feature-primary feature-clean p-4">
                         <div class="icons text-center mx-auto">
                             <i class="uil uil-phone rounded h3 mb-0"></i>
                         </div>
@@ -59,7 +59,7 @@
                 </div><!--end col-->
 
                 <div class="col-md-4 mt-4 mt-sm-0 pt-2 pt-sm-0">
-                    <div class="card border-0 text-center features feature-primary feature-clean">
+                    <div class="card border-0 text-center features feature-primary feature-clean p-4">
                         <div class="icons text-center mx-auto">
                             <i class="uil uil-envelope rounded h3 mb-0"></i>
                         </div>
@@ -72,7 +72,7 @@
                 </div><!--end col-->
 
                 <div class="col-md-4 mt-4 mt-sm-0 pt-2 pt-sm-0">
-                    <div class="card border-0 text-center features feature-primary feature-clean">
+                    <div class="card border-0 text-center features feature-primary feature-clean p-4">
                         <div class="icons text-center mx-auto">
                             <i class="uil uil-map-marker rounded h3 mb-0"></i>
                         </div>
