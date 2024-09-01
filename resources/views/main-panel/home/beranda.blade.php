@@ -184,7 +184,7 @@
                         data: [
                             data.CPNS[1] || 0,
                             data.CPNS[2] || 0,
-                            data.CPNS[3] || 10,
+                            data.CPNS[3] || 0,
                             data.CPNS[4] || 0,
                             data.CPNS[5] || 0,
                             data.CPNS[6] || 0,
