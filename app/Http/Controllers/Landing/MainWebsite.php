@@ -58,6 +58,7 @@ class MainWebsite extends Controller
                 'kategori_produk.status as produk_status'
             )->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
+                ->where('produk_tryout.status', 'Tersedia')
                 ->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get()
         ];
         return view('main-web.produk.tryout-berbayar', $data);
@@ -102,11 +103,13 @@ class MainWebsite extends Controller
             $query = DB::table('produk_tryout')->select('produk_tryout.*', 'pengaturan_tryout.harga', 'pengaturan_tryout.nilai_keluar', 'pengaturan_tryout.grafik_evaluasi', 'pengaturan_tryout.review_pembahasan', 'pengaturan_tryout.masa_aktif', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status as produk_status')
                 ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
+                ->where('produk_tryout.status', 'Tersedia')
                 ->where('kategori_produk.judul', '=', $request->input('paketTryout'))->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get();
         } elseif ($request->cariPaket) {
             $query = DB::table('produk_tryout')->select('produk_tryout.*', 'pengaturan_tryout.harga', 'pengaturan_tryout.nilai_keluar', 'pengaturan_tryout.grafik_evaluasi', 'pengaturan_tryout.review_pembahasan', 'pengaturan_tryout.masa_aktif', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status as produk_status')
                 ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
+                ->where('produk_tryout.status', 'Tersedia')
                 ->whereLike('produk_tryout.nama_tryout', "%{$request->input('cariPaket')}%")->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get();
         } else {
             return Redirect::to('/produk-berbayar');

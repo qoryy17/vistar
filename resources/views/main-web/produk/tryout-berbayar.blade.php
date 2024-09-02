@@ -9,7 +9,7 @@
                          <h4 class="title mb-4">Bidang Kompetensi Pilih Paket Ujian</h4>
                          <p class="text-muted para-desc mb-0 mx-auto">Temukan paket ujian tryout yang sempurna untuk Anda!
                              Dengan berbagai pilihan paket yang dirancang sesuai kebutuhan, <span
-                                 class="text-primary fw-bold">Vi Star Indonesia</span> memberikan
+                                 class="text-primary fw-bold">Vistar Indonesia</span> memberikan
                              solusi terbaik untuk persiapan ujian Anda.</p>
                      </div>
                  </div><!--end col-->

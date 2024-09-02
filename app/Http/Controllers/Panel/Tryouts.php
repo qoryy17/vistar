@@ -80,6 +80,9 @@ class Tryouts extends Controller
         if (Crypt::decrypt($request->input('formParameter')) == 'add') {
 
             // Upload thumbnail produk tryout
+            if (!$request->file('thumbnail')) {
+                return redirect()->back()->with('error', 'Thumbnail belum di unggah ulang !')->withInput();
+            }
             $fileThumbnail = $request->file('thumbnail');
             $fileHashname = $fileThumbnail->hashName();
 
