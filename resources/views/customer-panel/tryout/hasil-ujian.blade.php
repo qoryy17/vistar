@@ -120,6 +120,10 @@
                                                     <input name="Jawaban" type="radio" id="Jawaban" value="D">
                                                     <span>d. {{ strip_tags($review->jawaban_d) }}</span>
                                                 </label>
+                                                <label class="rdiobox">
+                                                    <input name="Jawaban" type="radio" id="Jawaban" value="E">
+                                                    <span>e. {{ strip_tags($review->jawaban_e) }}</span>
+                                                </label>
                                             </div>
                                         </div>
                                         <hr>
