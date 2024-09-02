@@ -10,6 +10,7 @@ use App\Models\LimitTryout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\OrderTryout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\RedirectResponse;
@@ -91,8 +92,17 @@ class Customers extends Controller
     {
         $user = User::findOrFail(Crypt::decrypt($request->id));
         if ($user) {
+            // Cek apakah pernah memesan produk tryout ?
+            $tryout = OrderTryout::where('customer_id', $user->customer_id)->first();
+            if ($tryout) {
+                return Redirect::route('customer.main')->with('error', 'Customer pemesan produk tidak bisa dihapus !');
+            }
             $users = Auth::user();
             $user->delete();
+            $customer = Customer::find($user->customer_id);
+            if ($customer) {
+                $customer->delete();
+            }
             // Simpan logs aktivitas pengguna
             $logs = $users->name . ' telah menghapus customer dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
