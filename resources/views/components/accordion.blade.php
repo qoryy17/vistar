@@ -55,6 +55,20 @@
             </div>
         </div>
     </div>
+    {{-- E --}}
+    <div class="card">
+        <div class="card-header" id="JawabanE" role="tab">
+            <a id="header-accordion-web" aria-controls="collapseE" aria-expanded="false" data-bs-toggle="collapse"
+                href="#collapseE">Jawaban E</a>
+        </div>
+        <div aria-labelledby="JawabanE" class="collapse" data-bs-parent="#accordion" id="collapseE" role="tabpanel">
+            <div class="card-body">
+                <p style="text-align: justify">
+                    {!! $jawabanE !!}
+                </p>
+            </div>
+        </div>
+    </div>
     {{-- Kunci --}}
     <div class="card">
         <div class="card-header" id="Kunci" role="tab">

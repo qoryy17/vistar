@@ -30,6 +30,7 @@ return new class extends Migration
             $table->text('jawaban_b');
             $table->text('jawaban_c');
             $table->text('jawaban_d');
+            $table->text('jawaban_d');
             $table->string('kunci_jawaban', 1);
             $table->unsignedBigInteger('klasifikasi_soal_id')->nullable();
             $table->text('review_pembahasan');

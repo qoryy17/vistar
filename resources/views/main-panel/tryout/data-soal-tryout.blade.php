@@ -87,7 +87,8 @@
                                                                         <div class="modal-body">
                                                                             <x-accordion :jawabanA="$row->jawaban_a" :jawabanB="$row->jawaban_b"
                                                                                 :jawabanC="$row->jawaban_c" :jawabanD="$row->jawaban_d"
-                                                                                :kunciJawaban="$row->kunci_jawaban" :reviewPembahasan="$row->review_pembahasan" />
+                                                                                :jawabanE="$row->jawaban_e" :kunciJawaban="$row->kunci_jawaban"
+                                                                                :reviewPembahasan="$row->review_pembahasan" />
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button class="btn btn-sm ripple btn-danger"

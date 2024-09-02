@@ -56,6 +56,8 @@
                                                                     data-bs-toggle="tab">Jawaban C</a></li>
                                                             <li class="nav-item"><a href="#jawabanD" class="nav-link"
                                                                     data-bs-toggle="tab">Jawaban D</a></li>
+                                                            <li class="nav-item"><a href="#jawabanE" class="nav-link"
+                                                                    data-bs-toggle="tab">Jawaban E</a></li>
                                                             <li class="nav-item"><a href="#review" class="nav-link"
                                                                     data-bs-toggle="tab">Kunci Jawaban & Review
                                                                     Pembahasan</a></li>
@@ -199,6 +201,17 @@
                                                                         class="text-danger">*</span></label>
                                                                 <textarea class="contentJawabanD" id="JawabanD" required name="jawabanD">{{ $soal ? $row->jawaban_d : old('jawabanD') }}</textarea>
                                                                 @error('jawabanD')
+                                                                    <small class="text-danger">*
+                                                                        {{ $message }}</small>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane" id="jawabanE">
+                                                            <div class="form-group">
+                                                                <label for="JawabanE">Jawaban E <span
+                                                                        class="text-danger">*</span></label>
+                                                                <textarea class="contentJawabanE" id="JawabanE" required name="jawabanE">{{ $soal ? $row->jawaban_e : old('jawabanE') }}</textarea>
+                                                                @error('jawabanE')
                                                                     <small class="text-danger">*
                                                                         {{ $message }}</small>
                                                                 @enderror

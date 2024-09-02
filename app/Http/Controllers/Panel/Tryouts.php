@@ -332,6 +332,7 @@ class Tryouts extends Controller
             $soal->jawaban_b = $request->input('jawabanB');
             $soal->jawaban_c = $request->input('jawabanC');
             $soal->jawaban_d = $request->input('jawabanD');
+            $soal->jawaban_e = $request->input('jawabanE');
             $soal->kunci_jawaban = $request->input('kunciJawaban');
             $soal->klasifikasi_soal_id = htmlspecialchars($request->input('klasifikasi'));
             $soal->review_pembahasan = $request->input('reviewPembahasan');
@@ -364,6 +365,7 @@ class Tryouts extends Controller
             $soal->jawaban_b = $request->input('jawabanB');
             $soal->jawaban_c = $request->input('jawabanC');
             $soal->jawaban_d = $request->input('jawabanD');
+            $soal->jawaban_e = $request->input('jawabanE');
             $soal->kunci_jawaban = $request->input('kunciJawaban');
             $soal->klasifikasi_soal_id = htmlspecialchars($request->input('klasifikasi'));
             $soal->review_pembahasan = $request->input('reviewPembahasan');

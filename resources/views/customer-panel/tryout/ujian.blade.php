@@ -111,6 +111,12 @@
                                                             @endif>
                                                         <span>d. {{ strip_tags($ujian->jawaban_d) }}</span>
                                                     </label>
+                                                    <label class="rdiobox">
+                                                        <input name="jawaban" type="radio" id="Jawaban" value="E"
+                                                            @if (isset($jawabanTersimpan[$ujian->id])) @if ($jawabanTersimpan[$ujian->id] == 'E') checked @endif
+                                                            @endif>
+                                                        <span>e. {{ strip_tags($ujian->jawaban_e) }}</span>
+                                                    </label>
 
                                                     @error('jawaban')
                                                         <small class="text-danger">{{ $message }}</small>
