@@ -328,7 +328,6 @@ class Tryouts extends Controller
                 $soal->gambar = $fileHashname;
             }
             $soal->jawaban_a = $request->input('jawabanA');
-            $soal->jawaban_a = $request->input('jawabanA');
             $soal->jawaban_b = $request->input('jawabanB');
             $soal->jawaban_c = $request->input('jawabanC');
             $soal->jawaban_d = $request->input('jawabanD');
@@ -360,7 +359,6 @@ class Tryouts extends Controller
                 Storage::disk('public')->delete('public/soal' . $soal->gambar);
                 $soal->gambar = $fileHashname;
             }
-            $soal->jawaban_a = $request->input('jawabanA');
             $soal->jawaban_a = $request->input('jawabanA');
             $soal->jawaban_b = $request->input('jawabanB');
             $soal->jawaban_c = $request->input('jawabanC');
