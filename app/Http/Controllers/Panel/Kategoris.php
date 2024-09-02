@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Panel\KategoriRequest;
+use App\Models\ProdukTryout;
 
 class Kategoris extends Controller
 {
@@ -124,6 +125,10 @@ class Kategoris extends Controller
     {
         $kategori = KategoriProduk::findOrFail(Crypt::decrypt($request->id));
         if ($kategori) {
+            $produkTryout = ProdukTryout::where('kategori_produk_id', $kategori->id);
+            if ($produkTryout) {
+                return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('error', 'Kategori sudah dipakai tryout, tidak dapat dihapus !');
+            }
             $users = Auth::user();
             $kategori->delete();
             // Simpan logs aktivitas pengguna
