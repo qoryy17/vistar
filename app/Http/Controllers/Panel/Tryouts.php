@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Panel\SoalRequest;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Panel\ProdukTryoutRequest;
+use App\Models\OrderTryout;
 
 class Tryouts extends Controller
 {
@@ -200,28 +201,36 @@ class Tryouts extends Controller
         }
     }
 
-    public function hapusProdukTryout(Request $request): RedirectResponse
+    public function hapusProdukTryout(Request $request) //: RedirectResponse
     {
         $produkTryout = ProdukTryout::findOrFail(Crypt::decrypt($request->id));
         if ($produkTryout) {
             $users = Auth::user();
             $pengaturanTryout = PengaturanTryout::findOrFail($produkTryout->pengaturan_tryout_id);
+            $orderTryout = OrderTryout::where('produk_tryout_id', $produkTryout->id)->first();
+            $limitTryout = LimitTryout::where('produk_tryout_id', $produkTryout->id)->first();
 
-            if (!$pengaturanTryout) {
-                return Redirect::route('tryouts.index')->with('error', 'ID pengaturan tidak ditemukan !');
-            }
+            if (!$orderTryout and !$limitTryout) {
+                if (!$pengaturanTryout) {
+                    return Redirect::route('tryouts.index')->with('error', 'ID pengaturan tidak ditemukan !');
+                }
 
-            $soalUjian = DB::table('soal_ujian')->where('kode_soal', '=', $produkTryout->kode)->first();
-            if (!$soalUjian) {
-                return Redirect::route('tryouts.index')->with('error', 'Soal tidak ditemukan !');
+                $soalUjian = DB::table('soal_ujian')->where('kode_soal', $produkTryout->kode_soal)->first();
+
+                if (!$soalUjian) {
+                    return Redirect::route('tryouts.index')->with('error', 'Soal tidak ditemukan !');
+                }
+                $soalUjian->delete();
+                $produkTryout->delete();
+                $pengaturanTryout->delete();
+                DB::table('soal_ujian')->where('kode_soal', '=', $produkTryout->kode)->delete();
+                // Simpan logs aktivitas pengguna
+                $logs = $users->name . ' telah menghapus produk tryout dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
+                RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+                return Redirect::route('tryouts.index')->with('message', 'Produk tryout berhasil dihapus !');
+            } else {
+                return Redirect::route('tryouts.index')->with('error', 'Produk sudah diorder tidak dapat dihapus !');
             }
-            $produkTryout->delete();
-            $pengaturanTryout->delete();
-            DB::table('soal_ujian')->where('kode_soal', '=', $produkTryout->kode)->delete();
-            // Simpan logs aktivitas pengguna
-            $logs = $users->name . ' telah menghapus produk tryout dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
-            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::route('tryouts.index')->with('message', 'Produk tryout berhasil dihapus !');
         }
         return Redirect::route('tryouts.index')->with('error', 'Produk tryout gagal dihapus !');
     }
