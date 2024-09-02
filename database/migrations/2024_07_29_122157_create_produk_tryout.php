@@ -75,7 +75,7 @@ return new class extends Migration
 
             $table->foreign('pengaturan_tryout_id')->references('id')->on('pengaturan_tryout')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('set null');
-            $table->foreign('kategori_produk_id')->references('id')->on('kategori_produk')->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('kategori_produk_id')->references('id')->on('kategori_produk')->onDelete('restrict')->onUpdate('cascade');
         });
 
         Schema::create('order_tryout', function (Blueprint $table) {

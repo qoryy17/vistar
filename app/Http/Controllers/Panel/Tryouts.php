@@ -223,7 +223,7 @@ class Tryouts extends Controller
                 $soalUjian->delete();
                 $produkTryout->delete();
                 $pengaturanTryout->delete();
-                DB::table('soal_ujian')->where('kode_soal', '=', $produkTryout->kode)->delete();
+                // DB::table('soal_ujian')->where('kode_soal', '=', $produkTryout->kode)->delete();
                 // Simpan logs aktivitas pengguna
                 $logs = $users->name . ' telah menghapus produk tryout dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
