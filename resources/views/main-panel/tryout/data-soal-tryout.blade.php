@@ -56,7 +56,7 @@
                                             @endphp
                                             @foreach ($soal as $row)
                                                 <tr>
-                                                    <td style="vertical-align: top;">1</td>
+                                                    <td style="vertical-align: top;">{{ $no }}</td>
                                                     <td style="white-space: normal;vertical-align: top;">
                                                         <p style="text-align: justify; margin: 0px; padding: 0px;">
                                                             {!! $row->soal !!}

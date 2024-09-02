@@ -379,9 +379,9 @@ class Tryouts extends Controller
         if ($soal->save()) {
             // Simpan logs aktivitas pengguna
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::route('tryouts.soal', ['id' => Crypt::encrypt($request->input('kodeSoal'))])->with('message', $message);
+            return Redirect::route('tryouts.soal', ['id' => $request->input('kodeSoal')])->with('message', $message);
         } else {
-            return Redirect::route('tryouts.soal', ['id' => Crypt::encrypt($request->input('kodeSoal'))])->with('error', $error);
+            return Redirect::route('tryouts.soal', ['id' => $request->input('kodeSoal')])->with('error', $error);
         }
     }
 
