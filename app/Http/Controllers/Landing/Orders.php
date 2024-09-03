@@ -156,7 +156,7 @@ class Orders extends Controller
         $hasnameBuktiFollow = $fileBuktiFollow->hashName();
 
         $fileUploadBuktiShare = $fileBuktiShare->storeAs('public\share-follow', $hasnameBuktiShare);
-        $fileUploadBuktiFollow = $fileBuktiShare->storeAs('public\share-follow', $hasnameBuktiFollow);
+        $fileUploadBuktiFollow = $fileBuktiFollow->storeAs('public\share-follow', $hasnameBuktiFollow);
 
         if (!$fileUploadBuktiShare and $fileUploadBuktiFollow) {
             return redirect()->back()->with('errorMessage', 'Unggah bukti share dan follow gagal !')->withInput();
