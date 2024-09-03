@@ -69,8 +69,8 @@ Route::controller(MainWebsite::class, VerifyCsrfToken::class)->group(function ()
     Route::get('/produk-berbayar', 'produkBerbayar')->name('mainweb.produk-berbayar');
     Route::get('/produk-gratis', 'produkGratis')->name('mainweb.produk-gratis');
     Route::get('/search-tryout-berbayar/search', 'searchProdukBerbayar')->name('mainweb.search-produk-berbayar');
-    Route::get('/search-tryout-gratis/search', 'searchProdukGratis')->name('mainweb.search-produk-gratis');
-    Route::post('/pesan-tryout-berbayar', 'pesanTryoutBerbayar')->name('mainweb.pesan-tryout-berbayar')->middleware(ProdukAuth::class);
+    Route::get('/search-tryout-gratis/search', 'searchProdukGratis')->name('mainweb.search-produk-gratis')->middleware(PanelRouting::class);
+    Route::post('/pesan-tryout-berbayar', 'pesanTryoutBerbayar')->name('mainweb.pesan-tryout-berbayar')->middleware(PanelRouting::class);
     Route::get('/keranjang-pesanan', 'keranjangPesanan')->name('mainweb.keranjang')->middleware(PanelRouting::class);
     Route::delete('/hapus-item-pesanan', 'hapusItemPesanan')->name('mainweb.hapus-item')->middleware(PanelRouting::class);
 
