@@ -139,69 +139,6 @@ class Orders extends Controller
         }
     }
 
-    protected function simpanOrder($sendDataOrder)
-    {
-        // Cegah pesan produk yang sama
-        $checkOrder = OrderTryout::where('produk_tryout_id', $sendDataOrder['produk_id'])->where('customer_id', $sendDataOrder['customer_id'])->first();
-        if ($checkOrder) {
-            return response()->json([
-                'status' => 'error',
-                'meesage' => 'Tidak bisa memesan produk yang sama !'
-            ]);
-        }
-
-        // Buat payment id
-        $orderID = Str::uuid();
-        $payID = Str::uuid();
-        // Buat Order
-        $buatOrder = new OrderTryout();
-
-        $buatOrder->id = $orderID;
-        $buatOrder->faktur_id = 'F' . rand(1, 999);
-        $buatOrder->customer_id = $sendDataOrder['customer_id'];
-        $buatOrder->nama = $sendDataOrder['nama'];
-        $buatOrder->produk_tryout_id = $sendDataOrder['produk_id'];
-        $buatOrder->payment_id = $payID;
-
-        $payment = new Payment();
-        $payment->id = $payID;
-        $payment->customer_id = $sendDataOrder['customer_id'];
-        $payment->ref_order_id = $sendDataOrder['produk_id'];
-        $payment->nominal = $sendDataOrder['nominal'];
-        $payment->status = 'success';
-        $payment->snap_token = $sendDataOrder['snap_token'];
-
-        try {
-            if ($payment->save() and $buatOrder->save()) {
-                // Hapus keranjang
-                $keranjang = KeranjangOrder::findOrFail($sendDataOrder['keranjang_id']);
-                if ($keranjang) {
-                    $keranjang->delete();
-                }
-
-                $order = DB::table('order_tryout')->select(
-                    'order_tryout.*',
-                    'produk_tryout.nama_tryout',
-                    'produk_tryout.keterangan',
-                    'pengaturan_tryout.harga',
-                    'pengaturan_tryout.harga_promo',
-                    'pengaturan_tryout.masa_aktif',
-                    'payment.nominal'
-                )->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
-                    ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                    ->leftJoin('payment', 'produk_tryout.id', '=', 'payment.ref_order_id')
-                    ->where('order_tryout.id', '=', $orderID)
-                    ->where('customer_id', '=', Auth::user()->customer_id)->first();
-
-                // Kirim email invoice
-                Mail::to(Auth::user()->email)->send(new EmailFaktur($order));
-            } else {
-            }
-        } catch (\Throwable $th) {
-            return response()->json($th);
-        }
-    }
-
     public function daftarGratis(TryoutGratisRequest $request): RedirectResponse
     {
         // Cek apakah sudah pernah coba gratis
@@ -235,7 +172,7 @@ class Orders extends Controller
         $limitTryout->status_validasi = 'Menunggu';
 
         if ($limitTryout->save()) {
-            return redirect()->route('mainweb.daftar-tryout-gratis')->with('successMessage', 'Pendaftaran berhasil silahkan cek email secara berkala untuk informasi persetujuan dari kami !');
+            return redirect()->route('mainweb.daftar-tryout-gratis')->with('successMessage', 'Pendaftaran berhasil silahkan cek email secara berkala untuk informasi persetujuan dari kami. Maksimal verifikasi 1x24 oleh Admin !');
         } else {
             return redirect()->back()->with('errorMessage', 'Pendaftaran gagal, silahkan coba lagi !')->withInput();
         }
