@@ -42,12 +42,12 @@ class BerandaUI
 
     public static function sumTryout()
     {
-        return Payment::sum('nominal');
+        return Payment::where('status_transaksi', 'paid')->sum('nominal');
     }
 
     public static function sumTryoutPerhari()
     {
-        return Payment::whereDate('created_at', today())->sum('nominal');
+        return Payment::where('status_transaksi', 'paid')->whereDate('created_at', today())->sum('nominal');
     }
 
     public static function web()
