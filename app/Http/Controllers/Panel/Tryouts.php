@@ -420,6 +420,7 @@ class Tryouts extends Controller
             'review_pembahasan' => $pengaturanTryout->review_pembahasan,
             'ulang_ujian' => $pengaturanTryout->ulang_ujian,
             'masa_aktif' => $pengaturanTryout->masa_aktif,
+            'passing_grade' => $pengaturanTryout->passing_grade,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')
         ]);
@@ -456,6 +457,7 @@ class Tryouts extends Controller
                     'kunci_jawaban' => $soalDuplikat->kunci_jawaban,
                     'klasifikasi_soal_id' => $soalDuplikat->klasifikasi_soal_id,
                     'review_pembahasan' => $soalDuplikat->review_pembahasan,
+                    'poin' => $soalDuplikat->poin,
                     'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s')
                 ]);
@@ -473,6 +475,7 @@ class Tryouts extends Controller
                     'kunci_jawaban' => $soalDuplikat->kunci_jawaban,
                     'klasifikasi_soal_id' => $soalDuplikat->klasifikasi_soal_id,
                     'review_pembahasan' => $soalDuplikat->review_pembahasan,
+                    'poin' => $soalDuplikat->poin,
                     'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s')
                 ]);
