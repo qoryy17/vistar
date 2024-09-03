@@ -142,7 +142,7 @@ class Orders extends Controller
     public function daftarGratis(TryoutGratisRequest $request): RedirectResponse
     {
         // Cek apakah sudah pernah coba gratis
-        $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->first();
+        $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Disetujui')->first();
         if ($cekGratisan) {
             return redirect()->route('mainweb.daftar-tryout-gratis')->with('errorMessage', 'Pendaftaran tryout gratis hanya boleh 1 kali !');
         }

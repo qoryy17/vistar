@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Panel\SoalRequest;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Panel\ProdukTryoutRequest;
+use App\Jobs\SendAcceptTryoutGratisJob;
+use App\Jobs\SendDeniedTryoutGratisJob;
 use App\Mail\EmailAcceptTryoutGratis;
 use App\Mail\EmailDeniedTryoutGratis;
 use App\Models\OrderTryout;
@@ -628,19 +630,18 @@ class Tryouts extends Controller
         $permohonan = LimitTryout::findOrFail(Crypt::decrypt($request->id));
         $permohonan->status_validasi = htmlspecialchars($request->input('validasi'));
         $emailCustomer = User::where('customer_id', $permohonan->customer_id)->first();
-        // $tryout = ProdukTryout::find($permohonan->produk_tryout_id);
-
+        $email = $emailCustomer->email;
         if ($permohonan->save()) {
             // Simpan logs aktivitas pengguna
             $logs = Auth::user()->name . ' telah memvalidasi permohonan tryout gratis dengan ID ' . Crypt::decrypt($request->id) . 'aksi validasi :' . htmlspecialchars($request->input('validasi')) . ' waktu tercatat :  ' . now();
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
 
             if (htmlspecialchars($request->input('validasi')) == 'Disetujui') {
-                // Kirim email pengajuan diterima
-                Mail::to($emailCustomer->email)->send(new EmailAcceptTryoutGratis());
+                // Job send email notification ke user , tryout gratis disetujui !
+                SendAcceptTryoutGratisJob::dispatch($email);
             } elseif (htmlspecialchars($request->input('validasi')) == 'Ditolak') {
-                // Kirim email pengajuan ditolak
-                Mail::to($emailCustomer->email)->send(new EmailDeniedTryoutGratis());
+                // Job send email notification ke user , tryout gratis ditolak !
+                SendDeniedTryoutGratisJob::dispatch($email);
             }
             return Redirect::route('tryouts.pengajuan-tryout-gratis')->with('message', 'Validasi berhasil !');
         } else {

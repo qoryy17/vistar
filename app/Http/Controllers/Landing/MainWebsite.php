@@ -209,7 +209,10 @@ class MainWebsite extends Controller
         // Cek apakah sudah pernah mengajukan permohonan
         $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Disetujui')->first();
         if ($cekGratisan) {
-            return redirect()->route('site.tryout-gratis');
+            if ($cekGratisan->produk_tryout_id != null) {
+                return redirect()->route('site.tryout-gratis');
+            }
+            return redirect()->route('mainweb.produk-gratis');
         }
         $data  = [
             'title' => 'Coba Tryout Gratis',
