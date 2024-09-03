@@ -639,13 +639,15 @@ class Tryouts extends Controller
             if (htmlspecialchars($request->input('validasi')) == 'Disetujui') {
                 // Job send email notification ke user , tryout gratis disetujui !
                 SendAcceptTryoutGratisJob::dispatch($email);
+                $message = 'Validasi berhasil disetujui !';
             } elseif (htmlspecialchars($request->input('validasi')) == 'Ditolak') {
                 // Job send email notification ke user , tryout gratis ditolak !
                 SendDeniedTryoutGratisJob::dispatch($email);
+                $message = 'Validasi berhasil ditolak !';
             }
-            return Redirect::route('tryouts.pengajuan-tryout-gratis')->with('message', 'Validasi berhasil !');
+            return Redirect::route('tryouts.pengajuan-tryout-gratis')->with('message', $message);
         } else {
-            return Redirect::route('tryouts.pengajuan-tryout-gratis')->with('error', 'Validasi gagal berhasil !');
+            return Redirect::route('tryouts.pengajuan-tryout-gratis')->with('error', 'Validasi berhasil !');
         }
     }
 
