@@ -159,8 +159,11 @@ class MainWebsite extends Controller
     {
         // Check apakah pernah memesan produk yang sama
         $tryout = OrderTryout::where('produk_tryout_id', Crypt::decrypt($request->idProdukTryout))->where('customer_id', Auth::user()->customer_id)->first();
+        $keranjang = KeranjangOrder::where('produk_tryout_id', Crypt::decrypt($request->idProdukTryout))->where('customer_id', Auth::user()->customer_id)->first();
         if ($tryout) {
-            return redirect()->route('mainweb.keranjang')->with('errorMessage', 'Tidak dapat memesan produk yang sama sebelumnya !');
+            return Redirect::route('mainweb.keranjang')->with('errorMessage', 'Tidak dapat memesan produk yang sama sebelumnya !');
+        } elseif ($keranjang) {
+            return Redirect::route('mainweb.keranjang')->with('errorMessage', 'Tidak dapat menambahkan produk yang sama pada keranjang pesanan !');
         }
 
         $keranjangOrder = new KeranjangOrder();
