@@ -88,7 +88,7 @@
                                                     Masa Aktif
                                                 </td>
                                                 <td>
-                                                    {{ $pengaturan->masa_aktif }} Bulan
+                                                    {{ $pengaturan->masa_aktif }} Hari
                                                 </td>
                                             </tr>
                                             <tr>

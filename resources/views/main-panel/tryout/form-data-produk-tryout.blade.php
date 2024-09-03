@@ -200,7 +200,7 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group">
-                                                <label for="MasaAktif">Masa Aktif Tryout / Bulan <span
+                                                <label for="MasaAktif">Masa Aktif Tryout / Hari <span
                                                         class="text-danger">*</span></label>
                                                 <input type="text" inputmode="numeric" required id="MasaAktif"
                                                     autocomplete="off" class="form-control" name="masaAktif"

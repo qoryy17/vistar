@@ -30,7 +30,7 @@
                                 ->first();
 
                             $date = \Carbon\Carbon::parse($tryout->created_at);
-                            $newDate = $date->addMonths($tryout->masa_aktif);
+                            $newDate = $date->addDays($tryout->masa_aktif);
                             $masaAktif = now()->diffInDays($newDate, false);
                         @endphp
                         @if ($masaAktif > 0)
