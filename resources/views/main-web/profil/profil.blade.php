@@ -33,8 +33,7 @@
                                                  {{ $customer ? $customer->nama_lengkap : Auth::user()->name }}
                                              </h3>
                                              <small class="text-muted h6 me-2">{{ $customer ? $customer->pendidikan : '' }}
-                                                 {{ $customer ? $customer->jurusan : '' }} - Kode Referral :
-                                                 <strong class="text-primary"> {{ Auth::user()->kode_referral }}</strong>
+                                                 {{ $customer ? $customer->jurusan : '' }}
                                              </small>
 
                                              <form action="{{ route('profils.ubah-foto') }}" method="POST"
