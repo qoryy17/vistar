@@ -272,6 +272,13 @@
                                                                         @endif>
                                                                         D
                                                                     </option>
+                                                                    <option value="E"
+                                                                        @if ($soal) @if ($row->kunci_jawaban == 'E') selected @endif
+                                                                    @else
+                                                                        @if (old('kunciJawaban') == 'E') selected @endif
+                                                                        @endif>
+                                                                        E
+                                                                    </option>
                                                                 </select>
                                                                 @error('kunciJawaban')
                                                                     <small class="text-danger">*
