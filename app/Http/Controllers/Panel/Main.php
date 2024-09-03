@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Helpers\Waktu;
 use App\Helpers\BerandaUI;
 use App\Helpers\Notifikasi;
+use App\Models\LimitTryout;
+use Illuminate\Http\Request;
+use App\Models\PengaturanWeb;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\LimitTryout;
-use App\Models\PengaturanWeb;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class Main extends Controller
@@ -18,6 +19,7 @@ class Main extends Controller
     {
         $data = [
             'page_title' => session('user')->name,
+            'sesiWaktu' => Waktu::sesiWaktu(),
             'breadcumb' => 'Beranda Vistar Indonesia',
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
