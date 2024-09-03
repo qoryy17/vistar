@@ -48,15 +48,13 @@
               </div><!--end row-->
               <div class="row">
                   <div class="col-lg-6 col-md-6 mt-4 pt-2">
-                      <br>
-                      <pre><div id="result-json">JSON result will appear here after payment:<br></div></pre>
-                      {{-- <div id="snap-container"></div> --}}
+
                   </div>
                   <div class="col-lg-6 col-md-6 ms-auto mt-4 pt-2">
                       <div class="table-responsive bg-white rounded shadow">
                           <table class="table table-center table-padding mb-0">
                               <tbody>
-                                  <tr class="bg-light">
+                                  {{-- <tr class="bg-light">
                                       <td class="h6 ps-4 py-3" style="vertical-align: top;">
                                           <button id="buttonReferral" class="btn btn-pills btn-soft-primary">Pakai
                                               Kode</button>
@@ -68,7 +66,7 @@
                                               referral
                                               valid !</small>
                                       </td>
-                                  </tr>
+                                  </tr> --}}
                                   <tr class="bg-light">
                                       <td class="h6 ps-4 py-3">Total</td>
                                       <td class="text-end fw-bold pe-4">
