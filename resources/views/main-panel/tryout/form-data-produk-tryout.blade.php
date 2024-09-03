@@ -275,7 +275,7 @@
                                                     @endif <span class="text-danger">*</span></label>
                                                 <input type="file" id="Thumbnail" class="dropify" data-height="190"
                                                     name="thumbnail"
-                                                    data-default-file= "{{ $tryout ? asset('tryout/' . $tryout->thumbnail) : '' }}" />
+                                                    data-default-file= "{{ $tryout ? asset('storage/tryout/' . $tryout->thumbnail) : '' }}" />
                                                 @error('thumbnail')
                                                     <small class="text-danger">* {{ $message }}</small>
                                                 @enderror
