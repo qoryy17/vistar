@@ -266,7 +266,8 @@
                                      </div><!--end col-->
                                      <div class="col-md-6">
                                          <div class="mb-3">
-                                             <label class="form-label" for="jurusan">Program Studi/ Jurusan</label>
+                                             <label class="form-label" for="jurusan">Program Studi/ Jurusan
+                                                 <small>(Silahkan isi sendiri)</small></label>
                                              <div class="form-icon position-relative">
                                                  <i data-feather="file" class="fea icon-sm icons"></i>
                                                  <input name="jurusan" id="jurusan" type="text"
