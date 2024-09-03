@@ -33,68 +33,72 @@
                             <strong>Informasi !</strong> Dapatkan akses menyeluruh untuk paket tryout CPNS, PPPK, dan
                             Kedinasan dengan hanya sekali beli !
                         </div>
+                        @php
+                            $no = 1;
+                            $latestTestimoni = $testimoni->first();
+                        @endphp
+                        @if ($latestTestimoni)
+                            {{-- Testimoni --}}
+                            <div class="card custom-card d-none d-sm-block">
+                                <div class="card-body">
+                                    <div class="row row-sm">
+                                        <div class="col-12">
+                                            <div class="carousel slide" data-bs-ride="carousel" id="slideTestimoni">
 
-                        {{-- Testimoni --}}
-                        <div class="card custom-card d-none d-sm-block">
-                            <div class="card-body">
-                                <div class="row row-sm">
-                                    <div class="col-12">
-                                        <div class="carousel slide" data-bs-ride="carousel" id="slideTestimoni">
-                                            @php
-                                                $no = 1;
-                                                $latestTestimoni = $testimoni->first();
-                                            @endphp
-                                            <ol class="carousel-indicators">
-                                                @if ($latestTestimoni)
-                                                    <li class="active" data-bs-slide-to="0"
-                                                        data-bs-target="#slideTestimoni">
-                                                    </li>
-                                                    @foreach ($testimoni->get() as $slideTestimoni)
-                                                        <li data-bs-slide-to="{{ $no }}"
-                                                            data-bs-target="#slideTestimoni"></li>
-                                                        @php
-                                                            $no++;
-                                                        @endphp
-                                                    @endforeach
-                                                @endif
-                                            </ol>
-                                            <div class="carousel-inner bg-dark">
-                                                @if ($latestTestimoni)
-                                                    <div class="carousel-item active">
-                                                        <img alt="img" class="d-block w-100 op-3"
-                                                            src="{{ url('resources/bg-img.jpg') }}">
-                                                        <div class="carousel-caption d-none d-md-block">
-                                                            <h5>{{ $latestTestimoni->nama_lengkap }}</h5>
-                                                            <p class="tx-14">
-                                                                {{ $latestTestimoni->testimoni }}
-                                                            </p>
-                                                            @for ($i = 0; $i < $latestTestimoni->rating; $i++)
-                                                                <i class="fa fa-star" style="color: rgb(255, 207, 16);"></i>
-                                                            @endfor
-                                                        </div>
-                                                    </div>
-                                                    @foreach ($testimoni->get() as $slideTestimoni)
-                                                        <div class="carousel-item">
+                                                <ol class="carousel-indicators">
+                                                    @if ($latestTestimoni)
+                                                        <li class="active" data-bs-slide-to="0"
+                                                            data-bs-target="#slideTestimoni">
+                                                        </li>
+                                                        @foreach ($testimoni->get() as $slideTestimoni)
+                                                            <li data-bs-slide-to="{{ $no }}"
+                                                                data-bs-target="#slideTestimoni"></li>
+                                                            @php
+                                                                $no++;
+                                                            @endphp
+                                                        @endforeach
+                                                    @endif
+                                                </ol>
+                                                <div class="carousel-inner bg-dark">
+                                                    @if ($latestTestimoni)
+                                                        <div class="carousel-item active">
                                                             <img alt="img" class="d-block w-100 op-3"
                                                                 src="{{ url('resources/bg-img.jpg') }}">
                                                             <div class="carousel-caption d-none d-md-block">
-                                                                <h5>{{ $slideTestimoni->nama_lengkap }}</h5>
-                                                                <p class="tx-14">{{ $slideTestimoni->testimoni }}
+                                                                <h5>{{ $latestTestimoni->nama_lengkap }}</h5>
+                                                                <p class="tx-14">
+                                                                    {{ $latestTestimoni->testimoni }}
                                                                 </p>
-                                                                @for ($i = 0; $i < $slideTestimoni->rating; $i++)
+                                                                @for ($i = 0; $i < $latestTestimoni->rating; $i++)
                                                                     <i class="fa fa-star"
                                                                         style="color: rgb(255, 207, 16);"></i>
                                                                 @endfor
                                                             </div>
                                                         </div>
-                                                    @endforeach
-                                                @endif
+                                                        @foreach ($testimoni->get() as $slideTestimoni)
+                                                            <div class="carousel-item">
+                                                                <img alt="img" class="d-block w-100 op-3"
+                                                                    src="{{ url('resources/bg-img.jpg') }}">
+                                                                <div class="carousel-caption d-none d-md-block">
+                                                                    <h5>{{ $slideTestimoni->nama_lengkap }}</h5>
+                                                                    <p class="tx-14">{{ $slideTestimoni->testimoni }}
+                                                                    </p>
+                                                                    @for ($i = 0; $i < $slideTestimoni->rating; $i++)
+                                                                        <i class="fa fa-star"
+                                                                            style="color: rgb(255, 207, 16);"></i>
+                                                                    @endfor
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
+
                         <div class="row">
                             <div class="col-md-6">
                                 <a href="{{ route('mainweb.produk-berbayar') }}">
