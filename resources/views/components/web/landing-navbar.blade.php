@@ -63,6 +63,7 @@
                 <li><a href="{{ route('mainweb.produk-berbayar') }}" class="sub-menu-item">Produk</a></li>
                 <li><a href="{{ route('mainweb.tentang') }}" class="sub-menu-item">Tentang</a></li>
                 <li><a href="{{ route('mainweb.kontak') }}" class="sub-menu-item">Kontak</a></li>
+
                 @if (Auth::check())
                     @if (Auth::user()->role == 'Customer')
                         <li class="has-submenu parent-parent-menu-item">
@@ -93,8 +94,9 @@
                             </ul>
                         </li>
                     @endif
+                @else
+                    <li><a href="{{ route('auth.signup') }}" class="sub-menu-item">Daftar</a></li>
                 @endif
-
             </ul><!--end navigation menu-->
         </div><!--end navigation-->
     </div><!--end container-->
