@@ -146,14 +146,13 @@
           $('#pay-button').click(function(event) {
               event.preventDefault();
 
-              const referralCodeInput = document.getElementById('kodeReferral');
-              const referralCode = referralCodeInput.value.trim();
+              // const referralCodeInput = document.getElementById('kodeReferral');
+              // const referralCode = referralCodeInput.value.trim();
 
               $.post("{{ route('orders.pay-order') }}", {
                       _method: 'POST',
                       _token: '{{ csrf_token() }}',
-                      id: "{{ Crypt::encrypt($order->id) }}",
-                      referralCode: referralCode,
+                      id: "{{ Crypt::encrypt($order->id) }}"
                   },
                   function(data, status) {
 
