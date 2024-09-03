@@ -18,7 +18,7 @@ class Main extends Controller
     {
         $data = [
             'page_title' => session('user')->name,
-            'breadcumb' => 'Beranda Vi Star Indonesia',
+            'breadcumb' => 'Beranda Vistar Indonesia',
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
             'countStatistikCPNS' => BerandaUI::statistikTryout('CPNS'),
