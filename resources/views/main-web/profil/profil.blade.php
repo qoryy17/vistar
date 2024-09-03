@@ -76,7 +76,8 @@
                                  <div class="row mt-4">
                                      <div class="col-md-6">
                                          <div class="mb-3">
-                                             <label for="namaLengkap" class="form-label">Nama Lengkap</label>
+                                             <label for="namaLengkap" class="form-label">Nama Lengkap <span
+                                                     class="text-danger">*</span></label>
                                              <div class="form-icon position-relative">
                                                  <i data-feather="user" class="fea icon-sm icons"></i>
                                                  <input name="namaLengkap" id="namaLengkap" type="text"
@@ -91,7 +92,8 @@
                                      </div><!--end col-->
                                      <div class="col-md-6">
                                          <div class="mb-3">
-                                             <label for="email" class="form-label">Email</label>
+                                             <label for="email" class="form-label">Email <span
+                                                     class="text-danger">*</span></label>
                                              <div class="form-icon position-relative">
                                                  <i data-feather="mail" class="fea icon-sm icons"></i>
                                                  <input name="email" id="email" type="email"
@@ -103,7 +105,8 @@
                                      </div><!--end col-->
                                      <div class="col-md-6">
                                          <div class="mb-3">
-                                             <label for="tanggalLahir" class="form-label">Tanggal Lahir</label>
+                                             <label for="tanggalLahir" class="form-label">Tanggal Lahir <span
+                                                     class="text-danger">*</span></label>
                                              <div class="form-icon position-relative">
                                                  <i data-feather="calendar" class="fea icon-sm icons"></i>
                                                  <input name="tanggalLahir" id="tanggalLahir" type="text" required
@@ -117,7 +120,8 @@
                                      </div><!--end col-->
                                      <div class="col-md-6">
                                          <div class="mb-3">
-                                             <label for="jenisKelamin" class="form-label">Jenis Kelamin</label>
+                                             <label for="jenisKelamin" class="form-label">Jenis Kelamin <span
+                                                     class="text-danger">*</span></label>
                                              <div class="form-icon position-relative">
                                                  <i data-feather="user" class="fea icon-sm icons"></i>
                                                  <select name="jenisKelamin" id="jenisKelamin" class="form-control ps-5"
@@ -151,7 +155,8 @@
                                      </div><!--end col-->
                                      <div class="col-md-6">
                                          <div class="mb-3">
-                                             <label class="form-label" for="kontak">Kontak. :</label>
+                                             <label class="form-label" for="kontak">Kontak <span
+                                                     class="text-danger">*</span></label>
                                              <div class="form-icon position-relative">
                                                  <i data-feather="phone" class="fea icon-sm icons"></i>
                                                  <input name="kontak" id="kontak" type="number"
@@ -166,7 +171,8 @@
                                      </div><!--end col-->
                                      <div class="col-lg-12">
                                          <div class="mb-3">
-                                             <label class="form-label" for="alamat">Alamat</label>
+                                             <label class="form-label" for="alamat">Alamat <span
+                                                     class="text-danger">*</span></label>
                                              <div class="form-icon position-relative">
                                                  <i data-feather="map" class="fea icon-sm icons"></i>
                                                  <textarea name="alamat" autocomplete="off" id="alamat" rows="2" class="form-control ps-5"
@@ -179,7 +185,8 @@
                                      </div>
                                      <div class="col-md-6">
                                          <div class="mb-3">
-                                             <label class="form-label" for="select2-provinsi">Provinsi :</label>
+                                             <label class="form-label" for="select2-provinsi">Provinsi <span
+                                                     class="text-danger">*</span></label>
                                              <div class="form-icon position-relative">
                                                  <select name="provinsi" class="form-control" id="select2-provinsi"
                                                      required>
@@ -193,7 +200,8 @@
                                      </div><!--end col-->
                                      <div class="col-md-6">
                                          <div class="mb-3">
-                                             <label class="form-label" for="select2-kabupaten">Kota/Kabupaten :</label>
+                                             <label class="form-label" for="select2-kabupaten">Kota/Kabupaten <span
+                                                     class="text-danger">*</span></label>
                                              <div class="form-icon position-relative">
                                                  <select name="kotaKab" class="form-control" id="select2-kabupaten">
                                                      <option value="">Pilih Kota/Kabupaten</option>
@@ -206,7 +214,8 @@
                                      </div><!--end col-->
                                      <div class="col-md-6">
                                          <div class="mb-3">
-                                             <label class="form-label" for="select2-kecamatan">Kecamatan</label>
+                                             <label class="form-label" for="select2-kecamatan">Kecamatan <span
+                                                     class="text-danger">*</span></label>
                                              <div class="form-icon position-relative">
                                                  <select name="kecamatan" class="form-control" id="select2-kecamatan">
                                                      <option value="">Pilih Kota/Kabupaten</option>
@@ -219,7 +228,8 @@
                                      </div><!--end col-->
                                      <div class="col-md-6">
                                          <div class="mb-3">
-                                             <label class="form-label" for="pendidikan">Jenjang Pendidikan</label>
+                                             <label class="form-label" for="pendidikan">Jenjang Pendidikan <span
+                                                     class="text-danger">*</span></label>
                                              <div class="form-icon position-relative">
                                                  <select name="pendidikan" class="form-control" id="pendidikan">
                                                      <option value="">Pilih Pendidikan</option>
@@ -267,7 +277,7 @@
                                      <div class="col-md-6">
                                          <div class="mb-3">
                                              <label class="form-label" for="jurusan">Program Studi/ Jurusan
-                                                 <small>(Silahkan isi sendiri)</small></label>
+                                                 <small class="text-danger">* (Harap mengisi sendiri)</small></label>
                                              <div class="form-icon position-relative">
                                                  <i data-feather="file" class="fea icon-sm icons"></i>
                                                  <input name="jurusan" id="jurusan" type="text"
