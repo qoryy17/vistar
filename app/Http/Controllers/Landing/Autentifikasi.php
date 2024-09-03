@@ -56,8 +56,8 @@ class Autentifikasi extends Controller
                 session(['user' => $user]);
                 return redirect()->intended('/main/dashboard');
             }
-            // Jika bukan alihkan kehalaman utama landing website
-            return redirect()->intended('/');
+            // Jika bukan alihkan kehalaman produk berbayar
+            return redirect()->route('mainweb.produk-berbayar');
         }
         return back()->with('error', 'Username/Password salah !')->withInput();
     }

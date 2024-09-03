@@ -28,7 +28,11 @@ class GoogleOauth extends Controller
             $finduser = User::where('google_id', $user->id)->first();
             if ($finduser) {
                 Auth::login($finduser);
-                Auth::user();
+                $user = Auth::user();
+                if ($user->role == 'Customer') {
+                    // Jika customer alihkan kehalaman produk berbayar
+                    return redirect()->route('mainweb.produk-berbayar');
+                }
                 return redirect()->intended('/');
             }
 
