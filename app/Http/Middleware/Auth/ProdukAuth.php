@@ -40,7 +40,7 @@ class ProdukAuth
             is_null($user->jurusan) ||
             is_null($user->foto)
         ) {
-            return redirect()->route('mainweb.profil-saya')->with('profilMessage', 'Harap lengkapi profil terlebih dahulu sebelum melakukan pemesanan !!!');
+            return redirect()->route('mainweb.profil-saya')->with('profilMessage', 'Harap lengkapi profil terlebih dahulu !!!');
         }
         return $next($request);
     }

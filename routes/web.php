@@ -225,7 +225,7 @@ Route::middleware(PanelRouting::class)->group(function () {
 Route::middleware(PanelRouting::class)->group(function () {
     Route::controller(Site::class)->group(function () {
         Route::get('/site/dashboard', 'index')->name('site.main');
-        Route::get('/tryout-berbayar', 'tryoutBerbayar')->name('site.tryout-berbayar');
+        Route::get('/tryout-berbayar', 'tryoutBerbayar')->name('site.tryout-berbayar')->middleware(ProdukAuth::class);
         Route::get('/tryout-gratis', 'tryoutGratis')->name('site.tryout-gratis');
         Route::get('/event-tryout', 'eventTryout')->name('site.event-tryout');
 
