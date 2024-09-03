@@ -29,9 +29,11 @@ class Main extends Controller
             'countCustomer' => BerandaUI::customerTerdaftar(),
             'countCustomerPerhari' => BerandaUI::customerTerdaftarPerhari(),
             'countTryout' => BerandaUI::tryoutTerjual(),
-            'countTryoutPerhari' => BerandaUI::customerTerdaftarPerhari(),
-            'sumTryout' => BerandaUI::sumTryout(),
-            'sumTryoutPerhari' => BerandaUI::sumTryoutPerhari()
+            'countTryoutPerhari' => BerandaUI::tryoutTerjualPerhari(),
+            'sumTryoutPaid' => BerandaUI::sumTryoutPaid(),
+            'sumTryoutPerhariPaid' => BerandaUI::sumTryoutPerhariPaid(),
+            'sumTryoutPending' => BerandaUI::sumTryoutPending(),
+            'sumTryoutPerhariPending' => BerandaUI::sumTryoutPerhariPending()
         ];
 
         return view('main-panel.home.beranda', $data);

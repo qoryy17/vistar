@@ -22,12 +22,12 @@ class BerandaUI
 
     public static function tryoutTerjual()
     {
-        return OrderTryout::all()->count();
+        return OrderTryout::all()->where('status_order', 'paid')->count();
     }
 
     public static function tryoutTerjualPerhari()
     {
-        return OrderTryout::whereDate('created_at', today())->count();
+        return OrderTryout::whereDate('created_at', today())->where('status_order', 'paid')->count();
     }
 
     public static function statistikTryout($kategori = false)
@@ -36,18 +36,29 @@ class BerandaUI
             ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', 'produk_tryout.id')
             ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
             ->where('kategori_produk.judul', $kategori)
+            ->where('order_tryout.status_order', 'paid')
             ->whereNot('kategori_produk.status', 'Gratis')
             ->whereNot('kategori_produk.aktif', 'T');
     }
 
-    public static function sumTryout()
+    public static function sumTryoutPaid()
     {
         return Payment::where('status_transaksi', 'paid')->sum('nominal');
     }
 
-    public static function sumTryoutPerhari()
+    public static function sumTryoutPerhariPaid()
     {
         return Payment::where('status_transaksi', 'paid')->whereDate('created_at', today())->sum('nominal');
+    }
+
+    public static function sumTryoutPending()
+    {
+        return Payment::where('status_transaksi', 'pending')->sum('nominal');
+    }
+
+    public static function sumTryoutPerhariPending()
+    {
+        return Payment::where('status_transaksi', 'pending')->whereDate('created_at', today())->sum('nominal');
     }
 
     public static function web()

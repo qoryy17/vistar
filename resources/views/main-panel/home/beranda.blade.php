@@ -27,17 +27,39 @@
                 <div class="row sidemenu-height">
                     <div class="col-lg-8">
 
-                        <div class="card custom-card">
-                            <div class="card-body">
-                                <div class="card-order">
-                                    <label class="main-content-label mb-3 pt-1">Total Profit</label>
-                                    <h2 class="text-end"><i style="color: #0075B8;"
-                                            class="icon-size mdi mdi-poll-box float-start"></i>
-                                        <span class="font-weight-bold">{{ Number::currency($sumTryout, in: 'IDR') }}</span>
-                                    </h2>
-                                    <p class="mb-0 mt-4 text-muted">Profit Hari Ini<span
-                                            class="float-end">{{ Number::currency($sumTryoutPerhari, in: 'IDR') }}</span>
-                                    </p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card custom-card">
+                                    <div class="card-body">
+                                        <div class="card-order">
+                                            <label class="main-content-label mb-3 pt-1">Total Profit Pending</label>
+                                            <h2 class="text-end"><i style="color: #0075B8;"
+                                                    class="icon-size mdi mdi-poll-box float-start"></i>
+                                                <span
+                                                    class="font-weight-bold">{{ Number::currency($sumTryoutPending, in: 'IDR') }}</span>
+                                            </h2>
+                                            <p class="mb-0 mt-4 text-muted">Profit Pending Hari Ini<span
+                                                    class="float-end">{{ Number::currency($sumTryoutPerhariPending, in: 'IDR') }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card custom-card">
+                                    <div class="card-body">
+                                        <div class="card-order">
+                                            <label class="main-content-label mb-3 pt-1">Total Profit Masuk</label>
+                                            <h2 class="text-end"><i style="color: #0075B8;"
+                                                    class="icon-size mdi mdi-poll-box float-start"></i>
+                                                <span
+                                                    class="font-weight-bold">{{ Number::currency($sumTryoutPaid, in: 'IDR') }}</span>
+                                            </h2>
+                                            <p class="mb-0 mt-4 text-muted">Profit Masuk Hari Ini<span
+                                                    class="float-end">{{ Number::currency($sumTryoutPerhariPaid, in: 'IDR') }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
