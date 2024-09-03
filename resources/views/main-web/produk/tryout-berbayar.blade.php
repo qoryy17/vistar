@@ -133,7 +133,7 @@
                                      </li> --}}
                                      <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
                                              <i class="uil uil-check-circle align-middle"></i></span>Masa Aktif
-                                         {{ $row->masa_aktif }} Bulan
+                                         {{ $row->masa_aktif }} Hari
                                      </li>
                                  </ul>
 
