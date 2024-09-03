@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Panel\SoalRequest;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Panel\ProdukTryoutRequest;
+use App\Mail\EmailAcceptTryoutGratis;
+use App\Mail\EmailDeniedTryoutGratis;
 use App\Models\OrderTryout;
 
 class Tryouts extends Controller
@@ -626,7 +628,7 @@ class Tryouts extends Controller
         $permohonan = LimitTryout::findOrFail(Crypt::decrypt($request->id));
         $permohonan->status_validasi = htmlspecialchars($request->input('validasi'));
         $emailCustomer = User::where('customer_id', $permohonan->customer_id)->first();
-        $tryout = ProdukTryout::find($permohonan->produk_tryout_id)->first();
+        // $tryout = ProdukTryout::find($permohonan->produk_tryout_id);
 
         if ($permohonan->save()) {
             // Simpan logs aktivitas pengguna
@@ -634,8 +636,11 @@ class Tryouts extends Controller
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
 
             if (htmlspecialchars($request->input('validasi')) == 'Disetujui') {
-                // Kirim email invoice
-                Mail::to($emailCustomer->email)->send(new EmailValidasiTryoutGratis($tryout));
+                // Kirim email pengajuan diterima
+                Mail::to($emailCustomer->email)->send(new EmailAcceptTryoutGratis());
+            } elseif (htmlspecialchars($request->input('validasi')) == 'Ditolak') {
+                // Kirim email pengajuan ditolak
+                Mail::to($emailCustomer->email)->send(new EmailDeniedTryoutGratis());
             }
             return Redirect::route('tryouts.pengajuan-tryout-gratis')->with('message', 'Validasi berhasil !');
         } else {

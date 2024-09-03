@@ -44,18 +44,16 @@
                             style="padding: 8px; color: #0075B8;text-align: center; font-size: 16px; font-weight: 600;">
                             Selamat Pengajuan Tryout Gratis Anda Diterima <br>
                         </div>
-                        <div>
-                            <small>Tyrout Gratis : {{ $tryout->nama_tryout }}</small> <br>
-                            <small>Keterangan : {{ $tryout->keterangan }}</small>
-                        </div>
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 0 24px 15px; color: #8492a6;">
                         <div>
-                            Hanya bisa <span
+                            Hanya bisa pilih <span
                                 style="color: #fff; background-color: #0075B8; padding: 4px 8px; border-radius: 6px;">1
-                                kali</span> Ujian Tryout Gratis.
+                                kali</span> Ujian Tryout Gratis dan <span
+                                style="color: #fff; background-color: #0075B8; padding: 4px 8px; border-radius: 6px;">1
+                                paket</span> ujian tryout.
                         </div>
                     </td>
                 </tr>

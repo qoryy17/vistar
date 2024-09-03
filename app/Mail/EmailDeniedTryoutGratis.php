@@ -9,17 +9,16 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class EmailValidasiTryoutGratis extends Mailable
+class EmailDeniedTryoutGratis extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $tryout;
     /**
      * Create a new message instance.
      */
-    public function __construct($tryout)
+    public function __construct()
     {
-        $this->tryout = $tryout;
+        //
     }
 
     /**
@@ -38,7 +37,7 @@ class EmailValidasiTryoutGratis extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'main-panel.tryout.tryout-gratis-email',
+            view: 'main-panel.tryout.tryout-gratis-email-denied',
         );
     }
 
