@@ -215,9 +215,13 @@
                     @for ($i = 1; $i <= $totalSoal; $i++)
                         <a href="{{ route('ujian.progress', ['id' => Crypt::encrypt($ujianId), 'param' => $param, 'page' => $i]) }}"
                             class="box-soal-web"
-                            @if ($soalUjian->currentPage() == $i) style="background-color : #0075B8; border-color: #0075B8; color: white;" @endif>
-                            {{ $i }}
-                        </a>
+                            @if ($soalUjian->currentPage() == $i) @if (isset($jawabanTersimpan[$ujian->id])) @if ($jawabanTersimpan[$ujian->id]) 
+                                style="background-color : #2ECA8B; border-color: #2ECA8B; color: white;" @endif
+                        @else style="background-color : #0075B8; border-color: #0075B8; color: white;" @endif
+                    @endif
+                    >
+                    {{ $i }}
+                    </a>
                     @endfor
                 </div>
             </div>
