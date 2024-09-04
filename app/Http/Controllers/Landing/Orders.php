@@ -172,7 +172,7 @@ class Orders extends Controller
         $limitTryout->status_validasi = 'Menunggu';
 
         if ($limitTryout->save()) {
-            return redirect()->route('mainweb.daftar-tryout-gratis')->with('successMessage', 'Pendaftaran berhasil silahkan cek email secara berkala untuk informasi persetujuan dari kami. Maksimal verifikasi 1x24 oleh Admin !');
+            return redirect()->route('mainweb.daftar-tryout-gratis')->with('successMessage', 'Pendaftaran berhasil silahkan cek email secara berkala untuk informasi persetujuan dari kami. Maksimal verifikasi 1x24 jam oleh Admin !');
         } else {
             return redirect()->back()->with('errorMessage', 'Pendaftaran gagal, silahkan coba lagi !')->withInput();
         }
