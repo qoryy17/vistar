@@ -70,12 +70,12 @@
                                             <td>Status</td>
                                             <td>{{ $detilOrder->status_transaksi }}</td>
                                         </tr>
-                                        <tr>
+                                        {{-- <tr>
                                             <td>JSON</td>
                                             <td>
                                                 {{ $detilOrder->metadata }}
                                             </td>
-                                        </tr>
+                                        </tr> --}}
                                     </table>
                                 </div>
                                 <a href="{{ route('listOrders.main') }}" class="btn btn-sm btn-warning">
