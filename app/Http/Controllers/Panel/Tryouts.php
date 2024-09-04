@@ -16,18 +16,14 @@ use App\Models\PengaturanTryout;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
-use App\Mail\EmailValidasiTryoutGratis;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Panel\SoalRequest;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Panel\ProdukTryoutRequest;
 use App\Jobs\SendAcceptTryoutGratisJob;
 use App\Jobs\SendDeniedTryoutGratisJob;
-use App\Mail\EmailAcceptTryoutGratis;
-use App\Mail\EmailDeniedTryoutGratis;
 use App\Models\OrderTryout;
 
 class Tryouts extends Controller
@@ -38,7 +34,7 @@ class Tryouts extends Controller
             'page_title' => 'Produk Tryout',
             'bc1' => 'Manajemen Tryout',
             'bc2' => 'Produk Tryout',
-            'tryouts' => DB::table('produk_tryout')->select('produk_tryout.*', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'pengaturan_tryout.passing_grade', 'kategori_produk.judul', 'kategori_produk.status as produk_status')->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->get(),
+            'tryouts' => DB::table('produk_tryout')->select('produk_tryout.*', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'pengaturan_tryout.passing_grade', 'kategori_produk.judul', 'kategori_produk.status as produk_status')->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->orderBy('created_at', 'DESC')->get(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
         ];
