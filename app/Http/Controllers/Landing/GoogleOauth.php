@@ -6,11 +6,7 @@ use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleOauth extends Controller
@@ -22,18 +18,31 @@ class GoogleOauth extends Controller
 
     public function handleGoogleCallback()
     {
+        $user = Socialite::driver('google')->user();
         try {
-            $user = Socialite::driver('google')->user();
 
             $finduser = User::where('google_id', $user->id)->first();
             if ($finduser) {
                 Auth::login($finduser);
                 $user = Auth::user();
-                if ($user->role == 'Customer') {
-                    // Jika customer alihkan kehalaman produk berbayar
-                    return redirect()->route('mainweb.produk-berbayar');
+                if ($user->role != 'Customer') {
+                    return redirect()->intended('/');
                 }
-                return redirect()->intended('/');
+                // Jika customer alihkan kehalaman produk berbayar
+                return redirect()->route('mainweb.produk-berbayar');
+            }
+
+            // check apakah sebelumnya sudah pernah mendaftar
+            $emailRegister = User::where('email', htmlspecialchars($user->email))->first();
+            if ($emailRegister) {
+                if ($emailRegister->email == $user->email) {
+                    // Tautkan ke google account
+                    $emailRegister->google_id = $user->id;
+                    $emailRegister->save();
+                    return redirect()->route('mainweb.profil-saya')->with('profilMessage', 'Akun anda berhasil ditautkan ke Google !');
+                } else {
+                    return redirect()->route('mainweb.profil-saya')->with('errorMessage', 'Email Google tidak cocok dengan akun yang terdaftar !');
+                }
             }
 
             // Generate id  otomatis
@@ -60,9 +69,11 @@ class GoogleOauth extends Controller
             ]);
 
             Auth::login($newUser);
-            return redirect()->intended('/');
+            // return redirect()->intended('/');
+
+
         } catch (\Throwable $th) {
-            return Redirect::to('/');
+            // return Redirect::route('auth.signin')->with('info', 'Email akun anda tidak tertaut Google !');
         }
     }
 }
