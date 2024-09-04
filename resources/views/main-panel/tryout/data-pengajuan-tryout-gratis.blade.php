@@ -73,7 +73,8 @@
                                                     </td>
                                                     <td style="vertical-align: top;">
                                                         <button class="btn btn-sm btn-success"
-                                                            data-bs-target="#modalPreview" data-bs-toggle="modal">
+                                                            data-bs-target="#modalPreview{{ $no }}"
+                                                            data-bs-toggle="modal">
                                                             <i class="fa fa-check"></i> Validasi
                                                         </button>
                                                         <!-- Preview modal -->
@@ -82,7 +83,7 @@
                                                             method="POST" enctype="multipart/form-data">
                                                             @method('POST')
                                                             @csrf
-                                                            <div class="modal fade" id="modalPreview">
+                                                            <div class="modal fade" id="modalPreview{{ $no }}">
                                                                 <div class="modal-dialog modal-lg" role="document">
                                                                     <div class="modal-content modal-content-demo">
                                                                         <div class="modal-header">
