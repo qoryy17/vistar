@@ -46,11 +46,13 @@
                                                  <button type="submit"
                                                      class="btn btn-sm btn-pills btn-soft-primary mt-2">Ubah
                                                      Foto</button>
-                                                 <a href="{{ route('auth.google') }}"
-                                                     class="btn btn-pills btn-soft-primary btn-sm mt-2">
-                                                     <img src="{{ asset('resources/images/google-16px.png') }}"
-                                                         alt=""> Hubungkan Ke Google Account
-                                                 </a>
+                                                 @if (Auth::user()->google_id == null)
+                                                     <a href="{{ route('auth.google') }}"
+                                                         class="btn btn-pills btn-soft-primary btn-sm mt-2">
+                                                         <img src="{{ asset('resources/images/google-16px.png') }}"
+                                                             alt=""> Hubungkan Ke Google Account
+                                                     </a>
+                                                 @endif
                                                  @error('foto')
                                                      <small class="text-danger mt-3">* {{ $message }}</small>
                                                  @enderror
