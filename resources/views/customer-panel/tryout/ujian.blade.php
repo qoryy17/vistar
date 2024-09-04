@@ -237,11 +237,12 @@
             const distance = endTime - currentTime;
 
             // Menghitung menit dan detik
+            const hours = Math.floor(distance / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             // Tampilkan hasil di elemen dengan id="time"
-            document.getElementById('time').textContent = `${minutes} menit ${seconds} detik`;
+            document.getElementById('time').textContent = `${hours} jam ${minutes} menit ${seconds} detik`;
 
             // Jika waktu habis, tampilkan pesan dan hentikan timer
             if (distance < 0) {
