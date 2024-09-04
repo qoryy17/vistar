@@ -22,38 +22,10 @@
                     </div>
                 </div>
 
-                @if ($limitUjian == null)
-                    <div class="row">
-                        <div class="col-md-4 d-none d-sm-block">
-                            <img width="300px" class="img img-thubmnail" src="{{ asset('resources/images/model-4.png') }}"
-                                alt="">
-                        </div>
-                        <div class="col-md-8" style="vertical-align: middle;">
-                            <div class="card custom-card">
-                                <div class="card-header p-3 tx-medium my-auto tx-white bg-primary">
-                                    Daftar Pengajuan Tryout Gratis Untuk Coba 1 Kali Ujian, Bebas Pilih 1 Kategori (CPNS,
-                                    PPK,
-                                    Kedinasan)
-                                </div>
-                                <div class="card-body">
-                                    <p class="mg-b-0">
-                                        "Kesempatan emas! Dapatkan akses Tryout Gratis dengan mudah. Ajukan sekarang melalui
-                                        situs utama kami atau klik tautan di bawah ini dan mulai persiapan Anda menuju
-                                        sukses!"
-                                        <br>
-                                        <br>
-                                        <a class="btn btn-primary" href="{{ route('mainweb.index') }}/#coba-gratis">
-                                            Pengajuan Tryout Gratis
-                                        </a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @else
+                @if ($ujianGratis->first())
                     <!-- End Page Header -->
                     <div class="row">
-                        @foreach ($ujianGratis as $tryout)
+                        @foreach ($ujianGratis->get() as $tryout)
                             @php
                                 $cekUjian = App\Models\Ujian::all()
                                     ->where('limit_tryout_id', $tryout->id)
@@ -403,6 +375,34 @@
                         </div>
                     </div>
                     <!-- End Row -->
+                @else
+                    <div class="row">
+                        <div class="col-md-4 d-none d-sm-block">
+                            <img width="300px" class="img img-thubmnail"
+                                src="{{ asset('resources/images/model-4.png') }}" alt="">
+                        </div>
+                        <div class="col-md-8" style="vertical-align: middle;">
+                            <div class="card custom-card">
+                                <div class="card-header p-3 tx-medium my-auto tx-white bg-primary">
+                                    Daftar Pengajuan Tryout Gratis Untuk Coba 1 Kali Ujian, Bebas Pilih 1 Kategori (CPNS,
+                                    PPK,
+                                    Kedinasan)
+                                </div>
+                                <div class="card-body">
+                                    <p class="mg-b-0">
+                                        "Kesempatan emas! Dapatkan akses Tryout Gratis dengan mudah. Ajukan sekarang melalui
+                                        situs utama kami atau klik tautan di bawah ini dan mulai persiapan Anda menuju
+                                        sukses!"
+                                        <br>
+                                        <br>
+                                        <a class="btn btn-primary" href="{{ route('mainweb.index') }}/#coba-gratis">
+                                            Pengajuan Tryout Gratis
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 @endif
             </div>
         </div>

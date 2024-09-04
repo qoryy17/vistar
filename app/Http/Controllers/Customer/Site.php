@@ -60,7 +60,7 @@ class Site extends Controller
             'page_title' => 'Tryout Gratis',
             'breadcumb' => 'Tryout Gratis',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
-            'ujianGratis' => $ujianGratis->get(),
+            'ujianGratis' => $ujianGratis,
             'limitUjian' => $limitUjian,
             'hasilUjian' => QueryCollect::hasilUjianGratis(Auth::user()->customer_id)->get()
         ];

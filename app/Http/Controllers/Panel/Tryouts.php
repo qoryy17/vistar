@@ -623,6 +623,7 @@ class Tryouts extends Controller
         // Cek Permohonan
         $permohonan = LimitTryout::findOrFail(Crypt::decrypt($request->id));
         $permohonan->status_validasi = htmlspecialchars($request->input('validasi'));
+        $permohonan->validasi_oleh = Auth::user()->id;
         $emailCustomer = User::where('customer_id', $permohonan->customer_id)->first();
         $email = $emailCustomer->email;
         if ($permohonan->save()) {
