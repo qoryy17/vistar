@@ -7,6 +7,7 @@ use App\Models\Customer;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleOauth extends Controller
@@ -69,11 +70,9 @@ class GoogleOauth extends Controller
             ]);
 
             Auth::login($newUser);
-            // return redirect()->intended('/');
-
-
+            return redirect()->intended('/');
         } catch (\Throwable $th) {
-            // return Redirect::route('auth.signin')->with('info', 'Email akun anda tidak tertaut Google !');
+            return Redirect::route('auth.signin')->with('info', 'Email akun anda tidak tertaut Google !');
         }
     }
 }
