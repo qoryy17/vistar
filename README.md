@@ -26,4 +26,4 @@ Production 1.0.1
 
 ## License & Copyright
 
-Hak Cipta &copy; Vi Star 2024
+Hak Cipta &copy; Vistar Indonesia 2024
