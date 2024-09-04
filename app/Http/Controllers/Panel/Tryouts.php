@@ -208,7 +208,7 @@ class Tryouts extends Controller
         }
     }
 
-    public function hapusProdukTryout(Request $request) //: RedirectResponse
+    public function hapusProdukTryout(Request $request): RedirectResponse
     {
         $produkTryout = ProdukTryout::findOrFail(Crypt::decrypt($request->id));
         if ($produkTryout) {
@@ -224,13 +224,11 @@ class Tryouts extends Controller
 
                 $soalUjian = DB::table('soal_ujian')->where('kode_soal', $produkTryout->kode_soal)->first();
 
-                if (!$soalUjian) {
-                    return Redirect::route('tryouts.index')->with('error', 'Soal tidak ditemukan !');
+                if ($soalUjian) {
+                    $soalUjian->delete();
                 }
-                $soalUjian->delete();
                 $produkTryout->delete();
                 $pengaturanTryout->delete();
-                // DB::table('soal_ujian')->where('kode_soal', '=', $produkTryout->kode)->delete();
                 // Simpan logs aktivitas pengguna
                 $logs = $users->name . ' telah menghapus produk tryout dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);

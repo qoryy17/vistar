@@ -6,6 +6,7 @@ use App\Helpers\QueryCollect;
 use App\Helpers\Waktu;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\LimitTryout;
 use App\Models\Payment;
 use App\Models\Ujian;
 use App\Services\Payment\PaymentService;
@@ -52,7 +53,7 @@ class Site extends Controller
         if ($ujianGratis->first()) {
             $limitUjian =  Ujian::where('limit_tryout_id', $ujianGratis->first()->id)->where('status_ujian', 'Selesai')->first();
         } else {
-            $limitUjian = null;
+            $limitUjian = LimitTryout::where('customer_id', Auth::user()->customer_id)->first();
         }
 
         $data = [
