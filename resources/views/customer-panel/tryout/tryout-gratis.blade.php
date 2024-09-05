@@ -69,18 +69,18 @@
                                                 @else
                                                     <button
                                                         onclick='swal({
-                                                    title: "Mulai Ujian",
-                                                    text: "Apakah anda ingin memulai ujian sekarang ?",
-                                                    type: "warning",
-                                                    showCancelButton: true,
-                                                    closeOnConfirm: false,
-                                                    confirmButtonText: "Mulai",
-                                                    cancelButtonText: "Batal",
-                                                    showLoaderOnConfirm: true }, function () 
-                                                        { 
-                                                        setTimeout(function(){  
-                                                            document.getElementById("mulaiUjian").submit();
-                                                    }, 1000); });'
+                                                        title: "Mulai Ujian",
+                                                        text: "Apakah anda ingin memulai ujian sekarang ?",
+                                                        type: "warning",
+                                                        showCancelButton: true,
+                                                        closeOnConfirm: false,
+                                                        confirmButtonText: "Mulai",
+                                                        cancelButtonText: "Batal",
+                                                        showLoaderOnConfirm: true }, function () 
+                                                            { 
+                                                            setTimeout(function(){  
+                                                                document.getElementById("mulaiUjian").submit();
+                                                        }, 1000); });'
                                                         class="btn btn-block btn-default mt-2 btn-web">
                                                         <i class="fa fa-check-circle"></i>
                                                         Mulai Ujian
@@ -127,18 +127,18 @@
                                                 @else
                                                     <button
                                                         onclick='swal({
-                                                    title: "Mulai Ujian",
-                                                    text: "Apakah anda ingin memulai ujian sekarang ?",
-                                                    type: "warning",
-                                                    showCancelButton: true,
-                                                    closeOnConfirm: false,
-                                                    confirmButtonText: "Mulai",
-                                                    cancelButtonText: "Batal",
-                                                    showLoaderOnConfirm: true }, function () 
-                                                        { 
-                                                        setTimeout(function(){  
-                                                            document.getElementById("mulaiUjian").submit();
-                                                    }, 1000); });'
+                                                        title: "Mulai Ujian",
+                                                        text: "Apakah anda ingin memulai ujian sekarang ?",
+                                                        type: "warning",
+                                                        showCancelButton: true,
+                                                        closeOnConfirm: false,
+                                                        confirmButtonText: "Mulai",
+                                                        cancelButtonText: "Batal",
+                                                        showLoaderOnConfirm: true }, function () 
+                                                            { 
+                                                            setTimeout(function(){  
+                                                                document.getElementById("mulaiUjian").submit();
+                                                        }, 1000); });'
                                                         class="btn btn-block btn-default mt-2 btn-web">
                                                         <i class="fa fa-check-circle"></i>
                                                         Mulai Ujian
@@ -188,7 +188,7 @@
                                         <table class="table table-bordered border-bottom">
                                             <thead>
                                                 <tr>
-                                                    <td>No</td>
+                                                    <td width="10px">No</td>
                                                     <td>Informasi Ujian</td>
                                                     <td class="text-center">Total Nilai</td>
                                                 </tr>
@@ -199,7 +199,8 @@
                                                 @endphp
                                                 @foreach ($hasilUjian as $row)
                                                     <tr>
-                                                        <td>{{ $no }}</td>
+                                                        <td style="vertical-align: top;">
+                                                            {{ $no }}</td>
                                                         <td>
                                                             <h5 style="color: #0075B8;">Exam-({{ $row->id }})</h5>
                                                             <div>
