@@ -412,7 +412,8 @@
                                 di nomor kontak {{ $web->kontak }}
                             </p>
 
-                            <a href="javascript:window.print()" class="btn btn-soft-primary d-print-none">Print</a>
+                            <a href="javascript:window.print()"
+                                class="btn btn-pills btn-soft-primary d-print-none">Cetak</a>
                         </div>
                     </div>
                 </div><!--end col-->
