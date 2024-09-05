@@ -71,6 +71,10 @@
                                             <td>{{ $detilOrder->waktu_transaksi }}</td>
                                         </tr>
                                         <tr>
+                                            <td>Metode Pembayaran</td>
+                                            <td>{{ $detilOrder->metode }}</td>
+                                        </tr>
+                                        <tr>
                                             <td>Status</td>
                                             <td>{{ $detilOrder->status_transaksi }}</td>
                                         </tr>

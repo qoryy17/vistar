@@ -19,6 +19,7 @@ class QueryCollect
             'order_tryout.*',
             'payment.ref_order_id',
             'payment.nominal',
+            'payment.metode',
             'payment.status_transaksi',
             'payment.waktu_transaksi',
             'payment.metadata',
