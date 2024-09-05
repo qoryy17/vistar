@@ -187,7 +187,21 @@ class MainWebsite extends Controller
                 ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
                 ->where('keranjang_order.customer_id', '=', Auth::user()->customer_id)
-                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('keranjang_order.updated_at', 'DESC')->get(),
+                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('keranjang_order.updated_at', 'DESC'),
+            'allProduk' => DB::table('produk_tryout')->select(
+                'produk_tryout.*',
+                'pengaturan_tryout.harga',
+                'pengaturan_tryout.nilai_keluar',
+                'pengaturan_tryout.grafik_evaluasi',
+                'pengaturan_tryout.review_pembahasan',
+                'pengaturan_tryout.masa_aktif',
+                'pengaturan_tryout.harga_promo',
+                'kategori_produk.judul',
+                'kategori_produk.status as produk_status'
+            )->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
+                ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
+                ->where('produk_tryout.status', 'Tersedia')
+                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get()
         ];
 
         return view('main-web.produk.keranjang-order', $data);
