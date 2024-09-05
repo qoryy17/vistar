@@ -67,6 +67,10 @@
                                             <td>{{ Number::currency($detilOrder->nominal, in: 'IDR') }}</td>
                                         </tr>
                                         <tr>
+                                            <td>Waktu Transaksi</td>
+                                            <td>{{ $detilOrder->waktu_transaksi }}</td>
+                                        </tr>
+                                        <tr>
                                             <td>Status</td>
                                             <td>{{ $detilOrder->status_transaksi }}</td>
                                         </tr>
