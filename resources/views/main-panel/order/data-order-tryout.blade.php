@@ -169,6 +169,9 @@
                                                             Status Order : @if ($row->status_order == 'pending')
                                                                 <strong
                                                                     class="text-warning">{{ $row->status_order }}</strong>
+                                                            @elseif ($row->status_order == 'paid')
+                                                                <strong
+                                                                    class="text-success">{{ $row->status_order }}</strong>
                                                             @endif
                                                         </p>
                                                     </td>
