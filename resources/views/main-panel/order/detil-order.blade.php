@@ -2,7 +2,6 @@
 @section('title', $page_title)
 @section('content')
     <div class="main-content pt-0 hor-content">
-
         <div class="main-container container-fluid">
             <div class="inner-body">
 
@@ -76,7 +75,15 @@
                                         </tr>
                                         <tr>
                                             <td>Status</td>
-                                            <td>{{ $detilOrder->status_transaksi }}</td>
+                                            <td>
+                                                @if ($detilOrder->status_transaksi == 'pending')
+                                                    <strong class="text-warning">
+                                                        {{ $detilOrder->status_transaksi }}</strong>
+                                                @elseif ($detilOrder->status_transaksi == 'paid')
+                                                    <strong class="text-success">
+                                                        {{ $detilOrder->status_transaksi }}</strong>
+                                                @endif
+                                            </td>
                                         </tr>
                                         {{-- <tr>
                                             <td>JSON</td>
