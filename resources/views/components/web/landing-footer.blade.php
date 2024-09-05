@@ -20,9 +20,11 @@
                             <ul class="list-unstyled social-icon foot-social-icon mb-0 mt-4">
                                 <li class="list-inline-item mb-0"><a href="{{ $web->instagram }}" target="_blank"
                                         class="rounded"><i class="uil uil-instagram align-middle"
-                                            title="instagram"></i></a></li>
+                                            title="Instagram {{ $web->nama_bisnis }}"></i></a>
+                                </li>
                                 <li class="list-inline-item mb-0"><a href="mailto:{{ $web->email }}"
-                                        class="rounded"><i class="uil uil-envelope align-middle" title="email"></i></a>
+                                        class="rounded"><i class="uil uil-envelope align-middle"
+                                            title="Email {{ $web->nama_bisnis }}"></i></a>
                                 </li>
                             </ul><!--end icon-->
                         </div><!--end col-->
