@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Customer;
 
-use Carbon\Carbon;
 use App\Models\Ujian;
 use App\Models\Customer;
 use App\Models\HasilUjian;
@@ -99,10 +98,10 @@ class Tryoutc extends Controller
         $ujianId = Crypt::decrypt($request->id);
         if (Crypt::decrypt($request->param) == 'berbayar') {
 
-            $durasiCache = DB::table('ujian')->select('ujian.*', 'order_tryout.produk_tryout_id')->leftJoin('order_tryout', 'ujian.order_tryout_id', '=', 'order_tryout.id')->where('ujian.id', '=', Crypt::decrypt($request->id))->first();
+            $ujianTryout = DB::table('ujian')->select('ujian.*', 'order_tryout.produk_tryout_id')->leftJoin('order_tryout', 'ujian.order_tryout_id', '=', 'order_tryout.id')->where('ujian.id', '=', Crypt::decrypt($request->id))->first();
             // Cek apakah data ujian sudah ada di cache
             $cacheKey = 'ujianBerbayar_' . $ujianId;
-            $ujian = Cache::remember($cacheKey, $durasiCache->durasi_ujian * 60, function () use ($ujianId) {
+            $ujian = Cache::remember($cacheKey, $ujianTryout->durasi_ujian * 60, function () use ($ujianId) {
                 return DB::table('ujian')
                     ->select('ujian.*', 'order_tryout.produk_tryout_id')
                     ->leftJoin('order_tryout', 'ujian.order_tryout_id', '=', 'order_tryout.id')
@@ -111,10 +110,10 @@ class Tryoutc extends Controller
             });
             $cacheKeySoal = 'soal_ujianBerbayar_' . $ujian->produk_tryout_id;
         } else {
-            $durasiCache = DB::table('ujian')->select('ujian.*', 'limit_tryout.produk_tryout_id')->leftJoin('limit_tryout', 'ujian.limit_tryout_id', '=', 'limit_tryout.id')->where('ujian.id', '=', Crypt::decrypt($request->id))->first();
+            $ujianTryout = DB::table('ujian')->select('ujian.*', 'limit_tryout.produk_tryout_id')->leftJoin('limit_tryout', 'ujian.limit_tryout_id', '=', 'limit_tryout.id')->where('ujian.id', '=', Crypt::decrypt($request->id))->first();
             // Cek apakah data ujian sudah ada di cache
             $cacheKey = 'ujianGratis_' . $ujianId;
-            $ujian = Cache::remember($cacheKey, $durasiCache->durasi_ujian * 60, function () use ($ujianId) {
+            $ujian = Cache::remember($cacheKey, $ujianTryout->durasi_ujian * 60, function () use ($ujianId) {
                 return DB::table('ujian')
                     ->select('ujian.*', 'limit_tryout.produk_tryout_id')
                     ->leftJoin('limit_tryout', 'ujian.limit_tryout_id', '=', 'limit_tryout.id')
@@ -124,18 +123,25 @@ class Tryoutc extends Controller
             $cacheKeySoal = 'soal_ujianGratis_' . $ujian->produk_tryout_id;
         }
 
-        // Ambil seluruh soal ujian dari cache atau database jika belum ada di cache
-        $soalUjian = Cache::remember(
-            $cacheKeySoal,
-            6000,
-            function () use ($ujian) {
-                return DB::table('soal_ujian')
-                    ->select('soal_ujian.*', 'produk_tryout.kode_soal')
-                    ->leftJoin('produk_tryout', 'soal_ujian.kode_soal', '=', 'produk_tryout.kode_soal')
-                    ->where('produk_tryout.id', '=', $ujian->produk_tryout_id)
-                    ->get();
-            }
-        );
+        // Checking soal terlebih dahulu 
+        $checkingSoal = DB::table('soal_ujian')
+            ->select('soal_ujian.*', 'produk_tryout.kode_soal')
+            ->leftJoin('produk_tryout', 'soal_ujian.kode_soal', '=', 'produk_tryout.kode_soal')
+            ->where('produk_tryout.id', '=', $ujian->produk_tryout_id);
+
+        if ($checkingSoal->first()) {
+            // Ambil seluruh soal ujian dari cache atau database jika belum ada di cache
+            $soalUjian = Cache::remember(
+                $cacheKeySoal,
+                6000,
+                function () use ($checkingSoal) {
+                    return $checkingSoal->get();
+                }
+            );
+        } else {
+            return redirect()->back()->with('error', 'Maaf tidak bisa memulai ujian, soal belum tersedia !');
+        }
+
 
         // Ambil halaman saat ini
         $currentPage = $request->input('page', 1);
@@ -154,8 +160,8 @@ class Tryoutc extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        $startTime = $durasiCache->waktu_mulai;
-        $duration = $durasiCache->durasi_ujian; // Durasi dalam menit
+        $startTime = $ujianTryout->waktu_mulai;
+        $duration = $ujianTryout->durasi_ujian; // Durasi dalam menit
 
         // Menghitung waktu selesai ujian
         $endTime = \Carbon\Carbon::parse($startTime)->addMinutes($duration)->format('Y-m-d H:i:s');
@@ -182,7 +188,7 @@ class Tryoutc extends Controller
             'ujian' => $ujian,
             'totalSoal' => $soalUjian->count(),
             'soalUjianAll' => $soalUjian,
-            'jawabSoal' => $durasiCache,
+            'jawabSoal' => $ujianTryout,
             'soalUjian' => $soalUjianPaginated,
             'startTime' => $startTime,
             'endTime' => $endTime,
