@@ -165,7 +165,11 @@
                                                         <p>
                                                             Faktur : <strong>{{ $row->faktur_id }}</strong> <br>
                                                             Produk : <strong>{{ $row->nama_tryout }}</strong> <br>
-                                                            Peserta : <strong>{{ $row->nama }}</strong>
+                                                            Peserta : <strong>{{ $row->nama }}</strong> <br>
+                                                            Status Order : @if ($row->status_order == 'pending')
+                                                                <strong
+                                                                    class="text-warning">{{ $row->status_order }}</strong>
+                                                            @endif
                                                         </p>
                                                     </td>
                                                     <td>
