@@ -78,7 +78,7 @@
                                 $statusCheck = $transactionStatusList[$pembelian->status_order];
                             }
                         @endphp
-                        <div class="col-lg-4">
+                        <div class="col-lg-6">
                             {{-- Informasi Paket Tryout --}}
                             <div class="card custom-card">
                                 <div class="card-body">
