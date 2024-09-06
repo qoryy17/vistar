@@ -134,14 +134,16 @@ class Tryoutc extends Controller
             $soalUjian = Cache::remember(
                 $cacheKeySoal,
                 6000,
-                function () use ($checkingSoal) {
-                    return $checkingSoal->get();
+                function () use ($ujian) {
+                    return DB::table('soal_ujian')
+                        ->select('soal_ujian.*', 'produk_tryout.kode_soal')
+                        ->leftJoin('produk_tryout', 'soal_ujian.kode_soal', '=', 'produk_tryout.kode_soal')
+                        ->where('produk_tryout.id', '=', $ujian->produk_tryout_id)->get();
                 }
             );
         } else {
             return redirect()->back()->with('error', 'Maaf tidak bisa memulai ujian, soal belum tersedia !');
         }
-
 
         // Ambil halaman saat ini
         $currentPage = $request->input('page', 1);
