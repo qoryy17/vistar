@@ -44,7 +44,7 @@ class SendInoviceJob implements ShouldQueue
             ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
             ->leftJoin('payment', 'produk_tryout.id', '=', 'payment.ref_order_id')
             ->where('order_tryout.id', '=', $this->orderInvoice['order_id'])
-            ->where('order.status_order', 'paid')->first();
+            ->where('order_tryout.status_order', 'paid')->first();
 
         // Customer
         $userEmail = User::find($orderDetail->customer_id);
