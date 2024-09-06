@@ -123,19 +123,19 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.pembelian') }}">
-                                <span class="shape1"></span>
-                                <span class="shape2"></span>
-                                <i class="ti-shopping-cart sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Pembelian</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('mainweb.index') }}">
                                 <span class="shape1"></span>
                                 <span class="shape2"></span>
                                 <i class="ti-world sidemenu-icon menu-icon "></i>
                                 <span class="sidemenu-label">Web Utama</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('site.pembelian') }}">
+                                <span class="shape1"></span>
+                                <span class="shape2"></span>
+                                <i class="ti-shopping-cart sidemenu-icon menu-icon "></i>
+                                <span class="sidemenu-label">Pembelian</span>
                             </a>
                         </li>
                         <li class="nav-item">
