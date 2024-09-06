@@ -25,9 +25,7 @@
                 <div class="row">
                     @foreach ($pembelian->get() as $tryout)
                         @php
-                            $cekUjian = App\Models\Ujian::all()
-                                ->where('order_tryout_id', $tryout->id)
-                                ->first();
+                            $cekUjian = App\Models\Ujian::where('order_tryout_id', $tryout->id)->first();
 
                             $date = \Carbon\Carbon::parse($tryout->created_at);
                             $newDate = $date->addDays($tryout->masa_aktif);
