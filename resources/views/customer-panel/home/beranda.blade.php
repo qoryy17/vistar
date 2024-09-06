@@ -166,7 +166,7 @@
                         <div class="card custom-card">
                             <div class="card-body">
                                 <div>
-                                    <h5>Informasi Terbaru</h5>
+                                    <h5>Tryout Terbaru</h5>
                                     <h6 style="padding: 0px; margin:0px;color: #F8AA3B;" class="mb-2">
                                         <span class="fs-20 me-2">{{ $tryoutTerbaru->nama_tryout }}</span>
                                     </h6>
