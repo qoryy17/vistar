@@ -24,7 +24,7 @@ class Site extends Controller
             'breadcumb' => 'Vi Star Indonesia',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
             'countPembelian' => QueryCollect::countPembelian(Auth::user()->customer_id),
-            'tryoutTerbaru' => DB::table('produk_tryout')->select('produk_tryout.*', 'kategori_produk.status')->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->where('kategori_produk.status', 'Berbayar')->first(),
+            'tryoutTerbaru' => DB::table('produk_tryout')->select('produk_tryout.*', 'kategori_produk.status')->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->where('kategori_produk.status', 'Berbayar')->orderBy('produk_tryout.created_at', 'DESC')->first(),
             'testimoni' => DB::table('testimoni')->select('testimoni.*', 'customer.nama_lengkap')->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')->where('publish', 'Y')->orderBy('updated_at', 'desc')
         ];
 
