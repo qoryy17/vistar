@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Cron\JobsController;
 use App\Http\Controllers\Panel\Main;
 use App\Http\Controllers\Panel\Users;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,11 @@ Route::get('/', function () {
 Route::controller(GoogleOauth::class)->group(function () {
     Route::get('/auth-google', 'redirectToGoogleProvider')->name('auth.google');
     Route::get('/callback', 'handleGoogleCallback')->name('auth.callback');
+});
+
+Route::controller(JobsController::class)->group(function () {
+    Route::get('/delete/logs', 'deleteLogs')->name('cron.delete-logs');
+    Route::get('/delete/cache', 'deleteCache')->name('cron.delete-cache');
 });
 
 // Payment Routing
