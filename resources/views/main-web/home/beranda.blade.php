@@ -8,11 +8,13 @@
                 <div class="col-lg-7 col-md-7 wow animate__animated animate__fadeInLeft" data-wow-delay=".1s">
                     <div class="title-heading mt-4">
 
-                        <h1 class="heading text mb-3">{{ $web->nama_bisnis }}<br> <span
-                                class="fs-2">{{ $web->tagline }}</span> <br><span style="color: #0075B8;"
-                                class="text-primary typewrite" data-period="2000"
+                        <h1 class="heading text mb-3"><span class="fw-bold">{{ $web->nama_bisnis }}</span><br>
+                            <span class="fs-2">{{ $web->tagline }}</span> <br>
+                            <span style="color: #0075B8;" class="text-primary typewrite" data-period="2000"
                                 data-type='["Tryout CPNS", "Tryout PPPK", "Tryout Kedinasan"]'>
-                                <span class="wrap"></span> </span> </h1>
+                                <span class="wrap"></span>
+                            </span>
+                        </h1>
                         <p class="para-desc text-muted" style="text-align: justify">Vistar merupakan Pusat Kegiatan Akademik
                             Bidang ICT dan Science
                             Terbaik #1 di Indonesia dengan
