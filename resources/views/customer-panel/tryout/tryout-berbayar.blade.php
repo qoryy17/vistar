@@ -23,10 +23,12 @@
                 <!-- End Page Header -->
 
                 <div class="row">
+                    @php
+                        $no = 1;
+                    @endphp
                     @foreach ($pembelian->get() as $tryout)
                         @php
                             $cekUjian = App\Models\Ujian::where('order_tryout_id', $tryout->id)->first();
-
                             $date = \Carbon\Carbon::parse($tryout->created_at);
                             $newDate = $date->addDays($tryout->masa_aktif);
                             $masaAktif = now()->diffInDays($newDate, false);
@@ -49,7 +51,8 @@
                                             </span>
                                             @if ($cekUjian)
                                                 @if ($cekUjian->status_ujian == 'Sedang Dikerjakan')
-                                                    <button onclick='document.getElementById("mulaiUjian").submit();'
+                                                    <button
+                                                        onclick='document.getElementById("mulaiUjian{{ $no }}").submit();'
                                                         class="btn btn-block btn-default mt-2 btn-web1">
                                                         <i class="fa fa-check-circle"></i>
                                                         Lanjut Mengerjakan
@@ -69,7 +72,7 @@
                                                     showLoaderOnConfirm: true }, function () 
                                                         { 
                                                         setTimeout(function(){  
-                                                            document.getElementById("mulaiUjian").submit();
+                                                            document.getElementById("mulaiUjian{{ $no }}").submit();
                                                     }, 1000); });'
                                                         class="btn btn-block btn-default mt-2 btn-web">
                                                         <i class="fa fa-check-circle"></i>
@@ -91,7 +94,7 @@
                                                     showLoaderOnConfirm: true }, function () 
                                                         { 
                                                         setTimeout(function(){  
-                                                            document.getElementById("mulaiUjian").submit();
+                                                            document.getElementById("mulaiUjian{{ $no }}").submit();
                                                     }, 1000); });'
                                                     class="btn btn-block btn-default mt-2 btn-web">
                                                     <i class="fa fa-check-circle"></i>
@@ -101,7 +104,7 @@
                                                     {{ ceil($masaAktif) }} Hari</small>
                                             @endif
 
-                                            <form id="mulaiUjian"
+                                            <form id="mulaiUjian{{ $no }}"
                                                 action="{{ route('ujian.main', ['id' => Crypt::encrypt($tryout->id), 'param' => Crypt::encrypt('berbayar')]) }}"
                                                 method="POST">
                                                 @csrf
@@ -210,6 +213,9 @@
                                 </div>
                             </div>
                         @endif
+                        @php
+                            $no++;
+                        @endphp
                     @endforeach
                 </div>
                 <!-- Row -->
@@ -232,7 +238,7 @@
                                             @endphp
                                             @foreach ($hasilUjian as $row)
                                                 <tr>
-                                                    <td style="vertical-align: top;">{{ $no }}</td>
+                                                    <td style="vertical-align: top;">1</td>
                                                     <td>
                                                         <a href="{{ route('ujian.hasil', ['id' => Crypt::encrypt($row->id), 'ujianID' => Crypt::encrypt($row->ujianID), 'produkID' => Crypt::encrypt($row->produk_tryout_id)]) }}"
                                                             title="Klik untuk melihat detil">
