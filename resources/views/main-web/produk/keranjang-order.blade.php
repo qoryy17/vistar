@@ -106,7 +106,11 @@
 
               <div class="row mt-6">
                   <div class="col-lg-12 col-md-12 mt-4 pt-2">
-                      <h6> Rekomendasi Produk Tryout Pilihan</h6>
+                      <h5> Rekomendasi Produk Tryout Pilihan</h5>
+                      <p class="text-muted">
+                          Jangan Lewatkan Kesempatan Ini! Pilih Paket Tryout yang Sesuai dengan Target Anda dan Bersiaplah
+                          untuk Sukses di Ujian!
+                      </p>
                   </div>
                   @php
                       $no = 1;
@@ -214,6 +218,13 @@
                           $no++;
                       @endphp
                   @endforeach
+              </div>
+              <div class="row mt-5">
+                  <div class="col-lg-12 text-center">
+                      <a href="" class="btn btn-pills btn-soft-primary">
+                          Lihat Semua Produk <i class="uil uil-arrow-right"></i>
+                      </a>
+                  </div>
               </div>
           </div><!--end container-->
       </section><!--end section-->
