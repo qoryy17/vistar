@@ -65,8 +65,8 @@ class SimpanJawabanJob implements ShouldQueue
                 ]);
             }
 
-            $hitungSoalTerjawab = ProgressUjian::all()->where('ujian_id', Crypt::decrypt($this->jawabanPeserta['ujian_id']))->count();
-            $hitungTotalSoal = SoalUjian::all()->where('kode_soal', Crypt::decrypt($this->jawabanPeserta['kode_soal']))->count();
+            $hitungSoalTerjawab = ProgressUjian::where('ujian_id', Crypt::decrypt($this->jawabanPeserta['ujian_id']))->count();
+            $hitungTotalSoal = SoalUjian::where('kode_soal', Crypt::decrypt($this->jawabanPeserta['kode_soal']))->count();
 
             $ujian = Ujian::findOrFail(Crypt::decrypt($this->jawabanPeserta['ujian_id']));
 

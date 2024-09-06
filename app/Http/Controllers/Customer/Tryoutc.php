@@ -30,7 +30,7 @@ class Tryoutc extends Controller
         if (Crypt::decrypt($request->param) == 'berbayar') {
 
             // Jika ada proses ujian yang sedang berlangsung arahkan kehalaman ujian
-            $cekUjian = Ujian::all()->where('order_tryout_id', Crypt::decrypt($request->id))->first();
+            $cekUjian = Ujian::where('order_tryout_id', Crypt::decrypt($request->id))->first();
             if ($cekUjian) {
                 if ($cekUjian->status_ujian == 'Sedang Dikerjakan') {
                     return redirect()->route('ujian.progress', ['id' => Crypt::encrypt($cekUjian->id), 'param' => $request->param]);
@@ -47,7 +47,7 @@ class Tryoutc extends Controller
             $catatUjian->order_tryout_id = Crypt::decrypt($request->id);
         } elseif (Crypt::decrypt($request->param) == 'gratis') {
             // Jika ada proses ujian yang sedang berlangsung arahkan kehalaman ujian
-            $cekUjian = Ujian::all()->where('limit_tryout_id', Crypt::decrypt($request->id))->first();
+            $cekUjian = Ujian::where('limit_tryout_id', Crypt::decrypt($request->id))->first();
             if ($cekUjian) {
                 if ($cekUjian->status_ujian == 'Sedang Dikerjakan') {
                     return redirect()->route('ujian.progress', ['id' => Crypt::encrypt($cekUjian->id), 'param' => $request->param]);

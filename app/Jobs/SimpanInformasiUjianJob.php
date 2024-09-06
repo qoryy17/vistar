@@ -55,8 +55,8 @@ class SimpanInformasiUjianJob implements ShouldQueue
             $ujian->sisa_waktu = $sisaWaktu;
 
             // Menghitung soal terjawab dan belum terjawab
-            $hitungSoalTerjawab = ProgressUjian::all()->where('ujian_id', $this->dataInfoUjian['ujianID'])->count();
-            $hitungTotalSoal = SoalUjian::all()->where('kode_soal', $this->dataInfoUjian['kodeSoal'])->count();
+            $hitungSoalTerjawab = ProgressUjian::where('ujian_id', $this->dataInfoUjian['ujianID'])->count();
+            $hitungTotalSoal = SoalUjian::where('kode_soal', $this->dataInfoUjian['kodeSoal'])->count();
 
             $ujian->soal_terjawab = $hitungSoalTerjawab;
             $ujian->soal_belum_terjawab = $hitungTotalSoal - $hitungSoalTerjawab;
