@@ -43,7 +43,7 @@ class Orders extends Controller
         if ($data['tryout']->first()) {
             return view('main-web.produk.order-tryout', $data);
         } else {
-            return redirect()->route('mainweb.keranjang');
+            return redirect()->route('site.pembelian');
         }
     }
 
