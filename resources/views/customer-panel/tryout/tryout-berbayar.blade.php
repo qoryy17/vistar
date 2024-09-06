@@ -232,7 +232,7 @@
                                             @endphp
                                             @foreach ($hasilUjian as $row)
                                                 <tr>
-                                                    <td style="vertical-align: top;">1</td>
+                                                    <td style="vertical-align: top;">{{ $no }}</td>
                                                     <td>
                                                         <a href="{{ route('ujian.hasil', ['id' => Crypt::encrypt($row->id), 'ujianID' => Crypt::encrypt($row->ujianID), 'produkID' => Crypt::encrypt($row->produk_tryout_id)]) }}"
                                                             title="Klik untuk melihat detil">
