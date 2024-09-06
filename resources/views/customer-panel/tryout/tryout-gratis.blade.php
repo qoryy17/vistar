@@ -27,9 +27,7 @@
                     <div class="row">
                         @foreach ($ujianGratis->get() as $tryout)
                             @php
-                                $cekUjian = App\Models\Ujian::all()
-                                    ->where('limit_tryout_id', $tryout->id)
-                                    ->first();
+                                $cekUjian = App\Models\Ujian::where('limit_tryout_id', $tryout->id)->first();
 
                                 $date = \Carbon\Carbon::parse($tryout->created_at);
                                 $newDate = $date->addDays($tryout->masa_aktif);
