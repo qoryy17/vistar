@@ -261,7 +261,7 @@ class Tryoutc extends Controller
                     'soal_ujian.jawaban_b',
                     'soal_ujian.jawaban_c',
                     'soal_ujian.jawaban_d',
-                    'soal_ujian.jawaban_a',
+                    'soal_ujian.jawaban_e',
                     'soal_ujian.kunci_jawaban',
                     'soal_ujian.review_pembahasan'
                 )->leftJoin('soal_ujian', 'progres_ujian.soal_ujian_id', '=', 'soal_ujian.id')
