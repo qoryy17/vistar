@@ -15,7 +15,8 @@
                                 <span class="wrap"></span>
                             </span>
                         </h1>
-                        <p class="para-desc text-muted" style="text-align: justify">Vistar merupakan Pusat Kegiatan Akademik
+                        <p class="para-desc text-muted" style="text-align: justify">{{ $web->nama_bisnis }} merupakan Pusat
+                            Kegiatan Akademik
                             Bidang ICT dan Science
                             Terbaik #1 di Indonesia dengan
                             mengedepankan VI (6 angka Romawi) dan Star (Bintang dalam Inggris) “6 Bintang” dibidang <span
