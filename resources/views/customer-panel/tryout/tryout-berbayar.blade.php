@@ -58,6 +58,27 @@
                                                     </button>
                                                     <small class="text-danger">Sisa Masa Aktif Paket :
                                                         {{ ceil($masaAktif) }} Hari</small>
+                                                @else
+                                                    <button
+                                                        onclick='swal({
+                                                    title: "Mulai Ujian",
+                                                    text: "Apakah anda ingin memulai ujian sekarang ?",
+                                                    type: "warning",
+                                                    showCancelButton: true,
+                                                    closeOnConfirm: false,
+                                                    confirmButtonText: "Mulai",
+                                                    cancelButtonText: "Batal",
+                                                    showLoaderOnConfirm: true }, function () 
+                                                        { 
+                                                        setTimeout(function(){  
+                                                            document.getElementById("mulaiUjian").submit();
+                                                    }, 1000); });'
+                                                        class="btn btn-block btn-default mt-2 btn-web">
+                                                        <i class="fa fa-check-circle"></i>
+                                                        Mulai Ujian
+                                                    </button>
+                                                    <small class="text-danger">Sisa Masa Aktif Paket :
+                                                        {{ ceil($masaAktif) }} Hari</small>
                                                 @endif
                                             @else
                                                 <button
@@ -114,6 +135,26 @@
                                                         class="btn btn-block btn-default mt-2 btn-web1">
                                                         <i class="fa fa-check-circle"></i>
                                                         Lanjut Mengerjakan
+                                                    </button>
+                                                    <small class="text-danger">Masa Aktif Berkahir Hari Ini</small>
+                                                @else
+                                                    <button
+                                                        onclick='swal({
+                                                    title: "Mulai Ujian",
+                                                    text: "Apakah anda ingin memulai ujian sekarang ?",
+                                                    type: "warning",
+                                                    showCancelButton: true,
+                                                    closeOnConfirm: false,
+                                                    confirmButtonText: "Mulai",
+                                                    cancelButtonText: "Batal",
+                                                    showLoaderOnConfirm: true }, function () 
+                                                        { 
+                                                        setTimeout(function(){  
+                                                            document.getElementById("mulaiUjian").submit();
+                                                    }, 1000); });'
+                                                        class="btn btn-block btn-default mt-2 btn-web">
+                                                        <i class="fa fa-check-circle"></i>
+                                                        Mulai Ujian
                                                     </button>
                                                     <small class="text-danger">Masa Aktif Berkahir Hari Ini</small>
                                                 @endif
