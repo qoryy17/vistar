@@ -22,46 +22,105 @@
                 </div>
                 <!-- End Page Header -->
 
-                <div class="row">
-                    @foreach ($pembelian as $tryout)
-                        @php
-                            $cekUjian = App\Models\Ujian::all()
-                                ->where('order_tryout_id', $tryout->id)
-                                ->first();
+                @if ($pembelian->first())
+                    <div class="row">
+                        @foreach ($pembelian->get() as $tryout)
+                            @php
+                                $cekUjian = App\Models\Ujian::all()
+                                    ->where('order_tryout_id', $tryout->id)
+                                    ->first();
 
-                            $date = \Carbon\Carbon::parse($tryout->created_at);
-                            $newDate = $date->addDays($tryout->masa_aktif);
-                            $masaAktif = now()->diffInDays($newDate, false);
-                        @endphp
-                        @if ($masaAktif > 0)
-                            {{-- Informasi Paket Tryout --}}
-                            <div class="col-md-4">
-                                <div class="card custom-card">
-                                    <div class="card-body">
-                                        <div>
-                                            <h6>Informasi Paket</h6>
-                                            <h6 style="padding: 0px; margin:0px;" class="mb-2">
-                                                <span class="fs-25 me-2 text-primary">{{ $tryout->nama_tryout }}</span>
-                                                <span class="badge bg-success mt-2">
-                                                    {{ Number::currency($tryout->harga, in: 'IDR') }}
+                                $date = \Carbon\Carbon::parse($tryout->created_at);
+                                $newDate = $date->addDays($tryout->masa_aktif);
+                                $masaAktif = now()->diffInDays($newDate, false);
+                            @endphp
+                            @if ($masaAktif > 0)
+                                {{-- Informasi Paket Tryout --}}
+                                <div class="col-md-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body">
+                                            <div>
+                                                <h6>Informasi Paket</h6>
+                                                <h6 style="padding: 0px; margin:0px;" class="mb-2">
+                                                    <span class="fs-25 me-2 text-primary">{{ $tryout->nama_tryout }}</span>
+                                                    <span class="badge bg-success mt-2">
+                                                        {{ Number::currency($tryout->harga, in: 'IDR') }}
+                                                    </span>
+                                                </h6>
+                                                <span class="text-muted tx-12">
+                                                    Klik tombol dibawah untuk melanjutkan ujian Tryout berbasis CBT/CAT
                                                 </span>
-                                            </h6>
-                                            <span class="text-muted tx-12">
-                                                Klik tombol dibawah untuk melanjutkan ujian Tryout berbasis CBT/CAT
-                                            </span>
-                                            @if ($cekUjian)
-                                                @if ($cekUjian->status_ujian == 'Sedang Dikerjakan')
-                                                    <button onclick='document.getElementById("mulaiUjian").submit();'
-                                                        class="btn btn-block btn-default mt-2 btn-web1">
+                                                @if ($cekUjian)
+                                                    @if ($cekUjian->status_ujian == 'Sedang Dikerjakan')
+                                                        <button onclick='document.getElementById("mulaiUjian").submit();'
+                                                            class="btn btn-block btn-default mt-2 btn-web1">
+                                                            <i class="fa fa-check-circle"></i>
+                                                            Lanjut Mengerjakan
+                                                        </button>
+                                                        <small class="text-danger">Sisa Masa Aktif Paket :
+                                                            {{ ceil($masaAktif) }} Hari</small>
+                                                    @endif
+                                                @else
+                                                    <button
+                                                        onclick='swal({
+                                                    title: "Mulai Ujian",
+                                                    text: "Apakah anda ingin memulai ujian sekarang ?",
+                                                    type: "warning",
+                                                    showCancelButton: true,
+                                                    closeOnConfirm: false,
+                                                    confirmButtonText: "Mulai",
+                                                    cancelButtonText: "Batal",
+                                                    showLoaderOnConfirm: true }, function () 
+                                                        { 
+                                                        setTimeout(function(){  
+                                                            document.getElementById("mulaiUjian").submit();
+                                                    }, 1000); });'
+                                                        class="btn btn-block btn-default mt-2 btn-web">
                                                         <i class="fa fa-check-circle"></i>
-                                                        Lanjut Mengerjakan
+                                                        Mulai Ujian
                                                     </button>
                                                     <small class="text-danger">Sisa Masa Aktif Paket :
                                                         {{ ceil($masaAktif) }} Hari</small>
                                                 @endif
-                                            @else
-                                                <button
-                                                    onclick='swal({
+
+                                                <form id="mulaiUjian"
+                                                    action="{{ route('ujian.main', ['id' => Crypt::encrypt($tryout->id), 'param' => Crypt::encrypt('berbayar')]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('POST')
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif ($masaAktif == 0)
+                                {{-- Informasi Paket Tryout --}}
+                                <div class="col-md-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body">
+                                            <div>
+                                                <h6>Informasi Paket</h6>
+                                                <h6 style="padding: 0px; margin:0px;" class="mb-2">
+                                                    <span class="fs-25 me-2 text-primary">{{ $tryout->nama_tryout }}</span>
+                                                    <span class="badge bg-success mt-2">
+                                                        {{ Number::currency($tryout->harga, in: 'IDR') }}
+                                                    </span>
+                                                </h6>
+                                                <span class="text-muted tx-12">
+                                                    Klik tombol dibawah untuk melanjutkan ujian Tryout berbasis CBT/CAT
+                                                </span>
+                                                @if ($cekUjian)
+                                                    @if ($cekUjian->status_ujian == 'Sedang Dikerjakan')
+                                                        <button onclick='document.getElementById("mulaiUjian").submit();'
+                                                            class="btn btn-block btn-default mt-2 btn-web1">
+                                                            <i class="fa fa-check-circle"></i>
+                                                            Lanjut Mengerjakan
+                                                        </button>
+                                                        <small class="text-danger">Masa Aktif Berkahir Hari Ini</small>
+                                                    @endif
+                                                @else
+                                                    <button
+                                                        onclick='swal({
                                                     title: "Mulai Ujian",
                                                     text: "Apakah anda ingin memulai ujian sekarang ?",
                                                     type: "warning",
@@ -74,105 +133,48 @@
                                                         setTimeout(function(){  
                                                             document.getElementById("mulaiUjian").submit();
                                                     }, 1000); });'
-                                                    class="btn btn-block btn-default mt-2 btn-web">
-                                                    <i class="fa fa-check-circle"></i>
-                                                    Mulai Ujian
-                                                </button>
-                                                <small class="text-danger">Sisa Masa Aktif Paket :
-                                                    {{ ceil($masaAktif) }} Hari</small>
-                                            @endif
-
-                                            <form id="mulaiUjian"
-                                                action="{{ route('ujian.main', ['id' => Crypt::encrypt($tryout->id), 'param' => Crypt::encrypt('berbayar')]) }}"
-                                                method="POST">
-                                                @csrf
-                                                @method('POST')
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @elseif ($masaAktif == 0)
-                            {{-- Informasi Paket Tryout --}}
-                            <div class="col-md-4">
-                                <div class="card custom-card">
-                                    <div class="card-body">
-                                        <div>
-                                            <h6>Informasi Paket</h6>
-                                            <h6 style="padding: 0px; margin:0px;" class="mb-2">
-                                                <span class="fs-25 me-2 text-primary">{{ $tryout->nama_tryout }}</span>
-                                                <span class="badge bg-success mt-2">
-                                                    {{ Number::currency($tryout->harga, in: 'IDR') }}
-                                                </span>
-                                            </h6>
-                                            <span class="text-muted tx-12">
-                                                Klik tombol dibawah untuk melanjutkan ujian Tryout berbasis CBT/CAT
-                                            </span>
-                                            @if ($cekUjian)
-                                                @if ($cekUjian->status_ujian == 'Sedang Dikerjakan')
-                                                    <button onclick='document.getElementById("mulaiUjian").submit();'
-                                                        class="btn btn-block btn-default mt-2 btn-web1">
+                                                        class="btn btn-block btn-default mt-2 btn-web">
                                                         <i class="fa fa-check-circle"></i>
-                                                        Lanjut Mengerjakan
+                                                        Mulai Ujian
                                                     </button>
                                                     <small class="text-danger">Masa Aktif Berkahir Hari Ini</small>
                                                 @endif
-                                            @else
-                                                <button
-                                                    onclick='swal({
-                                                    title: "Mulai Ujian",
-                                                    text: "Apakah anda ingin memulai ujian sekarang ?",
-                                                    type: "warning",
-                                                    showCancelButton: true,
-                                                    closeOnConfirm: false,
-                                                    confirmButtonText: "Mulai",
-                                                    cancelButtonText: "Batal",
-                                                    showLoaderOnConfirm: true }, function () 
-                                                        { 
-                                                        setTimeout(function(){  
-                                                            document.getElementById("mulaiUjian").submit();
-                                                    }, 1000); });'
-                                                    class="btn btn-block btn-default mt-2 btn-web">
-                                                    <i class="fa fa-check-circle"></i>
-                                                    Mulai Ujian
-                                                </button>
-                                                <small class="text-danger">Masa Aktif Berkahir Hari Ini</small>
-                                            @endif
 
-                                            <form id="mulaiUjian"
-                                                action="{{ route('ujian.main', ['id' => Crypt::encrypt($tryout->id), 'param' => Crypt::encrypt('berbayar')]) }}"
-                                                method="POST">
-                                                @csrf
-                                                @method('POST')
-                                            </form>
+                                                <form id="mulaiUjian"
+                                                    action="{{ route('ujian.main', ['id' => Crypt::encrypt($tryout->id), 'param' => Crypt::encrypt('berbayar')]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('POST')
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        @else
-                            {{-- Informasi Paket Tryout --}}
-                            <div class="col-md-4">
-                                <div class="card custom-card">
-                                    <div class="card-body">
-                                        <div>
-                                            <h6>Informasi Paket</h6>
-                                            <h6 style="padding: 0px; margin:0px;" class="mb-2">
-                                                <span class="fs-25 me-2 text-primary">{{ $tryout->nama_tryout }}</span>
-                                                <span class="badge bg-success mt-2">
-                                                    {{ Number::currency($tryout->harga, in: 'IDR') }}
+                            @else
+                                {{-- Informasi Paket Tryout --}}
+                                <div class="col-md-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body">
+                                            <div>
+                                                <h6>Informasi Paket</h6>
+                                                <h6 style="padding: 0px; margin:0px;" class="mb-2">
+                                                    <span class="fs-25 me-2 text-primary">{{ $tryout->nama_tryout }}</span>
+                                                    <span class="badge bg-success mt-2">
+                                                        {{ Number::currency($tryout->harga, in: 'IDR') }}
+                                                    </span>
+                                                </h6>
+                                                <span class="text-muted tx-12">
+                                                    Masa Aktif Paket Telah Berakhir : {{ abs(ceil($masaAktif)) }} Hari Yang
+                                                    Lalu
                                                 </span>
-                                            </h6>
-                                            <span class="text-muted tx-12">
-                                                Masa Aktif Paket Telah Berakhir : {{ abs(ceil($masaAktif)) }} Hari Yang
-                                                Lalu
-                                            </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
                 <!-- Row -->
                 <div class="row sidemenu-height">
                     <div class="col-lg-12">
