@@ -136,9 +136,10 @@ class Tryoutc extends Controller
                 6000,
                 function () use ($ujian) {
                     return DB::table('soal_ujian')
-                        ->select('soal_ujian.*', 'produk_tryout.kode_soal')
+                        ->select('soal_ujian.*', 'produk_tryout.kode_soal', 'klasifikasi_soal.alias', 'klasifikasi_soal.created_at')
                         ->leftJoin('produk_tryout', 'soal_ujian.kode_soal', '=', 'produk_tryout.kode_soal')
-                        ->where('produk_tryout.id', '=', $ujian->produk_tryout_id)->get();
+                        ->leftJoin('klasifikasi_soal', 'soal_ujian.klasifikasi_soal_id', '=', 'klasifikasi_soal.id')
+                        ->where('produk_tryout.id', '=', $ujian->produk_tryout_id)->orderBy('klasifikasi_soal.created_at', 'ASC')->get();
                 }
             );
         } else {
