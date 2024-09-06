@@ -1,7 +1,7 @@
 <!-- Coba Gratis End -->
 <div class="container mt-100 mt-60" id="coba-gratis">
     <div class="row align-items-center">
-        <div class="col-lg-6">
+        <div class="col-lg-6 wow animate__animated animate__fadeInLeft" data-wow-delay=".1s">
             <div class="section-title">
                 <h4 class="title mb-4">Uji Coba Tryout Gratis <br>
                     <span class="text-primary">{{ $web->nama_bisnis }}</span>
@@ -25,7 +25,7 @@
             </div>
         </div><!--end col-->
 
-        <div class="col-lg-6">
+        <div class="col-lg-6 wow animate__animated animate__fadeInRight" data-wow-delay=".1s">
             <div class="row ms-lg-5" id="counter">
                 <div class="col-md-6 col-12">
                     <div class="row">

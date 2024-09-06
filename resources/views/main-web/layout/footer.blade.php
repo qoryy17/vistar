@@ -9,6 +9,8 @@
 <script src="{{ asset('resources/web/dist/assets/js/select2.min.js') }}"></script>
 <!-- Lightbox -->
 <script src="{{ asset('resources/web/dist/assets/libs/tobii/js/tobii.min.js') }}"></script>
+<!-- Animation -->
+<script src="{{ asset('resources/web/dist/assets/libs/wow.js/wow.min.js') }}"></script>
 <!-- Slider -->
 <script src="{{ asset('resources/web/dist/assets/libs/tiny-slider/min/tiny-slider.js') }}"></script>
 <script src="{{ asset('resources/web/dist/assets/libs/swiper/js/swiper.min.js') }}"></script>

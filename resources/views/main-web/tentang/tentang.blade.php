@@ -5,7 +5,8 @@
      <section class="section" class="bg-half-170 bg-light d-table w-100 mt-100">
          <div class="container">
              <div class="row align-items-center">
-                 <div class="col-lg-5 col-md-5 mt-4 pt-2 mt-sm-0 pt-sm-0">
+                 <div class="col-lg-5 col-md-5 mt-4 pt-2 mt-sm-0 pt-sm-0 wow animate__animated animate__fadeInLeft"
+                     data-wow-delay=".1s">
                      <div class="position-relative">
                          <img src="{{ asset('storage/' . $web->logo) }}" class="rounded img-fluid mx-auto d-block"
                              alt="">
@@ -13,7 +14,8 @@
                      </div>
                  </div><!--end col-->
 
-                 <div class="col-lg-7 col-md-7 mt-4 pt-2 mt-sm-0 pt-sm-0">
+                 <div class="col-lg-7 col-md-7 mt-4 pt-2 mt-sm-0 pt-sm-0 wow animate__animated animate__fadeInRight"
+                     data-wow-delay=".1s">
                      <div class="section-title ms-lg-4">
                          <h4 class="title mb-4 fw-bold" style="text-transform: uppercase; color: #0075B8;">
                              {{ $web->nama_bisnis }}</h4>
@@ -37,7 +39,7 @@
          </div><!--end container-->
 
          <div class="container mt-100 mt-60">
-             <div class="row justify-content-center">
+             <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
                  <div class="col-12 text-center">
                      <div class="section-title mb-4 pb-2">
                          <h4 class="title mb-4">Dimana Lokasi Kami ?</h4>
@@ -59,7 +61,7 @@
                  </div><!--end col-->
              </div><!--end row-->
              <div class="row mt-50">
-                 <div class="col-md-6">
+                 <div class="col-lg-6 col-md-6 wow animate__animated animate__fadeInLeft" data-wow-delay=".1s">
                      <div class="card border-0 text-center features feature-primary feature-clean p-2">
                          <div class="icons text-center mx-auto">
                              <i class="uil uil-phone rounded h3 mb-0"></i>
@@ -72,7 +74,7 @@
                          </div>
                      </div>
                  </div>
-                 <div class="col-md-6">
+                 <div class="col-lg-6 col-md-6 wow animate__animated animate__fadeInRight" data-wow-delay=".1s">
                      <div class="card border-0 text-center features feature-primary feature-clean p-2">
                          <div class="icons text-center mx-auto">
                              <i class="uil uil-envelope rounded h3 mb-0"></i>

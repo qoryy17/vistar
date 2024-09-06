@@ -23,6 +23,7 @@
     <!-- Css -->
     <link href="{{ asset('resources/web/dist/assets/libs/tiny-slider/tiny-slider.css') }}" rel="stylesheet">
     <link href="{{ asset('resources/web/dist/assets/libs/tobii/css/tobii.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('resources/web/dist/assets/libs/animate.css/animate.min.css') }}" rel="stylesheet">
     <link href="{{ asset('resources/web/dist/assets/libs/swiper/css/swiper.min.css') }}" rel="stylesheet">
     <!-- Bootstrap Css -->
     <link href="{{ asset('resources/web/dist/assets/css/bootstrap.min.css') }}" id="bootstrap-style" class="theme-opt"
@@ -37,6 +38,8 @@
         rel="stylesheet" type="text/css">
     <link href="{{ asset('resources/web/dist/assets/css/style.min.css') }}" id="color-opt" class="theme-opt"
         rel="stylesheet" type="text/css">
+
+
 
 </head>
 

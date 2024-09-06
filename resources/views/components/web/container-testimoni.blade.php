@@ -1,6 +1,6 @@
  <!-- Testimoni Peserta -->
  <div class="container mt-50 mt-60">
-     <div class="row justify-content-center">
+     <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
          <div class="col-12 text-center">
              <div class="section-title mb-4 pb-2">
                  <h4 class="title mb-4">Testimoni Dari Peserta</h4>
@@ -13,7 +13,7 @@
          </div><!--end col-->
      </div><!--end row-->
 
-     <div class="row justify-content-center">
+     <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
          <div class="col-lg-12 mt-4">
              <div class="tiny-three-item">
                  @foreach ($testimoni->get() as $testimoniPeserta)

@@ -1,6 +1,6 @@
  <!-- Keunggulan -->
  <div class="container mt-100 mt-60">
-     <div class="row justify-content-center">
+     <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
          <div class="col-12 text-center">
              <div class="section-title mb-4 pb-2">
                  <h4 class="title mb-4">Keunggulan Tryout Vi Star Indonesia</h4>
@@ -12,7 +12,7 @@
          </div><!--end col-->
      </div><!--end row-->
 
-     <div class="row">
+     <div class="row wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
          <div class="col-md-4 col-12 mt-5 pt-4">
              <div class="features feature-primary">
                  <div class="image position-relative d-inline-block">
