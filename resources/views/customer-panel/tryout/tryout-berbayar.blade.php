@@ -132,7 +132,8 @@
                                             </span>
                                             @if ($cekUjian)
                                                 @if ($cekUjian->status_ujian == 'Sedang Dikerjakan')
-                                                    <button onclick='document.getElementById("mulaiUjian").submit();'
+                                                    <button
+                                                        onclick='document.getElementById("mulaiUjian{{ $no }}").submit();'
                                                         class="btn btn-block btn-default mt-2 btn-web1">
                                                         <i class="fa fa-check-circle"></i>
                                                         Lanjut Mengerjakan
@@ -151,7 +152,7 @@
                                                     showLoaderOnConfirm: true }, function () 
                                                         { 
                                                         setTimeout(function(){  
-                                                            document.getElementById("mulaiUjian").submit();
+                                                            document.getElementById("mulaiUjian{{ $no }}").submit();
                                                     }, 1000); });'
                                                         class="btn btn-block btn-default mt-2 btn-web">
                                                         <i class="fa fa-check-circle"></i>
@@ -172,7 +173,7 @@
                                                     showLoaderOnConfirm: true }, function () 
                                                         { 
                                                         setTimeout(function(){  
-                                                            document.getElementById("mulaiUjian").submit();
+                                                            document.getElementById("mulaiUjian{{ $no }}").submit();
                                                     }, 1000); });'
                                                     class="btn btn-block btn-default mt-2 btn-web">
                                                     <i class="fa fa-check-circle"></i>
@@ -181,7 +182,7 @@
                                                 <small class="text-danger">Masa Aktif Berkahir Hari Ini</small>
                                             @endif
 
-                                            <form id="mulaiUjian"
+                                            <form id="mulaiUjian{{ $no }}"
                                                 action="{{ route('ujian.main', ['id' => Crypt::encrypt($tryout->id), 'param' => Crypt::encrypt('berbayar')]) }}"
                                                 method="POST">
                                                 @csrf
