@@ -17,7 +17,7 @@
                             <p class="mt-4">{{ $web->nama_bisnis }} {{ $web->tagline }}, Ujian Tryout untuk CPNS, PPPK
                                 dan
                                 Kedinasan Terpercaya Seluruh Indonesia.</p>
-                            <ul class="list-unstyled social-icon foot-social-icon mb-0 mt-4">
+                            <ul class="list-unstyled social-icon foot-social-icon mb-0 mt-3">
                                 <li class="list-inline-item mb-0"><a href="{{ $web->instagram }}" target="_blank"
                                         class="rounded"><i class="uil uil-instagram align-middle"
                                             title="Instagram {{ $web->nama_bisnis }}"></i></a>
@@ -27,6 +27,9 @@
                                             title="Email {{ $web->nama_bisnis }}"></i></a>
                                 </li>
                             </ul><!--end icon-->
+                            <p class="mt-3">
+                                {{ $web->perusahaan }}
+                            </p>
                         </div><!--end col-->
 
                         <div class="col-lg-2 col-md-4 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0">
