@@ -37,10 +37,14 @@ class Orders extends Controller
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
                 ->where('keranjang_order.customer_id', '=', Auth::user()->customer_id)
                 ->where('keranjang_order.id', '=', Crypt::decrypt($request->params))
-                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('keranjang_order.updated_at', 'DESC')->get()
+                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('keranjang_order.updated_at', 'DESC')
         ];
 
-        return view('main-web.produk.order-tryout', $data);
+        if ($data['tryout']->first()) {
+            return view('main-web.produk.order-tryout', $data);
+        } else {
+            return redirect()->route('mainweb.keranjang');
+        }
     }
 
     public function payOrder(Request $request)

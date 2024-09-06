@@ -1,8 +1,8 @@
   @extends('main-web.layout.main')
   @section('title', $title)
   @section('content')
-      @if ($tryout)
-          @foreach ($tryout as $order)
+      @if ($tryout->first())
+          @foreach ($tryout->get() as $order)
           @endforeach
       @endif
       <!-- Start -->
@@ -98,49 +98,49 @@
       <script src="https://app.sandbox.midtrans.com/snap/snap.js"
           data-client-key="{{ config('services.midtrans.client_key') }}"></script>
       <script type="text/javascript">
-            // document.getElementById('buttonReferral').addEventListener('click', function() {
-            //     const referralCodeInput = document.getElementById('kodeReferral');
-            //     const referralCode = referralCodeInput.value.trim();
-            //     const messageElement = document.getElementById('message');
+          // document.getElementById('buttonReferral').addEventListener('click', function() {
+          //     const referralCodeInput = document.getElementById('kodeReferral');
+          //     const referralCode = referralCodeInput.value.trim();
+          //     const messageElement = document.getElementById('message');
 
-            //     fetch("{{ route('orders.check-referral') }}", {
-            //             method: 'POST',
-            //             headers: {
-            //                 'Content-Type': 'application/json',
-            //                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            //             },
-            //             body: JSON.stringify({
-            //                 referral_code: referralCode
-            //             })
-            //         })
-            //         .then(response => response.json())
-            //         .then(data => {
-            //             if (data.status === 'success') {
-            //                 // Tampilkan pesan sukses
-            //                 messageElement.style.display = 'block';
-            //                 messageElement.style.color = 'green';
-            //                 messageElement.textContent = data.message;
+          //     fetch("{{ route('orders.check-referral') }}", {
+          //             method: 'POST',
+          //             headers: {
+          //                 'Content-Type': 'application/json',
+          //                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          //             },
+          //             body: JSON.stringify({
+          //                 referral_code: referralCode
+          //             })
+          //         })
+          //         .then(response => response.json())
+          //         .then(data => {
+          //             if (data.status === 'success') {
+          //                 // Tampilkan pesan sukses
+          //                 messageElement.style.display = 'block';
+          //                 messageElement.style.color = 'green';
+          //                 messageElement.textContent = data.message;
 
-            //                 // Set input menjadi readonly
-            //                 referralCodeInput.readOnly = true;
+          //                 // Set input menjadi readonly
+          //                 referralCodeInput.readOnly = true;
 
-            //                 // Sembunyikan tombol
-            //                 document.getElementById('buttonReferral').style.display = 'none';
+          //                 // Sembunyikan tombol
+          //                 document.getElementById('buttonReferral').style.display = 'none';
 
-            //             } else {
-            //                 // Tampilkan pesan error
-            //                 messageElement.style.display = 'block';
-            //                 messageElement.style.color = 'red';
-            //                 messageElement.textContent = data.message;
-            //             }
-            //         })
-            //         .catch(error => {
-            //             console.error('Error:', error);
-            //             messageElement.style.display = 'block';
-            //             messageElement.style.color = 'red';
-            //             messageElement.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
-            //         });
-            // });
+          //             } else {
+          //                 // Tampilkan pesan error
+          //                 messageElement.style.display = 'block';
+          //                 messageElement.style.color = 'red';
+          //                 messageElement.textContent = data.message;
+          //             }
+          //         })
+          //         .catch(error => {
+          //             console.error('Error:', error);
+          //             messageElement.style.display = 'block';
+          //             messageElement.style.color = 'red';
+          //             messageElement.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
+          //         });
+          // });
 
 
           $('#pay-button').click(function(event) {

@@ -27,7 +27,6 @@ class Site extends Controller
             'tryoutTerbaru' => DB::table('produk_tryout')->select('produk_tryout.*', 'kategori_produk.status')->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->where('kategori_produk.status', 'Berbayar')->orderBy('produk_tryout.created_at', 'DESC')->first(),
             'testimoni' => DB::table('testimoni')->select('testimoni.*', 'customer.nama_lengkap')->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')->where('publish', 'Y')->orderBy('updated_at', 'desc')
         ];
-
         return view('customer-panel.home.beranda', $data);
     }
 
