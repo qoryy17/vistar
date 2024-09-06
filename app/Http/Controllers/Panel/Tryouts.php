@@ -242,6 +242,7 @@ class Tryouts extends Controller
         $pengaturan = PengaturanTryout::findOrFail($tryout->pengaturan_tryout_id);
         $kategori = KategoriProduk::findOrFail($tryout->kategori_produk_id);
         $klasifikasiSoal = KlasifikasiSoal::all();
+        $totalSoal = SoalUjian::where('kode_soal', $tryout->kode_soal)->count();
 
         $data = [
             'page_title' => 'Detail Produk Tryout',
@@ -251,9 +252,11 @@ class Tryouts extends Controller
             'kategori' => $kategori,
             'pengaturan' => $pengaturan,
             'klasifikasi' => $klasifikasiSoal,
+            'totalSoal' => $totalSoal,
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
         ];
+
         return view('main-panel.tryout.detail-produk-tryout', $data);
     }
 

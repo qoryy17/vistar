@@ -31,14 +31,15 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <img src="{{ asset('storage/tryout/' . $tryout->thumbnail) }}" alt="">
+                                        <img src="{{ asset('storage/tryout/' . $tryout->thumbnail) }}" alt="thubmnail"
+                                            class="img-fluid">
                                     </div>
                                     <div class="col-md-8">
                                         <table class="table ">
                                             <tr>
                                                 <td>Nama Produk Tryout </td>
                                                 <td>
-                                                    {{ $tryout->nama_tryout }}
+                                                    <strong>{{ $tryout->nama_tryout }}</strong>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -81,6 +82,14 @@
                                                 </td>
                                                 <td>
                                                     {{ $pengaturan->durasi }} Menit
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Jumlah Soal
+                                                </td>
+                                                <td>
+                                                    {{ $totalSoal }} Soal
                                                 </td>
                                             </tr>
                                             <tr>
