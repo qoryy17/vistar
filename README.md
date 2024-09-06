@@ -12,12 +12,11 @@ Vistar merupakan Pusat Kegiatan Akademik Bidang ICT dan Science Terbaik #1 di In
 
 - Dr. Dicky Nofriansyah, S.Kom.,M.Kom.,CITP
 - Ahmad Yusri
-- Rahmadsyah
 - Qori Chairawan
 
 ## Versi Web
 
-Production 1.0.1
+Production 1.0.0
 
 ## Pembaruan & Perbaikan
 
