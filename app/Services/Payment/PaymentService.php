@@ -2,7 +2,7 @@
 
 namespace App\Services\Payment;
 
-use App\Jobs\SendInoviceJob;
+use App\Jobs\SendInvoiceJob;
 use App\Models\OrderTryout;
 use App\Models\Payment;
 use App\Services\Payment\MidtransService;
@@ -106,7 +106,7 @@ class PaymentService
             $orderInvoice = [
                 'order_id' => $payment->ref_order_id
             ];
-            SendInoviceJob::dispatch($orderInvoice);
+            SendInvoiceJob::dispatch($orderInvoice);
         }
 
         return [
