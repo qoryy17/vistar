@@ -27,21 +27,6 @@ class LoggedCustomer
                 $request->session()->regenerateToken();
                 return Redirect::to('/');
             }
-            $user = Customer::findOrFail(Auth::user()->customer_id);
-            if (
-                is_null($user->tanggal_lahir) ||
-                is_null($user->jenis_kelamin) ||
-                is_null($user->kontak) ||
-                is_null($user->alamat) ||
-                is_null($user->provinsi) ||
-                is_null($user->kabupaten) ||
-                is_null($user->kecamatan) ||
-                is_null($user->pendidikan) ||
-                is_null($user->jurusan) ||
-                is_null($user->foto)
-            ) {
-                return redirect()->route('mainweb.profil-saya')->with('profilMessage', 'Harap lengkapi profil terlebih dahulu sebelum melakukan pemesanan !!!');
-            }
         }
         return $next($request);
     }

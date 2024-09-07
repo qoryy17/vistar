@@ -23,7 +23,6 @@ use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Middleware\Auth\PanelRouting;
 use App\Http\Middleware\Auth\ProdukAuth;
 use App\Http\Middleware\Customer\LoggedCustomer;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
@@ -69,14 +68,14 @@ Route::controller(Emails::class)->group(function () {
 });
 
 // Routing untuk menu utama landing website Vi Star Indonesia
-Route::controller(MainWebsite::class, VerifyCsrfToken::class)->group(function () {
+Route::controller(MainWebsite::class)->group(function () {
     Route::get('/', 'index')->name('mainweb.index');
     Route::get('/profil-saya', 'profil')->name('mainweb.profil-saya')->middleware(PanelRouting::class);
     Route::get('/produk-berbayar', 'produkBerbayar')->name('mainweb.produk-berbayar');
     Route::get('/produk-gratis', 'produkGratis')->name('mainweb.produk-gratis');
     Route::get('/search-tryout-berbayar/search', 'searchProdukBerbayar')->name('mainweb.search-produk-berbayar');
-    Route::get('/search-tryout-gratis/search', 'searchProdukGratis')->name('mainweb.search-produk-gratis')->middleware(PanelRouting::class);
-    Route::post('/pesan-tryout-berbayar', 'pesanTryoutBerbayar')->name('mainweb.pesan-tryout-berbayar')->middleware(PanelRouting::class);
+    Route::get('/search-tryout-gratis/search', 'searchProdukGratis')->name('mainweb.search-produk-gratis')->middleware(LoggedCustomer::class);
+    Route::post('/pesan-tryout-berbayar', 'pesanTryoutBerbayar')->name('mainweb.pesan-tryout-berbayar')->middleware(LoggedCustomer::class);
     Route::get('/keranjang-pesanan', 'keranjangPesanan')->name('mainweb.keranjang')->middleware(PanelRouting::class);
     Route::delete('/hapus-item-pesanan', 'hapusItemPesanan')->name('mainweb.hapus-item')->middleware(PanelRouting::class);
 
