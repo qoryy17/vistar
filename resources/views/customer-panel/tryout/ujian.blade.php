@@ -75,7 +75,7 @@
                                     <i class="fa fa-info-circle"></i><span id="flash-info"></span>
                                 </div>
 
-                                <div class="" style="position: absolute; top: -10px; right: -10px;">
+                                <div class="" style="position: absolute; top: 10px; right: 10px;">
                                     <a href="javascript:void(0)" class="btn btn-block btn-sm btn-primary btn-web"
                                         data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
                                         <i class="fe fe-menu header-icons"></i>
