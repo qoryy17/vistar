@@ -23,7 +23,7 @@ class Users extends Controller
             'form_title' => 'Data Pengguna',
             'page_title' => 'Pengguna',
             'breadcumb' => 'Manajemen Pengguna',
-            'users' => User::all()->whereNotIn('role', 'Customer'),
+            'users' => User::whereNotIn('role', 'Customer'),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
         ];

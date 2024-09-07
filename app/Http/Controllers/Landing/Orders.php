@@ -26,7 +26,7 @@ class Orders extends Controller
         if (Auth::user()->role != 'Customer') {
             return Redirect::to('/');
         }
-        $data  = [
+        $data = [
             'title' => 'Pembayaran Pesanan',
             'tryout' => DB::table('keranjang_order')->select('keranjang_order.*', 'produk_tryout.id as idProduk', 'produk_tryout.nama_tryout', 'produk_tryout.keterangan', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status')
                 ->leftJoin('produk_tryout', 'keranjang_order.produk_tryout_id', '=', 'produk_tryout.id')
@@ -34,7 +34,7 @@ class Orders extends Controller
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
                 ->where('keranjang_order.customer_id', '=', Auth::user()->customer_id)
                 ->where('keranjang_order.id', '=', Crypt::decrypt($request->params))
-                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('keranjang_order.updated_at', 'DESC')
+                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('keranjang_order.updated_at', 'DESC'),
         ];
 
         if ($data['tryout']->first()) {
@@ -118,11 +118,11 @@ class Orders extends Controller
 
             // Catata referral jika ada : note : referral disable sementara
             /*if ($request->referralCode) {
-                $referral = new ReferralCustomer();
-                $referral->id = rand(1, 999) . rand(1, 99);
-                $referral->kode_referral = $request->referralCode;
-                $referral->produk_tryout_id = $referensiOrderID;
-                $referral->save();
+            $referral = new ReferralCustomer();
+            $referral->id = rand(1, 999) . rand(1, 99);
+            $referral->kode_referral = $request->referralCode;
+            $referral->produk_tryout_id = $referensiOrderID;
+            $referral->save();
             }*/
 
             // Hapus Keranjang
@@ -148,6 +148,12 @@ class Orders extends Controller
             return redirect()->route('mainweb.daftar-tryout-gratis')->with('errorMessage', 'Pendaftaran tryout gratis hanya boleh 1 kali !');
         }
 
+        // check if there waiting request
+        $checkWaitingStatus = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Menunggu')->first();
+        if ($checkWaitingStatus) {
+            return redirect()->route('mainweb.daftar-tryout-gratis')->with('errorMessage', 'Pendaftaran tryout gratis anda sedang diproses, silahkan tunggu informasi selanjutnya!');
+        }
+
         // Bukti share produk
         $fileBuktiShare = $request->file('buktiShare');
         $hasnameBuktiShare = $fileBuktiShare->hashName();
@@ -159,7 +165,7 @@ class Orders extends Controller
         $fileUploadBuktiShare = $fileBuktiShare->storeAs('public\share-follow', $hasnameBuktiShare);
         $fileUploadBuktiFollow = $fileBuktiFollow->storeAs('public\share-follow', $hasnameBuktiFollow);
 
-        if (!$fileUploadBuktiShare and $fileUploadBuktiFollow) {
+        if (!$fileUploadBuktiShare && $fileUploadBuktiFollow) {
             return redirect()->back()->with('errorMessage', 'Unggah bukti share dan follow gagal !')->withInput();
         }
 
@@ -182,18 +188,23 @@ class Orders extends Controller
     public function pesanTryoutGratis(Request $request)
     {
         // Cek apakah sudah pernah coba gratis
-        $tryoutGratis = LimitTryout::where('customer_id', Auth::user()->customer_id)->first();
-        if ($tryoutGratis->produk_tryout_id != null) {
+        $tryoutGratis = LimitTryout::where('customer_id', Auth::user()->customer_id)
+            ->whereNull('produk_tryout_id')
+            ->where('status_validasi', 'Disetujui')
+            ->orderBy('created_at', 'ASC')
+            ->first();
+        if ($tryoutGratis->produk_tryout_id !== null) {
             return redirect()->route('site.main');
         }
 
         $tryoutGratis->produk_tryout_id = Crypt::decrypt($request->idProdukTryout);
+        $save = $tryoutGratis->save();
 
-        if ($tryoutGratis->save()) {
-            return redirect()->route('site.tryout-gratis');
-        } else {
+        if ($save) {
             return redirect()->back()->with('errorMessage', 'Produk tryout gratis gagal dipilih !')->withInput();
         }
+
+        return redirect()->route('site.tryout-gratis');
     }
 
     public function checkReferral(Request $request)
@@ -204,7 +215,7 @@ class Orders extends Controller
             ],
             [
                 'kodeReferral.string' => 'Kode Referral harus berupa kalimat !',
-                'kodeReferral.max' => 'Kode Referral maksimal 255 karakter'
+                'kodeReferral.max' => 'Kode Referral maksimal 255 karakter',
             ]
         );
 

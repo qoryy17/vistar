@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Landing;
 
+use App\Helpers\BerandaUI;
+use App\Http\Controllers\Controller;
 use App\Models\Customer;
-use App\Models\LimitTryout;
-use Illuminate\Http\Request;
 use App\Models\KategoriProduk;
 use App\Models\KeranjangOrder;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Helpers\BerandaUI;
+use App\Models\LimitTryout;
 use App\Models\OrderTryout;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
 class MainWebsite extends Controller
@@ -31,19 +31,19 @@ class MainWebsite extends Controller
 
         $web = BerandaUI::web();
 
-        $data  = [
+        $data = [
             'title' => $web->nama_bisnis . " " . $web->tagline,
             'testimoni' => $testimoni,
-            'web' => $web
+            'web' => $web,
         ];
         return view('main-web.home.beranda', $data);
     }
 
     public function produkBerbayar()
     {
-        $data  = [
+        $data = [
             'title' => 'Produk Paket Tryout',
-            'kategoriProduk' => KategoriProduk::all()->where('aktif', 'Y')->where('status', 'Berbayar'),
+            'kategoriProduk' => KategoriProduk::where('aktif', 'Y')->where('status', 'Berbayar'),
             'searchpaketTryout' => '',
             'searchcariPaket' => '',
             'allProduk' => DB::table('produk_tryout')->select(
@@ -59,7 +59,7 @@ class MainWebsite extends Controller
             )->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
                 ->where('produk_tryout.status', 'Tersedia')
-                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get()
+                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get(),
         ];
         return view('main-web.produk.tryout-berbayar', $data);
     }
@@ -67,18 +67,26 @@ class MainWebsite extends Controller
     public function produkGratis()
     {
         // Cek apakah sudah pilih produk tryout gratis
-        $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Disetujui')->first();
-        if ($cekGratisan) {
-            if ($cekGratisan->produk_tryout_id != null) {
+        $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Disetujui')->orderBy('created_at', 'ASC')->get();
+        if ($cekGratisan->count() > 0) {
+            // Check if all of limit tryout already has produk_tryout_id
+            $exists = false;
+            foreach ($cekGratisan as $limit) {
+                if ($limit->produk_tryout_id === null) {
+                    $exists = true;
+                    break;
+                }
+            }
+            if (!$exists) {
                 return redirect()->route('site.tryout-gratis');
             }
         } else {
             return redirect()->route('mainweb.index', '#coba-gratis');
         }
 
-        $data  = [
+        $data = [
             'title' => 'Produk Paket Tryout Gratis',
-            'kategoriProduk' => KategoriProduk::all()->where('aktif', 'Y')->where('status', 'Gratis'),
+            'kategoriProduk' => KategoriProduk::where('aktif', 'Y')->where('status', 'Gratis'),
             'searchpaketTryout' => '',
             'searchcariPaket' => '',
             'allProduk' => DB::table('produk_tryout')->select(
@@ -92,7 +100,7 @@ class MainWebsite extends Controller
                 'kategori_produk.judul',
                 'kategori_produk.status as produk_status'
             )->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->whereNot('kategori_produk.status', 'Berbayar')->orderBy('produk_tryout.updated_at', 'DESC')->get()
+                ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->whereNot('kategori_produk.status', 'Berbayar')->orderBy('produk_tryout.updated_at', 'DESC')->get(),
         ];
         return view('main-web.produk.tryout-gratis', $data);
     }
@@ -114,9 +122,9 @@ class MainWebsite extends Controller
         } else {
             return Redirect::to('/produk-berbayar');
         }
-        $data  = [
+        $data = [
             'title' => 'Produk Paket Tryout',
-            'kategoriProduk' => KategoriProduk::all()->where('aktif', 'Y')->where('status', 'Berbayar'),
+            'kategoriProduk' => KategoriProduk::where('aktif', 'Y')->where('status', 'Berbayar'),
             'allProduk' => $query,
             'searchpaketTryout' => $request->paketTryout,
             'searchcariPaket' => $request->cariPaket,
@@ -145,9 +153,9 @@ class MainWebsite extends Controller
         } else {
             return Redirect::to('/produk-gratis');
         }
-        $data  = [
+        $data = [
             'title' => 'Produk Paket Tryout Gratis',
-            'kategoriProduk' => KategoriProduk::all()->where('aktif', 'Y')->where('status', 'Gratis'),
+            'kategoriProduk' => KategoriProduk::where('aktif', 'Y')->where('status', 'Gratis'),
             'allProduk' => $query,
             'searchpaketTryout' => $request->paketTryout,
             'searchcariPaket' => $request->cariPaket,
@@ -180,9 +188,9 @@ class MainWebsite extends Controller
 
     public function keranjangPesanan()
     {
-        $data  = [
+        $data = [
             'title' => 'Keranjang Pesanan',
-            'tryout' =>  DB::table('keranjang_order')->select('keranjang_order.*', 'produk_tryout.id as idProduk', 'produk_tryout.nama_tryout', 'produk_tryout.keterangan', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status')
+            'tryout' => DB::table('keranjang_order')->select('keranjang_order.*', 'produk_tryout.id as idProduk', 'produk_tryout.nama_tryout', 'produk_tryout.keterangan', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status')
                 ->leftJoin('produk_tryout', 'keranjang_order.produk_tryout_id', '=', 'produk_tryout.id')
                 ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
@@ -201,7 +209,7 @@ class MainWebsite extends Controller
             )->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
                 ->where('produk_tryout.status', 'Tersedia')
-                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get()
+                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get(),
         ];
 
         return view('main-web.produk.keranjang-order', $data);
@@ -221,52 +229,62 @@ class MainWebsite extends Controller
     public function daftarTryoutGratis()
     {
         // Cek apakah sudah pernah mengajukan permohonan
-        $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Disetujui')->first();
-        if ($cekGratisan) {
-            if ($cekGratisan->produk_tryout_id != null) {
+        $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Disetujui')->get();
+        if ($cekGratisan->count() > 0) {
+            // Check if all of limit tryout already has produk_tryout_id
+            $exists = false;
+            foreach ($cekGratisan as $limit) {
+                if ($limit->produk_tryout_id === null) {
+                    $exists = true;
+                    break;
+                }
+            }
+            if (!$exists) {
                 return redirect()->route('site.tryout-gratis');
             }
+
             return redirect()->route('mainweb.produk-gratis');
         }
-        $data  = [
+
+        $data = [
             'title' => 'Coba Tryout Gratis',
-            'customer' => Customer::all()->where('id', Auth::user()->customer_id)->first()
+            'customer' => Customer::where('id', Auth::user()->customer_id)->first(),
         ];
         return view('main-web.produk.daftar-tryout-gratis', $data);
     }
 
     public function profil()
     {
-        $data  = [
+        $data = [
             'title' => 'Profil Saya',
-            'customer' => Customer::findOrFail(Auth::user()->customer_id)
+            'customer' => Customer::findOrFail(Auth::user()->customer_id),
         ];
         return view('main-web.profil.profil', $data);
     }
 
     public function kebijakanPrivasi()
     {
-        $data  = [
+        $data = [
             'title' => 'Kebijakan Privasi',
-            'web' => BerandaUI::web()
+            'web' => BerandaUI::web(),
         ];
         return view('main-web.tentang.kebijakan-privasi', $data);
     }
 
     public function tentang()
     {
-        $data  = [
+        $data = [
             'title' => 'Tentang Vistar Indonesia',
-            'web' => BerandaUI::web()
+            'web' => BerandaUI::web(),
         ];
         return view('main-web.tentang.tentang', $data);
     }
 
     public function kontak()
     {
-        $data  = [
+        $data = [
             'title' => 'Kontak',
-            'web' => BerandaUI::web()
+            'web' => BerandaUI::web(),
         ];
         return view('main-web.tentang.kontak', $data);
     }

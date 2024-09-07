@@ -61,7 +61,7 @@ class Tryouts extends Controller
             'page_title' => $form_title,
             'bc1' => 'Manajemen Tryout',
             'bc2' => 'Produk Tryout',
-            'kategori' => KategoriProduk::all()->where('aktif', 'Y'),
+            'kategori' => KategoriProduk::where('aktif', 'Y'),
             'tryout' => $tryout,
             'pengaturan' => $pengaturan,
             'formParam' => $formParam,
@@ -295,7 +295,7 @@ class Tryouts extends Controller
             'kode_soal' => $id,
             'soal' => $soal,
             'formParam' => $formParam,
-            'klasifikasi_soal' => KlasifikasiSoal::all()->whereNotIn('aktif', 'T'),
+            'klasifikasi_soal' => KlasifikasiSoal::whereNotIn('aktif', 'T'),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
         ];

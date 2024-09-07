@@ -6,9 +6,7 @@ use App\Helpers\QueryCollect;
 use App\Helpers\Waktu;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
-use App\Models\LimitTryout;
 use App\Models\Payment;
-use App\Models\Ujian;
 use App\Services\Payment\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,24 +41,19 @@ class Site extends Controller
 
     public function tryoutGratis()
     {
-        $ujianGratis = DB::table('limit_tryout')->select('limit_tryout.*', 'produk_tryout.nama_tryout', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'pengaturan_tryout.masa_aktif')
+        $ujianGratis = DB::table('limit_tryout')
+            ->select('limit_tryout.*', 'produk_tryout.nama_tryout', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'pengaturan_tryout.masa_aktif')
             ->leftJoin('produk_tryout', 'limit_tryout.produk_tryout_id', '=', 'produk_tryout.id')
             ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
             ->where('status_validasi', 'Disetujui')
-            ->where('customer_id', '=', Auth::user()->customer_id);
-
-        if ($ujianGratis->first()) {
-            $limitUjian = Ujian::where('limit_tryout_id', $ujianGratis->first()->id)->where('status_ujian', 'Selesai')->first();
-        } else {
-            $limitUjian = LimitTryout::where('customer_id', Auth::user()->customer_id)->first();
-        }
+            ->where('customer_id', '=', Auth::user()->customer_id)
+            ->get();
 
         $data = [
             'page_title' => 'Tryout Gratis',
             'breadcumb' => 'Tryout Gratis',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
             'ujianGratis' => $ujianGratis,
-            'limitUjian' => $limitUjian,
             'hasilUjian' => QueryCollect::hasilUjianGratis(Auth::user()->customer_id)->paginate(10),
         ];
 

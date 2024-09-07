@@ -22,160 +22,124 @@
                     </div>
                 </div>
 
-                @if ($ujianGratis->first())
+                @if ($ujianGratis->count() > 0)
                     <!-- End Page Header -->
                     <div class="row">
-                        @foreach ($ujianGratis->get() as $tryout)
-                            @php
-                                $cekUjian = App\Models\Ujian::where('limit_tryout_id', $tryout->id)->first();
-
-                                $date = \Carbon\Carbon::parse($tryout->created_at);
-                                $newDate = $date->addDays($tryout->masa_aktif);
-                                $masaAktif = now()->diffInDays($newDate, false);
-                            @endphp
-                            @if ($masaAktif > 0)
+                        @php
+                            $no = 1;
+                        @endphp
+                        @foreach ($ujianGratis as $tryout)
+                            @if (!$tryout->produk_tryout_id)
                                 <div class="col-lg-4">
                                     {{-- Informasi Paket Tryout --}}
                                     <div class="card custom-card">
                                         <div class="card-body">
-                                            <div>
-                                                <h6>Informasi Paket</h6>
-                                                <h6 style="padding: 0px; margin:0px;" class="mb-2"><span
-                                                        class="fs-25 me-2"
-                                                        style="color: #0075B8;">{{ $tryout->nama_tryout }}</span>
-                                                    <span class="badge bg-success mt-2">Gratis 1x</span>
-                                                </h6>
-
-                                                @if ($cekUjian)
-                                                    @if ($cekUjian->status_ujian == 'Sedang Dikerjakan')
-                                                        <span class="text-muted tx-12">
-                                                            Klik tombol dibawah untuk melanjutkan ujian Tryout berbasis
-                                                            CBT/CAT
-                                                        </span>
-                                                        <button onclick='document.getElementById("mulaiUjian").submit();'
-                                                            class="btn btn-block btn-default mt-2 btn-web1">
-                                                            <i class="fa fa-check-circle"></i>
-                                                            Lanjut Mengerjakan
-                                                        </button>
-                                                        <small class="text-danger">Sisa Masa Aktif Paket :
-                                                            {{ ceil($masaAktif) }} Hari</small>
-                                                    @else
-                                                        <span class="text-muted tx-12">
-                                                            Telah Selesai Ujian : {{ $limitUjian->waktu_berakhir }}
-                                                        </span>
-                                                    @endif
-                                                @else
-                                                    <button
-                                                        onclick='swal({
-                                                        title: "Mulai Ujian",
-                                                        text: "Apakah anda ingin memulai ujian sekarang ?",
-                                                        type: "warning",
-                                                        showCancelButton: true,
-                                                        closeOnConfirm: false,
-                                                        confirmButtonText: "Mulai",
-                                                        cancelButtonText: "Batal",
-                                                        showLoaderOnConfirm: true }, function ()
-                                                            {
-                                                            setTimeout(function(){
-                                                                document.getElementById("mulaiUjian").submit();
-                                                        }, 1000); });'
-                                                        class="btn btn-block btn-default mt-2 btn-web">
-                                                        <i class="fa fa-check-circle"></i>
-                                                        Mulai Ujian
-                                                    </button>
-                                                    <small class="text-danger">Sisa Masa Aktif Paket :
-                                                        {{ ceil($masaAktif) }} Hari</small>
-                                                @endif
-                                                <form id="mulaiUjian"
-                                                    action="{{ route('ujian.main', ['id' => Crypt::encrypt($tryout->id), 'param' => Crypt::encrypt('gratis')]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('POST')
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @elseif ($masaAktif == 0)
-                                <div class="col-lg-4">
-                                    {{-- Informasi Paket Tryout --}}
-                                    <div class="card custom-card">
-                                        <div class="card-body">
-                                            <div>
-                                                <h6>Informasi Paket</h6>
-                                                <h6 style="padding: 0px; margin:0px;" class="mb-2"><span
-                                                        class="fs-30 me-2"
-                                                        style="color: #0075B8;">{{ $tryout->nama_tryout }}</span>
-                                                    <span class="badge bg-success mt-2">Gratis 1x</span>
-                                                </h6>
-                                                <span class="text-muted tx-12">
-                                                    Klik tombol dibawah untuk melanjutkan ujian Tryout berbasis CBT/CAT
-                                                </span>
-                                                @if ($cekUjian)
-                                                    @if ($cekUjian->status_ujian == 'Sedang Dikerjakan')
-                                                        <button onclick='document.getElementById("mulaiUjian").submit();'
-                                                            class="btn btn-block btn-default mt-2 btn-web1">
-                                                            <i class="fa fa-check-circle"></i>
-                                                            Lanjut Mengerjakan
-                                                        </button>
-                                                        <small class="text-danger">Masa Aktif Berakhir Hari Ini</small>
-                                                    @else
-                                                        <small>ada</small>
-                                                    @endif
-                                                @else
-                                                    <button
-                                                        onclick='swal({
-                                                        title: "Mulai Ujian",
-                                                        text: "Apakah anda ingin memulai ujian sekarang ?",
-                                                        type: "warning",
-                                                        showCancelButton: true,
-                                                        closeOnConfirm: false,
-                                                        confirmButtonText: "Mulai",
-                                                        cancelButtonText: "Batal",
-                                                        showLoaderOnConfirm: true }, function ()
-                                                            {
-                                                            setTimeout(function(){
-                                                                document.getElementById("mulaiUjian").submit();
-                                                        }, 1000); });'
-                                                        class="btn btn-block btn-default mt-2 btn-web">
-                                                        <i class="fa fa-check-circle"></i>
-                                                        Mulai Ujian
-                                                    </button>
-                                                    <small class="text-danger">Masa Aktif Berakhir Hari Ini</small>
-                                                @endif
-                                                <form id="mulaiUjian"
-                                                    action="{{ route('ujian.main', ['id' => Crypt::encrypt($tryout->id), 'param' => Crypt::encrypt('berbayar')]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('POST')
-                                                </form>
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <a class="btn btn-primary"
+                                                    href="{{ route('mainweb.daftar-tryout-gratis') }}">
+                                                    Pilih Tryout Gratis
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             @else
+                                @php
+                                    $cekExam = App\Models\Ujian::where('limit_tryout_id', $tryout->id)
+                                        ->orderBy('created_at', 'DESC')
+                                        ->first();
+                                    $date = \Carbon\Carbon::parse($tryout->created_at);
+                                    $newDate = $date->addDays($tryout->masa_aktif);
+                                    $masaAktif = now()->diffInDays($newDate, false);
+
+                                    $isFinish = $cekExam?->status_ujian == 'Selesai';
+                                    $isWaiting = $cekExam?->status_ujian == 'Sedang Dikerjakan';
+                                @endphp
                                 <div class="col-lg-4">
                                     {{-- Informasi Paket Tryout --}}
                                     <div class="card custom-card">
                                         <div class="card-body">
                                             <div>
                                                 <h6>Informasi Paket</h6>
-                                                <h6 style="padding: 0px; margin:0px;" class="mb-2"><span
-                                                        class="fs-30 me-2"
-                                                        style="color: #0075B8;">{{ $tryout->nama_tryout }}</span>
+                                                <h6 style="padding: 0px; margin:0px;" class="mb-2">
+                                                    <span class="fs-30 me-2" style="color: #0075B8;">
+                                                        {{ $tryout->nama_tryout }}
+                                                    </span>
                                                     <span class="badge bg-success mt-2">Gratis 1x</span>
                                                 </h6>
-                                                <span class="text-muted tx-12">
-                                                    Masa Aktif Paket Telah Berakhir : {{ abs(ceil($masaAktif)) }} Hari Yang
-                                                    Lalu
-                                                </span>
+                                                <div class="text-muted tx-12">
+                                                    @if ($isFinish)
+                                                        <span>
+                                                            <i class="fa fa-info"></i>
+                                                            Anda sudah mengerjakan Ujian
+                                                        </span>
+                                                    @else
+                                                        @if ($masaAktif > 0)
+                                                            <span>
+                                                                Klik tombol dibawah untuk melanjutkan ujian Tryout berbasis
+                                                                CBT/CAT
+                                                            </span>
+                                                            @if ($cekExam)
+                                                                @if ($isWaiting)
+                                                                    <button
+                                                                        onclick='document.getElementById("mulaiUjian{{ $no }}").submit();'
+                                                                        class="btn btn-block btn-default mt-2 btn-web1">
+                                                                        <i class="fa fa-check-circle"></i> Lanjut
+                                                                        Mengerjakan
+                                                                    </button>
+                                                                @endif
+                                                            @else
+                                                                <button
+                                                                    onclick='swal({
+                                                        title: "Mulai Ujian",
+                                                        text: "Apakah anda ingin memulai ujian sekarang ?",
+                                                        type: "warning",
+                                                        showCancelButton: true,
+                                                        closeOnConfirm: false,
+                                                        confirmButtonText: "Mulai",
+                                                        cancelButtonText: "Batal",
+                                                        showLoaderOnConfirm: true }, function ()
+                                                            {
+                                                            setTimeout(function(){
+                                                                document.getElementById("mulaiUjian{{ $no }}").submit();
+                                                        }, 1000); });'
+                                                                    class="btn btn-block btn-default mt-2 btn-web">
+                                                                    <i class="fa fa-check-circle"></i>
+                                                                    Mulai Ujian
+                                                                </button>
+                                                            @endif
+
+                                                            @if (floor(abs($masaAktif)) == 0)
+                                                                <small class="text-danger">Masa Aktif Berakhir Dalam
+                                                                    {{ $newDate->diffForHumans() }}</small>
+                                                            @else
+                                                                <small class="text-danger">Sisa Masa Aktif Paket :
+                                                                    {{ ceil($masaAktif) }} Hari</small>
+                                                            @endif
+
+                                                            <form id="mulaiUjian{{ $no }}"
+                                                                action="{{ route('ujian.main', ['id' => Crypt::encrypt($tryout->id), 'param' => Crypt::encrypt('gratis')]) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('POST')
+                                                            </form>
+                                                        @else
+                                                            <span class="text-muted tx-12">
+                                                                Masa Aktif Paket Telah Berakhir :
+                                                                {{ $newDate->diffForHumans() }}
+                                                            </span>
+                                                        @endif
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             @endif
+                            @php
+                                $no++;
+                            @endphp
                         @endforeach
-
                     </div>
                     <!-- Row -->
                     <div class="row sidemenu-height">

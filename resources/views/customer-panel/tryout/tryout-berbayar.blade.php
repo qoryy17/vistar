@@ -49,10 +49,12 @@
                                                 {{ Number::currency($tryout->harga, in: 'IDR') }}
                                             </span>
                                         </h6>
-                                        <span class="text-muted tx-12">
+                                        <div class="text-muted tx-12">
                                             @if ($masaAktif > 0)
-                                                Klik tombol dibawah untuk melanjutkan ujian Tryout berbasis CBT/CAT
-
+                                                <span>
+                                                    Klik tombol dibawah untuk melanjutkan ujian Tryout berbasis
+                                                    CBT/CAT
+                                                </span>
 
                                                 @if ($cekWaitingExam)
                                                     <button
@@ -100,12 +102,11 @@
                                             @else
                                                 Masa Aktif Paket Telah Berakhir : {{ $newDate->diffForHumans() }}
                                             @endif
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
 
                         @php
                             $no++;
