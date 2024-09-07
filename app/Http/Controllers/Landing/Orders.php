@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Landing;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\TryoutGratisRequest;
-use App\Mail\EmailFaktur;
 use App\Models\Customer;
 use App\Models\KeranjangOrder;
 use App\Models\LimitTryout;
 use App\Models\OrderTryout;
 use App\Models\Payment;
-use App\Models\ReferralCustomer;
 use App\Models\User;
 use App\Services\Payment\MidtransService;
 use Illuminate\Http\RedirectResponse;
@@ -18,7 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 
