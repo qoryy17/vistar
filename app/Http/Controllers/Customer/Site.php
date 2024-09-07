@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Customer;
 
-use Carbon\Carbon;
-use App\Models\Ujian;
+use App\Helpers\QueryCollect;
 use App\Helpers\Waktu;
-use App\Models\Payment;
+use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\LimitTryout;
-use Illuminate\Http\Request;
-use App\Helpers\QueryCollect;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Payment;
+use App\Models\Ujian;
 use App\Services\Payment\PaymentService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Site extends Controller
 {
@@ -25,7 +24,7 @@ class Site extends Controller
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
             'countPembelian' => QueryCollect::countPembelian(Auth::user()->customer_id),
             'tryoutTerbaru' => DB::table('produk_tryout')->select('produk_tryout.*', 'kategori_produk.status')->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->where('kategori_produk.status', 'Berbayar')->orderBy('produk_tryout.created_at', 'DESC')->first(),
-            'testimoni' => DB::table('testimoni')->select('testimoni.*', 'customer.nama_lengkap')->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')->where('publish', 'Y')->orderBy('updated_at', 'desc')
+            'testimoni' => DB::table('testimoni')->select('testimoni.*', 'customer.nama_lengkap')->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')->where('publish', 'Y')->orderBy('updated_at', 'desc'),
         ];
         return view('customer-panel.home.beranda', $data);
     }
@@ -37,7 +36,7 @@ class Site extends Controller
             'breadcumb' => 'Tryout Berbayar',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
             'pembelian' => QueryCollect::pembelian(Auth::user()->customer_id),
-            'hasilUjian' => QueryCollect::hasilUjianBerbayar(Auth::user()->customer_id)->orderBy('waktu_berakhir', 'DESC')->paginate(10)
+            'hasilUjian' => QueryCollect::hasilUjianBerbayar(Auth::user()->customer_id)->orderBy('waktu_berakhir', 'DESC')->paginate(10),
         ];
         return view('customer-panel.tryout.tryout-berbayar', $data);
     }
@@ -51,7 +50,7 @@ class Site extends Controller
             ->where('customer_id', '=', Auth::user()->customer_id);
 
         if ($ujianGratis->first()) {
-            $limitUjian =  Ujian::where('limit_tryout_id', $ujianGratis->first()->id)->where('status_ujian', 'Selesai')->first();
+            $limitUjian = Ujian::where('limit_tryout_id', $ujianGratis->first()->id)->where('status_ujian', 'Selesai')->first();
         } else {
             $limitUjian = LimitTryout::where('customer_id', Auth::user()->customer_id)->first();
         }
@@ -62,7 +61,7 @@ class Site extends Controller
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
             'ujianGratis' => $ujianGratis,
             'limitUjian' => $limitUjian,
-            'hasilUjian' => QueryCollect::hasilUjianGratis(Auth::user()->customer_id)->get()
+            'hasilUjian' => QueryCollect::hasilUjianGratis(Auth::user()->customer_id)->paginate(10),
         ];
 
         return view('customer-panel.tryout.tryout-gratis', $data);
@@ -73,7 +72,7 @@ class Site extends Controller
         $data = [
             'page_title' => 'Event',
             'breadcumb' => 'Event Tryout',
-            'customer' => Customer::findOrFail(Auth::user()->customer_id)
+            'customer' => Customer::findOrFail(Auth::user()->customer_id),
         ];
         return view('customer-panel.event.event-tryout-berbayar', $data);
     }

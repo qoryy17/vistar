@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\OrderTryout;
+use App\Models\Ujian;
 use Illuminate\Support\Facades\DB;
 
 class QueryCollect
@@ -35,31 +36,26 @@ class QueryCollect
         return OrderTryout::where('customer_id', $customer)->count();
     }
 
-    public static function hasilUjianBerbayar($customer)
+    public static function hasilUjianBerbayar($customerId)
     {
-        return
-            DB::table('hasil_ujian')
-            ->select(
-                'hasil_ujian.id',
-                'hasil_ujian.durasi_selesai',
-                'hasil_ujian.benar',
-                'hasil_ujian.salah',
-                'hasil_ujian.terjawab',
-                'hasil_ujian.tidak_terjawab',
-                'hasil_ujian.total_nilai as skd',
-                'hasil_ujian.keterangan',
-                'ujian.id as ujianID',
-                'ujian.waktu_mulai',
-                'ujian.sisa_waktu',
-                'ujian.status_ujian',
-                'order_tryout.customer_id',
-                'order_tryout.produk_tryout_id',
-                'order_tryout.status_order'
-            )->leftJoin('ujian', 'hasil_ujian.ujian_id', '=', 'ujian.id')
-            ->leftJoin('order_tryout', 'ujian.order_tryout_id', '=', 'order_tryout.id')
-            ->where('ujian.status_ujian', 'Selesai')
-            ->where('order_tryout.status_order', 'paid')
-            ->where('order_tryout.customer_id', $customer);
+        return Ujian::select('id', 'order_tryout_id', 'waktu_mulai', 'waktu_berakhir', 'sisa_waktu', 'status_ujian')
+            ->where('status_ujian', 'Selesai')
+            ->whereHas('order', function ($query) use ($customerId) {
+                $query->where('status_order', 'paid');
+                $query->where('customer_id', $customerId);
+            })
+            ->with('order', function ($query) {
+                $query->select('id', 'produk_tryout_id', 'status_order');
+                $query->with('tryout:id,nama_tryout');
+            })
+            ->with('hasil', function ($query) {
+                $query->select('id', 'ujian_id', 'durasi_selesai', 'benar', 'salah', 'terjawab', 'tidak_terjawab', 'total_nilai', 'keterangan');
+                $query->with('testimoni:id,hasil_ujian_id,testimoni,rating,publish');
+                $query->with('passing_grade', function ($query) {
+                    $query->select('id', 'hasil_ujian_id', 'alias', 'judul', 'passing_grade', 'total_nilai');
+                    $query->orderBy('judul', 'DESC');
+                });
+            });
     }
 
     public static function pembelian($customer)
@@ -71,27 +67,24 @@ class QueryCollect
             ->where('customer_id', '=', $customer);
     }
 
-    public static function hasilUjianGratis($customer)
+    public static function hasilUjianGratis($customerId)
     {
-        return DB::table('hasil_ujian')
-            ->select(
-                'hasil_ujian.id',
-                'hasil_ujian.durasi_selesai',
-                'hasil_ujian.benar',
-                'hasil_ujian.salah',
-                'hasil_ujian.terjawab',
-                'hasil_ujian.tidak_terjawab',
-                'hasil_ujian.total_nilai as skd',
-                'hasil_ujian.keterangan',
-                'ujian.id as ujianID',
-                'ujian.waktu_mulai',
-                'ujian.sisa_waktu',
-                'ujian.status_ujian',
-                'limit_tryout.customer_id',
-                'limit_tryout.produk_tryout_id'
-            )->leftJoin('ujian', 'hasil_ujian.ujian_id', '=', 'ujian.id')
-            ->leftJoin('limit_tryout', 'ujian.limit_tryout_id', '=', 'limit_tryout.id')
-            ->where('ujian.status_ujian', 'Selesai')
-            ->where('limit_tryout.customer_id', $customer);
+        return Ujian::select('id', 'limit_tryout_id', 'waktu_mulai', 'waktu_berakhir', 'sisa_waktu', 'status_ujian')
+            ->where('status_ujian', 'Selesai')
+            ->whereHas('limit', function ($query) use ($customerId) {
+                $query->where('customer_id', $customerId);
+            })
+            ->with('limit', function ($query) {
+                $query->select('id', 'produk_tryout_id');
+                $query->with('tryout:id,nama_tryout');
+            })
+            ->with('hasil', function ($query) {
+                $query->select('id', 'ujian_id', 'durasi_selesai', 'benar', 'salah', 'terjawab', 'tidak_terjawab', 'total_nilai', 'keterangan');
+                $query->with('testimoni:id,hasil_ujian_id,testimoni,rating,publish');
+                $query->with('passing_grade', function ($query) {
+                    $query->select('id', 'hasil_ujian_id', 'alias', 'judul', 'passing_grade', 'total_nilai');
+                    $query->orderBy('judul', 'DESC');
+                });
+            });
     }
 }

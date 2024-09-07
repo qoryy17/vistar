@@ -22,17 +22,20 @@ class TestimoniRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'testimoni' => ['required', 'string'],
-            'rating' => ['required', 'string']
+            'exam_result_id' => ['required'],
+            'product_id' => ['required'],
+            'testimoni' => ['required', 'string', 'min:3', 'max:250'],
+            'rating' => ['required', 'numeric'],
         ];
     }
 
     public function messages(): array
     {
         return [
+            'testimoni.min' => 'Minimal Testimoni 3 karakter',
+            'testimoni.max' => 'Minimal Testimoni 250 karakter',
             'testimoni.required' => 'Testimoni wajib di isi',
-            'testimoni.required' => 'Testimoni wajib di isi',
-            'rating.required' => 'Rating harus wajbi di isi'
+            'rating.required' => 'Rating harus wajbi di isi',
         ];
     }
 }

@@ -121,9 +121,9 @@
                                     <table class="table table-bordered border-bottom">
                                         <thead>
                                             <tr>
-                                                <td>No</td>
-                                                <td>Informasi Ujian</td>
-                                                <td class="text-center">Total Nilai</td>
+                                                <th>No</th>
+                                                <th>Informasi Ujian</th>
+                                                <th class="text-center">Total Nilai</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -132,33 +132,86 @@
                                                 $no = ($page - 1) * $hasilUjian->perPage() + 1;
                                             @endphp
                                             @foreach ($hasilUjian as $row)
+                                                @php
+                                                    $examResult = $row->hasil;
+
+                                                    $testimoni = $examResult?->testimoni;
+
+                                                    $tryout = $row->order?->tryout;
+
+                                                    $tryoutName =
+                                                        $tryout?->nama_tryout ?? 'Tryout ID: ' . $row->tryout?->id;
+                                                @endphp
                                                 <tr>
                                                     <td style="vertical-align: top;">{{ $no }}</td>
                                                     <td>
-                                                        <a href="{{ route('ujian.hasil', ['id' => Crypt::encrypt($row->id), 'ujianID' => Crypt::encrypt($row->ujianID), 'produkID' => Crypt::encrypt($row->produk_tryout_id)]) }}"
-                                                            title="Klik untuk melihat detil">
-                                                            <h5 style="color: #0075B8;">Exam - {{ $row->id }}</h5>
-                                                        </a>
-                                                        <div>
-                                                            Waktu Mulai : <b>{{ $row->waktu_mulai }}</b> | Selesai :
-                                                            <b>{{ $row->durasi_selesai }}</b> <br>
-                                                            Sisa Waktu : <b>{{ $row->sisa_waktu }} Menit</b> <br>
-                                                            Soal Benar : <b>{{ $row->benar }}</b> | Soal Salah :
-                                                            <b>{{ $row->salah }}</b> <br>
-                                                            Soal Terjawab : <b>{{ $row->terjawab }}</b> | Soal Tidak
-                                                            Terjawab : <b>{{ $row->tidak_terjawab }}</b>
-                                                            <hr>
+                                                        @if ($examResult && $tryout)
+                                                            <a href="{{ route('ujian.hasil', ['id' => Crypt::encrypt($row->id)]) }}"
+                                                                title="Klik untuk melihat detil">
+                                                                <h5 style="color: #0075B8;">
+                                                                    {{ $tryoutName }} - {{ $row->id }}
+                                                                </h5>
+                                                            </a>
+                                                        @else
+                                                            <h5 style="color: #0075B8;">
+                                                                {{ $tryoutName }} - {{ $row->id }}
+                                                            </h5>
+                                                        @endif
+
+                                                        <table class="table">
+                                                            <tr>
+                                                                <th id="table-head-start_time">Waktu Mulai</th>
+                                                                <td>
+                                                                    {{ \Carbon\Carbon::parse($row->waktu_mulai)->format('d/m/Y H:i:s') }}
+                                                                </td>
+                                                                <th id="table-head-end_time">Selesai</th>
+                                                                <td>
+                                                                    {{ \Carbon\Carbon::parse($row->waktu_berakhir)->format('d/m/Y H:i:s') }}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th id="table-head-time_left">Waktu Mulai</th>
+                                                                <td colspan="3">
+                                                                    {{ $row->sisa_waktu }} Menit
+                                                                </td>
+                                                            </tr>
+                                                            @if ($examResult)
+                                                                <tr>
+                                                                    <th id="table-head-correct_answer">Soal Terjawab
+                                                                    </th>
+                                                                    <td>
+                                                                        {{ $examResult->terjawab }}
+                                                                    </td>
+                                                                    <th id="table-head-wrong_answer">Soal Belum Terjawab
+                                                                    </th>
+                                                                    <td>
+                                                                        {{ $examResult->tidak_terjawab }}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th id="table-head-correct_answer">Jawaban Benar
+                                                                    </th>
+                                                                    <td>
+                                                                        {{ $examResult->benar }}
+                                                                    </td>
+                                                                    <th id="table-head-wrong_answer">Jawaban Salah</th>
+                                                                    <td>
+                                                                        {{ $examResult->salah }}
+                                                                    </td>
+                                                                </tr>
+                                                            @else
+                                                                <tr>
+                                                                    <td colspan="4" class="text-center">
+                                                                        <i>Hasil sedang dihitung</i>
+                                                                    </td>
+                                                                </tr>
+                                                            @endif
+                                                        </table>
+
+                                                        @if ($examResult)
                                                             <div class="row mt-2 mb-2"
                                                                 style="white-space: normal; text-align:justify;">
-                                                                @php
-                                                                    $passingGrade = App\Models\HasilPassingGrade::where(
-                                                                        'hasil_ujian_id',
-                                                                        $row->id,
-                                                                    )
-                                                                        ->orderBy('judul', 'DESC')
-                                                                        ->get();
-                                                                @endphp
-                                                                @foreach ($passingGrade as $passing)
+                                                                @foreach ($examResult->passing_grade as $passing)
                                                                     <div class="col-md-3">
                                                                         <span class="text-primary">Total Nilai :
                                                                             ({{ $passing->alias }})
@@ -166,20 +219,11 @@
                                                                     </div>
                                                                 @endforeach
                                                             </div>
-                                                        </div>
-                                                        <hr>
-                                                        @php
-                                                            $testimoni = App\Models\Testimoni::where(
-                                                                'customer_id',
-                                                                Auth::user()->customer_id,
-                                                            )
-                                                                ->where('hasil_ujian_id', $row->id)
-                                                                ->first();
-                                                        @endphp
-                                                        <div class="mt-1"
-                                                            style="white-space: normal; text-align:justify;">
-                                                            @if ($testimoni)
-                                                                @if ($testimoni->publish != 'Y')
+                                                            <hr>
+
+                                                            <div class="mt-1"
+                                                                style="white-space: normal; text-align:justify;">
+                                                                @if ($testimoni)
                                                                     Testimoni : {{ $testimoni->testimoni }}
                                                                     <br>
                                                                     Rating :
@@ -187,64 +231,63 @@
                                                                         <i class="fa fa-star"
                                                                             style="color: rgb(255, 207, 16);"></i>
                                                                     @endfor
-                                                                    <br>
-                                                                    <button class="btn btn-primary btn-sm mt-2"
+
+                                                                    @if ($testimoni->publish !== 'Y')
+                                                                        <br>
+                                                                        <button class="btn btn-primary btn-sm mt-2"
+                                                                            data-bs-target="#modalTestimoni{{ $no }}"
+                                                                            data-bs-toggle="modal">
+                                                                            <i class="fa fa-child"></i>
+                                                                            Ubah Testimoni
+                                                                        </button>
+                                                                    @endif
+                                                                @else
+                                                                    <button class="btn btn-primary btn-sm mb-2"
                                                                         data-bs-target="#modalTestimoni{{ $no }}"
                                                                         data-bs-toggle="modal">
-                                                                        <i class="fa fa-child"></i>
-                                                                        Ubah Testimoni
-                                                                    </button>
-                                                                @else
-                                                                    Testimoni : {{ $testimoni->testimoni }}
-                                                                    <br>
-                                                                    Rating :
-                                                                    @for ($i = 0; $i < $testimoni->rating; $i++)
-                                                                        <i class="fa fa-star"
-                                                                            style="color: rgb(255, 207, 16);"></i>
-                                                                    @endfor
+                                                                        <i class="fa fa-child"></i> Berikan Testimoni
+                                                                    </button><br>
+                                                                    <span class="badge bg-warning">
+                                                                        Isi Testimoni Untuk Melihat Total Score Anda
+                                                                    </span>
                                                                 @endif
-                                                            @else
-                                                                <button class="btn btn-primary btn-sm mb-2"
-                                                                    data-bs-target="#modalTestimoni{{ $no }}"
-                                                                    data-bs-toggle="modal"><i class="fa fa-child"></i>
-                                                                    Berikan
-                                                                    Testimoni</button><br>
-                                                                <span class="badge bg-warning">Silahkan Isi Testimoni Untuk
-                                                                    Melihat
-                                                                    Total Score
-                                                                    Nilai</span>
-                                                            @endif
+                                                            </div>
+
                                                             <!-- Change Testimoni modal -->
-                                                            <form action="{{ route('ujian.simpan-testimoni') }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                @method('POST')
-                                                                <div class="modal fade"
-                                                                    id="modalTestimoni{{ $no }}">
-                                                                    <div class="modal-dialog" role="document">
-                                                                        <div class="modal-content modal-content-demo">
+                                                            <div class="modal fade" id="modalTestimoni{{ $no }}">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content modal-content-demo">
+                                                                        <form
+                                                                            action="{{ route('ujian.simpan-testimoni') }}"
+                                                                            method="POST">
+                                                                            @csrf
+                                                                            @method('POST')
+
                                                                             <div class="modal-header">
                                                                                 <h6 class="modal-title"><i
                                                                                         class="fa fa-testimoni"></i>
-                                                                                    Berikan Testimoni Hasil Ujian Anda !
+                                                                                    Berikan Testimoni Hasil Ujian
+                                                                                    Anda !
                                                                                 </h6><button aria-label="Close"
                                                                                     class="btn-close"
                                                                                     data-bs-dismiss="modal"
                                                                                     type="button"></button>
                                                                             </div>
+
                                                                             <div class="modal-body">
+
                                                                                 <div class="form-group">
                                                                                     <input type="hidden"
                                                                                         class="form-control" required
-                                                                                        name="ujianID"
-                                                                                        value="{{ $row->id }}"
+                                                                                        name="exam_result_id"
+                                                                                        value="{{ $examResult->id }}"
                                                                                         readonly>
                                                                                 </div>
                                                                                 <div class="form-group">
                                                                                     <input type="hidden"
                                                                                         class="form-control" required
-                                                                                        name="produkID"
-                                                                                        value="{{ Crypt::encrypt($row->produk_tryout_id) }}"
+                                                                                        name="product_id"
+                                                                                        value="{{ $tryout?->id }}"
                                                                                         readonly>
                                                                                 </div>
                                                                                 <div class="form-group">
@@ -257,37 +300,38 @@
                                                                                 </div>
                                                                                 <div class="form-group">
                                                                                     <select name="rating"
-                                                                                        class="form-control" id="rating"
-                                                                                        required>
-                                                                                        <option value="">Pilih
+                                                                                        class="form-control"
+                                                                                        id="rating" required>
+                                                                                        <option value="">
+                                                                                            Pilih
                                                                                             Rating Kepuasan</option>
                                                                                         <option value="1"
                                                                                             @if ($testimoni) @if ($testimoni->rating == 1)
-                                                                                                selected @endif
+                                                                                        selected @endif
                                                                                             @endif>
                                                                                             Sangat Tidak Puas
                                                                                         </option>
                                                                                         <option value="2"
                                                                                             @if ($testimoni) @if ($testimoni->rating == 2)
-                                                                                                selected @endif
+                                                                                        selected @endif
                                                                                             @endif>
                                                                                             Tidak Puas
                                                                                         </option>
                                                                                         <option value="3"
                                                                                             @if ($testimoni) @if ($testimoni->rating == 3)
-                                                                                                selected @endif
+                                                                                        selected @endif
                                                                                             @endif>
                                                                                             Cukup Puas
                                                                                         </option>
                                                                                         <option value="4"
                                                                                             @if ($testimoni) @if ($testimoni->rating == 4)
-                                                                                                selected @endif
+                                                                                        selected @endif
                                                                                             @endif>
                                                                                             Puas
                                                                                         </option>
                                                                                         <option value="5"
                                                                                             @if ($testimoni) @if ($testimoni->rating == 5)
-                                                                                                selected @endif
+                                                                                        selected @endif
                                                                                             @endif>
                                                                                             Sangat Puas
                                                                                         </option>
@@ -298,6 +342,7 @@
                                                                                     @enderror
                                                                                 </div>
                                                                             </div>
+
                                                                             <div class="modal-footer">
                                                                                 <button
                                                                                     class="btn btn-sm ripple btn-default btn-web"
@@ -311,22 +356,25 @@
                                                                                         class="fa fa-times"></i>
                                                                                     Tutup</button>
                                                                             </div>
-                                                                        </div>
+                                                                        </form>
                                                                     </div>
                                                                 </div>
-                                                            </form>
+                                                            </div>
                                                             <!-- End Change Testimoni modal -->
-                                                        </div>
+                                                        @endif
                                                     </td>
                                                     <td style="text-align: center;">
                                                         @if ($testimoni)
-                                                            <h1>{{ Number::format($row->skd, 3) }}</h1>
+                                                            <h1>{{ Number::format($examResult->total_nilai, 3) }}</h1>
                                                             Keterangan :
                                                             <span
-                                                                class="badge @if ($row->keterangan == 'Gagal') bg-danger @else bg-success @endif">{{ $row->keterangan }}</span>
+                                                                class="badge @if ($examResult->keterangan == 'Gagal') bg-danger @else bg-success @endif">
+                                                                {{ $examResult->keterangan }}
+                                                            </span>
                                                         @endif
                                                     </td>
                                                 </tr>
+
                                                 @php
                                                     $no++;
                                                 @endphp

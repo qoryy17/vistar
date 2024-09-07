@@ -84,7 +84,7 @@
                                 </div>
 
                                 <div>
-                                    <div style="font-size: 15px;" class="mt-2">
+                                    <div style="font-size: 15px;" class="mt-4">
                                         <div class="d-flex gap-1 flex-1">
                                             <div id="question-number" data-no="">
                                                 <p class="placeholder-glow"><span class="placeholder col-1"></span></p>

@@ -9,7 +9,7 @@
                 <!-- Page Header -->
                 <div class="page-header">
                     <div>
-                        <h2 class="main-content-title tx-24 mg-b-5">{{ $page_title }}</h2>
+                        <h2 class="main-content-title tx-24 mg-b-5">Hasil Ujian</h2>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#">Ujian</a></li>
                             <li class="breadcrumb-item active" aria-current="page">{{ $breadcumb }}</li>
@@ -31,32 +31,32 @@
                                 <div class="row row-sm">
                                     <div class="col-xl-3 col-lg-6 col-sm-6 pe-0 ps-0 border-end">
                                         <div class="card-body text-center">
-                                            <h6 class="mb-0">Soal Benar</h6>
+                                            <h6 class="mb-0">Benar</h6>
                                             <h2 class="mb-1 mt-2 number-font"><span
-                                                    class="counter badge bg-success">{{ $informasiUjian->benar }}</span>
+                                                    class="counter badge bg-success">{{ $exam->hasil->benar }}</span>
                                             </h2>
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-sm-6 pe-0 ps-0 border-end">
                                         <div class="card-body text-center">
-                                            <h6 class="mb-0">Soal Salah</h6>
+                                            <h6 class="mb-0">Salah</h6>
                                             <h2 class="mb-1 mt-2 number-font"><span
-                                                    class="counter badge bg-danger">{{ $informasiUjian->salah }}</span></h2>
+                                                    class="counter badge bg-danger">{{ $exam->hasil->salah }}</span></h2>
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-sm-6 pe-0 ps-0 border-end">
                                         <div class="card-body text-center">
-                                            <h6 class="mb-0">Soal Terjawab</h6>
+                                            <h6 class="mb-0">Terjawab</h6>
                                             <h2 class="mb-1 mt-2 number-font"><span
-                                                    class="counter badge bg-info">{{ $informasiUjian->terjawab }}</span>
+                                                    class="counter badge bg-info">{{ $exam->hasil->terjawab }}</span>
                                             </h2>
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-sm-6 pe-0 ps-0">
                                         <div class="card-body text-center">
-                                            <h6 class="mb-0">Soal Tidak Terjawab</h6>
+                                            <h6 class="mb-0">Tidak Terjawab</h6>
                                             <h2 class="mb-1 mt-2 number-font"><span
-                                                    class="counter badge bg-warning">{{ $informasiUjian->tidak_terjawab }}</span>
+                                                    class="counter badge bg-warning">{{ $exam->hasil->tidak_terjawab }}</span>
                                             </h2>
                                         </div>
                                     </div>
@@ -70,7 +70,7 @@
                                 @endphp
                                 @foreach ($reviewJawaban as $review)
                                     <div>
-                                        <h5>Soal Pertanyaan No. {{ $no }}</h5>
+                                        <h5>Soal No. {{ $no }}</h5>
                                         <div style="font-size: 14px;">
                                             <p>
                                                 {!! $review->soal !!}
@@ -104,33 +104,27 @@
                                                 <!-- End Preview modal -->
                                             @endif
                                             <div class="mt-2">
-                                                <label class="rdiobox">
-                                                    <input name="Jawaban" type="radio" id="Jawaban" value="A">
+                                                <p>
                                                     <span>a. {{ strip_tags($review->jawaban_a) }}</span>
-                                                </label>
-                                                <label class="rdiobox">
-                                                    <input name="Jawaban" type="radio" id="Jawaban" value="B">
+                                                </p>
+                                                <p>
                                                     <span>b. {{ strip_tags($review->jawaban_b) }}</span>
-                                                </label>
-                                                <label class="rdiobox">
-                                                    <input name="Jawaban" type="radio" id="Jawaban" value="C">
+                                                </p>
+                                                <p>
                                                     <span>c. {{ strip_tags($review->jawaban_c) }}</span>
-                                                </label>
-                                                <label class="rdiobox">
-                                                    <input name="Jawaban" type="radio" id="Jawaban" value="D">
+                                                </p>
+                                                <p>
                                                     <span>d. {{ strip_tags($review->jawaban_d) }}</span>
-                                                </label>
-                                                <label class="rdiobox">
-                                                    <input name="Jawaban" type="radio" id="Jawaban" value="E">
+                                                </p>
+                                                <p>
                                                     <span>e. {{ strip_tags($review->jawaban_e) }}</span>
-                                                </label>
+                                                </p>
                                             </div>
                                         </div>
                                         <hr>
                                         <div class="row mt-1">
                                             <div class="col-md-12">
                                                 <h5>Review Pembahasan</h5>
-                                                <p>
                                                 <div class="alert  @if ($review->jawaban != $review->kunci_jawaban) alert-danger @else alert-success @endif"
                                                     role="alert">
                                                     <strong>Jawaban Anda : </strong> {{ $review->jawaban }}
@@ -141,7 +135,84 @@
                                                     <br>
                                                     {{ strip_tags($review->review_pembahasan) }}
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    @php
+                                        $no++;
+                                    @endphp
+                                @endforeach
+
+                                <hr />
+
+                                <h2>Soal yang anda lewati</h2>
+
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($unAnsweredQuestions as $review)
+                                    <div>
+                                        <h5>Soal No. {{ $no }}</h5>
+                                        <div style="font-size: 14px;">
+                                            <p>
+                                                {!! $review->soal !!}
+                                            </p>
+                                            @if (!empty($review->gambar))
+                                                <img height="300px" width="img img-thumbnail"
+                                                    src="{{ asset('storage/soal/' . $review->gambar) }}" alt="gambar"
+                                                    data-bs-target="#modalImg" data-bs-toggle="modal">
+                                                <!-- Preview modal -->
+                                                <div class="modal fade" id="modalImg">
+                                                    <div class="modal-dialog modal-lg" role="document">
+                                                        <div class="modal-content modal-content-demo">
+                                                            <div class="modal-header">
+                                                                <h6 class="modal-title"><i class="fa fa-book"></i>
+                                                                    Gambar Soal
+                                                                </h6><button aria-label="Close" class="btn-close"
+                                                                    data-bs-dismiss="modal" type="button"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <img src="{{ asset('soal/' . $review->gambar) }}"
+                                                                    alt="img">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button class="btn btn-sm ripple btn-danger"
+                                                                    data-bs-dismiss="modal" type="button"><i
+                                                                        class="fa fa-times"></i> Tutup</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- End Preview modal -->
+                                            @endif
+                                            <div class="mt-2">
+                                                <p>
+                                                    <span>a. {{ strip_tags($review->jawaban_a) }}</span>
                                                 </p>
+                                                <p>
+                                                    <span>b. {{ strip_tags($review->jawaban_b) }}</span>
+                                                </p>
+                                                <p>
+                                                    <span>c. {{ strip_tags($review->jawaban_c) }}</span>
+                                                </p>
+                                                <p>
+                                                    <span>d. {{ strip_tags($review->jawaban_d) }}</span>
+                                                </p>
+                                                <p>
+                                                    <span>e. {{ strip_tags($review->jawaban_e) }}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row mt-1">
+                                            <div class="col-md-12">
+                                                <h5>Review Pembahasan</h5>
+                                                <div class="alert alert-success" role="alert">
+                                                    <strong>Jawaban Benar : </strong> {{ $review->kunci_jawaban }}
+                                                    <br>
+                                                    {{ strip_tags($review->review_pembahasan) }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -184,7 +255,7 @@
                     labels: ["Evaluasi"],
                     datasets: [{
                         label: 'Benar',
-                        data: [{{ $informasiUjian->benar }}],
+                        data: [{{ $exam->hasil->benar }}],
                         borderWidth: 2,
                         backgroundColor: '#19B159',
                         borderColor: '#19B159',
@@ -193,7 +264,7 @@
 
                     }, {
                         label: 'Salah',
-                        data: [{{ $informasiUjian->salah }}],
+                        data: [{{ $exam->hasil->salah }}],
                         borderWidth: 2,
                         backgroundColor: '#F16D75',
                         borderColor: '#F16D75',

@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Testimoni extends Model
 {
@@ -21,25 +21,25 @@ class Testimoni extends Model
         'hasil_ujian_id',
         'testimoni',
         'rating',
-        'publish'
+        'publish',
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function hasilUjian(): BelongsTo
     {
-        return $this->belongsTo(HasilUjian::class);
+        return $this->belongsTo(HasilUjian::class, 'hasil_ujian_id');
     }
 
     public function tryout(): BelongsTo
     {
-        return $this->belongsTo(ProdukTryout::class);
+        return $this->belongsTo(ProdukTryout::class, 'produk_tryout_id');
     }
 }

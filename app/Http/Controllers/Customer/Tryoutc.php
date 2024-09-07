@@ -378,35 +378,86 @@ class Tryoutc extends Controller
 
     public function hasilUjian(Request $request)
     {
-        $informasiUjian = HasilUjian::find(Crypt::decrypt($request->id))->first();
-        $informasitryout = ProdukTryout::find(Crypt::decrypt($request->produkID))->first();
+        // Decrypt ID
+        $id = $request->id;
+        try {
+            $id = Crypt::decrypt($id);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Ujian Tidak ditemukan!');
+        }
 
-        $hasilUjianID = Crypt::decrypt($request->ujianID);
-        $cacheKey = 'Exam' . $hasilUjianID;
-        $reviewJawaban = Cache::remember($cacheKey, 10 * 60, function () use ($hasilUjianID) {
-            return
-            DB::table('progres_ujian')->select(
-                'progres_ujian.*',
-                'soal_ujian.soal',
-                'soal_ujian.gambar',
-                'soal_ujian.jawaban_a',
-                'soal_ujian.jawaban_b',
-                'soal_ujian.jawaban_c',
-                'soal_ujian.jawaban_d',
-                'soal_ujian.jawaban_e',
-                'soal_ujian.kunci_jawaban',
-                'soal_ujian.review_pembahasan'
-            )->leftJoin('soal_ujian', 'progres_ujian.soal_ujian_id', '=', 'soal_ujian.id')
-                ->where('ujian_id', $hasilUjianID)->get();
+        $exam = Ujian::has('hasil')->with('hasil')->find($id);
+        if (!$exam) {
+            return redirect()->back()->with('error', 'Ujian Tidak ditemukan!');
+        }
+
+        $productTryout = null;
+        if ($exam->order_tryout_id && !$exam->limit_tryout_id) {
+            $orderTryout = OrderTryout::where('id', $exam->order_tryout_id)
+                ->select('id', 'produk_tryout_id')
+                ->first();
+
+            if ($orderTryout) {
+                $productTryout = ProdukTryout::find($orderTryout->produk_tryout_id);
+            }
+        } elseif (!$exam->order_tryout_id && $exam->limit_tryout_id) {
+            $limitTryout = LimitTryout::where('id', $exam->limit_tryout_id)
+                ->select('id', 'produk_tryout_id')
+                ->first();
+
+            if ($limitTryout) {
+                $productTryout = ProdukTryout::find($limitTryout->produk_tryout_id);
+            }
+        } else {
+            return redirect()->back()->with('error', 'Tipe Ujian Tidak diketahui!');
+        }
+
+        if (!$productTryout) {
+            return redirect()->back()->with('error', 'Ujian Tidak diketahui!');
+        }
+
+        $cacheKey = 'exam_answered_' . $id;
+        $reviewJawaban = Cache::remember($cacheKey, 10 * 60, function () use ($id) {
+            return DB::table('progres_ujian')
+                ->select(
+                    'progres_ujian.jawaban',
+                    'progres_ujian.soal_ujian_id',
+                    'soal_ujian.soal',
+                    'soal_ujian.gambar',
+                    'soal_ujian.jawaban_a',
+                    'soal_ujian.jawaban_b',
+                    'soal_ujian.jawaban_c',
+                    'soal_ujian.jawaban_d',
+                    'soal_ujian.jawaban_e',
+                    'soal_ujian.kunci_jawaban',
+                    'soal_ujian.review_pembahasan'
+                )->leftJoin('soal_ujian', 'progres_ujian.soal_ujian_id', '=', 'soal_ujian.id')
+                ->where('ujian_id', $id)
+                ->get();
+        });
+
+        $answeredQuestions = [];
+        foreach ($reviewJawaban as $question) {
+            array_push($answeredQuestions, $question->soal_ujian_id);
+        }
+
+        $questionCode = $productTryout->kode_soal;
+        $cacheKey = 'exam_unanswered_' . $id;
+        $unAnsweredQuestions = Cache::remember($cacheKey, 10 * 60, function () use ($answeredQuestions, $questionCode) {
+            return SoalUjian::select('id', 'soal', 'gambar', 'jawaban_a', 'jawaban_b', 'jawaban_c', 'jawaban_d', 'jawaban_e', 'kunci_jawaban', 'review_pembahasan')
+                ->where('kode_soal', $questionCode)
+                ->whereNotIn('id', $answeredQuestions)
+                ->get();
         });
 
         $data = [
-            'page_title' => 'Hasil Ujian',
-            'breadcumb' => $informasitryout->nama_tryout,
+            'page_title' => 'Hasil Ujian - ' . $productTryout->nama_tryout,
+            'breadcumb' => $productTryout->nama_tryout,
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
-            'informasiUjian' => $informasiUjian,
+            'productTryout' => $productTryout,
+            'exam' => $exam,
             'reviewJawaban' => $reviewJawaban,
-            'informasiTryout' => $informasitryout,
+            'unAnsweredQuestions' => $unAnsweredQuestions,
         ];
 
         return view('customer-panel.tryout.hasil-ujian', $data);
@@ -416,24 +467,38 @@ class Tryoutc extends Controller
     {
         $request->validated();
 
+        $hasilUjianId = $request->input('exam_result_id');
+        $productId = $request->input('product_id');
+
         // Cek apakah sudah memberikan testimoni
-        $cekTestimoni = Testimoni::where('hasil_ujian_id', $request->input('ujianID'))->first();
-        if ($cekTestimoni) {
-            Testimoni::where('hasil_ujian_id', $request->input('ujianID'))->delete();
+        $checkTestimoni = Testimoni::where('hasil_ujian_id', $hasilUjianId)->first();
+
+        $saveTestimoni = null;
+        if ($checkTestimoni) {
+            // Check if Testimoni has set to public
+            if ($checkTestimoni->publish === 'Y') {
+                return redirect()->back()->with('error', 'Testimoni ini tidak dapat diubah, silahkan hubungi admin !');
+            }
+
+            $saveTestimoni = $checkTestimoni->update([
+                'testimoni' => $request->input('testimoni'),
+                'rating' => $request->input('rating'),
+            ]);
+        } else {
+            $saveTestimoni = Testimoni::create([
+                'customer_id' => Auth::user()->customer_id,
+                'hasil_ujian_id' => $hasilUjianId,
+                'produk_tryout_id' => $productId,
+                'testimoni' => $request->input('testimoni'),
+                'rating' => $request->input('rating'),
+            ]);
+
         }
 
-        $testimoni = new Testimoni();
-        $testimoni->id = rand(1, 999) . rand(1, 99);
-        $testimoni->customer_id = Auth::user()->customer_id;
-        $testimoni->produk_tryout_id = Crypt::decrypt($request->input('produkID'));
-        $testimoni->hasil_ujian_id = $request->input('ujianID');
-        $testimoni->testimoni = $request->input('testimoni');
-        $testimoni->rating = $request->input('rating');
-
-        if ($testimoni->save()) {
-            return redirect()->back()->with('message', 'Testimoni berhasil diberikan !');
-        } else {
+        if (!$saveTestimoni) {
             return redirect()->back()->with('error', 'Testimoni gagal diberikan !');
         }
+
+        return redirect()->back()->with('message', 'Testimoni berhasil diberikan !');
     }
 }

@@ -245,7 +245,7 @@ Route::middleware(PanelRouting::class)->group(function () {
         Route::get('/progress-ujian/{id}/{param}', 'progressUjian')->name('ujian.progress');
         Route::post('/simpan-jawaban-ujian', 'simpanJawaban')->name('ujian.simpan-jawaban');
         Route::get('/simpan-hasil-ujian-tryout/{id}', 'simpanHasilUjian')->name('ujian.simpan-hasil');
-        Route::get('/hasil-ujian/{id}/{ujianID}/{produkID}', 'hasilUjian')->name('ujian.hasil');
+        Route::get('/hasil-ujian/{id}', 'hasilUjian')->name('ujian.hasil');
 
         Route::get('/testimoni-ujian', 'testimoniUjian')->name('ujian.testimoni');
         Route::post('/simpan-testimoni', 'simpanTestimoni')->name('ujian.simpan-testimoni');

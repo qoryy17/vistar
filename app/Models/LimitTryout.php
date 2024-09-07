@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class LimitTryout extends Model
 {
@@ -31,7 +32,7 @@ class LimitTryout extends Model
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function tryout(): BelongsTo
@@ -39,8 +40,8 @@ class LimitTryout extends Model
         return $this->BelongsTo(ProdukTryout::class, 'produk_tryout_id');
     }
 
-    public function ujian(): BelongsTo
+    public function ujian(): HasMany
     {
-        return $this->belongsTo(Ujian::class);
+        return $this->hasMany(Ujian::class, 'limit_tryout_id');
     }
 }
