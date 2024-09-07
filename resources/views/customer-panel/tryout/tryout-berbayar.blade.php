@@ -179,20 +179,30 @@
                                                         <div class="mt-1"
                                                             style="white-space: normal; text-align:justify;">
                                                             @if ($testimoni)
-                                                                Testimoni : {{ $testimoni->testimoni }}
-                                                                <br>
-                                                                Rating :
-                                                                @for ($i = 0; $i < $testimoni->rating; $i++)
-                                                                    <i class="fa fa-star"
-                                                                        style="color: rgb(255, 207, 16);"></i>
-                                                                @endfor
-                                                                <br>
-                                                                <button class="btn btn-primary btn-sm mt-2"
-                                                                    data-bs-target="#modalTestimoni{{ $no }}"
-                                                                    data-bs-toggle="modal">
-                                                                    <i class="fa fa-child"></i>
-                                                                    Ubah Testimoni
-                                                                </button>
+                                                                @if ($testimoni->publish != 'Y')
+                                                                    Testimoni : {{ $testimoni->testimoni }}
+                                                                    <br>
+                                                                    Rating :
+                                                                    @for ($i = 0; $i < $testimoni->rating; $i++)
+                                                                        <i class="fa fa-star"
+                                                                            style="color: rgb(255, 207, 16);"></i>
+                                                                    @endfor
+                                                                    <br>
+                                                                    <button class="btn btn-primary btn-sm mt-2"
+                                                                        data-bs-target="#modalTestimoni{{ $no }}"
+                                                                        data-bs-toggle="modal">
+                                                                        <i class="fa fa-child"></i>
+                                                                        Ubah Testimoni
+                                                                    </button>
+                                                                @else
+                                                                    Testimoni : {{ $testimoni->testimoni }}
+                                                                    <br>
+                                                                    Rating :
+                                                                    @for ($i = 0; $i < $testimoni->rating; $i++)
+                                                                        <i class="fa fa-star"
+                                                                            style="color: rgb(255, 207, 16);"></i>
+                                                                    @endfor
+                                                                @endif
                                                             @else
                                                                 <button class="btn btn-primary btn-sm mb-2"
                                                                     data-bs-target="#modalTestimoni{{ $no }}"
