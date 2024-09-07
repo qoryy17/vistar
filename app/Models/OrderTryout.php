@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderTryout extends Model
 {
@@ -21,7 +21,7 @@ class OrderTryout extends Model
         'customer_id',
         'produk_tryout_id',
         'payment_id',
-        'status_order'
+        'status_order',
     ];
 
     public $incrementing = false;
@@ -35,7 +35,7 @@ class OrderTryout extends Model
 
     public function tryout(): BelongsTo
     {
-        return $this->BelongsTo(ProdukTryout::class);
+        return $this->BelongsTo(ProdukTryout::class, 'produk_tryout_id');
     }
 
     public function payment(): BelongsTo

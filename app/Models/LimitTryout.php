@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LimitTryout extends Model
 {
@@ -22,7 +22,7 @@ class LimitTryout extends Model
         'informasi',
         'alasan',
         'status_validasi',
-        'validasi_oleh'
+        'validasi_oleh',
     ];
 
     public $incrementing = false;
@@ -32,6 +32,11 @@ class LimitTryout extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function tryout(): BelongsTo
+    {
+        return $this->BelongsTo(ProdukTryout::class, 'produk_tryout_id');
     }
 
     public function ujian(): BelongsTo

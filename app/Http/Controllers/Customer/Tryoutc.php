@@ -2,27 +2,39 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Models\Ujian;
-use App\Models\Customer;
-use App\Models\HasilUjian;
 use App\Helpers\RecordLogs;
-use Illuminate\Http\Request;
-use App\Jobs\SimpanJawabanJob;
-use App\Jobs\SimpanHasilUjianJob;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\TestimoniRequest;
+use App\Jobs\SimpanHasilUjianJob;
 use App\Jobs\SimpanInformasiUjianJob;
+use App\Models\Customer;
+use App\Models\HasilUjian;
+use App\Models\LimitTryout;
+use App\Models\OrderTryout;
 use App\Models\ProdukTryout;
+use App\Models\ProgressUjian;
+use App\Models\SoalUjian;
 use App\Models\Testimoni;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Ujian;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
 class Tryoutc extends Controller
 {
+
+    public static function cacheNameGenerateExam(string $id): array
+    {
+        return [
+            'exam' => 'exam_' . $id . '_data',
+            'question' => 'exam_' . $id . '_questions',
+        ];
+    }
+
     public function berandaUjian(Request $request): RedirectResponse
     {
         $catatUjian = new Ujian();
@@ -85,118 +97,124 @@ class Tryoutc extends Controller
 
     public function progressUjian(Request $request)
     {
-        $progresUjian = Ujian::find(Crypt::decrypt($request->id));
+        // Decrypt ID
+        $id = $request->id;
+        try {
+            $id = Crypt::decrypt($id);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Ujian Tidak ditemukan!');
+        }
 
-        if ($progresUjian->status_ujian == 'Selesai') {
-            if (Crypt::decrypt($request->param) == 'berbayar') {
-                return Redirect::route('site.tryout-berbayar');
-            } else {
-                return Redirect::route('site.tryout-gratis');
+        // Decrypt Param
+        $param = $request->param;
+        try {
+            $param = Crypt::decrypt($param);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Ujian Tidak diketahui!');
+        }
+
+        if ($param !== 'berbayar' && $param !== 'gratis') {
+            return redirect()->route('site.main')->with('error', 'Parameter tidak valid !');
+        }
+
+        $checkingExam = Ujian::select('status_ujian')
+            ->where('id', $id)
+            ->first();
+        if (!$checkingExam) {
+            return redirect()->back()->with('error', 'Ujian Tidak ditemukan!');
+        }
+
+        if ($checkingExam->status_ujian === 'Selesai') {
+            if ($param === 'berbayar') {
+                return redirect()->route('site.tryout-berbayar');
             }
-        }
-        // Dekripsi ID ujian dari request
-        $ujianId = Crypt::decrypt($request->id);
-        if (Crypt::decrypt($request->param) == 'berbayar') {
 
-            $ujianTryout = DB::table('ujian')->select('ujian.*', 'order_tryout.produk_tryout_id')->leftJoin('order_tryout', 'ujian.order_tryout_id', '=', 'order_tryout.id')->where('ujian.id', '=', Crypt::decrypt($request->id))->first();
-            // Cek apakah data ujian sudah ada di cache
-            $cacheKey = 'ujianBerbayar_' . $ujianId;
-            $ujian = Cache::remember($cacheKey, $ujianTryout->durasi_ujian * 60, function () use ($ujianId) {
-                return DB::table('ujian')
-                    ->select('ujian.*', 'order_tryout.produk_tryout_id')
-                    ->leftJoin('order_tryout', 'ujian.order_tryout_id', '=', 'order_tryout.id')
-                    ->where('ujian.id', '=', $ujianId)
-                    ->first();
-            });
-            $cacheKeySoal = 'soal_ujianBerbayar_' . $ujian->produk_tryout_id;
-        } else {
-            $ujianTryout = DB::table('ujian')->select('ujian.*', 'limit_tryout.produk_tryout_id')->leftJoin('limit_tryout', 'ujian.limit_tryout_id', '=', 'limit_tryout.id')->where('ujian.id', '=', Crypt::decrypt($request->id))->first();
-            // Cek apakah data ujian sudah ada di cache
-            $cacheKey = 'ujianGratis_' . $ujianId;
-            $ujian = Cache::remember($cacheKey, $ujianTryout->durasi_ujian * 60, function () use ($ujianId) {
-                return DB::table('ujian')
-                    ->select('ujian.*', 'limit_tryout.produk_tryout_id')
-                    ->leftJoin('limit_tryout', 'ujian.limit_tryout_id', '=', 'limit_tryout.id')
-                    ->where('ujian.id', '=', $ujianId)
-                    ->first();
-            });
-            $cacheKeySoal = 'soal_ujianGratis_' . $ujian->produk_tryout_id;
+            return redirect()->route('site.tryout-gratis');
         }
 
-        // Checking soal terlebih dahulu 
-        $checkingSoal = DB::table('soal_ujian')
-            ->select('soal_ujian.*', 'produk_tryout.kode_soal')
-            ->leftJoin('produk_tryout', 'soal_ujian.kode_soal', '=', 'produk_tryout.kode_soal')
-            ->where('produk_tryout.id', '=', $ujian->produk_tryout_id);
+        $cacheDurationExam = 100 * 60;
+        $generateCacheName = Tryoutc::cacheNameGenerateExam($id);
+        $cacheKey = $generateCacheName['exam'];
+        $cacheKeyQuestion = $generateCacheName['question'];
 
-        if ($checkingSoal->first()) {
-            // Ambil seluruh soal ujian dari cache atau database jika belum ada di cache
-            $soalUjian = Cache::remember(
-                $cacheKeySoal,
-                6000,
-                function () use ($ujian) {
-                    return DB::table('soal_ujian')
-                        ->select('soal_ujian.*', 'produk_tryout.kode_soal', 'klasifikasi_soal.alias', 'klasifikasi_soal.created_at')
-                        ->leftJoin('produk_tryout', 'soal_ujian.kode_soal', '=', 'produk_tryout.kode_soal')
-                        ->leftJoin('klasifikasi_soal', 'soal_ujian.klasifikasi_soal_id', '=', 'klasifikasi_soal.id')
-                        ->where('produk_tryout.id', '=', $ujian->produk_tryout_id)->orderBy('klasifikasi_soal.created_at', 'ASC')->get();
-                }
-            );
-        } else {
-            return redirect()->back()->with('error', 'Maaf tidak bisa memulai ujian, soal belum tersedia !');
+        Cache::forget($cacheKey);
+        Cache::forget($cacheKeyQuestion);
+
+        $exam = Cache::remember($cacheKey, $cacheDurationExam, function () use ($id, $param) {
+            $examData = DB::table('ujian')
+                ->select('ujian.*')
+                ->where('ujian.id', '=', $id);
+
+            if ($param === 'berbayar') {
+                $examData->addSelect('order_tryout.produk_tryout_id')
+                    ->leftJoin('order_tryout', 'ujian.order_tryout_id', '=', 'order_tryout.id');
+            } else {
+                $examData->addSelect('limit_tryout.produk_tryout_id')
+                    ->leftJoin('limit_tryout', 'ujian.limit_tryout_id', '=', 'limit_tryout.id');
+            }
+
+            return $examData->first();
+        });
+
+        if (!$exam) {
+            return redirect()->back()->with('error', 'Data Ujian Tidak ditemukan!');
         }
 
-        // Ambil halaman saat ini
-        $currentPage = $request->input('page', 1);
-        $perPage = 1; // Soal per halaman
-        $offset = ($currentPage - 1) * $perPage;
+        // Get Tryout Data
+        $tryoutProduct = ProdukTryout::select('id', 'nama_tryout', 'keterangan', 'kode_soal')
+            ->where('id', $exam->produk_tryout_id)
+            ->first();
+        if (!$tryoutProduct) {
+            return redirect()->back()->with('error', 'Data Ujian Tidak ditemukan!');
+        }
 
-        // Ambil soal untuk halaman saat ini
-        $currentSoal = $soalUjian->slice($offset, $perPage)->all();
-
-        // Buat paginasi manual
-        $soalUjianPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
-            $currentSoal,
-            $soalUjian->count(),
-            $perPage,
-            $currentPage,
-            ['path' => $request->url(), 'query' => $request->query()]
-        );
-
-        $startTime = $ujianTryout->waktu_mulai;
-        $duration = $ujianTryout->durasi_ujian; // Durasi dalam menit
+        $duration = $exam->durasi_ujian; // Durasi dalam menit
+        $startTime = $exam->waktu_mulai;
 
         // Menghitung waktu selesai ujian
         $endTime = \Carbon\Carbon::parse($startTime)->addMinutes($duration)->format('Y-m-d H:i:s');
 
-        // Ambil jawaban yang sudah diisi
-        $jawabanTersimpan = DB::table('progres_ujian')
-            ->where('ujian_id', $ujianId)
+        // Check if exam already ended
+        $currentTime = now();
+        if ($endTime < $currentTime) {
+            return redirect()->route('ujian.simpan-hasil', ['id' => Crypt::encrypt($exam->id)]);
+        }
+
+        $titlePage = $tryoutProduct->nama_tryout;
+
+        $customer = Customer::findOrFail(Auth::user()->customer_id);
+
+        // Get All Question
+        $questions = Cache::remember($cacheKeyQuestion, $cacheDurationExam, function () use ($tryoutProduct) {
+            return SoalUjian::select('soal_ujian.id', 'soal_ujian.kode_soal', 'soal_ujian.soal', 'soal_ujian.gambar', 'soal_ujian.jawaban_a', 'soal_ujian.jawaban_b', 'soal_ujian.jawaban_c', 'soal_ujian.jawaban_d', 'soal_ujian.jawaban_e')
+                ->where('kode_soal', '=', $tryoutProduct->kode_soal)
+                ->get();
+        });
+        $totalQuestion = $questions->count();
+
+        // Check Total Questions
+        if ($totalQuestion <= 0) {
+            return redirect()->back()->with('error', 'Maaf tidak bisa memulai ujian, soal belum tersedia !');
+        }
+
+        // Get user saved questions
+        $savedQuestions = DB::table('progres_ujian')
+            ->where('ujian_id', $id)
             ->pluck('jawaban', 'soal_ujian_id')
             ->toArray();
 
-        if (Crypt::decrypt($request->param) == 'berbayar') {
-            $page_title = 'Ujian Tryout Berbayar';
-        } elseif (Crypt::decrypt($request->param) == 'gratis') {
-            $page_title = 'Ujian Tryout Gratis';
-        } else {
-            return Redirect::route('site.main')->with('error', 'Parameter tidak valid !');
-        }
-
         $data = [
-            'page_title' => $page_title,
+            'titlePage' => $titlePage,
             'breadcumb' => 'Ujian Tryout',
-            'customer' => Customer::findOrFail(Auth::user()->customer_id),
-            'ujianId' => $ujianId,
-            'ujian' => $ujian,
-            'totalSoal' => $soalUjian->count(),
-            'soalUjianAll' => $soalUjian,
-            'jawabSoal' => $ujianTryout,
-            'soalUjian' => $soalUjianPaginated,
+            'customer' => $customer,
+            'tryoutProduct' => $tryoutProduct,
+            'exam' => $exam,
+            'totalQuestion' => $totalQuestion,
+            'savedQuestions' => $savedQuestions,
+            'questions' => $questions,
             'startTime' => $startTime,
             'endTime' => $endTime,
-            'jawabanTersimpan' => $jawabanTersimpan,
-            'param' => $request->param
+            'param' => $request->param,
         ];
 
         return view('customer-panel.tryout.ujian', $data);
@@ -206,45 +224,128 @@ class Tryoutc extends Controller
     {
         $jawabanPeserta = $request->validate([
             'ujian_id' => ['required'],
-            'soal_ujian_id' => ['required'],
             'kode_soal' => ['required'],
+            'soal_ujian_id' => ['required'],
             'jawaban' => ['required', 'string'],
         ]);
 
-        // Job untuk menyimpan jawaban peserta
-        SimpanJawabanJob::dispatch($jawabanPeserta);
+        $examId = Crypt::decrypt($jawabanPeserta['ujian_id']);
+        $questionCode = Crypt::decrypt($jawabanPeserta['kode_soal']);
+        $questionId = $jawabanPeserta['soal_ujian_id'];
+        $answer = $jawabanPeserta['jawaban'];
 
-        return response()->json(['success' => true, 'message' => 'Jawaban berhasil disimpan.']);
+        // Cek apakah jawaban sudah ada di database
+        $existingJawaban = DB::table('progres_ujian')
+            ->where('ujian_id', $examId)
+            ->where('kode_soal', $questionCode)
+            ->where('soal_ujian_id', $questionId)
+            ->first();
+
+        if ($existingJawaban) {
+            if ($existingJawaban->jawaban === $answer) {
+                return response()->json(['success' => true, 'message' => 'Jawaban berhasil disimpan.', 'data' => [
+                    'new_saved_answered' => ['question_id' => $questionId, 'answer' => $answer],
+                ]]);
+            }
+
+            // Update jawaban jika sudah ada
+            DB::table('progres_ujian')
+                ->where('id', $existingJawaban->id)
+                ->update([
+                    'jawaban' => $answer,
+                ]);
+        } else {
+            $progressID = rand(1, 999) . rand(1, 99) . rand(1, 9);
+
+            // Simpan jawaban baru
+            DB::table('progres_ujian')->insert([
+                'id' => $progressID,
+                'ujian_id' => $examId,
+                'kode_soal' => $questionCode,
+                'soal_ujian_id' => $questionId,
+                'jawaban' => $answer,
+            ]);
+
+        }
+
+        $totalAnswered = ProgressUjian::where('ujian_id', $examId)->count();
+        $totalQuestion = Cache::remember('totalQuestion_' . $questionCode, 100 * 60, function () use ($questionCode) {
+            return SoalUjian::where('kode_soal', $questionCode)->count();
+        });
+        $totalUnAnswered = $totalQuestion - $totalAnswered;
+
+        $exam = Ujian::find($examId);
+        if (!$exam) {
+            return response()->json(['success' => false, 'message' => 'Data Ujian tidak ditemukan.']);
+        }
+
+        $exam->soal_terjawab = $totalAnswered;
+        $exam->soal_belum_terjawab = $totalUnAnswered;
+
+        $save = $exam->save();
+        if (!$save) {
+            return response()->json(['success' => false, 'message' => 'Jawaban gagal disimpan, silahkan coba kembali.']);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Jawaban berhasil disimpan.', 'data' => [
+            'new_saved_answered' => ['question_id' => $questionId, 'answer' => $answer],
+        ]]);
     }
 
     public function simpanHasilUjian(Request $request)
     {
         // Dekripsi data dari request
-        $ujianId = Crypt::decrypt($request->id);
-        $kodeSoal = Crypt::decrypt($request->kode_soal);
-        $param = Crypt::decrypt($request->param);
+        $examId = Crypt::decrypt($request->id);
+        $exam = Ujian::where('id', $examId)->first();
+        if (!$exam) {
+            return redirect()->back()->with('error', 'Ujian Tidak ditemukan!');
+        }
+
+        $questionCode = null;
+
+        $redirectRoute = 'site.tryout-berbayar';
+        $examPaidType = 'berbayar';
+        if ($exam->order_tryout_id && !$exam->limit_tryout_id) {
+            $orderTryout = OrderTryout::where('id', $exam->order_tryout_id)
+                ->select('id', 'produk_tryout_id')
+                ->whereHas('tryout')
+                ->with('tryout:id,kode_soal')
+                ->first();
+
+            if ($orderTryout) {
+                $questionCode = $orderTryout->tryout->kode_soal;
+            }
+        } elseif (!$exam->order_tryout_id && $exam->limit_tryout_id) {
+            $redirectRoute = 'site.tryout-gratis';
+            $examPaidType = 'gratis';
+
+            $limitTryout = LimitTryout::where('id', $exam->limit_tryout_id)
+                ->select('id', 'produk_tryout_id')
+                ->whereHas('tryout')
+                ->with('tryout:id,kode_soal')
+                ->first();
+
+            if ($limitTryout) {
+                $questionCode = $limitTryout->tryout->kode_soal;
+            }
+        } else {
+            return redirect()->back()->with('error', 'Tipe Ujian Tidak diketahui!');
+        }
 
         $dataInfoUjian = [
-            'ujianID' => $ujianId,
-            'kodeSoal' => $kodeSoal,
-            'param' => $param
+            'ujianID' => $examId,
+            'kodeSoal' => $questionCode,
+            'param' => $examPaidType,
         ];
 
-        $ujianTersimpan = HasilUjian::where('ujian_id', $ujianId)->first();
+        $ujianTersimpan = HasilUjian::where('ujian_id', $examId)->first();
         if (!$ujianTersimpan) {
-
             // Job untuk menyimpan informasi ujian dan hasil ujian
             SimpanHasilUjianJob::dispatch($dataInfoUjian);
             SimpanInformasiUjianJob::dispatch($dataInfoUjian);
         }
 
-        if (Crypt::decrypt($request->param) == 'berbayar') {
-            return Redirect::route('site.tryout-berbayar')->with('Ujian berhasil disimpan !');
-        } elseif (Crypt::decrypt($request->param) == 'gratis') {
-            return Redirect::route('site.tryout-gratis')->with('Ujian berhasil disimpan !');
-        } else {
-            return Redirect::route('site.main')->with('error', 'Parameter tidak valid !');
-        }
+        return redirect()->route($redirectRoute)->with('Ujian berhasil disimpan !');
     }
 
     public function hasilUjian(Request $request)
@@ -256,18 +357,18 @@ class Tryoutc extends Controller
         $cacheKey = 'Exam' . $hasilUjianID;
         $reviewJawaban = Cache::remember($cacheKey, 10 * 60, function () use ($hasilUjianID) {
             return
-                DB::table('progres_ujian')->select(
-                    'progres_ujian.*',
-                    'soal_ujian.soal',
-                    'soal_ujian.gambar',
-                    'soal_ujian.jawaban_a',
-                    'soal_ujian.jawaban_b',
-                    'soal_ujian.jawaban_c',
-                    'soal_ujian.jawaban_d',
-                    'soal_ujian.jawaban_e',
-                    'soal_ujian.kunci_jawaban',
-                    'soal_ujian.review_pembahasan'
-                )->leftJoin('soal_ujian', 'progres_ujian.soal_ujian_id', '=', 'soal_ujian.id')
+            DB::table('progres_ujian')->select(
+                'progres_ujian.*',
+                'soal_ujian.soal',
+                'soal_ujian.gambar',
+                'soal_ujian.jawaban_a',
+                'soal_ujian.jawaban_b',
+                'soal_ujian.jawaban_c',
+                'soal_ujian.jawaban_d',
+                'soal_ujian.jawaban_e',
+                'soal_ujian.kunci_jawaban',
+                'soal_ujian.review_pembahasan'
+            )->leftJoin('soal_ujian', 'progres_ujian.soal_ujian_id', '=', 'soal_ujian.id')
                 ->where('ujian_id', $hasilUjianID)->get();
         });
 
@@ -277,7 +378,7 @@ class Tryoutc extends Controller
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
             'informasiUjian' => $informasiUjian,
             'reviewJawaban' => $reviewJawaban,
-            'informasiTryout' => $informasitryout
+            'informasiTryout' => $informasitryout,
         ];
 
         return view('customer-panel.tryout.hasil-ujian', $data);
@@ -287,7 +388,7 @@ class Tryoutc extends Controller
     {
         $request->validated();
 
-        // Cek apakah sudah memberikan testimoni 
+        // Cek apakah sudah memberikan testimoni
         $cekTestimoni = Testimoni::where('hasil_ujian_id', $request->input('ujianID'))->first();
         if ($cekTestimoni) {
             Testimoni::where('hasil_ujian_id', $request->input('ujianID'))->delete();

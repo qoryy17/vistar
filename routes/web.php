@@ -1,31 +1,31 @@
 <?php
 
 use App\Http\Controllers\Cron\JobsController;
-use App\Http\Controllers\Panel\Main;
-use App\Http\Controllers\Panel\Users;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Customer\Site;
-use App\Http\Controllers\Panel\Tryouts;
+use App\Http\Controllers\Customer\Tryoutc;
+use App\Http\Controllers\Landing\Autentifikasi;
 use App\Http\Controllers\Landing\Emails;
+use App\Http\Controllers\Landing\GoogleOauth;
+use App\Http\Controllers\Landing\MainWebsite;
 use App\Http\Controllers\Landing\Orders;
-use App\Http\Controllers\Panel\Referral;
-use App\Http\Middleware\Auth\ProdukAuth;
-use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\Landing\Profils;
 use App\Http\Controllers\Panel\Customers;
 use App\Http\Controllers\Panel\Kategoris;
-use App\Http\Controllers\Customer\Tryoutc;
-use App\Http\Controllers\Panel\ListOrders;
-use App\Http\Controllers\Panel\Pengaturan;
-use App\Http\Controllers\Panel\Testimonis;
-use App\Http\Middleware\Auth\PanelRouting;
 use App\Http\Controllers\Panel\Klasifikasis;
-use App\Http\Controllers\Landing\GoogleOauth;
-use App\Http\Controllers\Landing\MainWebsite;
-use App\Http\Controllers\Landing\Autentifikasi;
-use App\Http\Middleware\Customer\LoggedCustomer;
+use App\Http\Controllers\Panel\ListOrders;
+use App\Http\Controllers\Panel\Main;
+use App\Http\Controllers\Panel\Pengaturan;
+use App\Http\Controllers\Panel\Referral;
+use App\Http\Controllers\Panel\Testimonis;
+use App\Http\Controllers\Panel\Tryouts;
+use App\Http\Controllers\Panel\Users;
 use App\Http\Controllers\Payment\TransactionController;
+use App\Http\Middleware\Auth\PanelRouting;
+use App\Http\Middleware\Auth\ProdukAuth;
+use App\Http\Middleware\Customer\LoggedCustomer;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Route;
 
 // Routing untuk website utama
 Route::get('/', function () {
@@ -106,7 +106,6 @@ Route::middleware(PanelRouting::class)->group(function () {
         Route::post('/update-password', 'ubahPassword')->name('profils.ubah-password');
     });
 });
-
 
 // Routing untuk main panel kendali
 Route::middleware(PanelRouting::class)->group(function () {
@@ -246,7 +245,7 @@ Route::middleware(PanelRouting::class)->group(function () {
         Route::post('/ujian-tryout', 'berandaUjian')->name('ujian.main');
         Route::get('/progress-ujian/{id}/{param}', 'progressUjian')->name('ujian.progress');
         Route::post('/simpan-jawaban-ujian', 'simpanJawaban')->name('ujian.simpan-jawaban');
-        Route::get('/simpan-hasil-ujian-tryout/{id}/{kode_soal}/{param}', 'simpanHasilUjian')->name('ujian.simpan-hasil');
+        Route::get('/simpan-hasil-ujian-tryout/{id}', 'simpanHasilUjian')->name('ujian.simpan-hasil');
         Route::get('/hasil-ujian/{id}/{ujianID}/{produkID}', 'hasilUjian')->name('ujian.hasil');
 
         Route::get('/testimoni-ujian', 'testimoniUjian')->name('ujian.testimoni');
