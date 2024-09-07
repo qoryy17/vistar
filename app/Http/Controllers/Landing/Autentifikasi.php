@@ -115,8 +115,8 @@ class Autentifikasi extends Controller
 
         if ($customer->save() and $user->save()) {
 
-            event(new Registered($user));
-
+            // event(new Registered($user));
+            // Send email registration to customer with email
             $this->sendVerificationEmail($user);
 
             return redirect()->route('auth.signup')->with('message', 'Silahkan konfirmasi akun melalui email !');
