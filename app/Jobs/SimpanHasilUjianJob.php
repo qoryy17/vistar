@@ -49,7 +49,7 @@ class SimpanHasilUjianJob implements ShouldQueue
 
             $jawabanUjian = DB::table('progres_ujian')->select('progres_ujian.*', 'ujian.status_ujian')
                 ->leftJoin('ujian', 'progres_ujian.ujian_id', '=', 'ujian.id')
-                ->whereNot('ujian.status_ujian', 'Selesai')->where('progres_ujian.ujian_id', '=', $this->dataInfoUjian['ujianID'])->get();
+                ->where('progres_ujian.ujian_id', '=', $this->dataInfoUjian['ujianID'])->get();
 
             $totalSoalTersedia = SoalUjian::where('kode_soal', $this->dataInfoUjian['kodeSoal'])->count();
             $totalSoalTerisi = ProgressUjian::where('kode_soal', $this->dataInfoUjian['kodeSoal'])->where('ujian_id', $this->dataInfoUjian['ujianID'])->count();

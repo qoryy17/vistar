@@ -17,6 +17,7 @@
         .wrapper-flash-info {
             z-index: 10;
             position: absolute;
+            font-size: 0.9em;
             top: 5px;
             left: 5px;
             border-left: 3px solid #99cc33;
@@ -267,16 +268,15 @@
                     goToQuestion(1);
                 } else {
                     // Go to unanswered question
-                    let no = 1;
+                    let no = 0;
                     for (const question of questions) {
+                        no++;
                         if (!savedQuestions[question.id]) {
-                            sendFlashMessage(`Ini adalah soal belum anda jawab!`, 'success',
-                                4000);
-                            goToQuestion(no);
                             break;
                         }
-                        no++;
                     }
+                    sendFlashMessage(`Ini adalah soal yang belum anda jawab!`, 'success', 4000);
+                    goToQuestion(no);
                 }
             }
         });

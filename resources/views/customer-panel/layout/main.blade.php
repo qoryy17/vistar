@@ -11,7 +11,7 @@
             <div class="main-header-left">
                 <a class="main-header-menu-icon" href="javascript:void(0)" id="mainSidebarToggle"><span></span></a>
                 <div class="hor-logo">
-                    <a class="main-logo" href="{{ route('site.main') }}">
+                    <a class="main-logo" href="{{ route('mainweb.index') }}">
                         <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
                             class="header-brand-img desktop-logo" alt="logo" style="max-width: 200px;">
                         <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
@@ -120,14 +120,6 @@
                                 <span class="shape2"></span>
                                 <i class="ti-home sidemenu-icon menu-icon "></i>
                                 <span class="sidemenu-label">Beranda</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('mainweb.index') }}">
-                                <span class="shape1"></span>
-                                <span class="shape2"></span>
-                                <i class="ti-world sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Web Utama</span>
                             </a>
                         </li>
                         <li class="nav-item">

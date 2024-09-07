@@ -22,7 +22,7 @@ class ProgressUjian extends Model
         'jawaban'
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 

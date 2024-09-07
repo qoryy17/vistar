@@ -17,6 +17,7 @@ class Ujian extends Model
     protected $fillable = [
         'id',
         'order_tryout_id',
+        'limit_tryout_id',
         'waktu_mulai',
         'waktu_berakhir',
         'durasi_ujian',
@@ -26,7 +27,7 @@ class Ujian extends Model
         'status_ujian'
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 

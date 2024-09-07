@@ -6,7 +6,6 @@ use App\Helpers\RecordLogs;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\TestimoniRequest;
 use App\Jobs\SimpanHasilUjianJob;
-use App\Jobs\SimpanInformasiUjianJob;
 use App\Models\Customer;
 use App\Models\HasilUjian;
 use App\Models\LimitTryout;
@@ -37,62 +36,80 @@ class Tryoutc extends Controller
 
     public function berandaUjian(Request $request): RedirectResponse
     {
-        $catatUjian = new Ujian();
+        // Decrypt ID
+        $id = $request->id;
+        try {
+            $id = Crypt::decrypt($id);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Ujian Tidak ditemukan!');
+        }
 
-        if (Crypt::decrypt($request->param) == 'berbayar') {
+        // Decrypt Param
+        $param = $request->param;
+        try {
+            $param = Crypt::decrypt($param);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Ujian Tidak diketahui!');
+        }
 
+        $newExamData = [];
+
+        if ($param == 'berbayar') {
             // Jika ada proses ujian yang sedang berlangsung arahkan kehalaman ujian
-            $cekUjian = Ujian::where('order_tryout_id', Crypt::decrypt($request->id))->first();
-            if ($cekUjian) {
-                if ($cekUjian->status_ujian == 'Sedang Dikerjakan') {
-                    return redirect()->route('ujian.progress', ['id' => Crypt::encrypt($cekUjian->id), 'param' => $request->param]);
-                }
+            $cekWaitingExam = Ujian::select('id')
+                ->where('order_tryout_id', $id)
+                ->where('status_ujian', 'Sedang Dikerjakan')
+                ->first();
+            if ($cekWaitingExam) {
+                return redirect()->route('ujian.progress', ['id' => Crypt::encrypt($cekWaitingExam->id), 'param' => $request->param]);
             }
-            $ujian = DB::table('order_tryout')->select(
-                'order_tryout.id',
-                'produk_tryout.id as produk_id',
-                'pengaturan_tryout.durasi'
-            )->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
-                ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                ->where('order_tryout.id', '=', Crypt::decrypt($request->id))->first();
 
-            $catatUjian->order_tryout_id = Crypt::decrypt($request->id);
-        } elseif (Crypt::decrypt($request->param) == 'gratis') {
+            $ujian = DB::table('order_tryout')
+                ->select('order_tryout.id', 'produk_tryout.id as produk_id', 'pengaturan_tryout.durasi')
+                ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
+                ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
+                ->where('order_tryout.id', '=', $id)
+                ->first();
+
+            $newExamData['order_tryout_id'] = $id;
+        } elseif ($param == 'gratis') {
             // Jika ada proses ujian yang sedang berlangsung arahkan kehalaman ujian
-            $cekUjian = Ujian::where('limit_tryout_id', Crypt::decrypt($request->id))->first();
-            if ($cekUjian) {
-                if ($cekUjian->status_ujian == 'Sedang Dikerjakan') {
-                    return redirect()->route('ujian.progress', ['id' => Crypt::encrypt($cekUjian->id), 'param' => $request->param]);
-                }
+            $cekWaitingExam = Ujian::select('id')
+                ->where('limit_tryout_id', $id)
+                ->where('status_ujian', 'Sedang Dikerjakan')
+                ->first();
+            if ($cekWaitingExam) {
+                return redirect()->route('ujian.progress', ['id' => Crypt::encrypt($cekWaitingExam->id), 'param' => $request->param]);
             }
 
-            $ujian = DB::table('limit_tryout')->select(
-                'limit_tryout.id',
-                'produk_tryout.id as produk_id',
-                'pengaturan_tryout.durasi'
-            )->leftJoin('produk_tryout', 'limit_tryout.produk_tryout_id', '=', 'produk_tryout.id')
+            $ujian = DB::table('limit_tryout')->select('limit_tryout.id', 'produk_tryout.id as produk_id', 'pengaturan_tryout.durasi')
+                ->leftJoin('produk_tryout', 'limit_tryout.produk_tryout_id', '=', 'produk_tryout.id')
                 ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                ->where('limit_tryout.id', '=', Crypt::decrypt($request->id))->first();
+                ->where('limit_tryout.id', '=', $id)
+                ->first();
 
-            $catatUjian->limit_tryout_id = Crypt::decrypt($request->id);
+            $newExamData['limit_tryout_id'] = $id;
         } else {
             return Redirect::route('site.main')->with('error', 'Parameter tidak valid !');
         }
 
-        $ujianID = rand(1, 999) . rand(1, 99);
+        $newExam = Ujian::create(array_merge($newExamData, [
+            'waktu_mulai' => now(),
+            'durasi_ujian' => $ujian->durasi,
+            'status_ujian' => 'Sedang Dikerjakan',
+        ]));
 
-        $catatUjian->id = $ujianID;
-        $catatUjian->waktu_mulai = now();
-        $catatUjian->durasi_ujian = $ujian->durasi;
-        $catatUjian->status_ujian = 'Sedang Dikerjakan';
-
-        if ($catatUjian->save()) {
-            // Simpan log aktivitas pengguna
-            $logs = Auth::user()->name . ' telah membuat ujian dengan id ujian ' . $ujianID . ', waktu tercatat : ' . now();
-            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return redirect()->route('ujian.progress', ['id' => Crypt::encrypt($ujianID), 'param' => $request->param]);
+        if (!$newExam) {
+            return redirect()->back()->with('error', 'Gagal memulai ujian !');
         }
-        return redirect()->back()->with('error', 'Gagal memulai ujian !');
+
+        $examId = $newExam->id;
+
+        // Simpan log aktivitas pengguna
+        $logs = Auth::user()->name . ' telah membuat ujian dengan id ujian ' . $examId . ', waktu tercatat : ' . now();
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+        return redirect()->route('ujian.progress', ['id' => Crypt::encrypt($examId), 'param' => $request->param]);
     }
 
     public function progressUjian(Request $request)
@@ -136,9 +153,6 @@ class Tryoutc extends Controller
         $generateCacheName = Tryoutc::cacheNameGenerateExam($id);
         $cacheKey = $generateCacheName['exam'];
         $cacheKeyQuestion = $generateCacheName['question'];
-
-        Cache::forget($cacheKey);
-        Cache::forget($cacheKeyQuestion);
 
         $exam = Cache::remember($cacheKey, $cacheDurationExam, function () use ($id, $param) {
             $examData = DB::table('ujian')
@@ -249,42 +263,18 @@ class Tryoutc extends Controller
             }
 
             // Update jawaban jika sudah ada
-            DB::table('progres_ujian')
-                ->where('id', $existingJawaban->id)
+            ProgressUjian::where('id', $existingJawaban->id)
                 ->update([
                     'jawaban' => $answer,
                 ]);
         } else {
-            $progressID = rand(1, 999) . rand(1, 99) . rand(1, 9);
-
             // Simpan jawaban baru
-            DB::table('progres_ujian')->insert([
-                'id' => $progressID,
+            ProgressUjian::create([
                 'ujian_id' => $examId,
                 'kode_soal' => $questionCode,
                 'soal_ujian_id' => $questionId,
                 'jawaban' => $answer,
             ]);
-
-        }
-
-        $totalAnswered = ProgressUjian::where('ujian_id', $examId)->count();
-        $totalQuestion = Cache::remember('totalQuestion_' . $questionCode, 100 * 60, function () use ($questionCode) {
-            return SoalUjian::where('kode_soal', $questionCode)->count();
-        });
-        $totalUnAnswered = $totalQuestion - $totalAnswered;
-
-        $exam = Ujian::find($examId);
-        if (!$exam) {
-            return response()->json(['success' => false, 'message' => 'Data Ujian tidak ditemukan.']);
-        }
-
-        $exam->soal_terjawab = $totalAnswered;
-        $exam->soal_belum_terjawab = $totalUnAnswered;
-
-        $save = $exam->save();
-        if (!$save) {
-            return response()->json(['success' => false, 'message' => 'Jawaban gagal disimpan, silahkan coba kembali.']);
         }
 
         return response()->json(['success' => true, 'message' => 'Jawaban berhasil disimpan.', 'data' => [
@@ -299,6 +289,10 @@ class Tryoutc extends Controller
         $exam = Ujian::where('id', $examId)->first();
         if (!$exam) {
             return redirect()->back()->with('error', 'Ujian Tidak ditemukan!');
+        }
+
+        if ($exam->status_ujian !== 'Sedang Dikerjakan') {
+            return redirect()->back()->with('error', 'Status Ujian bukan Sedang Dikerjakan!');
         }
 
         $questionCode = null;
@@ -332,6 +326,34 @@ class Tryoutc extends Controller
             return redirect()->back()->with('error', 'Tipe Ujian Tidak diketahui!');
         }
 
+        $startTime = $exam->waktu_mulai;
+        $duration = $exam->durasi_ujian; // Durasi dalam menit
+
+        // Menghitung waktu selesai ujian
+        $endTime = \Carbon\Carbon::parse($startTime)->addMinutes($duration)->format('Y-m-d H:i:s');
+
+        $now = \Carbon\Carbon::now(); // Waktu sekarang
+        $targetTime = \Carbon\Carbon::create($endTime); // Waktu yang dituju
+        $diffInMinutes = $now->diffInMinutes($targetTime);
+        // Dapatkan sisa waktu ujian
+        if ($now->greaterThan($targetTime)) {
+            $sisaWaktu = 0;
+        } else {
+            $sisaWaktu = floor($diffInMinutes);
+        }
+
+        $totalAnswered = ProgressUjian::where('ujian_id', $examId)->count();
+        $totalQuestion = SoalUjian::where('kode_soal', $questionCode)->count();
+        $totalUnAnswered = $totalQuestion - $totalAnswered;
+
+        $exam->update([
+            'waktu_berakhir' => now(),
+            'sisa_waktu' => $sisaWaktu,
+            'soal_terjawab' => $totalAnswered,
+            'soal_belum_terjawab' => $totalUnAnswered,
+            'status_ujian' => 'Selesai',
+        ]);
+
         $dataInfoUjian = [
             'ujianID' => $examId,
             'kodeSoal' => $questionCode,
@@ -342,8 +364,14 @@ class Tryoutc extends Controller
         if (!$ujianTersimpan) {
             // Job untuk menyimpan informasi ujian dan hasil ujian
             SimpanHasilUjianJob::dispatch($dataInfoUjian);
-            SimpanInformasiUjianJob::dispatch($dataInfoUjian);
         }
+
+        $generateCacheName = Tryoutc::cacheNameGenerateExam($examId);
+        $cacheKey = $generateCacheName['exam'];
+        $cacheKeyQuestion = $generateCacheName['question'];
+
+        Cache::forget($cacheKey);
+        Cache::forget($cacheKeyQuestion);
 
         return redirect()->route($redirectRoute)->with('Ujian berhasil disimpan !');
     }
