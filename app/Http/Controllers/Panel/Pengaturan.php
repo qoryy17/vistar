@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Models\Logs;
-use App\Models\User;
 use App\Helpers\Notifikasi;
 use App\Helpers\RecordLogs;
-use App\Models\LimitTryout;
-use Illuminate\Http\Request;
-use App\Models\PengaturanWeb;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Panel\PengaturanRequest;
+use App\Models\LimitTryout;
+use App\Models\Logs;
+use App\Models\PengaturanWeb;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 
 class Pengaturan extends Controller
 {
@@ -32,7 +33,7 @@ class Pengaturan extends Controller
             'page_title' => 'Banner Carousel',
             'breadcumb' => $form_title,
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.pengaturan.form-banner-web', $data);
     }
@@ -51,30 +52,22 @@ class Pengaturan extends Controller
             'page_title' => 'FAQ',
             'breadcumb' => $form_title,
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.pengaturan.form-faq-web', $data);
     }
 
     public function simpanPengaturanWeb(PengaturanRequest $request)
     {
-
-        $cekPengaturan = PengaturanWeb::all()->first();
-        if ($cekPengaturan) {
-            // $cekPengaturan->delete();
-
-        }
         $request->validated();
 
         // Cek apakah sudah terdapat pengaturan
-
-        $checkPengaturan = PengaturanWeb::all()->first();
+        $checkPengaturan = PengaturanWeb::first();
         if ($checkPengaturan) {
-            $cekPengaturan->delete();
+            $checkPengaturan->delete();
         }
 
         $pengaturanWeb = new PengaturanWeb();
-        $pengaturanWeb->id = rand(1, 99);
         $pengaturanWeb->nama_bisnis = htmlspecialchars($request->input('namaBisnis'));
         $pengaturanWeb->tagline = htmlspecialchars($request->input('tagline'));
         $pengaturanWeb->perusahaan = htmlspecialchars($request->input('perusahaan'));
@@ -92,7 +85,7 @@ class Pengaturan extends Controller
 
             $fileUpload = $fileLogo->storeAs('public', $fileHashname);
             if (!$fileUpload) {
-                return Redirect::route('main.pengaturan')->with('error', 'Unggah logo gagal !');
+                return redirect()->route('main.pengaturan')->with('error', 'Unggah logo gagal !');
             }
             $pengaturanWeb->logo = $fileHashname;
         } else {
@@ -103,14 +96,17 @@ class Pengaturan extends Controller
         $pengaturanWeb->meta_keyword = htmlspecialchars($request->input('metaKeyword'));
         $pengaturanWeb->meta_description = htmlspecialchars($request->input('metaDescription'));
 
-        if ($pengaturanWeb->save()) {
-            // Simpan logs aktivitas pengguna
-            $logs = Auth::user()->name . ' telah memperbarui pengaturan web waktu tercatat :  ' . now();
-            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::route('main.pengaturan')->with('message', 'Pengaturan berhasil dihapus !');
-        } else {
-            return Redirect::route('main.pengaturan')->with('error', 'Pengaturan gagal dihapus !');
+        if (!$pengaturanWeb->save()) {
+            return redirect()->route('main.pengaturan')->with('error', 'Pengaturan gagal dihapus !');
         }
+
+        Cache::forget('app:web_setting');
+
+        // Simpan logs aktivitas pengguna
+        $logs = Auth::user()->name . ' telah memperbarui pengaturan web waktu tercatat :  ' . now();
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+        return redirect()->route('main.pengaturan')->with('message', 'Pengaturan berhasil dihapus !');
     }
 
     public function hapusLogs(Request $request)
@@ -136,7 +132,7 @@ class Pengaturan extends Controller
                     'namaLengkap.required' => 'Nama lengkap wajib di isi',
                     'namaLengkap.string' => 'Nama lengkap harus berupa kalimat',
                     'email.required' => 'Email wajib di isi',
-                    'email.email' => 'Email harus valid'
+                    'email.email' => 'Email harus valid',
                 ]
             );
         } else {
@@ -148,10 +144,10 @@ class Pengaturan extends Controller
                         'required',
                         'min:8',
                         'string',
-                        'regex:/[A-Z]/',       // must contain at least one uppercase letter
-                        'regex:/[a-z]/',       // must contain at least one lowercase letter
-                        'regex:/[0-9]/',       // must contain at least one digit
-                        'regex:/[@$!%*?&]/'   // must contain a special character
+                        'regex:/[A-Z]/', // must contain at least one uppercase letter
+                        'regex:/[a-z]/', // must contain at least one lowercase letter
+                        'regex:/[0-9]/', // must contain at least one digit
+                        'regex:/[@$!%*?&]/', // must contain a special character
                     ],
                 ],
                 [
@@ -162,11 +158,10 @@ class Pengaturan extends Controller
                     'password.required' => 'Password wajib di isi',
                     'password.min' => 'Password harus mengandung 8 karakter',
                     'password.string' => 'Password harus berupa kalimat',
-                    'password.regex' => 'Password harus mengandung huruf kapital, angka dan karakter'
+                    'password.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
                 ]
             );
         }
-
 
         $pengguna = User::findOrFail(Crypt::decrypt($request->input('userID')));
         $pengguna->name = htmlspecialchars($request->input('namaLengkap'));

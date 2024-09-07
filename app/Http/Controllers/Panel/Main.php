@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Helpers\Waktu;
 use App\Helpers\BerandaUI;
 use App\Helpers\Notifikasi;
+use App\Helpers\Waktu;
+use App\Http\Controllers\Controller;
 use App\Models\LimitTryout;
 use Illuminate\Http\Request;
-use App\Models\PengaturanWeb;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Main extends Controller
 {
@@ -33,7 +32,7 @@ class Main extends Controller
             'sumTryoutPaid' => BerandaUI::sumTryoutPaid(),
             'sumTryoutPerhariPaid' => BerandaUI::sumTryoutPerhariPaid(),
             'sumTryoutPending' => BerandaUI::sumTryoutPending(),
-            'sumTryoutPerhariPending' => BerandaUI::sumTryoutPerhariPending()
+            'sumTryoutPerhariPending' => BerandaUI::sumTryoutPerhariPending(),
         ];
 
         return view('main-panel.home.beranda', $data);
@@ -65,9 +64,9 @@ class Main extends Controller
         $data = [
             'page_title' => 'Pengaturan Web',
             'breadcumb' => 'Pengaturan Situs Web',
-            'pengaturan' => PengaturanWeb::all()->first(),
+            'pengaturan' => \App\Helpers\BerandaUI::web(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.pengaturan.form-pengaturan-situs', $data);
     }
@@ -78,7 +77,7 @@ class Main extends Controller
             'page_title' => 'Banner Carousel',
             'breadcumb' => 'Manajemen Banner',
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.pengaturan.banner-web', $data);
     }
@@ -89,7 +88,7 @@ class Main extends Controller
             'page_title' => 'FAQ',
             'breadcumb' => 'Frequently Asked Questions',
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.pengaturan.faq-web', $data);
     }
@@ -101,7 +100,7 @@ class Main extends Controller
             'breadcumb' => 'Logs Aktivitas Pengguna',
             'logs' => DB::table('logs')->select('logs.*', 'users.name')->leftJoin('users', 'logs.user_id', '=', 'users.id')->get(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.pengaturan.logs-web', $data);
     }
@@ -113,7 +112,7 @@ class Main extends Controller
             'bc1' => 'Profil Pengguna',
             'bc2' => Auth::user()->name,
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.profil.profil-pengguna', $data);
     }

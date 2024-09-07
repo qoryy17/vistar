@@ -2,35 +2,33 @@
 
 namespace App\Http\Controllers\Landing;
 
-use App\Models\User;
-use App\Models\Customer;
 use App\Helpers\RecordLogs;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Customer;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Auth\Events\Registered;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Models\PengaturanWeb;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Password as PasswordReset;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 
 class Autentifikasi extends Controller
 {
     public function signIn()
     {
-        $data = ['web' => PengaturanWeb::all()->first()];
+        $data = ['web' => \App\Helpers\BerandaUI::web()];
         return view('main-web.autentifikasi.signin', $data);
     }
 
     public function signUp()
     {
-        $data = ['web' => PengaturanWeb::all()->first()];
+        $data = ['web' => \App\Helpers\BerandaUI::web()];
         return view('main-web.autentifikasi.signup', $data);
     }
 
@@ -81,18 +79,18 @@ class Autentifikasi extends Controller
                 'confirmed',
                 'min:8',
                 'string',
-                'regex:/[A-Z]/',       // must contain at least one uppercase letter
-                'regex:/[a-z]/',       // must contain at least one lowercase letter
-                'regex:/[0-9]/',       // must contain at least one digit
-                'regex:/[@$!%*?&]/',   // must contain a special character
-                Password::defaults()
+                'regex:/[A-Z]/', // must contain at least one uppercase letter
+                'regex:/[a-z]/', // must contain at least one lowercase letter
+                'regex:/[0-9]/', // must contain at least one digit
+                'regex:/[@$!%*?&]/', // must contain a special character
+                Password::defaults(),
 
             ],
         ], [
             'email.unique' => 'Email sudah digunakan',
             'password.min' => 'Password harus mengandung 8 karakter.',
             'password.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
-            'password.confirmed' => 'Password konfirmasi tidak cocok'
+            'password.confirmed' => 'Password konfirmasi tidak cocok',
         ]);
 
         $customerID = rand(1, 999) . rand(1, 99);
@@ -169,8 +167,8 @@ class Autentifikasi extends Controller
         );
 
         return $status === PasswordReset::RESET_LINK_SENT
-            ? back()->with(['status' => __($status), 'message' => 'Link berhasil dikirim ke email !'])
-            : back()->withErrors(['email' => __($status)]);
+        ? back()->with(['status' => __($status), 'message' => 'Link berhasil dikirim ke email !'])
+        : back()->withErrors(['email' => __($status)]);
     }
 
     public function formResetPassword(Request $request, $token = null)
@@ -190,24 +188,24 @@ class Autentifikasi extends Controller
                 'confirmed',
                 'min:8',
                 'string',
-                'regex:/[A-Z]/',       // must contain at least one uppercase letter
-                'regex:/[a-z]/',       // must contain at least one lowercase letter
-                'regex:/[0-9]/',       // must contain at least one digit
-                'regex:/[@$!%*?&]/',   // must contain a special character
-                Password::defaults()
+                'regex:/[A-Z]/', // must contain at least one uppercase letter
+                'regex:/[a-z]/', // must contain at least one lowercase letter
+                'regex:/[0-9]/', // must contain at least one digit
+                'regex:/[@$!%*?&]/', // must contain a special character
+                Password::defaults(),
 
             ],
         ], [
             'password.min' => 'Password harus mengandung 8 karakter.',
             'password.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
-            'password.confirmed' => 'Password konfirmasi tidak cocok'
+            'password.confirmed' => 'Password konfirmasi tidak cocok',
         ]);
 
         $status = PasswordReset::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
-                    'password' => Hash::make($password)
+                    'password' => Hash::make($password),
                 ])->save();
 
                 Auth::login($user);
@@ -215,7 +213,7 @@ class Autentifikasi extends Controller
         );
 
         return $status === PasswordReset::PASSWORD_RESET
-            ? redirect()->route('mainweb.index')->with('status', __($status))
-            : back()->with('error', 'Formulir tidak berlaku silahkan kirim ulang email !')->withErrors(['email' => [__($status)]]);
+        ? redirect()->route('mainweb.index')->with('status', __($status))
+        : back()->with('error', 'Formulir tidak berlaku silahkan kirim ulang email !')->withErrors(['email' => [__($status)]]);
     }
 }

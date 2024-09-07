@@ -2,17 +2,18 @@
 
 namespace App\Helpers;
 
-use App\Models\Payment;
 use App\Models\Customer;
 use App\Models\OrderTryout;
+use App\Models\Payment;
 use App\Models\PengaturanWeb;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class BerandaUI
 {
     public static function customerTerdaftar()
     {
-        return Customer::all()->count();
+        return Customer::count();
     }
 
     public static function customerTerdaftarPerhari()
@@ -22,7 +23,7 @@ class BerandaUI
 
     public static function tryoutTerjual()
     {
-        return OrderTryout::all()->where('status_order', 'paid')->count();
+        return OrderTryout::where('status_order', 'paid')->count();
     }
 
     public static function tryoutTerjualPerhari()
@@ -63,7 +64,9 @@ class BerandaUI
 
     public static function web()
     {
-        return PengaturanWeb::all()->first();
+        return Cache::remember('app:web_setting', 7 * 24 * 60 * 60, function () {
+            return PengaturanWeb::first();
+        });
     }
 
     public static function countPenjualan($kategori, $tahun)

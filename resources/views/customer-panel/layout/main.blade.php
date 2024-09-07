@@ -74,6 +74,9 @@
                                         <p class="main-notification-text text-bold">{{ $customer->pendidikan }} -
                                             {{ $customer->jurusan }}</p>
                                     </div>
+                                    <a class="dropdown-item" href="{{ route('mainweb.profil-saya') }}">
+                                        <i class="fe fe-user"></i> Profile
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('site.pembelian') }}">
                                         <i class="fe fe-shopping-cart"></i> Pembelian
                                     </a>

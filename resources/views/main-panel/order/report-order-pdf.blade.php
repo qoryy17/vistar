@@ -1,7 +1,6 @@
- @php
-     use App\Models\PengaturanWeb;
-     $web = PengaturanWeb::all()->first();
- @endphp
+@php
+    $web = \App\Helpers\BerandaUI::web();
+@endphp
  <!DOCTYPE html>
  <html lang="id">
 

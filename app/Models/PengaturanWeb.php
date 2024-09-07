@@ -25,10 +25,10 @@ class PengaturanWeb extends Model
         'logo',
         'meta_author',
         'meta_keyword',
-        'meta_description'
+        'meta_description',
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 }

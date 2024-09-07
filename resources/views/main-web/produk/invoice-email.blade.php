@@ -1,11 +1,9 @@
+@php
+    $web = \App\Helpers\BerandaUI::web();
+@endphp
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
-    @php
-        use App\Models\PengaturanWeb;
-        $web = PengaturanWeb::all()->first();
-    @endphp
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
