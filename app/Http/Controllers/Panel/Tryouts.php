@@ -295,10 +295,11 @@ class Tryouts extends Controller
             'kode_soal' => $id,
             'soal' => $soal,
             'formParam' => $formParam,
-            'klasifikasi_soal' => KlasifikasiSoal::whereNotIn('aktif', 'T'),
+            'klasifikasi_soal' => KlasifikasiSoal::whereNotIn('aktif', ['T'])->get(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
         ];
+
         return view('main-panel.tryout.form-data-soal-tryout', $data);
     }
 
