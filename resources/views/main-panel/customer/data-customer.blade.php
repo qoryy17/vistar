@@ -102,7 +102,7 @@
                                             @endphp
                                             @foreach ($customer as $row)
                                                 <tr>
-                                                    <td>1</td>
+                                                    <td>{{ $no }}</td>
                                                     <td>
                                                         <h5 style="color: #0075B8; ">{{ $row['nama_lengkap'] }}
                                                             ({{ $row['email'] }})
