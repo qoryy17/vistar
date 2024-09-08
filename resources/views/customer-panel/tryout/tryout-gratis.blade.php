@@ -70,7 +70,7 @@
                                                 <div class="text-muted tx-12">
                                                     @if ($isFinish)
                                                         <span>
-                                                            <i class="fa fa-info"></i>
+                                                            <i class="fa fa-info-circle"></i> &nbsp;
                                                             Anda sudah mengerjakan Ujian
                                                         </span>
                                                     @else
