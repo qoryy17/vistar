@@ -175,12 +175,9 @@
                                                         <td style="vertical-align: top;">{{ $no }}</td>
                                                         <td>
                                                             @if ($examResult && $tryout)
-                                                                <a href="{{ route('ujian.hasil', ['id' => Crypt::encrypt($row->id)]) }}"
-                                                                    title="Klik untuk melihat detil">
-                                                                    <h5 style="color: #0075B8;">
-                                                                        {{ $tryoutName }} - {{ $row->id }}
-                                                                    </h5>
-                                                                </a>
+                                                                <h5 style="color: #0075B8;">
+                                                                    {{ $tryoutName }} - {{ $row->id }}
+                                                                </h5>
                                                             @else
                                                                 <h5 style="color: #0075B8;">
                                                                     {{ $tryoutName }} - {{ $row->id }}
@@ -238,17 +235,6 @@
                                                             </table>
 
                                                             @if ($examResult)
-                                                                <div class="row mt-2 mb-2"
-                                                                    style="white-space: normal; text-align:justify;">
-                                                                    @foreach ($examResult->passing_grade as $passing)
-                                                                        <div class="col-md-3">
-                                                                            <span class="text-primary">Total Nilai :
-                                                                                ({{ $passing->alias }})
-                                                                            </span> : <b>{{ $passing->total_nilai }}</b>
-                                                                        </div>
-                                                                    @endforeach
-                                                                </div>
-                                                                <hr>
 
                                                                 <div class="mt-1"
                                                                     style="white-space: normal; text-align:justify;">
@@ -395,7 +381,7 @@
                                                         </td>
                                                         <td style="text-align: center;">
                                                             @if ($testimoni)
-                                                                <h1>{{ Number::format($examResult->total_nilai, 3) }}</h1>
+                                                                <h1>{{ $examResult->total_nilai }}</h1>
                                                                 Keterangan :
                                                                 <span
                                                                     class="badge @if ($examResult->keterangan == 'Gagal') bg-danger @else bg-success @endif">
