@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Cron;
 
 use Carbon\Carbon;
 use App\Models\Logs;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
