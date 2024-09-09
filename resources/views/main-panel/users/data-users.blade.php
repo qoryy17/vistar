@@ -49,7 +49,7 @@
                                             @php
                                                 $no = 1;
                                             @endphp
-                                            @foreach ($users as $row)
+                                            @foreach ($users->get() as $row)
                                                 <tr>
                                                     <td style="vertical-align: top;">{{ $no }} </td>
                                                     <td style="vertical-align: top;">
