@@ -73,8 +73,7 @@
                             <script>
                                 document.write(new Date().getFullYear())
                             </script> Design & Develop By <a href="https://vistar.id/" target="_blank"
-                                class="text-reset">Vi Star
-                                Indonesia</a>.
+                                class="text-reset">{{ $web->nama_bisnis }}</a>.
                         </p>
                     </div>
                 </div><!--end col-->
