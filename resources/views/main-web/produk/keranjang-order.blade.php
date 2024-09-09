@@ -221,7 +221,7 @@
               </div>
               <div class="row mt-5">
                   <div class="col-lg-12 text-center">
-                      <a href="" class="btn btn-pills btn-soft-primary">
+                      <a href="{{ route('mainweb.produk-berbayar') }}" class="btn btn-pills btn-soft-primary">
                           Lihat Semua Produk <i class="uil uil-arrow-right"></i>
                       </a>
                   </div>
