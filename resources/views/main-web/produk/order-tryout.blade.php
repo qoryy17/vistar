@@ -95,8 +95,10 @@
       </section><!--end section-->
       <!-- End -->
       <script src="{{ url('resources/web/dist/assets/js/jquery-3.7.1.min.js') }}"></script>
-      <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+      <script
+          src="{{ !config('services.midtrans.is_production') ? 'https://app.sandbox.midtrans.com/snap/snap.js' : 'https://app.midtrans.com/snap/snap.js' }}"
           data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+
       <script type="text/javascript">
           // document.getElementById('buttonReferral').addEventListener('click', function() {
           //     const referralCodeInput = document.getElementById('kodeReferral');
