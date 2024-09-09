@@ -472,14 +472,6 @@ class SimpanHasilUjianJob implements ShouldQueue
                     'total_nilai' => $totalNilaiTKP,
                     'created_at' => now(),
                     'updated_at' => now()
-                ],
-                [
-                    'benar' =>  array_sum($totalBenar),
-                    'benar' => array_sum($totalSalah),
-                    'terisi' => $totalSoalTerisi,
-                    'terjawab' => $totalSoalTersedia - $totalSoalTerisi,
-                    'score' => $hasilScoreUjian,
-                    'keterangan' => $keterangan
                 ]
             ];
 

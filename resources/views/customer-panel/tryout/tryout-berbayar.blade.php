@@ -366,7 +366,7 @@
                                                     </td>
                                                     <td style="text-align: center;">
                                                         @if ($testimoni)
-                                                            <h1>{{ Number::format($examResult->total_nilai, 3) }}</h1>
+                                                            <h1>{{ $examResult->total_nilai }}</h1>
                                                             Keterangan :
                                                             <span
                                                                 class="badge @if ($examResult->keterangan == 'Gagal') bg-danger @else bg-success @endif">
