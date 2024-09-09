@@ -9,7 +9,9 @@
     <div class="main-header side-header hor-header">
         <div class="main-container container">
             <div class="main-header-left">
-                <a class="main-header-menu-icon" href="javascript:void(0)" id="mainSidebarToggle"><span></span></a>
+                @if ($showSideMenu ?? true)
+                    <a class="main-header-menu-icon" href="javascript:void(0)" id="mainSidebarToggle"><span></span></a>
+                @endif
                 <div class="hor-logo">
                     <a class="main-logo" href="{{ route('mainweb.index') }}">
                         <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
@@ -97,65 +99,67 @@
     </div>
     <!-- End Main Header-->
 
-    <!-- Sidemenu -->
-    <div class="sticky">
-        <div class="main-menu main-sidebar main-sidebar-sticky side-menu">
-            <div class="main-sidebar-header main-container-1 active">
-                <div class="sidemenu-logo">
-                    <a class="main-logo" href="{{ route('site.main') }}">
-                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="header-brand-img desktop-logo" alt="logo">
-                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="header-brand-img icon-logo" alt="logo">
-                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="header-brand-img desktop-logo theme-logo" alt="logo">
-                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="header-brand-img icon-logo theme-logo" alt="logo">
-                    </a>
-                </div>
-                <div class="main-sidebar-body main-body-1">
-                    <div class="slide-left disabled" id="slide-left"><i class="fe fe-chevron-left"></i></div>
-                    <ul class="menu-nav nav">
-                        <li class="nav-header"><span class="nav-label">Dashboard</span></li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.main') }}">
-                                <span class="shape1"></span>
-                                <span class="shape2"></span>
-                                <i class="ti-home sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Beranda</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.pembelian') }}">
-                                <span class="shape1"></span>
-                                <span class="shape2"></span>
-                                <i class="ti-shopping-cart sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Pembelian</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.tryout-berbayar') }}">
-                                <span class="shape1"></span>
-                                <span class="shape2"></span>
-                                <i class="ti-desktop sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Tryout Berbayar</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('site.tryout-gratis') }}">
-                                <span class="shape1"></span>
-                                <span class="shape2"></span>
-                                <i class="ti-desktop sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Tryout Gratis</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="slide-right" id="slide-right"><i class="fe fe-chevron-right"></i></div>
+    @if ($showSideMenu ?? true)
+        <!-- Sidemenu -->
+        <div class="sticky">
+            <div class="main-menu main-sidebar main-sidebar-sticky side-menu">
+                <div class="main-sidebar-header main-container-1 active">
+                    <div class="sidemenu-logo">
+                        <a class="main-logo" href="{{ route('site.main') }}">
+                            <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
+                                class="header-brand-img desktop-logo" alt="logo">
+                            <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
+                                class="header-brand-img icon-logo" alt="logo">
+                            <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
+                                class="header-brand-img desktop-logo theme-logo" alt="logo">
+                            <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
+                                class="header-brand-img icon-logo theme-logo" alt="logo">
+                        </a>
+                    </div>
+                    <div class="main-sidebar-body main-body-1">
+                        <div class="slide-left disabled" id="slide-left"><i class="fe fe-chevron-left"></i></div>
+                        <ul class="menu-nav nav">
+                            <li class="nav-header"><span class="nav-label">Dashboard</span></li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('site.main') }}">
+                                    <span class="shape1"></span>
+                                    <span class="shape2"></span>
+                                    <i class="ti-home sidemenu-icon menu-icon "></i>
+                                    <span class="sidemenu-label">Beranda</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('site.pembelian') }}">
+                                    <span class="shape1"></span>
+                                    <span class="shape2"></span>
+                                    <i class="ti-shopping-cart sidemenu-icon menu-icon "></i>
+                                    <span class="sidemenu-label">Pembelian</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('site.tryout-berbayar') }}">
+                                    <span class="shape1"></span>
+                                    <span class="shape2"></span>
+                                    <i class="ti-desktop sidemenu-icon menu-icon "></i>
+                                    <span class="sidemenu-label">Tryout Berbayar</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('site.tryout-gratis') }}">
+                                    <span class="shape1"></span>
+                                    <span class="shape2"></span>
+                                    <i class="ti-desktop sidemenu-icon menu-icon "></i>
+                                    <span class="sidemenu-label">Tryout Gratis</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="slide-right" id="slide-right"><i class="fe fe-chevron-right"></i></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- End Sidemenu -->
+        <!-- End Sidemenu -->
+    @endif
 
     <!-- Main Content-->
 

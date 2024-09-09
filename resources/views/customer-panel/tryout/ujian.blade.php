@@ -1,4 +1,4 @@
-@extends('customer-panel.layout.main')
+@extends('customer-panel.layout.main', ['showSideMenu' => false])
 @section('title', $titlePage)
 @section('content')
     <style>
@@ -76,8 +76,19 @@
                                     <i class="fa fa-info-circle"></i><span id="flash-info"></span>
                                 </div>
 
-                                <div class="" style="position: absolute; top: 10px; right: 10px;">
-                                    <a href="javascript:void(0)" class="btn btn-block btn-sm btn-primary btn-web"
+                                <div class="d-flex flex-wrap gap-2 align-items-center justify-content-center">
+                                    <div class="flex-1">
+                                        <div class="progress"
+                                            style="min-width: 200px;height: 20px !important;font-weight: bold;">
+                                            <div id="progress-bar-answered"
+                                                class="progress-bar progress-bar-striped progress-bar-animated"
+                                                aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"
+                                                style="width: 0%;height: 20px !important;">
+                                                -
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="javascript:void(0)" class="btn btn-sm btn-primary btn-web"
                                         data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
                                         <i class="fe fe-menu header-icons"></i>
                                         Daftar Soal
@@ -141,22 +152,6 @@
                                             </button>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- Total soal terjawab dan belum terjawab-->
-                                <div class="d-flex mt-4 text-normal gap-2 justify-content-between flex-1">
-                                    <h6 class="d-flex gap-1">
-                                        <span>Terjawab :</span>
-                                        <div id="total-answered-questions">
-                                            <p class="placeholder-glow"><span class="placeholder col-3"></span></p>
-                                        </div>
-                                    </h6>
-
-                                    <h6 class="d-flex gap-1">
-                                        <span>Belum Terjawab :</span>
-                                        <div id="total-unanswered-questions">
-                                            <p class="placeholder-glow"><span class="placeholder col-3"></span></p>
-                                        </div>
-                                    </h6>
                                 </div>
                             </div>
                         </div>
@@ -482,13 +477,14 @@
             options.forEach(function(option) {
                 const optionDiv = document.createElement('div');
                 optionDiv.classList.add('d-flex');
-                optionDiv.classList.add('align-items-center');
+                optionDiv.classList.add('align-items-start');
                 optionDiv.classList.add('gap-1');
                 optionDiv.classList.add('p-2');
 
                 const optionId = 'option-' + optionName;
                 const optionInput = document.createElement('input');
                 optionInput.name = 'jawaban'
+                optionInput.style = 'margin-top: 5px;';
                 optionInput.type = 'radio'
                 optionInput.id = optionId
                 optionInput.value = optionName
@@ -592,11 +588,11 @@
 
             });
 
-            const totalAnsweredQuestions = getElement('total-answered-questions');
-            const totalUnansweredQuestions = getElement('total-unanswered-questions');
-
-            totalAnsweredQuestions.innerHTML = savedQuestionsTmp.length
-            totalUnansweredQuestions.innerHTML = questions.length - savedQuestionsTmp.length
+            const progressBarAnswered = getElement('progress-bar-answered');
+            const percentage = savedQuestionsTmp.length / questions.length * 100;
+            progressBarAnswered.setAttribute('aria-valuenow', percentage.toFixed(2));
+            progressBarAnswered.style = `width: ${percentage.toFixed(2)}%;height: 20px !important;`;
+            progressBarAnswered.innerHTML = `${savedQuestionsTmp.length} / ${questions.length}`;
         }
 
         function getElement(id, isRequired = true) {
