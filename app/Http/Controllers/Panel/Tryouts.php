@@ -541,7 +541,7 @@ class Tryouts extends Controller
 
 
         if ($request->filled('kategori')) {
-            $hasilUjian->where('kategori_produk.judul', $request->kategori);
+            $hasilUjian->where('kategori_produk.judul', $request->kategori)->orderBy('ujian.waktu_mulai', 'DESC');
         }
 
         if ($request->filled('jenisTryout')) {
@@ -572,7 +572,7 @@ class Tryouts extends Controller
                     ->leftJoin('customer', 'order_tryout.customer_id', '=', 'customer.id')
                     ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
                     ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
-                    ->where('ujian.status_ujian', 'Selesai');
+                    ->where('ujian.status_ujian', 'Selesai')->orderBy('ujian.waktu_mulai', 'DESC');
             } else {
                 $hasilUjian = DB::table('hasil_ujian')
                     ->select(
@@ -600,12 +600,12 @@ class Tryouts extends Controller
                     ->leftJoin('customer', 'limit_tryout.customer_id', '=', 'customer.id')
                     ->leftJoin('produk_tryout', 'limit_tryout.produk_tryout_id', '=', 'produk_tryout.id')
                     ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
-                    ->where('ujian.status_ujian', 'Selesai');
+                    ->where('ujian.status_ujian', 'Selesai')->orderBy('ujian.waktu_mulai', 'DESC');
             }
         }
 
         if ($request->filled('tahun')) {
-            $hasilUjian->whereYear('ujian.waktu_mulai', $request->tahun);
+            $hasilUjian->whereYear('ujian.waktu_mulai', $request->tahun)->orderBy('ujian.waktu_mulai', 'DESC');
         }
 
         $hasilUjian = $hasilUjian->paginate(10);
