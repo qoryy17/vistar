@@ -118,7 +118,7 @@
                                                         <select class="form-control" name="kategori" id="Kategori"
                                                             required>
                                                             <option value="">-- Pilih Kategori --</option>
-                                                            @foreach ($kategori as $kategoriProduk)
+                                                            @foreach ($kategori->get() as $kategoriProduk)
                                                                 @if ($tryout)
                                                                     @if ($tryout->kategori_produk_id == $kategoriProduk->id)
                                                                         <option selected value="{{ $kategoriProduk->id }}">
