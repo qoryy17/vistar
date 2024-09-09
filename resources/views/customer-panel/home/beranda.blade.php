@@ -27,11 +27,9 @@
                     <div class="col-lg-8">
 
                         <div class="alert alert-warning" role="alert">
-                            <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <strong>Informasi !</strong> Dapatkan akses menyeluruh untuk paket tryout CPNS, PPPK, dan
-                            Kedinasan dengan hanya sekali beli !
+                            <marquee> <strong>Informasi !</strong> Dapatkan akses menyeluruh untuk paket tryout CPNS, PPPK,
+                                dan Kedinasan dengan hanya sekali beli !
+                            </marquee>
                         </div>
                         @php
                             $no = 1;
