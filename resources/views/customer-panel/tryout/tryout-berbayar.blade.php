@@ -140,9 +140,10 @@
                                                         $testimoni = $examResult?->testimoni;
 
                                                         $tryout = $row->order?->tryout;
+                                                        $tryoutId = $tryout?->id;
 
                                                         $tryoutName =
-                                                            $tryout?->nama_tryout ?? 'Tryout ID: ' . $row->tryout?->id;
+                                                            $tryout?->nama_tryout ?? 'Tryout ID: ' . $tryoutId;
                                                     @endphp
                                                     <tr>
                                                         <td style="vertical-align: top;">{{ $no }}</td>
@@ -225,6 +226,19 @@
 
                                                                 <div class="mt-1"
                                                                     style="white-space: normal; text-align:justify;">
+                                                                    @php
+                                                                        $oldTestimoni = null;
+                                                                        $oldRating = null;
+                                                                        if (
+                                                                            strval(old('exam_result_id')) ===
+                                                                                strval($examResult->id) &&
+                                                                            strval(old('product_id')) ===
+                                                                                strval($tryoutId)
+                                                                        ) {
+                                                                            $oldTestimoni = old('testimoni');
+                                                                            $oldRating = old('rating');
+                                                                        }
+                                                                    @endphp
                                                                     @if ($testimoni)
                                                                         Testimoni : {{ $testimoni->testimoni }}
                                                                         <br>
@@ -236,17 +250,30 @@
 
                                                                         @if ($testimoni->publish !== 'Y')
                                                                             <br>
+                                                                            @php
+                                                                                $formattedTestimoni = str_replace(
+                                                                                    "`",
+                                                                                    "\`",
+                                                                                    $oldTestimoni ??
+                                                                                        $testimoni->testimoni,
+                                                                                );
+                                                                            @endphp
                                                                             <button class="btn btn-primary btn-sm mt-2"
-                                                                                data-bs-target="#modalTestimoni{{ $no }}"
-                                                                                data-bs-toggle="modal">
+                                                                                onclick="showModalTestimoni({{ $examResult->id }}, {{ $tryoutId }}, `{{ $formattedTestimoni }}`, {{ $oldRating ?? ($testimoni->rating ?? 5) }})">
                                                                                 <i class="fa fa-child"></i>
                                                                                 Ubah Testimoni
                                                                             </button>
                                                                         @endif
                                                                     @else
+                                                                        @php
+                                                                            $formattedTestimoni = str_replace(
+                                                                                "`",
+                                                                                "\`",
+                                                                                $oldTestimoni,
+                                                                            );
+                                                                        @endphp
                                                                         <button class="btn btn-primary btn-sm mb-2"
-                                                                            data-bs-target="#modalTestimoni{{ $no }}"
-                                                                            data-bs-toggle="modal">
+                                                                            onclick="showModalTestimoni({{ $examResult->id }}, {{ $tryoutId }}, `{{ $formattedTestimoni }}`, {{ $oldRating ?? 5 }})">
                                                                             <i class="fa fa-child"></i> Berikan Testimoni
                                                                         </button><br>
                                                                         <span class="badge bg-warning">
@@ -254,116 +281,6 @@
                                                                         </span>
                                                                     @endif
                                                                 </div>
-
-                                                                <!-- Change Testimoni modal -->
-                                                                <div class="modal fade"
-                                                                    id="modalTestimoni{{ $no }}">
-                                                                    <div class="modal-dialog">
-                                                                        <div class="modal-content modal-content-demo">
-                                                                            <form
-                                                                                action="{{ route('ujian.simpan-testimoni') }}"
-                                                                                method="POST">
-                                                                                @csrf
-                                                                                @method('POST')
-
-                                                                                <div class="modal-header">
-                                                                                    <h6 class="modal-title"><i
-                                                                                            class="fa fa-testimoni"></i>
-                                                                                        Berikan Testimoni Hasil Ujian
-                                                                                        Anda !
-                                                                                    </h6><button aria-label="Close"
-                                                                                        class="btn-close"
-                                                                                        data-bs-dismiss="modal"
-                                                                                        type="button"></button>
-                                                                                </div>
-
-                                                                                <div class="modal-body">
-
-                                                                                    <div class="form-group">
-                                                                                        <input type="hidden"
-                                                                                            class="form-control" required
-                                                                                            name="exam_result_id"
-                                                                                            value="{{ $examResult->id }}"
-                                                                                            readonly>
-                                                                                    </div>
-                                                                                    <div class="form-group">
-                                                                                        <input type="hidden"
-                                                                                            class="form-control" required
-                                                                                            name="product_id"
-                                                                                            value="{{ $tryout?->id }}"
-                                                                                            readonly>
-                                                                                    </div>
-                                                                                    <div class="form-group">
-                                                                                        <textarea name="testimoni" id="testimoni" rows="5" class="form-control" required
-                                                                                            placeholder="Masukan testimoni anda...">{{ $testimoni->testimoni ?? '' }}</textarea>
-                                                                                        @error('testimoni')
-                                                                                            <small
-                                                                                                class="text-danger">{{ $message }}</small>
-                                                                                        @enderror
-                                                                                    </div>
-                                                                                    <div class="form-group">
-                                                                                        <select name="rating"
-                                                                                            class="form-control"
-                                                                                            id="rating" required>
-                                                                                            <option value="">
-                                                                                                Pilih
-                                                                                                Rating Kepuasan</option>
-                                                                                            <option value="1"
-                                                                                                @if ($testimoni) @if ($testimoni->rating == 1)
-                                                                                        selected @endif
-                                                                                                @endif>
-                                                                                                Sangat Tidak Puas
-                                                                                            </option>
-                                                                                            <option value="2"
-                                                                                                @if ($testimoni) @if ($testimoni->rating == 2)
-                                                                                        selected @endif
-                                                                                                @endif>
-                                                                                                Tidak Puas
-                                                                                            </option>
-                                                                                            <option value="3"
-                                                                                                @if ($testimoni) @if ($testimoni->rating == 3)
-                                                                                        selected @endif
-                                                                                                @endif>
-                                                                                                Cukup Puas
-                                                                                            </option>
-                                                                                            <option value="4"
-                                                                                                @if ($testimoni) @if ($testimoni->rating == 4)
-                                                                                        selected @endif
-                                                                                                @endif>
-                                                                                                Puas
-                                                                                            </option>
-                                                                                            <option value="5"
-                                                                                                @if ($testimoni) @if ($testimoni->rating == 5)
-                                                                                        selected @endif
-                                                                                                @endif>
-                                                                                                Sangat Puas
-                                                                                            </option>
-                                                                                        </select>
-                                                                                        @error('rating')
-                                                                                            <small
-                                                                                                class="text-danger">{{ $message }}</small>
-                                                                                        @enderror
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                <div class="modal-footer">
-                                                                                    <button
-                                                                                        class="btn btn-sm ripple btn-default btn-web"
-                                                                                        type="submit"><i
-                                                                                            class="fa fa-save"></i>
-                                                                                        Simpan</button>
-                                                                                    <button
-                                                                                        class="btn btn-sm ripple btn-danger"
-                                                                                        data-bs-dismiss="modal"
-                                                                                        type="button"><i
-                                                                                            class="fa fa-times"></i>
-                                                                                        Tutup</button>
-                                                                                </div>
-                                                                            </form>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!-- End Change Testimoni modal -->
                                                             @endif
                                                         </td>
                                                         <td style="text-align: center;">
@@ -395,8 +312,8 @@
                 @else
                     <div class="row">
                         <div class="col-md-4 d-none d-sm-block">
-                            <img width="300px" class="img img-thubmnail"
-                                src="{{ asset('resources/images/model-5.png') }}" alt="">
+                            <img width="300px" class="img img-thubmnail" src="{{ asset('resources/images/model-5.png') }}"
+                                alt="">
                         </div>
                         <div class="col-md-8" style="vertical-align: middle;">
                             <div class="card custom-card">
@@ -428,8 +345,80 @@
                     </div>
                 @endif
 
+                <!-- Change Testimoni modal -->
+                <div class="modal fade" id="modalTestimoni">
+                    <div class="modal-dialog">
+                        <div class="modal-content modal-content-demo">
+                            <form action="{{ route('ujian.simpan-testimoni') }}" method="POST">
+                                @csrf
+                                @method('POST')
 
+                                <div class="modal-header">
+                                    <h6 class="modal-title">
+                                        <i class="fa fa-testimoni"></i>
+                                        Berikan Testimoni Hasil Ujian Anda !
+                                    </h6>
+                                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button">
+                                    </button>
+                                </div>
+
+                                <div class="modal-body">
+
+                                    <div class="form-group">
+                                        <input type="hidden" class="form-control" required name="exam_result_id"
+                                            value="" readonly />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="hidden" class="form-control" required name="product_id"
+                                            value="" readonly />
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea name="testimoni" id="testimoni" rows="5" class="form-control" required
+                                            placeholder="Masukan testimoni anda...">{{ $testimoni->testimoni ?? '' }}</textarea>
+                                        @error('testimoni')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="rating" class="form-control" id="rating" required>
+                                            <option value="">Pilih Rating Kepuasan</option>
+                                            <option value="1">Sangat Tidak Puas</option>
+                                            <option value="2">Tidak Puas</option>
+                                            <option value="3">Cukup Puas</option>
+                                            <option value="4">Puas</option>
+                                            <option value="5">Sangat Puas</option>
+                                        </select>
+                                        @error('rating')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn btn-sm ripple btn-default btn-web" type="submit">
+                                        <i class="fa fa-save"></i>
+                                        Simpan
+                                    </button>
+                                    <button class="btn btn-sm ripple btn-danger" data-bs-dismiss="modal" type="button">
+                                        <i class="fa fa-times"></i>
+                                        Tutup
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Change Testimoni modal -->
             </div>
         </div>
     </div>
+    <script>
+        function showModalTestimoni(examResultId, productId, testimoni = null, rating = null) {
+            $('#modalTestimoni').modal('show');
+            $('[name="exam_result_id"]').val(examResultId);
+            $('[name="product_id"]').val(productId);
+            $('[name="testimoni"]').val(testimoni);
+            $('[name="rating"]').val(rating);
+        }
+    </script>
 @endsection

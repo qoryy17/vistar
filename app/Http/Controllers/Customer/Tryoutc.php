@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Models\Ujian;
-use App\Models\Customer;
-use App\Models\SoalUjian;
-use App\Models\Testimoni;
-use App\Models\HasilUjian;
 use App\Helpers\RecordLogs;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Customer\TestimoniRequest;
+use App\Jobs\SimpanHasilUjianJob;
+use App\Models\Customer;
+use App\Models\HasilUjian;
 use App\Models\LimitTryout;
 use App\Models\OrderTryout;
 use App\Models\ProdukTryout;
-use Illuminate\Http\Request;
 use App\Models\ProgressUjian;
-use App\Jobs\SimpanHasilUjianJob;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Models\SoalUjian;
+use App\Models\Testimoni;
+use App\Models\Ujian;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\Customer\TestimoniRequest;
 
 class Tryoutc extends Controller
 {
@@ -536,11 +536,13 @@ class Tryoutc extends Controller
     {
         $request->validated();
 
-        $hasilUjianId = $request->input('exam_result_id');
+        $examResultId = $request->input('exam_result_id');
         $productId = $request->input('product_id');
+        $testimoni = strip_tags($request->input('testimoni'));
+        $rating = strip_tags($request->input('rating'));
 
         // Cek apakah sudah memberikan testimoni
-        $checkTestimoni = Testimoni::where('hasil_ujian_id', $hasilUjianId)->first();
+        $checkTestimoni = Testimoni::where('hasil_ujian_id', $examResultId)->first();
 
         $saveTestimoni = null;
         if ($checkTestimoni) {
@@ -550,16 +552,16 @@ class Tryoutc extends Controller
             }
 
             $saveTestimoni = $checkTestimoni->update([
-                'testimoni' => $request->input('testimoni'),
-                'rating' => $request->input('rating'),
+                'testimoni' => $testimoni,
+                'rating' => $rating,
             ]);
         } else {
             $saveTestimoni = Testimoni::create([
                 'customer_id' => Auth::user()->customer_id,
-                'hasil_ujian_id' => $hasilUjianId,
+                'hasil_ujian_id' => $examResultId,
                 'produk_tryout_id' => $productId,
-                'testimoni' => $request->input('testimoni'),
-                'rating' => $request->input('rating'),
+                'testimoni' => $testimoni,
+                'rating' => $rating,
             ]);
         }
 
