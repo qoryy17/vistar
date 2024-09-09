@@ -29,9 +29,14 @@ class SoalRequest extends FormRequest
             'jawabanB' => ['required'],
             'jawabanC' => ['required'],
             'jawabanD' => ['required'],
+            'jawabanE' => ['required'],
+            'poin_a' => ['required'],
+            'poin_b' => ['required'],
+            'poin_c' => ['required'],
+            'poin_d' => ['required'],
+            'poin_e' => ['required'],
             'kunciJawaban' => ['required'],
             'reviewPembahasan' => ['required'],
-            'poin' => ['required']
         ];
     }
 
@@ -47,9 +52,14 @@ class SoalRequest extends FormRequest
             'jawabanB.required' => 'Jawaban B wajib di isi',
             'jawabanC.required' => 'Jawaban C wajib di isi',
             'jawabanD.required' => 'Jawaban D wajib di isi',
+            'jawabanE.required' => 'Jawaban E wajib di isi',
+            'poin_a.required' => 'Poin A wajib di isi',
+            'poin_b.required' => 'Poin B wajib di isi',
+            'poin_c.required' => 'Poin C wajib di isi',
+            'poin_d.required' => 'Poin D wajib di isi',
+            'poin_e.required' => 'Poin E wajib di isi',
             'kunciJawaban.required' => 'Kunci jawaban wajib di isi',
             'reviewPembahasan.required' => 'Review pembahasan wajib di isi',
-            'poin.required' => 'Poin wajib di isi',
         ];
     }
 }

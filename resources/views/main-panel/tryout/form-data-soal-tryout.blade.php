@@ -164,6 +164,19 @@
                                                         </div>
                                                         <div class="tab-pane" id="jawabanA">
                                                             <div class="form-group">
+                                                                <label for="poin_a">Poin A
+                                                                    <span class="text-danger">*</span>
+                                                                </label>
+                                                                <input type="text" id="poin_a" name="poin_a"
+                                                                    required
+                                                                    value="{{ $soal ? $row->poin_a : old('poin_a') }}"
+                                                                    class="form-control" autocomplete="off">
+                                                                @error('poin_a')
+                                                                    <small class="text-danger">*
+                                                                        {{ $message }}</small>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="form-group">
                                                                 <label for="JawabanA">Jawaban A <span
                                                                         class="text-danger">*</span></label>
                                                                 <textarea class="contentJawabanA" id="JawabanA" required name="jawabanA">{{ $soal ? $row->jawaban_a : old('jawabanA') }}</textarea>
@@ -174,6 +187,19 @@
                                                             </div>
                                                         </div>
                                                         <div class="tab-pane" id="jawabanB">
+                                                            <div class="form-group">
+                                                                <label for="poin_b">Poin B
+                                                                    <span class="text-danger">*</span>
+                                                                </label>
+                                                                <input type="text" id="poin_b" name="poin_b"
+                                                                    required
+                                                                    value="{{ $soal ? $row->poin_b : old('poin_b') }}"
+                                                                    class="form-control" autocomplete="off">
+                                                                @error('poin_b')
+                                                                    <small class="text-danger">*
+                                                                        {{ $message }}</small>
+                                                                @enderror
+                                                            </div>
                                                             <div class="form-group">
                                                                 <label for="JawabanB">Jawaban B <span
                                                                         class="text-danger">*</span></label>
@@ -186,6 +212,19 @@
                                                         </div>
                                                         <div class="tab-pane" id="jawabanC">
                                                             <div class="form-group">
+                                                                <label for="poin_c">Poin C
+                                                                    <span class="text-danger">*</span>
+                                                                </label>
+                                                                <input type="text" id="poin_c" name="poin_c"
+                                                                    required
+                                                                    value="{{ $soal ? $row->poin_c : old('poin_c') }}"
+                                                                    class="form-control" autocomplete="off">
+                                                                @error('poin_c')
+                                                                    <small class="text-danger">*
+                                                                        {{ $message }}</small>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="form-group">
                                                                 <label for="JawabanC">Jawaban C <span
                                                                         class="text-danger">*</span></label>
                                                                 <textarea class="contentJawabanC" id="JawabanC" required name="jawabanC">{{ $soal ? $row->jawaban_c : old('jawabanC') }}</textarea>
@@ -196,6 +235,19 @@
                                                             </div>
                                                         </div>
                                                         <div class="tab-pane" id="jawabanD">
+                                                            <div class="form-group">
+                                                                <label for="poin_d">Poin D
+                                                                    <span class="text-danger">*</span>
+                                                                </label>
+                                                                <input type="text" id="poin_d" name="poin_d"
+                                                                    required
+                                                                    value="{{ $soal ? $row->poin_d : old('poin_d') }}"
+                                                                    class="form-control" autocomplete="off">
+                                                                @error('poin_d')
+                                                                    <small class="text-danger">*
+                                                                        {{ $message }}</small>
+                                                                @enderror
+                                                            </div>
                                                             <div class="form-group">
                                                                 <label for="JawabanD">Jawaban D <span
                                                                         class="text-danger">*</span></label>
@@ -208,6 +260,19 @@
                                                         </div>
                                                         <div class="tab-pane" id="jawabanE">
                                                             <div class="form-group">
+                                                                <label for="poin_e">Poin E
+                                                                    <span class="text-danger">*</span>
+                                                                </label>
+                                                                <input type="text" id="poin_e" name="poin_e"
+                                                                    required
+                                                                    value="{{ $soal ? $row->poin_e : old('poin_e') }}"
+                                                                    class="form-control" autocomplete="off">
+                                                                @error('poin_e')
+                                                                    <small class="text-danger">*
+                                                                        {{ $message }}</small>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="form-group">
                                                                 <label for="JawabanE">Jawaban E <span
                                                                         class="text-danger">*</span></label>
                                                                 <textarea class="contentJawabanE" id="JawabanE" required name="jawabanE">{{ $soal ? $row->jawaban_e : old('jawabanE') }}</textarea>
@@ -218,19 +283,6 @@
                                                             </div>
                                                         </div>
                                                         <div class="tab-pane" id="review">
-                                                            <div class="form-group">
-                                                                <label for="poin">Poin
-                                                                    <span class="text-danger">*</span>
-                                                                </label>
-                                                                <input type="text" id="poin" name="poin"
-                                                                    required
-                                                                    value="{{ $soal ? $row->poin : old('poin') }}"
-                                                                    class="form-control" autocomplete="off">
-                                                                @error('poin')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
-                                                                @enderror
-                                                            </div>
                                                             @if ($soal)
                                                             @else
                                                                 @if (old('kunciJawaban') == 'A')

@@ -334,10 +334,14 @@ class Tryouts extends Controller
             $soal->jawaban_c = $request->input('jawabanC');
             $soal->jawaban_d = $request->input('jawabanD');
             $soal->jawaban_e = $request->input('jawabanE');
+            $soal->poin_a = htmlspecialchars($request->input('poin_a'));
+            $soal->poin_b = htmlspecialchars($request->input('poin_b'));
+            $soal->poin_c = htmlspecialchars($request->input('poin_c'));
+            $soal->poin_d = htmlspecialchars($request->input('poin_d'));
+            $soal->poin_e = htmlspecialchars($request->input('poin_e'));
             $soal->kunci_jawaban = $request->input('kunciJawaban');
             $soal->klasifikasi_soal_id = htmlspecialchars($request->input('klasifikasi'));
             $soal->review_pembahasan = $request->input('reviewPembahasan');
-            $soal->poin = htmlspecialchars($request->input('poin'));
 
             // Catatan log
             $logs = $users->name . ' telah menambahkan soal ' . $idSoal . ' waktu tercatat :  ' . now();
@@ -366,10 +370,14 @@ class Tryouts extends Controller
             $soal->jawaban_c = $request->input('jawabanC');
             $soal->jawaban_d = $request->input('jawabanD');
             $soal->jawaban_e = $request->input('jawabanE');
+            $soal->poin_a = htmlspecialchars($request->input('poin_a'));
+            $soal->poin_b = htmlspecialchars($request->input('poin_b'));
+            $soal->poin_c = htmlspecialchars($request->input('poin_c'));
+            $soal->poin_d = htmlspecialchars($request->input('poin_d'));
+            $soal->poin_e = htmlspecialchars($request->input('poin_e'));
             $soal->kunci_jawaban = $request->input('kunciJawaban');
             $soal->klasifikasi_soal_id = htmlspecialchars($request->input('klasifikasi'));
             $soal->review_pembahasan = $request->input('reviewPembahasan');
-            $soal->poin = htmlspecialchars($request->input('poin'));
             // Catatan log
             $logs = $users->name . ' telah memperbarui soal dengan ID ' . $soal->id . ' waktu tercatat :  ' . now();
             $message = 'Soal ujian berhasil diperbarui !';
@@ -456,10 +464,14 @@ class Tryouts extends Controller
                     'jawaban_c' => $soalDuplikat->jawaban_c,
                     'jawaban_d' => $soalDuplikat->jawaban_d,
                     'jawaban_e' => $soalDuplikat->jawaban_e,
+                    'poin_a' => $soalDuplikat->poin_a,
+                    'poin_b' => $soalDuplikat->poin_b,
+                    'poin_c' => $soalDuplikat->poin_c,
+                    'poin_d' => $soalDuplikat->poin_d,
+                    'poin_e' => $soalDuplikat->poin_e,
                     'kunci_jawaban' => $soalDuplikat->kunci_jawaban,
                     'klasifikasi_soal_id' => $soalDuplikat->klasifikasi_soal_id,
                     'review_pembahasan' => $soalDuplikat->review_pembahasan,
-                    'poin' => $soalDuplikat->poin,
                     'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s')
                 ]);
@@ -474,10 +486,14 @@ class Tryouts extends Controller
                     'jawaban_c' => $soalDuplikat->jawaban_c,
                     'jawaban_d' => $soalDuplikat->jawaban_d,
                     'jawaban_e' => $soalDuplikat->jawaban_e,
+                    'poin_a' => $soalDuplikat->poin_a,
+                    'poin_b' => $soalDuplikat->poin_b,
+                    'poin_c' => $soalDuplikat->poin_c,
+                    'poin_d' => $soalDuplikat->poin_d,
+                    'poin_e' => $soalDuplikat->poin_e,
                     'kunci_jawaban' => $soalDuplikat->kunci_jawaban,
                     'klasifikasi_soal_id' => $soalDuplikat->klasifikasi_soal_id,
                     'review_pembahasan' => $soalDuplikat->review_pembahasan,
-                    'poin' => $soalDuplikat->poin,
                     'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s')
                 ]);

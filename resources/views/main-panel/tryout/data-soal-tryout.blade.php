@@ -125,15 +125,28 @@
                                                                 @method('DELETE')
                                                             </form>
                                                         </div>
+
+                                                        <div class="row mt-3">
+                                                            <div class="col">
+                                                                Poin A: <strong>{{ $row->poin_a }}</strong>
+                                                            </div>
+                                                            <div class="col">
+                                                                Poin B: <strong>{{ $row->poin_b }}</strong>
+                                                            </div>
+                                                            <div class="col">
+                                                                Poin C: <strong>{{ $row->poin_c }}</strong>
+                                                            </div>
+                                                            <div class="col">
+                                                                Poin D: <strong>{{ $row->poin_d }}</strong>
+                                                            </div>
+                                                            <div class="col">
+                                                                Poin E: <strong>{{ $row->poin_e }}</strong>
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                     <td style="vertical-align: top; text-align: center;">
                                                         {{ $row->judul }} <br>
                                                         ({{ $row->alias }})
-                                                        <br>
-                                                        <span class="badge bg-warning mt-2">
-                                                            {{ $row->poin }} Poin
-                                                        </span>
-                                                        <br>
                                                         <span class="badge bg-warning mt-2">
                                                             {{ $row->passing_grade }} Passing Grade
                                                         </span>

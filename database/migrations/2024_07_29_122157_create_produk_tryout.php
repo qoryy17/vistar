@@ -34,7 +34,6 @@ return new class extends Migration
             $table->string('kunci_jawaban', 1);
             $table->unsignedBigInteger('klasifikasi_soal_id')->nullable();
             $table->text('review_pembahasan');
-            $table->float('poin');
             $table->timestamps();
 
             $table->foreign('klasifikasi_soal_id')->references('id')->on('klasifikasi_soal')->onDelete('set null')->onUpdate('cascade');

@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Helpers\RecordLogs;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Customer\TestimoniRequest;
-use App\Jobs\SimpanHasilUjianJob;
+use App\Models\Ujian;
 use App\Models\Customer;
+use App\Models\SoalUjian;
+use App\Models\Testimoni;
 use App\Models\HasilUjian;
+use App\Helpers\RecordLogs;
 use App\Models\LimitTryout;
 use App\Models\OrderTryout;
 use App\Models\ProdukTryout;
-use App\Models\ProgressUjian;
-use App\Models\SoalUjian;
-use App\Models\Testimoni;
-use App\Models\Ujian;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Models\ProgressUjian;
+use App\Jobs\SimpanHasilUjianJob;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\Customer\TestimoniRequest;
 
 class Tryoutc extends Controller
 {
@@ -227,7 +227,20 @@ class Tryoutc extends Controller
 
         // Get All Question
         $questions = Cache::remember($cacheKeyQuestion, $cacheDurationExam, function () use ($questionCode) {
-            return SoalUjian::select('soal_ujian.id', 'soal_ujian.kode_soal', 'soal_ujian.soal', 'soal_ujian.gambar', 'soal_ujian.jawaban_a', 'soal_ujian.jawaban_b', 'soal_ujian.jawaban_c', 'soal_ujian.jawaban_d', 'soal_ujian.jawaban_e')
+            return SoalUjian::select(
+                'soal_ujian.id',
+                'soal_ujian.kode_soal',
+                'soal_ujian.soal',
+                'soal_ujian.gambar',
+                'soal_ujian.jawaban_a',
+                'soal_ujian.jawaban_b',
+                'soal_ujian.jawaban_c',
+                'soal_ujian.jawaban_d',
+                'soal_ujian.jawaban_e',
+                'soal_ujian.klasifikasi_soal_id',
+                'klasifikasi_soal.alias',
+                'klasifikasi_soal.created_at'
+            )->leftJoin('klasifikasi_soal', 'soal_ujian.klasifikasi_soal_id', '=', 'klasifikasi_soal.id')->orderBy('klasifikasi_soal.created_at', 'ASC')
                 ->where('kode_soal', $questionCode)
                 ->get();
         });
@@ -548,7 +561,6 @@ class Tryoutc extends Controller
                 'testimoni' => $request->input('testimoni'),
                 'rating' => $request->input('rating'),
             ]);
-
         }
 
         if (!$saveTestimoni) {

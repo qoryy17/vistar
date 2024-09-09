@@ -62,63 +62,63 @@ class SimpanHasilUjianJob implements ShouldQueue
             $totalTIU = [];
             $totalTKP = [];
             $hasilScoreUjian = 0;
-
             $jawabanSalah = [];
-            $jawabanSalahUbah = [];
-            $point = [];
 
             if ($statusProduk == 'Gratis') {
                 // Hitung score ujian berdasarkan kunci jawaban soal
                 foreach ($jawabanUjian as $jawabanPeserta) {
                     $soalUjian = SoalUjian::find($jawabanPeserta->soal_ujian_id);
-                    // Khusus ketentuan TKP benar poin : 5, salah : 1 poin
                     $klasifikasiSoal = KlasifikasiSoal::find($soalUjian->klasifikasi_soal_id);
-                    if ($klasifikasiSoal->alias == 'TKP') {
+                    $poinMap = [
+                        'A' => $soalUjian->poin_a,
+                        'B' => $soalUjian->poin_b,
+                        'C' => $soalUjian->poin_c,
+                        'D' => $soalUjian->poin_d,
+                        'E' => $soalUjian->poin_e,
+                    ];
+
+                    if ($klasifikasiSoal->alias == 'TWK') {
+                        $poinSoal = $poinMap[$jawabanPeserta->jawaban] ?? 0;
                         if ($jawabanPeserta->jawaban == $soalUjian->kunci_jawaban) {
                             $totalBenar[] = 1;
-                            $point[] = $soalUjian->poin;
-                            $pointTKP[] = $soalUjian->poin;
                         } else {
                             $totalSalah[] = 1;
-                            $point[] = 1;
-                            $pointTKP[] = 1;
+                            $poinSoal = 0;
                             $jawabanSalah[] = [
                                 'jawabanSalahID' => $jawabanPeserta->id,
                                 'jawabanSalah' => $jawabanPeserta->jawaban,
                                 'kunciJawaban' => $soalUjian->kunci_jawaban
                             ];
                         }
-                        $totalTKP[] = array_sum($pointTKP);
-                        $dataGradeTKP = [
+                        $pointTWK[] = $poinSoal;
+                        $dataGradeTWK = [
                             'judul' => $klasifikasiSoal->judul,
                             'alias' => $klasifikasiSoal->alias,
                             'passingGrade' => $klasifikasiSoal->passing_grade
                         ];
                     } else {
-                        $passingTKP = KlasifikasiSoal::where('alias', 'TKP')->first();
-                        $dataGradeTKP = [
-                            'judul' => 'Tes Karakteristik Pribadi',
-                            'alias' => 'TKP',
-                            'passingGrade' => $passingTKP->passing_grade
+                        $passingTWK = KlasifikasiSoal::where('alias', 'TWK')->first();
+                        $dataGradeTWK = [
+                            'judul' => 'Tes Wawasan Kebangsaan',
+                            'alias' => 'TWK',
+                            'passingGrade' => $passingTWK->passing_grade
                         ];
                     }
 
                     if ($klasifikasiSoal->alias == 'TIU') {
+                        $poinSoal = $poinMap[$jawabanPeserta->jawaban] ?? 0;
                         if ($jawabanPeserta->jawaban == $soalUjian->kunci_jawaban) {
                             $totalBenar[] = 1;
-                            $point[] = $soalUjian->poin;
-                            $pointTIU[] = $soalUjian->poin;
                         } else {
                             $totalSalah[] = 1;
-                            $point[] = 0;
-                            $pointTIU[] = 0;
+                            $poinSoal = 0;
                             $jawabanSalah[] = [
                                 'jawabanSalahID' => $jawabanPeserta->id,
                                 'jawabanSalah' => $jawabanPeserta->jawaban,
                                 'kunciJawaban' => $soalUjian->kunci_jawaban
                             ];
                         }
-                        $totalTIU[] = array_sum($pointTIU);
+                        $totalTIU[] = $poinSoal;
                         $dataGradeTIU = [
                             'judul' => $klasifikasiSoal->judul,
                             'alias' => $klasifikasiSoal->alias,
@@ -133,45 +133,57 @@ class SimpanHasilUjianJob implements ShouldQueue
                         ];
                     }
 
-                    if ($klasifikasiSoal->alias == 'TWK') {
+                    if ($klasifikasiSoal->alias == 'TKP') {
+                        $poinSoal = $poinMap[$jawabanPeserta->jawaban] ?? 0;
                         if ($jawabanPeserta->jawaban == $soalUjian->kunci_jawaban) {
                             $totalBenar[] = 1;
-                            $point[] = $soalUjian->poin;
-                            $pointTWK[] = $soalUjian->poin;
                         } else {
                             $totalSalah[] = 1;
-                            $point[] = 0;
-                            $pointTWK[] = 0;
                             $jawabanSalah[] = [
                                 'jawabanSalahID' => $jawabanPeserta->id,
                                 'jawabanSalah' => $jawabanPeserta->jawaban,
                                 'kunciJawaban' => $soalUjian->kunci_jawaban
                             ];
                         }
-                        $totalTWK[] = array_sum($pointTWK);
-                        $dataGradeTWK = [
+                        $totalTKP[] = $poinSoal;
+                        $dataGradeTKP = [
                             'judul' => $klasifikasiSoal->judul,
                             'alias' => $klasifikasiSoal->alias,
                             'passingGrade' => $klasifikasiSoal->passing_grade
                         ];
                     } else {
-                        $passingTWK = KlasifikasiSoal::where('alias', 'TWK')->first();
-                        $dataGradeTWK = [
-                            'judul' => 'Tes Wawasan Kebangsaan',
-                            'alias' => 'TWK',
-                            'passingGrade' => $passingTWK->passing_grade
+                        $passingTKP = KlasifikasiSoal::where('alias', 'TKP')->first();
+                        $dataGradeTKP = [
+                            'judul' => 'Tes Karakteristik Pribadi',
+                            'alias' => 'TKP',
+                            'passingGrade' => $passingTKP->passing_grade
                         ];
                     }
                 }
 
-                // Hitung nilai hasil akhir ujian
-                $totalNilaiTKP = array_sum($totalTKP);
-                $totalNilaiTIU = array_sum($totalTIU);
-                $totalNilaiTWK = array_sum($totalTWK);
+                // Akumulasikan total nilai TWK, TIU dan TKP
+                if (isset($pointTWK)) {
+                    $totalTWK[] = array_sum($pointTWK);
+                    $totalNilaiTWK = array_sum($totalTWK);
+                } else {
+                    $totalNilaiTWK = 0;
+                }
 
-                $totalScoreUjian = array_sum($point);
-                $rumusBagi = $totalScoreUjian / $passingGrade * 100;
-                $hasilScoreUjian = $rumusBagi * 40 / 100;
+                if (isset($pointTIU)) {
+                    $totalTIU[] = array_sum($pointTIU);
+                    $totalNilaiTIU = array_sum($totalTIU);
+                } else {
+                    $totalNilaiTIU = 0;
+                }
+
+                if (isset($pointTKP)) {
+                    $totalTKP[] = array_sum($pointTKP);
+                    $totalNilaiTKP = array_sum($totalTKP);
+                } else {
+                    $totalNilaiTKP = 0;
+                }
+
+                $hasilScoreUjian = $totalNilaiTWK + $totalNilaiTIU + $totalNilaiTKP;
 
                 // Cek apakah pengisian soal sudah mencapat 70% dari total soal
                 $ambangBatasPengisian = ceil($totalSoalTersedia * 0.7);
@@ -206,44 +218,48 @@ class SimpanHasilUjianJob implements ShouldQueue
                     // Hitung score ujian berdasarkan kunci jawaban soal
                     foreach ($jawabanUjian as $jawabanPeserta) {
                         $soalUjian = SoalUjian::find($jawabanPeserta->soal_ujian_id);
-                        // Khusus ketentuan TKP benar poin : 5, salah : 1 poin
                         $klasifikasiSoal = KlasifikasiSoal::find($soalUjian->klasifikasi_soal_id);
-                        if ($klasifikasiSoal->alias == 'TKP') {
+
+                        $poinMap = [
+                            'A' => $soalUjian->poin_a,
+                            'B' => $soalUjian->poin_b,
+                            'C' => $soalUjian->poin_c,
+                            'D' => $soalUjian->poin_d,
+                            'E' => $soalUjian->poin_e,
+                        ];
+
+                        if ($klasifikasiSoal->alias == 'TWK') {
+                            $poinSoal = $poinMap[$jawabanPeserta->jawaban] ?? 0;
                             if ($jawabanPeserta->jawaban == $soalUjian->kunci_jawaban) {
                                 $totalBenar[] = 1;
-                                $point[] = $soalUjian->poin;
-                                $pointTKP[] = $soalUjian->poin;
                             } else {
                                 $totalSalah[] = 1;
-                                $point[] = 1;
-                                $pointTKP[] = 1;
+                                $poinSoal = 0;
                             }
-                            $totalTKP[] = array_sum($pointTKP);
-                            $dataGradeTKP = [
+                            $pointTWK[] = $poinSoal;
+                            $dataGradeTWK = [
                                 'judul' => $klasifikasiSoal->judul,
                                 'alias' => $klasifikasiSoal->alias,
                                 'passingGrade' => $klasifikasiSoal->passing_grade
                             ];
                         } else {
-                            $passingTKP = KlasifikasiSoal::where('alias', 'TKP')->first();
-                            $dataGradeTKP = [
-                                'judul' => 'Tes Karakteristik Pribadi',
-                                'alias' => 'TKP',
-                                'passingGrade' => $passingTKP->passing_grade
+                            $passingTWK = KlasifikasiSoal::where('alias', 'TWK')->first();
+                            $dataGradeTWK = [
+                                'judul' => 'Tes Wawasan Kebangsaan',
+                                'alias' => 'TWK',
+                                'passingGrade' => $passingTWK->passing_grade
                             ];
                         }
 
                         if ($klasifikasiSoal->alias == 'TIU') {
+                            $poinSoal = $poinMap[$jawabanPeserta->jawaban] ?? 0;
                             if ($jawabanPeserta->jawaban == $soalUjian->kunci_jawaban) {
                                 $totalBenar[] = 1;
-                                $point[] = $soalUjian->poin;
-                                $pointTIU[] = $soalUjian->poin;
                             } else {
                                 $totalSalah[] = 1;
-                                $point[] = 0;
-                                $pointTIU[] = 0;
+                                $poinSoal = 0;
                             }
-                            $totalTIU[] = array_sum($pointTIU);
+                            $pointTIU[] = $poinSoal;
                             $dataGradeTIU = [
                                 'judul' => $klasifikasiSoal->judul,
                                 'alias' => $klasifikasiSoal->alias,
@@ -258,83 +274,98 @@ class SimpanHasilUjianJob implements ShouldQueue
                             ];
                         }
 
-                        if ($klasifikasiSoal->alias == 'TWK') {
+                        if ($klasifikasiSoal->alias == 'TKP') {
+                            $poinSoal = $poinMap[$jawabanPeserta->jawaban] ?? 0;
                             if ($jawabanPeserta->jawaban == $soalUjian->kunci_jawaban) {
                                 $totalBenar[] = 1;
-                                $point[] = $soalUjian->poin;
-                                $pointTWK[] = $soalUjian->poin;
                             } else {
                                 $totalSalah[] = 1;
-                                $point[] = 0;
-                                $pointTWK[] = 0;
                             }
-                            $totalTWK[] = array_sum($pointTWK);
-                            $dataGradeTWK = [
+                            $pointTKP[] = $poinSoal;
+                            $dataGradeTKP = [
                                 'judul' => $klasifikasiSoal->judul,
                                 'alias' => $klasifikasiSoal->alias,
                                 'passingGrade' => $klasifikasiSoal->passing_grade
                             ];
                         } else {
-                            $passingTWK = KlasifikasiSoal::where('alias', 'TWK')->first();
-                            $dataGradeTWK = [
-                                'judul' => 'Tes Wawasan Kebangsaan',
-                                'alias' => 'TWK',
-                                'passingGrade' => $passingTWK->passing_grade
+                            $passingTKP = KlasifikasiSoal::where('alias', 'TKP')->first();
+                            $dataGradeTKP = [
+                                'judul' => 'Tes Karakteristik Pribadi',
+                                'alias' => 'TKP',
+                                'passingGrade' => $passingTKP->passing_grade
                             ];
                         }
                     }
 
-                    // Hitung nilai hasil akhir ujian
-                    $totalNilaiTKP = array_sum($totalTKP);
-                    $totalNilaiTIU = array_sum($totalTIU);
-                    $totalNilaiTWK = array_sum($totalTWK);
+                    // Akumulasikan total nilai TWK, TIU dan TKP
+                    if (isset($pointTWK)) {
+                        $totalTWK[] = array_sum($pointTWK);
+                        $totalNilaiTWK = array_sum($totalTWK);
+                    } else {
+                        $totalNilaiTWK = 0;
+                    }
 
-                    $totalScoreUjian = array_sum($point);
-                    $rumusBagi = $totalScoreUjian / $passingGrade * 100;
-                    $hasilScoreUjian = $rumusBagi * 40 / 100;
+                    if (isset($pointTIU)) {
+                        $totalTIU[] = array_sum($pointTIU);
+                        $totalNilaiTIU = array_sum($totalTIU);
+                    } else {
+                        $totalNilaiTIU = 0;
+                    }
+
+                    if (isset($pointTKP)) {
+                        $totalTKP[] = array_sum($pointTKP);
+                        $totalNilaiTKP = array_sum($totalTKP);
+                    } else {
+                        $totalNilaiTKP = 0;
+                    }
+
+                    $hasilScoreUjian = $totalNilaiTWK + $totalNilaiTIU + $totalNilaiTKP;
                 }
             } else {
                 // Hitung score ujian berdasarkan kunci jawaban soal
                 foreach ($jawabanUjian as $jawabanPeserta) {
                     $soalUjian = SoalUjian::find($jawabanPeserta->soal_ujian_id);
-                    // Khusus ketentuan TKP benar poin : 5, salah : 1 poin
                     $klasifikasiSoal = KlasifikasiSoal::find($soalUjian->klasifikasi_soal_id);
-                    if ($klasifikasiSoal->alias == 'TKP') {
+                    $poinMap = [
+                        'A' => $soalUjian->poin_a,
+                        'B' => $soalUjian->poin_b,
+                        'C' => $soalUjian->poin_c,
+                        'D' => $soalUjian->poin_d,
+                        'E' => $soalUjian->poin_e,
+                    ];
+
+                    if ($klasifikasiSoal->alias == 'TWK') {
+                        $poinSoal = $poinMap[$jawabanPeserta->jawaban] ?? 0;
                         if ($jawabanPeserta->jawaban == $soalUjian->kunci_jawaban) {
                             $totalBenar[] = 1;
-                            $point[] = $soalUjian->poin;
-                            $pointTKP[] = $soalUjian->poin;
                         } else {
                             $totalSalah[] = 1;
-                            $point[] = 1;
-                            $pointTKP[] = 1;
+                            $poinSoal = 0;
                         }
-                        $totalTKP[] = array_sum($pointTKP);
-                        $dataGradeTKP = [
+                        $pointTWK[] = $poinSoal;
+                        $dataGradeTWK = [
                             'judul' => $klasifikasiSoal->judul,
                             'alias' => $klasifikasiSoal->alias,
                             'passingGrade' => $klasifikasiSoal->passing_grade
                         ];
                     } else {
-                        $passingTKP = KlasifikasiSoal::where('alias', 'TKP')->first();
-                        $dataGradeTKP = [
-                            'judul' => 'Tes Karakteristik Pribadi',
-                            'alias' => 'TKP',
-                            'passingGrade' => $passingTKP->passing_grade
+                        $passingTWK = KlasifikasiSoal::where('alias', 'TWK')->first();
+                        $dataGradeTWK = [
+                            'judul' => 'Tes Wawasan Kebangsaan',
+                            'alias' => 'TWK',
+                            'passingGrade' => $passingTWK->passing_grade
                         ];
                     }
 
                     if ($klasifikasiSoal->alias == 'TIU') {
+                        $poinSoal = $poinMap[$jawabanPeserta->jawaban] ?? 0;
                         if ($jawabanPeserta->jawaban == $soalUjian->kunci_jawaban) {
                             $totalBenar[] = 1;
-                            $point[] = $soalUjian->poin;
-                            $pointTIU[] = $soalUjian->poin;
                         } else {
                             $totalSalah[] = 1;
-                            $point[] = 0;
-                            $pointTIU[] = 0;
+                            $poinSoal = 0;
                         }
-                        $totalTIU[] = array_sum($pointTIU);
+                        $pointTIU[] = $poinSoal;
                         $dataGradeTIU = [
                             'judul' => $klasifikasiSoal->judul,
                             'alias' => $klasifikasiSoal->alias,
@@ -349,45 +380,59 @@ class SimpanHasilUjianJob implements ShouldQueue
                         ];
                     }
 
-                    if ($klasifikasiSoal->alias == 'TWK') {
+                    if ($klasifikasiSoal->alias == 'TKP') {
+                        $poinSoal = $poinMap[$jawabanPeserta->jawaban] ?? 0;
                         if ($jawabanPeserta->jawaban == $soalUjian->kunci_jawaban) {
                             $totalBenar[] = 1;
-                            $point[] = $soalUjian->poin;
-                            $pointTWK[] = $soalUjian->poin;
                         } else {
                             $totalSalah[] = 1;
-                            $point[] = 0;
-                            $pointTWK[] = 0;
                         }
-                        $totalTWK[] = array_sum($pointTWK);
-                        $dataGradeTWK = [
+                        $pointTKP[] = $poinSoal;
+                        $dataGradeTKP = [
                             'judul' => $klasifikasiSoal->judul,
                             'alias' => $klasifikasiSoal->alias,
                             'passingGrade' => $klasifikasiSoal->passing_grade
                         ];
                     } else {
-                        $passingTWK = KlasifikasiSoal::where('alias', 'TWK')->first();
-                        $dataGradeTWK = [
-                            'judul' => 'Tes Wawasan Kebangsaan',
-                            'alias' => 'TWK',
-                            'passingGrade' => $passingTWK->passing_grade
+                        $passingTKP = KlasifikasiSoal::where('alias', 'TKP')->first();
+                        $dataGradeTKP = [
+                            'judul' => 'Tes Karakteristik Pribadi',
+                            'alias' => 'TKP',
+                            'passingGrade' => $passingTKP->passing_grade
                         ];
                     }
                 }
 
-                // Hitung nilai hasil akhir ujian
-                $totalNilaiTKP = array_sum($totalTKP);
-                $totalNilaiTIU = array_sum($totalTIU);
-                $totalNilaiTWK = array_sum($totalTWK);
+                // Akumulasikan total nilai TWK, TIU dan TKP
+                if (isset($pointTWK)) {
+                    $totalTWK[] = array_sum($pointTWK);
+                    $totalNilaiTWK = array_sum($totalTWK);
+                } else {
+                    $totalNilaiTWK = 0;
+                }
 
-                $totalScoreUjian = array_sum($point);
-                $rumusBagi = $totalScoreUjian / $passingGrade * 100;
-                $hasilScoreUjian = $rumusBagi * 40 / 100;
+                if (isset($pointTIU)) {
+                    $totalTIU[] = array_sum($pointTIU);
+                    $totalNilaiTIU = array_sum($totalTIU);
+                } else {
+                    $totalNilaiTIU = 0;
+                }
+
+                if (isset($pointTKP)) {
+                    $totalTKP[] = array_sum($pointTKP);
+                    $totalNilaiTKP = array_sum($totalTKP);
+                } else {
+                    $totalNilaiTKP = 0;
+                }
+
+                $hasilScoreUjian = $totalNilaiTWK + $totalNilaiTIU + $totalNilaiTKP;
             }
 
             if ($totalNilaiTWK < $dataGradeTWK['passingGrade']) {
                 $keterangan = 'Gagal';
-            } elseif ($totalNilaiTIU < $dataGradeTIU['passingGrade']) {
+            } elseif (
+                $totalNilaiTIU < $dataGradeTIU['passingGrade']
+            ) {
                 $keterangan = 'Gagal';
             } elseif ($totalNilaiTKP < $dataGradeTKP['passingGrade']) {
                 $keterangan = 'Gagal';
@@ -427,6 +472,14 @@ class SimpanHasilUjianJob implements ShouldQueue
                     'total_nilai' => $totalNilaiTKP,
                     'created_at' => now(),
                     'updated_at' => now()
+                ],
+                [
+                    'benar' =>  array_sum($totalBenar),
+                    'benar' => array_sum($totalSalah),
+                    'terisi' => $totalSoalTerisi,
+                    'terjawab' => $totalSoalTersedia - $totalSoalTerisi,
+                    'score' => $hasilScoreUjian,
+                    'keterangan' => $keterangan
                 ]
             ];
 
