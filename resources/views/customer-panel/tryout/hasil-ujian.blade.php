@@ -146,7 +146,7 @@
 
                                 <hr />
 
-                                <h2>Soal yang anda lewati</h2>
+                                <h5>Soal Terlewati</h5>
 
                                 @php
                                     $no = 1;
