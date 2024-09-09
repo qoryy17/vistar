@@ -425,22 +425,20 @@
                         </div>
                         <div class="col-md-8" style="vertical-align: middle;">
                             <div class="card custom-card">
-                                <div class="card-header p-3 tx-medium my-auto tx-white bg-primary">
+                                <div class="card-header p-3 tx-medium my-auto">
                                     Daftar Pengajuan Tryout Gratis Untuk Coba 1 Kali Ujian, Bebas Pilih 1 Kategori (CPNS,
                                     PPK,
                                     Kedinasan)
                                 </div>
                                 <div class="card-body">
-                                    <p class="mg-b-0">
+                                    <p style="text-align: justify">
                                         "Kesempatan emas! Dapatkan akses Tryout Gratis dengan mudah. Ajukan sekarang melalui
                                         situs utama kami atau klik tautan di bawah ini dan mulai persiapan Anda menuju
                                         sukses!"
-                                        <br>
-                                        <br>
-                                        <a class="btn btn-primary" href="{{ route('mainweb.index') }}/#coba-gratis">
-                                            Pengajuan Tryout Gratis
-                                        </a>
                                     </p>
+                                    <a class="btn btn-primary btn-sm" href="{{ route('mainweb.index') }}/#coba-gratis">
+                                        Pengajuan Tryout Gratis <i class="fa fa-arrow-right"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
