@@ -21,10 +21,11 @@
             top: 5px;
             left: 5px;
             border-left: 3px solid #99cc33;
+            background: #FFFFFF;
             padding: 5px 10px;
             border-radius: 10px;
             color: #99cc33;
-            animation: flash 2s ease infinite;
+            animation: flash 2.5s ease infinite;
         }
 
         @keyframes flash {
