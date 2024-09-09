@@ -243,6 +243,8 @@ Route::middleware(PanelRouting::class)->group(function () {
     Route::controller(Tryoutc::class)->group(function () {
         Route::post('/ujian-tryout', 'berandaUjian')->name('ujian.main');
         Route::get('/progress-ujian/{id}/{param}', 'progressUjian')->name('ujian.progress');
+        Route::post('/progress-ujian/get-question', 'progressUjianGetQuestion')->name('ujian.progress.get-question');
+        Route::post('/progress-ujian/sync-answer', 'progressUjianSyncAnswer')->name('ujian.progress.sync-answer');
         Route::post('/simpan-jawaban-ujian', 'simpanJawaban')->name('ujian.simpan-jawaban');
         Route::get('/simpan-hasil-ujian-tryout/{id}', 'simpanHasilUjian')->name('ujian.simpan-hasil');
         Route::get('/hasil-ujian/{id}', 'hasilUjian')->name('ujian.hasil');

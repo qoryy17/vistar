@@ -152,7 +152,6 @@ class Tryoutc extends Controller
         $cacheDurationExam = 100 * 60;
         $generateCacheName = Tryoutc::cacheNameGenerateExam($id);
         $cacheKey = $generateCacheName['exam'];
-        $cacheKeyQuestion = $generateCacheName['question'];
 
         $exam = Cache::remember($cacheKey, $cacheDurationExam, function () use ($id, $param) {
             $examData = DB::table('ujian')
@@ -188,34 +187,9 @@ class Tryoutc extends Controller
         // Menghitung waktu selesai ujian
         $endTime = \Carbon\Carbon::parse($startTime)->addMinutes($duration)->format('Y-m-d H:i:s');
 
-        // Check if exam already ended
-        $currentTime = now();
-        if ($endTime < $currentTime) {
-            return redirect()->route('ujian.simpan-hasil', ['id' => Crypt::encrypt($exam->id)]);
-        }
-
         $titlePage = $tryoutProduct->nama_tryout;
 
         $customer = Customer::findOrFail(Auth::user()->customer_id);
-
-        // Get All Question
-        $questions = Cache::remember($cacheKeyQuestion, $cacheDurationExam, function () use ($tryoutProduct) {
-            return SoalUjian::select('soal_ujian.id', 'soal_ujian.kode_soal', 'soal_ujian.soal', 'soal_ujian.gambar', 'soal_ujian.jawaban_a', 'soal_ujian.jawaban_b', 'soal_ujian.jawaban_c', 'soal_ujian.jawaban_d', 'soal_ujian.jawaban_e')
-                ->where('kode_soal', '=', $tryoutProduct->kode_soal)
-                ->get();
-        });
-        $totalQuestion = $questions->count();
-
-        // Check Total Questions
-        if ($totalQuestion <= 0) {
-            return redirect()->back()->with('error', 'Maaf tidak bisa memulai ujian, soal belum tersedia !');
-        }
-
-        // Get user saved questions
-        $savedQuestions = DB::table('progres_ujian')
-            ->where('ujian_id', $id)
-            ->pluck('jawaban', 'soal_ujian_id')
-            ->toArray();
 
         $data = [
             'titlePage' => $titlePage,
@@ -223,15 +197,97 @@ class Tryoutc extends Controller
             'customer' => $customer,
             'tryoutProduct' => $tryoutProduct,
             'exam' => $exam,
-            'totalQuestion' => $totalQuestion,
-            'savedQuestions' => $savedQuestions,
-            'questions' => $questions,
             'startTime' => $startTime,
             'endTime' => $endTime,
             'param' => $request->param,
         ];
 
         return view('customer-panel.tryout.ujian', $data);
+    }
+
+    public function progressUjianGetQuestion(Request $request)
+    {
+        // Decrypt Request Param
+        $examId = $request->exam_id;
+        try {
+            $examId = Crypt::decrypt($examId);
+        } catch (\Throwable $th) {
+            return response()->json(['result' => 'error', 'title' => 'Ujian Tidak ditemukan!'], 404);
+        }
+        $questionCode = $request->question_code;
+        try {
+            $questionCode = Crypt::decrypt($questionCode);
+        } catch (\Throwable $th) {
+            return response()->json(['result' => 'error', 'title' => 'Kode Soal Tidak diketahui!'], 200);
+        }
+
+        $cacheDurationExam = 100 * 60;
+        $generateCacheName = Tryoutc::cacheNameGenerateExam($examId);
+        $cacheKeyQuestion = $generateCacheName['question'];
+
+        // Get All Question
+        $questions = Cache::remember($cacheKeyQuestion, $cacheDurationExam, function () use ($questionCode) {
+            return SoalUjian::select('soal_ujian.id', 'soal_ujian.kode_soal', 'soal_ujian.soal', 'soal_ujian.gambar', 'soal_ujian.jawaban_a', 'soal_ujian.jawaban_b', 'soal_ujian.jawaban_c', 'soal_ujian.jawaban_d', 'soal_ujian.jawaban_e')
+                ->where('kode_soal', $questionCode)
+                ->get();
+        });
+        $totalQuestion = $questions->count();
+
+        // Check Total Questions
+        if ($totalQuestion <= 0) {
+            return response()->json(['result' => 'error', 'title' => 'Maaf tidak bisa memulai ujian, soal belum tersedia !'], 200);
+        }
+
+        // Get user saved questions
+        $examProgress = DB::table('progres_ujian')
+            ->where('ujian_id', $examId)
+            ->pluck('jawaban', 'soal_ujian_id')
+            ->toArray();
+        $savedQuestions = [];
+        foreach ($examProgress as $id => $answer) {
+            array_push($savedQuestions, [
+                'id' => $id,
+                'answer' => $answer,
+                'store' => 'db',
+            ]);
+        }
+
+        return response()->json([
+            'result' => 'success',
+            'title' => 'Soal berhasil diambil.',
+            'data' => [
+                'questions' => $questions,
+                'totalQuestion' => $totalQuestion,
+                'savedQuestions' => $savedQuestions,
+            ],
+        ], 200);
+    }
+
+    public function progressUjianSyncAnswer(Request $request)
+    {
+        $data = $request->validate([
+            'exam_id' => ['required'],
+            'question_code' => ['required'],
+            'anwers' => ['required'],
+        ]);
+
+        $examId = Crypt::decrypt($data['exam_id']);
+        $questionCode = Crypt::decrypt($data['question_code']);
+        $anwers = $data['anwers'];
+
+        foreach ($anwers as $answer) {
+            ProgressUjian::updateOrCreate(['ujian_id' => $examId, 'soal_ujian_id' => $answer['question_id']], [
+                'ujian_id' => $examId,
+                'kode_soal' => $questionCode,
+                'soal_ujian_id' => $answer['question_id'],
+                'jawaban' => $answer['answer'],
+            ]);
+        }
+
+        return response()->json([
+            'result' => 'success',
+            'message' => 'Jawaban berhasil disinkronisasi.',
+        ], 200);
     }
 
     public function simpanJawaban(Request $request)

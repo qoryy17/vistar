@@ -41,6 +41,7 @@
             }
         }
     </style>
+    <div class="d-none" id="is-allowed-refresh" data-allow="false"></div>
     <div class="main-content pt-0 hor-content">
 
         <div class="main-container container-fluid">
@@ -134,21 +135,8 @@
                                             </button>
                                         </div>
                                         <div class="col mt-2">
-                                            <button id="button-finish"
-                                                onclick='swal({
-                                                            title: "Selesaikan Ujian",
-                                                            text: "Apakah anda ingin menyelesaikan ujian sekarang ?",
-                                                            type: "warning",
-                                                            showCancelButton: true,
-                                                            closeOnConfirm: false,
-                                                            confirmButtonText: "Ya",
-                                                            cancelButtonText: "Batal",
-                                                            showLoaderOnConfirm: true }, function ()
-                                                                {
-                                                                setTimeout(function(){
-                                                                    window.location.href = "{{ route('ujian.simpan-hasil', ['id' => Crypt::encrypt($exam->id)]) }}";
-                                                            }, 1000); });'
-                                                type="submit" class="btn btn-success btn-block" disabled>
+                                            <button id="button-finish" onclick="confirmFinishExam()" type="submit"
+                                                class="btn btn-success btn-block" disabled>
                                                 <i class="fa fa-check-circle"></i> Selesai
                                             </button>
                                         </div>
@@ -188,14 +176,7 @@
         <div class="sidebar-body">
             <h5>Daftar Soal</h5>
             <div class="d-flex p-2">
-                <div class="box-soal-container">
-                    @for ($i = 1; $i <= $totalQuestion; $i++)
-                        <button id="button-question-no-{{ $i }}" class="box-soal-web button-question-no"
-                            onclick="goToQuestion({{ $i }})">
-                            {{ $i }}
-                        </button>
-                    @endfor
-                </div>
+                <div id="container-questions-button" class="box-soal-container"></div>
             </div>
         </div>
     </div>
@@ -203,75 +184,189 @@
     <!-- Jquery js-->
     <script src="{{ url('resources/spruha/assets/plugins/jquery/jquery.min.js') }}"></script>
     <script>
+        const examId = '{{ $exam->id }}';
         const questionAssetPath = "{{ asset('storage/soal/') }}";
-        let questions = <?= $questions->toJson() ?>;
-        let savedQuestions = <?= json_encode($savedQuestions) ?>;
         let timeoutFlashInfo = null;
         let currentQuestion = null;
+        let countdown = null
 
         // Mengambil waktu sekarang dan waktu selesai ujian dari PHP
         const endTime = new Date('{{ $endTime }}').getTime();
         const now = new Date().getTime();
 
-        // Update timer setiap 1 detik
-        const countdown = setInterval(() => {
-            const currentTime = new Date().getTime();
-            const distance = endTime - currentTime;
+        $(document).ready(async function() {
 
-            // Menghitung menit dan detik
-            const hours = Math.floor(distance / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            getQuestion(async function(data) {
+                setQuestions(examId, data.questions)
+                await mergeSavedQuestions(data.savedQuestions)
+                generateButtonNoQuestion(data.totalQuestion);
 
-            // Tampilkan hasil di elemen dengan id="time"
-            let newTime = '';
-            if (hours > 0) {
-                newTime += ` ${hours} jam`;
-            }
-            if (minutes > 0) {
-                newTime += ` ${minutes} menit`;
-            }
-            if (seconds > 0) {
-                newTime += ` ${seconds} detik`;
-            }
-            document.getElementById('time').textContent = String(newTime).trim();
+                init();
+            });
 
-            // Jika waktu habis, tampilkan pesan dan hentikan timer
-            if (distance < 0) {
-                clearInterval(countdown);
-                document.getElementById('timer').textContent = 'Waktu ujian telah habis !';
-                swal({
-                    title: "Notifikasi",
-                    text: "Waktu ujian telah habis !",
-                    type: "error"
-                }, function() {
-                    setTimeout(function() {
-                        window.location.href =
-                            "{{ route('ujian.simpan-hasil', ['id' => Crypt::encrypt($exam->id)]) }}";
-                    }, 100);
+            $(document).on("keydown", disableF5);
+
+            window.onbeforeunload = function() {
+                syncAnswer(null, function() {
+                    swal({
+                        title: "Notifikasi",
+                        text: "Gagal memperbarui data jawaban anda, tidak dapat menyelesaikan Ujian.",
+                        type: "error"
+                    });
                 });
 
+                const isAllow = $('#is-allowed-refresh').attr('data-allow');
+                if (isAllow !== 'true') {
+                    return "Apakah anda yakin ingin memuat halaman?";
+                }
             }
-        }, 1000);
 
-        $(document).ready(function() {
+            // Update timer setiap 1 detik
+            countdown = setInterval(() => {
+                const currentTime = new Date().getTime();
+                const distance = endTime - currentTime;
+
+                // Menghitung menit dan detik
+                const hours = Math.floor(distance / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Tampilkan hasil di elemen dengan id="time"
+                let newTime = '';
+                if (hours > 0) {
+                    newTime += ` ${hours} jam`;
+                }
+                if (minutes > 0) {
+                    newTime += ` ${minutes} menit`;
+                }
+                if (seconds > 0) {
+                    newTime += ` ${seconds} detik`;
+                }
+                document.getElementById('time').textContent = String(newTime).trim();
+
+                // Jika waktu habis, tampilkan pesan dan hentikan timer
+                if (distance < 0) {
+                    clearInterval(countdown);
+                    document.getElementById('timer').textContent = 'Waktu ujian telah habis !';
+                    swal({
+                        title: "Notifikasi",
+                        text: "Waktu ujian telah habis !",
+                        type: "error"
+                    }, function() {
+                        finishExam();
+                    });
+
+                }
+            }, 1000);
+        });
+
+        function disableF5(e) {
+            if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) e.preventDefault();
+        };
+
+        function clearStorageQuestion(id) {
+            localStorage.removeItem("questions-" + id);
+            localStorage.removeItem("saved-questions-" + id);
+        }
+
+        function getQuestions(id) {
+            let data = localStorage.getItem("questions-" + id);
+            if (data) {
+                data = JSON.parse(data);
+            }
+            return data ?? [];
+        }
+
+        function setQuestions(id, data) {
+            return localStorage.setItem("questions-" + id, JSON.stringify(data));
+        }
+
+        function getSavedQuestions(id) {
+            let data = localStorage.getItem("saved-questions-" + id);
+            if (data) {
+                data = JSON.parse(data);
+            }
+
+            return data ?? [];
+        }
+
+        function setSavedQuestions(id, data) {
+            return localStorage.setItem("saved-questions-" + id, JSON.stringify(data));
+        }
+
+        function generateButtonNoQuestion(total) {
+            const questionNumberContent = getElement('container-questions-button');
+            questionNumberContent.innerHTML = "";
+            for (let no = 1; no <= total; no++) {
+                const button = document.createElement('button');
+                button.classList.add('box-soal-web');
+                button.classList.add('button-question-no');
+                button.id = `button-question-no-${no}`;
+                button.onclick = function() {
+                    goToQuestion(no);
+                }
+                button.innerHTML = no;
+                questionNumberContent.appendChild(button);
+            }
+        }
+
+        function getQuestion(successCallback, beforeSendCallback = null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: "{{ route('ujian.progress.get-question') }}",
+                data: {
+                    exam_id: '{{ Crypt::encrypt($exam->id) }}',
+                    question_code: '{{ Crypt::encrypt($tryoutProduct->kode_soal) }}',
+                },
+                beforeSend: function() {
+                    if (typeof beforeSendCallback === 'function') {
+                        beforeSendCallback();
+                    }
+                },
+                success: function(response) {
+                    if (response.result === 'success') {
+                        successCallback(response.data)
+                    } else {
+                        swal({
+                            title: "Notifikasi",
+                            text: response.title,
+                            type: "error"
+                        });
+                    }
+                },
+                error: function(response) {
+                    swal({
+                        title: "Notifikasi",
+                        text: response?.responseJSON?.title ?? response.statusText,
+                        type: "error"
+                    });
+                }
+            });
+        }
+
+        function init() {
+            const questionsTmp = getQuestions(examId);
             // Check if there is no question
-            if (questions.length <= 0) {
+            if (questionsTmp.length <= 0) {
                 swal({
                     title: "Notifikasi",
                     text: "Belum ada soal tersedia, silahkan tunggu pembaruan !",
                     type: "warning"
                 });
             } else {
-                if (Object.keys(savedQuestions).length <= 0) {
+                const savedQuestionsTmp = getSavedQuestions(examId);
+                if (savedQuestionsTmp.length <= 0) {
                     // Activated first question
                     goToQuestion(1);
                 } else {
                     // Go to unanswered question
                     let no = 0;
-                    for (const question of questions) {
+                    for (const question of questionsTmp) {
                         no++;
-                        if (!savedQuestions[question.id]) {
+                        if (savedQuestionsTmp.findIndex(e => String(e.id) === String(question.id)) === -1) {
                             break;
                         }
                     }
@@ -279,13 +374,33 @@
                     goToQuestion(no);
                 }
             }
-        });
+        }
+
+        async function mergeSavedQuestions(newData) {
+            // Get Last saved question from localstorage
+            const savedQuestionsTmp = getSavedQuestions(examId);
+            // Get All store local answer
+            for (const localData of savedQuestionsTmp) {
+                if (localData.store === 'local') {
+                    const index = newData.findIndex(e => String(e.id) === String(localData.id));
+                    if (index === -1) {
+                        newData.push(localData)
+                    } else if (newData[index]?.answer != localData.answer) {
+                        newData[index] = localData;
+                    }
+                }
+            };
+
+            setSavedQuestions(examId, newData)
+        }
 
         function nextChar(c) {
             return String.fromCharCode(c.charCodeAt(0) + 1);
         }
 
         function goToQuestion(no) {
+            const questions = getQuestions(examId);
+
             if (no <= 0 || no > questions.length) {
                 swal({
                     title: "Notifikasi",
@@ -359,7 +474,8 @@
                 options.push(question.jawaban_e);
             }
 
-            const userAnswered = savedQuestions[question.id];
+            const savedQuestionsTmp = getSavedQuestions(examId);
+            const userAnswered = savedQuestionsTmp.find(e => String(e.id) === String(question.id));
 
             optionsListContent.innerHTML = ""
             let optionName = 'A';
@@ -376,7 +492,7 @@
                 optionInput.type = 'radio'
                 optionInput.id = optionId
                 optionInput.value = optionName
-                if (userAnswered === optionName) {
+                if (userAnswered?.answer === optionName) {
                     optionInput.checked = true
                 }
 
@@ -394,8 +510,6 @@
                 optionName = nextChar(optionName);
             })
 
-            calculateAnswered();
-
             const questionIdElement = document.getElementsByName('soal_ujian_id')[0];
             if (questionIdElement) {
                 questionIdElement.value = question.id;
@@ -403,7 +517,7 @@
 
             // Update Event listener untuk menyimpan jawaban saat opsi radio berubah
             $("input[name='jawaban']").change(function() {
-                saveAnswer();
+                saveAnswerLocal();
             });
 
             currentQuestion = {
@@ -421,10 +535,13 @@
             const buttonQuestionNo = getElement(`button-question-no-${no}`);
             buttonQuestionNo.classList.add('button-question-active');
 
+            calculateAnswered();
             updateButtonNavigation(no);
         }
 
         function updateButtonNavigation(no) {
+            const questions = getQuestions(examId);
+
             const buttonPrev = getElement('button-prev');
             const buttonNext = getElement('button-next');
             const buttonFinish = getElement('button-finish');
@@ -461,10 +578,13 @@
         }
 
         function calculateAnswered() {
-            Object.keys(savedQuestions).forEach(function(questionId) {
+            const questions = getQuestions(examId);
+
+            const savedQuestionsTmp = getSavedQuestions(examId);
+            savedQuestionsTmp.forEach(function(savedQuestion) {
                 const index = questions.map(function(question) {
                     return String(question.id);
-                }).indexOf(String(questionId));
+                }).indexOf(String(savedQuestion.id));
                 if (index >= 0) {
                     const buttonQuestionNo = getElement(`button-question-no-${index + 1}`);
                     buttonQuestionNo.classList.add('button-question-answered');
@@ -475,8 +595,8 @@
             const totalAnsweredQuestions = getElement('total-answered-questions');
             const totalUnansweredQuestions = getElement('total-unanswered-questions');
 
-            totalAnsweredQuestions.innerHTML = Object.keys(savedQuestions).length
-            totalUnansweredQuestions.innerHTML = questions.length - Object.keys(savedQuestions).length
+            totalAnsweredQuestions.innerHTML = savedQuestionsTmp.length
+            totalUnansweredQuestions.innerHTML = questions.length - savedQuestionsTmp.length
         }
 
         function getElement(id, isRequired = true) {
@@ -498,9 +618,11 @@
             return element;
         }
 
-        function saveAnswer(beforeSendCallback = null, successCallback = null) {
+        function saveAnswerLocal(beforeSendCallback = null, successCallback = null) {
+            const answer = $("input[name='jawaban']:checked").val();
+            const questionId = $("input[name='soal_ujian_id']").val();
             // Cek apakah ada jawaban yang dipilih
-            if (!$("input[name='jawaban']:checked").val()) {
+            if (!answer) {
                 swal({
                     title: "Notifikasi",
                     text: "Pilih salah satu jawaban !",
@@ -509,53 +631,119 @@
                 return;
             }
 
-            var formData = $('#formAnswer').serialize();
+            // Update terjawab
+            const savedQuestionsTmp = getSavedQuestions(examId);
+            const index = savedQuestionsTmp.findIndex(e => String(e.id) === String(questionId))
+            const newData = {
+                id: questionId,
+                answer: answer,
+                store: 'local',
+            }
+            if (index === -1) {
+                savedQuestionsTmp.push(newData);
+            } else {
+                savedQuestionsTmp[index] = newData;
+            }
+            setSavedQuestions(examId, savedQuestionsTmp);
+
+            calculateAnswered()
+        }
+
+        async function syncAnswer(beforeSendCallback = null, errorCallback = null, successCallback = null) {
+            // Get Last saved question from localstorage
+            const savedQuestionsTmp = getSavedQuestions(examId);
+
+            const syncData = []
+            // Get All store local answer
+            savedQuestionsTmp.forEach(function(localData, index) {
+                if (localData.store === 'local') {
+                    syncData.push({
+                        question_id: localData.id,
+                        answer: localData.answer
+                    })
+
+                    savedQuestionsTmp[index] = {
+                        ...savedQuestionsTmp[index],
+                        store: 'db'
+                    };
+                }
+
+            });
+
+            if (syncData.length <= 0) {
+                if (typeof successCallback === 'function') {
+                    successCallback();
+                }
+                return;
+            }
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 type: 'POST',
-                url: "{{ route('ujian.simpan-jawaban') }}",
-                data: formData,
+                url: "{{ route('ujian.progress.sync-answer') }}",
+                data: {
+                    exam_id: '{{ Crypt::encrypt($exam->id) }}',
+                    question_code: '{{ Crypt::encrypt($tryoutProduct->kode_soal) }}',
+                    anwers: syncData
+                },
                 beforeSend: function() {
                     if (typeof beforeSendCallback === 'function') {
                         beforeSendCallback();
                     }
                 },
                 success: function(response) {
-                    if (response.success) {
-                        sendFlashMessage(`Jawaban Soal No. ${currentQuestion.no} berhasil disimpan!`, 'success',
-                            4000);
-
-                        // Update terjawab
-                        const new_saved_answered = response.data.new_saved_answered
-                        savedQuestions[new_saved_answered.question_id] = new_saved_answered.answer
-                        calculateAnswered()
+                    if (response.result === 'success') {
+                        setSavedQuestions(examId, savedQuestionsTmp);
 
                         if (typeof successCallback === 'function') {
                             successCallback();
                         }
                     } else {
-                        sendFlashMessage('Gagal menyimpan jawaban!', 'warning', 5000);
-                        revertChecked(currentQuestion.id);
-
-                        swal({
-                            title: "Notifikasi",
-                            text: "Gagal menyimpan jawaban !",
-                            type: "error"
-                        });
+                        if (typeof errorCallback === 'function') {
+                            errorCallback();
+                        }
                     }
                 },
                 error: function(response) {
-                    sendFlashMessage('Terjadi kesalahan response data!', 'warning', 5000);
-                    revertChecked(currentQuestion.id);
-
-                    swal({
-                        title: "Notifikasi",
-                        text: "Terjadi kesalahan response data !",
-                        type: "error"
-                    });
+                    if (typeof errorCallback === 'function') {
+                        errorCallback();
+                    }
                 }
+            });
+        }
+
+        function confirmFinishExam() {
+            swal({
+                title: "Selesaikan Ujian",
+                text: "Apakah anda ingin menyelesaikan ujian sekarang ?",
+                type: "warning",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                confirmButtonText: "Ya",
+                cancelButtonText: "Batal",
+                showLoaderOnConfirm: true
+            }, function() {
+                finishExam();
+            });
+        }
+
+        function finishExam() {
+            syncAnswer(null, function() {
+                swal({
+                    title: "Notifikasi",
+                    text: "Gagal memperbarui data jawaban anda, tidak dapat menyelesaikan Ujian.",
+                    type: "error"
+                });
+            }, function() {
+                $('#is-allowed-refresh').attr('data-allow', 'true');
+
+                // Clear Local Storage
+                clearStorageQuestion(examId);
+
+                window.location.href =
+                    "{{ route('ujian.simpan-hasil', ['id' => Crypt::encrypt($exam->id)]) }}";
             });
         }
 
@@ -580,9 +768,10 @@
         }
 
         function revertChecked(currentQuestionId) {
-            const previous_saved_answered = savedQuestions[currentQuestionId]
+            const savedQuestionsTmp = getSavedQuestions(examId);
+            const previous_saved_answered = savedQuestionsTmp.find(e => String(e.id) === String(currentQuestionId))
             if (previous_saved_answered) {
-                document.getElementById('option-' + previous_saved_answered).checked = true;
+                document.getElementById('option-' + previous_saved_answered.answer).checked = true;
             } else {
                 document.querySelector("input[name='jawaban']:checked").checked = false;
             }
