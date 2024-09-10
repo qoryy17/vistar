@@ -22,12 +22,15 @@
                 </div>
                 <!-- End Page Header -->
 
-                @if ($pembelian->get()->isNotEmpty())
+                @php
+                    $pembelianData = $pembelian->get();
+                @endphp
+                @if ($pembelianData->isNotEmpty())
                     <div class="row">
                         @php
                             $no = 1;
                         @endphp
-                        @foreach ($pembelian->get() as $tryout)
+                        @foreach ($pembelianData as $tryout)
                             @php
                                 $cekWaitingExam = App\Models\Ujian::select('id', 'status_ujian')
                                     ->where('order_tryout_id', $tryout->id)
@@ -43,13 +46,14 @@
                                 <div class="card custom-card">
                                     <div class="card-body">
                                         <div>
-                                            <h6>Informasi Paket</h6>
-                                            <h6 style="padding: 0px; margin:0px;" class="mb-2">
-                                                <span class="fs-25 me-2 text-primary">{{ $tryout->nama_tryout }}</span>
-                                                <span class="badge bg-success mt-2">
-                                                    {{ Number::currency($tryout->harga, in: 'IDR') }}
+                                            <h3 class="fs-6">Informasi Paket</h3>
+                                            <h3 class="fs-6 mb-2 d-flex gap-2 align-items-center flex-wrap">
+                                                <span class="fs-4 text-primary">
+                                                    {{ $tryout->nama_tryout }}
                                                 </span>
-                                            </h6>
+                                                <span
+                                                    class="badge bg-success">{{ Number::currency($tryout->harga, in: 'IDR') }}</span>
+                                            </h3>
                                             <div class="text-muted tx-12">
                                                 @if ($masaAktif > 0)
                                                     <span>
@@ -151,14 +155,14 @@
                                                             @if ($examResult && $tryout)
                                                                 <a href="{{ route('ujian.hasil', ['id' => Crypt::encrypt($row->id)]) }}"
                                                                     title="Klik untuk melihat detil">
-                                                                    <h5 style="color: #0075B8;">
+                                                                    <h3 class="fs-6 text-primary">
                                                                         {{ $tryoutName }} - {{ $row->id }}
-                                                                    </h5>
+                                                                    </h3>
                                                                 </a>
                                                             @else
-                                                                <h5 style="color: #0075B8;">
+                                                                <h3 class="fs-6 text-primary">
                                                                     {{ $tryoutName }} - {{ $row->id }}
-                                                                </h5>
+                                                                </h3>
                                                             @endif
 
                                                             <table class="table">
@@ -252,8 +256,8 @@
                                                                             <br>
                                                                             @php
                                                                                 $formattedTestimoni = str_replace(
-                                                                                    "`",
-                                                                                    "\`",
+                                                                                    '`',
+                                                                                    '\`',
                                                                                     $oldTestimoni ??
                                                                                         $testimoni->testimoni,
                                                                                 );
@@ -267,8 +271,8 @@
                                                                     @else
                                                                         @php
                                                                             $formattedTestimoni = str_replace(
-                                                                                "`",
-                                                                                "\`",
+                                                                                '`',
+                                                                                '\`',
                                                                                 $oldTestimoni,
                                                                             );
                                                                         @endphp
@@ -285,8 +289,9 @@
                                                         </td>
                                                         <td style="text-align: center;">
                                                             @if ($testimoni)
-                                                                <h1>{{ $examResult->total_nilai }}</h1>
-                                                                Keterangan :
+                                                                <h4 class="fs-1">
+                                                                    {{ round($examResult->total_nilai, 2) }}
+                                                                </h4>
                                                                 <span
                                                                     class="badge @if ($examResult->keterangan == 'Gagal') bg-danger @else bg-success @endif">
                                                                     {{ $examResult->keterangan }}

@@ -127,7 +127,7 @@
                         });
                         return;
                     }
-                    showSnapMidtrans(data.snap_token);
+                    showSnapMidtrans(snapToken);
                 } else {
                     swal({
                         title: "Notifikasi",
