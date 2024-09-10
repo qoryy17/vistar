@@ -130,7 +130,7 @@ class Site extends Controller
             'transactionStatusList' => $transactionStatusList,
         ];
 
-        return view('customer-panel.profil.pembelian', $data);
+        return view('customer-panel.tryout.pembelian', $data);
     }
 
     public function searchPembelian(Request $request)
@@ -149,6 +149,6 @@ class Site extends Controller
             'search' => $pembelian,
             'transactionStatusList' => $transactionStatusList,
         ];
-        return view('customer-panel.profil.pembelian', $data);
+        return view('customer-panel.tryout.pembelian', $data);
     }
 }

@@ -127,6 +127,9 @@
         loadKecamatan(value);
     });
 </script>
+
+@yield('scripts')
+
 </body>
 
 </html>

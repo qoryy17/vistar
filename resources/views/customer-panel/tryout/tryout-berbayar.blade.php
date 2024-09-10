@@ -10,7 +10,7 @@
                     <div>
                         <h2 class="main-content-title tx-24 mg-b-5">{{ $page_title }}</h2>
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Tryout</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('site.main') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active" aria-current="page">{{ $breadcumb }}</li>
                         </ol>
                     </div>

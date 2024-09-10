@@ -39,7 +39,7 @@
     <link href="{{ asset('resources/web/dist/assets/css/style.min.css') }}" id="color-opt" class="theme-opt"
         rel="stylesheet" type="text/css">
 
-
+    @yield('styles')
 
 </head>
 
