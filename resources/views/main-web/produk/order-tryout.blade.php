@@ -53,40 +53,30 @@
                   <div class="col-lg-6 col-md-6 ms-auto mt-4 pt-2">
                       <div class="table-responsive bg-white rounded shadow">
                           <table class="table table-center table-padding mb-0">
-                              <tbody>
-                                  {{-- <tr class="bg-light">
-                                      <td class="h6 ps-4 py-3" style="vertical-align: top;">
-                                          <button id="buttonReferral" class="btn btn-pills btn-soft-primary">Pakai
-                                              Kode</button>
-                                      </td>
-                                      <td class="text-end fw-bold pe-4">
-                                          <input id="kodeReferral" type="text" class="form-control"
-                                              placeholder="Masukan Kode Referral">
-                                          <small id="message" style="color: green; display: none; font-size: 12px;">Kode
-                                              referral
-                                              valid !</small>
-                                      </td>
-                                  </tr> --}}
+                              <thead>
                                   <tr class="bg-light">
-                                      <td class="h6 ps-4 py-3">Total</td>
-                                      <td class="text-end fw-bold pe-4">
+                                      <th id="total" class="h6 ps-4 py-3">Total</th>
+                                      <th id="total" class="text-end fw-bold pe-4">
                                           @if ($order->harga != null)
                                               {{ Number::currency($order->harga, in: 'IDR') }}
                                           @else
                                               {{ Number::currency($order->harga_promo, in: 'IDR') }}
                                           @endif
-                                      </td>
+                                      </th>
                                   </tr>
-                              </tbody>
+                              </thead>
                           </table>
                       </div>
                       <div class="mt-4 pt-2 text-end">
                           <a href="{{ route('mainweb.keranjang') }}" class="btn btn-pills btn-soft-warning">
                               <i class="mdi mdi-reply"></i> Kembali
                           </a>
-                          <button id="pay-button" type="submit" class="btn btn-pills btn-soft-primary">
+                          <button onclick="showSnapMidtrans('058458c4-d977-41e5-a1d6-87b15dee7bb9')">
                               Bayar Sekarang <i class="mdi mdi-arrow-right"></i>
                           </button>
+                          {{--  <button id="pay-button" type="submit" class="btn btn-pills btn-soft-primary">
+                              Bayar Sekarang <i class="mdi mdi-arrow-right"></i>
+                          </button>  --}}
 
                       </div>
                   </div><!--end col-->
@@ -99,57 +89,16 @@
           src="{{ !config('services.midtrans.is_production') ? 'https://app.sandbox.midtrans.com/snap/snap.js' : 'https://app.midtrans.com/snap/snap.js' }}"
           data-client-key="{{ config('services.midtrans.client_key') }}"></script>
 
+      <style>
+          /* Fix style.css, why iframe set to auto on @media (max-width: 767px) */
+          iframe {
+              width: 100% !important;
+          }
+      </style>
+
       <script type="text/javascript">
-          // document.getElementById('buttonReferral').addEventListener('click', function() {
-          //     const referralCodeInput = document.getElementById('kodeReferral');
-          //     const referralCode = referralCodeInput.value.trim();
-          //     const messageElement = document.getElementById('message');
-
-          //     fetch("{{ route('orders.check-referral') }}", {
-          //             method: 'POST',
-          //             headers: {
-          //                 'Content-Type': 'application/json',
-          //                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-          //             },
-          //             body: JSON.stringify({
-          //                 referral_code: referralCode
-          //             })
-          //         })
-          //         .then(response => response.json())
-          //         .then(data => {
-          //             if (data.status === 'success') {
-          //                 // Tampilkan pesan sukses
-          //                 messageElement.style.display = 'block';
-          //                 messageElement.style.color = 'green';
-          //                 messageElement.textContent = data.message;
-
-          //                 // Set input menjadi readonly
-          //                 referralCodeInput.readOnly = true;
-
-          //                 // Sembunyikan tombol
-          //                 document.getElementById('buttonReferral').style.display = 'none';
-
-          //             } else {
-          //                 // Tampilkan pesan error
-          //                 messageElement.style.display = 'block';
-          //                 messageElement.style.color = 'red';
-          //                 messageElement.textContent = data.message;
-          //             }
-          //         })
-          //         .catch(error => {
-          //             console.error('Error:', error);
-          //             messageElement.style.display = 'block';
-          //             messageElement.style.color = 'red';
-          //             messageElement.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
-          //         });
-          // });
-
-
           $('#pay-button').click(function(event) {
               event.preventDefault();
-
-              // const referralCodeInput = document.getElementById('kodeReferral');
-              // const referralCode = referralCodeInput.value.trim();
 
               $.post("{{ route('orders.pay-order') }}", {
                       _method: 'POST',
@@ -157,22 +106,23 @@
                       id: "{{ Crypt::encrypt($order->id) }}"
                   },
                   function(data, status) {
-
-                      snap.pay(data.snap_token, {
-                          onSuccess: function(result) {
-                              window.location.href = "{{ route('site.pembelian') }}";
-                          },
-                          onPending: function(result) {
-                              window.location.href = "{{ route('site.pembelian') }}";
-
-                          },
-                          onError: function(result) {
-                              window.location.href = "{{ route('site.pembelian') }}";
-                          }
-
-                      });
-                      return false;
+                      showSnapMidtrans(data.snap_token);
                   });
           });
+
+          function showSnapMidtrans(snapToken) {
+              snap.pay(snapToken, {
+                  onSuccess: function(result) {
+                      window.location.href = "{{ route('site.pembelian') }}";
+                  },
+                  onPending: function(result) {
+                      window.location.href = "{{ route('site.pembelian') }}";
+
+                  },
+                  onError: function(result) {
+                      window.location.href = "{{ route('site.pembelian') }}";
+                  }
+              });
+          }
       </script>
   @endsection

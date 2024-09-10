@@ -66,21 +66,20 @@
                                               <td class="text-center">{{ Number::currency($row->harga_promo, in: 'IDR') }}
                                               </td>
                                               <td class="text-center">
-                                                  <button onclick="hapusItem{{ $no }}()"
-                                                      class="btn btn-pills btn-soft-danger"">Hapus</button>
-                                                  <a href="{{ route('orders.detail-pesanan', ['params' => Crypt::encrypt($row->id)]) }}"
-                                                      class="btn btn-pills btn-soft-primary">Bayar</a>
+                                                  <div class="d-flex flex-nowrap gap-1">
+                                                      <button onclick="hapusItem({{ $no }})"
+                                                          class="btn btn-pills btn-soft-danger">Hapus
+                                                      </button>
+                                                      <a href="{{ route('orders.detail-pesanan', ['params' => Crypt::encrypt($row->id)]) }}"
+                                                          class="btn btn-pills btn-soft-primary">Bayar</a>
+                                                  </div>
                                                   <form id="formHapusItem{{ $no }}"
                                                       action="{{ route('mainweb.hapus-item', ['id' => Crypt::encrypt($row->id)]) }}"
                                                       method="POST">
                                                       @csrf
                                                       @method('DELETE')
                                                   </form>
-                                                  <script>
-                                                      function hapusItem{{ $no }}() {
-                                                          document.getElementById('formHapusItem{{ $no }}').submit();
-                                                      }
-                                                  </script>
+
                                               </td>
                                           </tr>
                                           @php
@@ -229,4 +228,10 @@
           </div><!--end container-->
       </section><!--end section-->
       <!-- End -->
+
+      <script>
+          function hapusItem(no) {
+              document.getElementById(`formHapusItem${no}`).submit();
+          }
+      </script>
   @endsection
