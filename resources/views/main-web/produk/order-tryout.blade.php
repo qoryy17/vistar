@@ -71,12 +71,9 @@
                           <a href="{{ route('mainweb.keranjang') }}" class="btn btn-pills btn-soft-warning">
                               <i class="mdi mdi-reply"></i> Kembali
                           </a>
-                          <button onclick="showSnapMidtrans('058458c4-d977-41e5-a1d6-87b15dee7bb9')">
+                          <button id="pay-button" type="submit" class="btn btn-pills btn-soft-primary">
                               Bayar Sekarang <i class="mdi mdi-arrow-right"></i>
                           </button>
-                          {{--  <button id="pay-button" type="submit" class="btn btn-pills btn-soft-primary">
-                              Bayar Sekarang <i class="mdi mdi-arrow-right"></i>
-                          </button>  --}}
 
                       </div>
                   </div><!--end col-->
