@@ -169,7 +169,7 @@
                                                                 </label>
                                                                 <input type="text" id="poin_a" name="poin_a"
                                                                     required
-                                                                    value="{{ $soal ? $row->poin_a : old('poin_a') }}"
+                                                                    value="{{ $soal ? $row->poin_a : old('poin_a') ?? 0 }}"
                                                                     class="form-control" autocomplete="off">
                                                                 @error('poin_a')
                                                                     <small class="text-danger">*
@@ -193,7 +193,7 @@
                                                                 </label>
                                                                 <input type="text" id="poin_b" name="poin_b"
                                                                     required
-                                                                    value="{{ $soal ? $row->poin_b : old('poin_b') }}"
+                                                                    value="{{ $soal ? $row->poin_b : old('poin_b') ?? 0 }}"
                                                                     class="form-control" autocomplete="off">
                                                                 @error('poin_b')
                                                                     <small class="text-danger">*
@@ -217,7 +217,7 @@
                                                                 </label>
                                                                 <input type="text" id="poin_c" name="poin_c"
                                                                     required
-                                                                    value="{{ $soal ? $row->poin_c : old('poin_c') }}"
+                                                                    value="{{ $soal ? $row->poin_c : old('poin_c') ?? 0 }}"
                                                                     class="form-control" autocomplete="off">
                                                                 @error('poin_c')
                                                                     <small class="text-danger">*
@@ -241,7 +241,7 @@
                                                                 </label>
                                                                 <input type="text" id="poin_d" name="poin_d"
                                                                     required
-                                                                    value="{{ $soal ? $row->poin_d : old('poin_d') }}"
+                                                                    value="{{ $soal ? $row->poin_d : old('poin_d') ?? 0 }}"
                                                                     class="form-control" autocomplete="off">
                                                                 @error('poin_d')
                                                                     <small class="text-danger">*
@@ -265,7 +265,7 @@
                                                                 </label>
                                                                 <input type="text" id="poin_e" name="poin_e"
                                                                     required
-                                                                    value="{{ $soal ? $row->poin_e : old('poin_e') }}"
+                                                                    value="{{ $soal ? $row->poin_e : old('poin_e') ?? 0 }}"
                                                                     class="form-control" autocomplete="off">
                                                                 @error('poin_e')
                                                                     <small class="text-danger">*
