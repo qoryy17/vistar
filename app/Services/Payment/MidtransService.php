@@ -89,7 +89,7 @@ class MidtransService
             $status = 'failed';
         } elseif ($transactionStatus === 'pending') {
             $status = 'pending';
-        } elseif ($transactionStatus === 'expired') {
+        } elseif ($transactionStatus === 'expired' || $transactionStatus === 'expire') {
             $status = 'expired';
         }
 

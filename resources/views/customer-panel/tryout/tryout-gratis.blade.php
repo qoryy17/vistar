@@ -2,7 +2,6 @@
 @section('title', $page_title)
 @section('content')
     <div class="main-content pt-0 hor-content">
-
         <div class="main-container container-fluid">
             <div class="inner-body">
 
@@ -11,7 +10,7 @@
                     <div>
                         <h2 class="main-content-title tx-24 mg-b-5">{{ $page_title }}</h2>
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Tryout</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('site.main') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active" aria-current="page">{{ $breadcumb }}</li>
                         </ol>
                     </div>
@@ -21,6 +20,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- End Page Header -->
 
                 @if ($ujianGratis->count() > 0)
                     <!-- End Page Header -->
@@ -60,13 +60,13 @@
                                     <div class="card custom-card">
                                         <div class="card-body">
                                             <div>
-                                                <h6>Informasi Paket</h6>
-                                                <h6 style="padding: 0px; margin:0px;" class="mb-2">
-                                                    <span class="fs-30 me-2" style="color: #0075B8;">
+                                                <h3 class="fs-6">Informasi Paket</h3>
+                                                <h3 class="fs-6 mb-2 d-flex gap-2 align-items-center flex-wrap">
+                                                    <span class="fs-4 text-primary">
                                                         {{ $tryout->nama_tryout }}
                                                     </span>
-                                                    <span class="badge bg-success mt-2">Gratis 1x</span>
-                                                </h6>
+                                                    <span class="badge bg-success">Gratis 1x</span>
+                                                </h3>
                                                 <div class="text-muted tx-12">
                                                     @if ($isFinish)
                                                         <span>
@@ -176,13 +176,13 @@
                                                         <td style="vertical-align: top;">{{ $no }}</td>
                                                         <td>
                                                             @if ($examResult && $tryout)
-                                                                <h5 style="color: #0075B8;">
+                                                                <h3 class="fs-6">
                                                                     {{ $tryoutName }} - {{ $row->id }}
-                                                                </h5>
+                                                                </h3>
                                                             @else
-                                                                <h5 style="color: #0075B8;">
+                                                                <h3 class="fs-6">
                                                                     {{ $tryoutName }} - {{ $row->id }}
-                                                                </h5>
+                                                                </h3>
                                                             @endif
 
                                                             <table class="table">
@@ -297,8 +297,9 @@
                                                         </td>
                                                         <td style="text-align: center;">
                                                             @if ($testimoni)
-                                                                <h1>{{ $examResult->total_nilai }}</h1>
-                                                                Keterangan :
+                                                                <h4 class="fs-1">
+                                                                    {{ round($examResult->total_nilai, 2) }}
+                                                                </h4>
                                                                 <span
                                                                     class="badge @if ($examResult->keterangan == 'Gagal') bg-danger @else bg-success @endif">
                                                                     {{ $examResult->keterangan }}

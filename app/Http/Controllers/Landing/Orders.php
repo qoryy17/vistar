@@ -26,22 +26,33 @@ class Orders extends Controller
         if (Auth::user()->role != 'Customer') {
             return Redirect::to('/');
         }
-        $data = [
-            'title' => 'Pembayaran Pesanan',
-            'tryout' => DB::table('keranjang_order')->select('keranjang_order.*', 'produk_tryout.id as idProduk', 'produk_tryout.nama_tryout', 'produk_tryout.keterangan', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status')
-                ->leftJoin('produk_tryout', 'keranjang_order.produk_tryout_id', '=', 'produk_tryout.id')
-                ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
-                ->where('keranjang_order.customer_id', '=', Auth::user()->customer_id)
-                ->where('keranjang_order.id', '=', Crypt::decrypt($request->params))
-                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('keranjang_order.updated_at', 'DESC'),
-        ];
 
-        if ($data['tryout']->first()) {
-            return view('main-web.produk.order-tryout', $data);
-        } else {
+        $param = $request->params;
+        try {
+            $param = Crypt::decrypt($param);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Pesanan Tidak ditemukan!');
+        }
+
+        $orders = DB::table('keranjang_order')->select('keranjang_order.*', 'produk_tryout.id as idProduk', 'produk_tryout.nama_tryout', 'produk_tryout.keterangan', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status')
+            ->leftJoin('produk_tryout', 'keranjang_order.produk_tryout_id', '=', 'produk_tryout.id')
+            ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
+            ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
+            ->where('keranjang_order.customer_id', '=', Auth::user()->customer_id)
+            ->where('keranjang_order.id', '=', $param)
+            ->whereNot('kategori_produk.status', 'Gratis')->orderBy('keranjang_order.updated_at', 'DESC')
+            ->get();
+
+        if ($orders->count() <= 0) {
             return redirect()->route('site.pembelian');
         }
+
+        $data = [
+            'title' => 'Pembayaran Pesanan',
+            'orders' => $orders,
+        ];
+
+        return view('main-web.produk.order-tryout', $data);
     }
 
     public function payOrder(Request $request)
@@ -62,10 +73,11 @@ class Orders extends Controller
         $orderID = Str::uuid();
 
         $grossAmount = $tryout->harga;
-        // Cekk apakah harga ada promo
-        if ($tryout->harga_promo != null) {
+        // Check if there is promo price
+        if ($tryout->harga_promo !== 0 && $tryout->harga_promo !== null) {
             $grossAmount = $tryout->harga_promo;
         }
+
         $grossAmount = intval($grossAmount);
 
         $midtransService = new MidtransService();
@@ -100,9 +112,9 @@ class Orders extends Controller
 
             if (!$buatOrder->save()) {
                 return response()->json([
-                    'status' => 'error',
-                    'snap_token' => null,
-                ]);
+                    'result' => 'error',
+                    'title' => 'Order gagal disimpan',
+                ], 200);
             }
 
             // Add Payment Data
@@ -116,14 +128,15 @@ class Orders extends Controller
                 'status_transaksi' => $status,
             ]);
 
-            // Catata referral jika ada : note : referral disable sementara
-            /*if ($request->referralCode) {
-            $referral = new ReferralCustomer();
-            $referral->id = rand(1, 999) . rand(1, 99);
-            $referral->kode_referral = $request->referralCode;
-            $referral->produk_tryout_id = $referensiOrderID;
-            $referral->save();
-            }*/
+            /* NOTE: referral disable sementara */
+            // Catatan referral jika ada
+            // if ($request->referralCode) {
+            //     $referral = new ReferralCustomer();
+            //     $referral->id = rand(1, 999) . rand(1, 99);
+            //     $referral->kode_referral = $request->referralCode;
+            //     $referral->produk_tryout_id = $referensiOrderID;
+            //     $referral->save();
+            // }
 
             // Hapus Keranjang
             $keranjang = KeranjangOrder::find(Crypt::decrypt($request->id));
@@ -132,11 +145,14 @@ class Orders extends Controller
             }
 
             return response()->json([
-                'status' => 'success',
-                'snap_token' => $snapToken,
-            ]);
+                'result' => 'success',
+                'title' => 'Order berhasil dibuat',
+                'data' => [
+                    'snap_token' => $snapToken,
+                ],
+            ], 200);
         } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
+            return response()->json(['result' => 'error', 'title' => $th->getMessage()], 500);
         }
     }
 

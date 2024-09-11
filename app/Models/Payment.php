@@ -48,12 +48,12 @@ class Payment extends Model
         'failed' => [
             'title' => 'Pembayaran Gagal',
             'color' => '#ffffff',
-            'bg-color' => '#27a168'
+            'bg-color' => '#fd6074'
         ],
         'expired' => [
             'title' => 'Pembayaran Kadaluarsa',
             'color' => '#ffffff',
-            'bg-color' => '#27a168'
+            'bg-color' => '#fd6074'
         ],
     ];
 
