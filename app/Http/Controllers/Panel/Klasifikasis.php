@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Panel;
 
 use App\Helpers\Notifikasi;
 use App\Helpers\RecordLogs;
-use App\Models\LimitTryout;
-use Illuminate\Http\Request;
-use App\Models\KlasifikasiSoal;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Panel\KlasifikasiSoalRequest;
+use App\Models\KlasifikasiSoal;
+use App\Models\LimitTryout;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\Panel\KlasifikasiSoalRequest;
 
 class Klasifikasis extends Controller
 {
@@ -24,7 +24,7 @@ class Klasifikasis extends Controller
             'bc2' => 'Klasifikasi Soal Tryout',
             'klasifikasi' => KlasifikasiSoal::all(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.klasifikasi-soal.data-klasifikasi-soal', $data);
     }
@@ -33,7 +33,7 @@ class Klasifikasis extends Controller
     {
         if (htmlentities($param) == 'add') {
             $form_title = 'Tambah Klasifikasi';
-            $klasifikasi = '';
+            $klasifikasi = null;
             $formParam = Crypt::encrypt('add');
         } elseif (htmlentities($param) == 'update') {
             $form_title = 'Edit Klasifikasi';
@@ -50,7 +50,7 @@ class Klasifikasis extends Controller
             'klasifikasi' => $klasifikasi,
             'formParam' => $formParam,
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.klasifikasi-soal.form-klasifikasi-soal', $data);
     }
@@ -62,13 +62,17 @@ class Klasifikasis extends Controller
         // Validasi inputan
         $request->validated();
 
+        $savedData = [
+            'judul' => ucwords(htmlspecialchars($request->input('judul'))),
+            'alias' => strtoupper(htmlspecialchars($request->input('alias'))),
+            'passing_grade' => strtoupper(htmlspecialchars($request->input('passingGrade'))),
+            'ordering' => $request->input('ordering'),
+            'aktif' => htmlspecialchars($request->input('aktif')),
+        ];
+
+        $save = null;
         if (Crypt::decrypt($request->input('formParameter')) == 'add') {
-            $klasifikasiSoal = new KlasifikasiSoal();
-            $klasifikasiSoal->id = rand(1, 999) . rand(1, 99);
-            $klasifikasiSoal->judul = ucwords(htmlspecialchars($request->input('judul')));
-            $klasifikasiSoal->alias = strtoupper(htmlspecialchars($request->input('alias')));
-            $klasifikasiSoal->passingGrade = strtoupper(htmlspecialchars($request->input('passingGrade')));
-            $klasifikasiSoal->aktif = htmlspecialchars($request->input('aktif'));
+            $save = KlasifikasiSoal::create($savedData);
 
             // Catatan logs
             $logs = $users->name . ' telah menambahkan klasifikasi soal ' . $request->input('judul') . ' waktu tercatat :  ' . now();
@@ -76,26 +80,24 @@ class Klasifikasis extends Controller
             $error = 'Klasifikasi soal gagal disimpan !';
         } elseif (Crypt::decrypt($request->input('formParameter')) == 'update') {
             $klasifikasiSoal = KlasifikasiSoal::findOrFail($request->input('klasifikasiID'));
-            $klasifikasiSoal->judul = ucwords(htmlspecialchars($request->input('judul')));
-            $klasifikasiSoal->alias = strtoupper(htmlspecialchars($request->input('alias')));
-            $klasifikasiSoal->passingGrade = strtoupper(htmlspecialchars($request->input('passingGrade')));
-            $klasifikasiSoal->aktif = htmlspecialchars($request->input('aktif'));
+
+            $save = $klasifikasiSoal->update($savedData);
 
             // Catatan logs
             $logs = $users->name . ' telah memperbarui klasifikasi soal dengan ID' . $request->input('klasifikasiID') . ' waktu tercatat :  ' . now();
             $message = 'Klasifikasi soal berhasil diperbarui !';
             $error = 'Klasifikasi soal gagal diperbarui !';
         } else {
-            return Redirect::route('klasifikasi.index')->with('error', 'Parameter tidak valid !');
+            return redirect()->route('klasifikasi.index')->with('error', 'Parameter tidak valid !');
         }
 
-        if ($klasifikasiSoal->save()) {
-            // Simpan logs aktivitas pengguna
-            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::route('klasifikasi.index')->with('message', $message);
-        } else {
-            return Redirect::route('klasifikasi.index')->with('error', $error)->withInput();
+        if (!$save) {
+            return redirect()->route('klasifikasi.index')->with('error', $error)->withInput();
         }
+
+        // Simpan logs aktivitas pengguna
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+        return redirect()->route('klasifikasi.index')->with('message', $message);
     }
 
     public function ubahAktifKlasifikasi(Request $request): RedirectResponse

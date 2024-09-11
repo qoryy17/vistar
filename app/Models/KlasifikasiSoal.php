@@ -12,12 +12,18 @@ class KlasifikasiSoal extends Model
 
     protected $table = 'klasifikasi_soal';
 
+    protected $primaryKey = 'id';
+
     protected $fillable = [
         'id',
+        'alias',
         'judul',
-        'aktif',
         'passing_grade',
+        'ordering',
+        'aktif',
     ];
+
+    public $incrementing = true;
 
     public $timestamps = true;
 

@@ -22,24 +22,27 @@ class KlasifikasiSoalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'judul' => ['required', 'string', 'max:255'],
             'alias' => ['required', 'string'],
+            'judul' => ['required', 'string', 'max:255'],
             'passingGrade' => ['required', 'numeric'],
-            'aktif' => ['required']
+            'ordering' => ['required', 'numeric'],
+            'aktif' => ['required'],
         ];
     }
 
     public function messages(): array
     {
         return [
+            'alias.required' => 'Alias wajib di isi',
+            'alias.string' => 'Judul harus berupa kalimat',
             'judul.required' => 'Judul wajib di isi',
             'judul.string' => 'Judul harus berupa kalimat',
             'judul.max' => 'Judul maksimal 255 karakter',
-            'alias.required' => 'Alias wajib di isi',
-            'alias.string' =>  'Judul harus berupa kalimat',
             'passingGrade.required' => 'Passing grade harus di isi',
             'passingGrade.numeric' => 'Passing grade harus berupa angka',
-            'aktif.required' => 'Aktif wajib di isi'
+            'ordering.required' => 'Urutan harus di isi',
+            'ordering.numeric' => 'Urutan harus berupa angka',
+            'aktif.required' => 'Aktif wajib di isi',
         ];
     }
 }

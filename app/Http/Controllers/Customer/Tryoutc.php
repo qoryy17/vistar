@@ -228,21 +228,22 @@ class Tryoutc extends Controller
 
         // Get All Question
         $questions = Cache::remember($cacheKeyQuestion, $cacheDurationExam, function () use ($questionCode) {
-            return SoalUjian::select(
-                'soal_ujian.id',
-                'soal_ujian.kode_soal',
-                'soal_ujian.soal',
-                'soal_ujian.gambar',
-                'soal_ujian.jawaban_a',
-                'soal_ujian.jawaban_b',
-                'soal_ujian.jawaban_c',
-                'soal_ujian.jawaban_d',
-                'soal_ujian.jawaban_e',
-                'soal_ujian.klasifikasi_soal_id',
-                'klasifikasi_soal.alias',
-                'klasifikasi_soal.created_at'
-            )->leftJoin('klasifikasi_soal', 'soal_ujian.klasifikasi_soal_id', '=', 'klasifikasi_soal.id')->orderBy('klasifikasi_soal.created_at', 'ASC')
-                ->where('kode_soal', $questionCode)
+            return SoalUjian::where('kode_soal', $questionCode)
+                ->select(
+                    'soal_ujian.id',
+                    'soal_ujian.kode_soal',
+                    'soal_ujian.soal',
+                    'soal_ujian.gambar',
+                    'soal_ujian.jawaban_a',
+                    'soal_ujian.jawaban_b',
+                    'soal_ujian.jawaban_c',
+                    'soal_ujian.jawaban_d',
+                    'soal_ujian.jawaban_e',
+                    'soal_ujian.klasifikasi_soal_id',
+                    'klasifikasi_soal.alias as klasifikasi_alias'
+                )
+                ->leftJoin('klasifikasi_soal', 'soal_ujian.klasifikasi_soal_id', '=', 'klasifikasi_soal.id')
+                ->orderBy('klasifikasi_soal.ordering', 'ASC')
                 ->get();
         });
         $totalQuestion = $questions->count();
@@ -494,7 +495,7 @@ class Tryoutc extends Controller
 
         $cacheKey = 'exam_answered_' . $id;
         $reviewJawaban = Cache::remember($cacheKey, 10 * 60, function () use ($id) {
-            return DB::table('progres_ujian')
+            return DB::table('progres_ujian')->where('ujian_id', $id)
                 ->select(
                     'progres_ujian.jawaban',
                     'progres_ujian.soal_ujian_id',
@@ -512,9 +513,12 @@ class Tryoutc extends Controller
                     'soal_ujian.poin_e',
                     'soal_ujian.berbobot',
                     'soal_ujian.kunci_jawaban',
-                    'soal_ujian.review_pembahasan'
-                )->leftJoin('soal_ujian', 'progres_ujian.soal_ujian_id', '=', 'soal_ujian.id')
-                ->where('ujian_id', $id)
+                    'soal_ujian.review_pembahasan',
+                    'klasifikasi_soal.alias as klasifikasi_alias'
+                )
+                ->leftJoin('soal_ujian', 'progres_ujian.soal_ujian_id', '=', 'soal_ujian.id')
+                ->leftJoin('klasifikasi_soal', 'soal_ujian.klasifikasi_soal_id', '=', 'klasifikasi_soal.id')
+                ->orderBy('klasifikasi_soal.ordering', 'ASC')
                 ->get();
         });
 
@@ -526,26 +530,29 @@ class Tryoutc extends Controller
         $questionCode = $productTryout->kode_soal;
         $cacheKey = 'exam_unanswered_' . $id;
         $unAnsweredQuestions = Cache::remember($cacheKey, 10 * 60, function () use ($answeredQuestions, $questionCode) {
-            return SoalUjian::select(
-                'id',
-                'soal',
-                'gambar',
-                'jawaban_a',
-                'jawaban_b',
-                'jawaban_c',
-                'jawaban_d',
-                'jawaban_e',
-                'poin_a',
-                'poin_b',
-                'poin_c',
-                'poin_d',
-                'poin_e',
-                'berbobot',
-                'kunci_jawaban',
-                'review_pembahasan'
-            )
-                ->where('kode_soal', $questionCode)
+            return SoalUjian::where('kode_soal', $questionCode)
                 ->whereNotIn('id', $answeredQuestions)
+                ->select(
+                    'soal_ujian.id',
+                    'soal_ujian.soal',
+                    'soal_ujian.gambar',
+                    'soal_ujian.jawaban_a',
+                    'soal_ujian.jawaban_b',
+                    'soal_ujian.jawaban_c',
+                    'soal_ujian.jawaban_d',
+                    'soal_ujian.jawaban_e',
+                    'soal_ujian.poin_a',
+                    'soal_ujian.poin_b',
+                    'soal_ujian.poin_c',
+                    'soal_ujian.poin_d',
+                    'soal_ujian.poin_e',
+                    'soal_ujian.berbobot',
+                    'soal_ujian.kunci_jawaban',
+                    'soal_ujian.review_pembahasan',
+                    'klasifikasi_soal.alias as klasifikasi_alias',
+                )
+                ->leftJoin('klasifikasi_soal', 'soal_ujian.klasifikasi_soal_id', '=', 'klasifikasi_soal.id')
+                ->orderBy('klasifikasi_soal.ordering', 'ASC')
                 ->get();
         });
 

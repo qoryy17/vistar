@@ -45,49 +45,62 @@
                                         <div class="col-md-12">
                                             @if (Crypt::decrypt($formParam) == 'update')
                                                 <div class="form-group" hidden>
-                                                    <label for="klasifikasiID">Klasifikasi Soal ID <span
-                                                            class="text-danger">*</span>
+                                                    <label for="klasifikasiID">
+                                                        Klasifikasi Soal ID <span class="text-danger">*</span>
                                                     </label>
                                                     <input type="text" class="form-control"
                                                         placeholder="klasifikasiID..." autocomplete="off" required
-                                                        value="{{ old('klasifikasiID') ?? $klasifikasi->id }}"
-                                                        id="klasifikasiID" name="klasifikasiID" readonly>
+                                                        value="{{ @$klasifikasi->id }}" id="klasifikasiID"
+                                                        name="klasifikasiID" readonly>
                                                     @error('klasifikasiID')
                                                         <small class="text-danger">* {{ $message }}</small>
                                                     @enderror
                                                 </div>
                                             @endif
                                             <div class="form-group">
-                                                <label for="JudulKlasifikasiSoal">Judul Klasifikasi Soal <span
-                                                        class="text-danger">*</span>
+                                                <label for="JudulKlasifikasiSoal">
+                                                    Judul Klasifikasi Soal <span class="text-danger">*</span>
                                                 </label>
                                                 <input type="text" class="form-control"
-                                                    placeholder="Judul Klasifikasi Soal..." autocomplete="off" required
-                                                    value="{{ $klasifikasi->judul ?? old('judul') }}"
-                                                    id="JudulKlasifikasiSoal" name="judul">
+                                                    placeholder="Judul Klasifikasi Soal..." autocomplete="off"
+                                                    value="{{ old('judul', @$klasifikasi->judul) }}"
+                                                    id="JudulKlasifikasiSoal" name="judul" required>
                                                 @error('judul')
                                                     <small class="text-danger">* {{ $message }}</small>
                                                 @enderror
                                             </div>
                                             <div class="form-group">
-                                                <label for="Alias">Alias <span class="text-danger">*</span>
+                                                <label for="Alias">
+                                                    Alias <span class="text-danger">*</span>
                                                 </label>
                                                 <input type="text" class="form-control" placeholder="Alias Singkatan..."
-                                                    autocomplete="off" required
-                                                    value="{{ $klasifikasi->alias ?? old('alias') }}" id="Alias"
-                                                    name="alias">
+                                                    autocomplete="off" value="{{ old('alias', @$klasifikasi->alias) }}"
+                                                    id="Alias" name="alias" required>
                                                 @error('alias')
                                                     <small class="text-danger">* {{ $message }}</small>
                                                 @enderror
                                             </div>
                                             <div class="form-group">
-                                                <label for="PassingGrade">Passing Grade <span class="text-danger">*</span>
+                                                <label for="PassingGrade">
+                                                    Passing Grade <span class="text-danger">*</span>
                                                 </label>
                                                 <input type="number" class="form-control" placeholder="Passing Grade..."
-                                                    autocomplete="off" required min="0"
-                                                    value="{{ $klasifikasi->passing_grade ?? old('passingGrade') }}"
-                                                    id="PassingGrade" name="passingGrade">
+                                                    autocomplete="off" min="0"
+                                                    value="{{ old('passingGrade', @$klasifikasi->passing_grade) }}"
+                                                    id="PassingGrade" name="passingGrade" required />
                                                 @error('passingGrade')
+                                                    <small class="text-danger">* {{ $message }}</small>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="ordering">
+                                                    Urutan <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="number" class="form-control" placeholder="Urutan..."
+                                                    autocomplete="off" min="1"
+                                                    value="{{ old('ordering', @$klasifikasi->ordering) ?? 1 }}"
+                                                    id="ordering" name="ordering" required />
+                                                @error('ordering')
                                                     <small class="text-danger">* {{ $message }}</small>
                                                 @enderror
                                             </div>
@@ -96,37 +109,31 @@
                                                 </label>
                                                 <select name="aktif" id="Aktif" class="form-control" required>
                                                     <option value="">-- Aktif ? --</option>
-                                                    @if ($klasifikasi)
-                                                        @if ($klasifikasi->aktif == 'Y')
-                                                            <option value="Y" selected>Ya</option>
-                                                            <option value="T">Tidak</option>
-                                                        @elseif ($klasifikasi->aktif == 'T')
-                                                            <option value="Y">Ya</option>
-                                                            <option value="T" selected>Tidak</option>
-                                                        @endif
-                                                    @else
-                                                        @if (old('aktif') == 'Y')
-                                                            <option value="Y" selected>Ya</option>
-                                                            <option value="T">Tidak</option>
-                                                        @elseif (old('aktif') == 'T')
-                                                            <option value="Y">Ya</option>
-                                                            <option value="T" selected>Tidak</option>
-                                                        @else
-                                                            <option value="Y">Ya</option>
-                                                            <option value="T">Tidak</option>
-                                                        @endif
-                                                    @endif
+                                                    @php
+                                                        $active = 'Y';
+                                                        if ($klasifikasi) {
+                                                            $active = $klasifikasi->aktif;
+                                                        }
+                                                        $active = old('aktif', $active);
+                                                    @endphp
+                                                    <option value="Y" {{ $active === 'Y' ? 'selected' : '' }}>
+                                                        Ya
+                                                    </option>
+                                                    <option value="T" {{ $active === 'T' ? 'selected' : '' }}>
+                                                        Tidak
+                                                    </option>
                                                 </select>
                                                 @error('aktif')
                                                     <small class="text-danger">* {{ $message }}</small>
                                                 @enderror
                                             </div>
                                             <div class="form-group" hidden>
-                                                <label for="formParameter">Form Parameter <span class="text-danger">*</span>
+                                                <label for="formParameter">
+                                                    Form Parameter <span class="text-danger">*</span>
                                                 </label>
                                                 <input type="text" class="form-control" placeholder="Parameter..."
-                                                    autocomplete="off" required id="formParameter" name="formParameter"
-                                                    required value="{{ $formParam }}" readonly>
+                                                    autocomplete="off" id="formParameter" name="formParameter"
+                                                    value="{{ $formParam }}" required readonly />
                                             </div>
                                         </div>
                                     </div>
