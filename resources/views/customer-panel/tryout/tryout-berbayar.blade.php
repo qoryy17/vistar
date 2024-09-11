@@ -127,7 +127,6 @@
                                         <table class="table table-bordered border-bottom">
                                             <thead>
                                                 <tr>
-                                                    <th>No</th>
                                                     <th>Informasi Ujian</th>
                                                     <th class="text-center">Total Nilai</th>
                                                 </tr>
@@ -150,18 +149,25 @@
                                                             $tryout?->nama_tryout ?? 'Tryout ID: ' . $tryoutId;
                                                     @endphp
                                                     <tr>
-                                                        <td style="vertical-align: top;">{{ $no }}</td>
                                                         <td>
                                                             @if ($examResult && $tryout)
                                                                 <a href="{{ route('ujian.hasil', ['id' => Crypt::encrypt($row->id)]) }}"
-                                                                    title="Klik untuk melihat detil">
+                                                                    title="Klik untuk melihat review pembahasan">
                                                                     <h3 class="fs-6 text-primary">
-                                                                        {{ $tryoutName }} - {{ $row->id }}
+                                                                        {{ $no }}. {{ $tryoutName }} -
+                                                                        {{ $row->id }}
+                                                                        <br>
+                                                                        <small style="padding-left: 20px;">
+                                                                            <span class="badge bg-warning">Klik Untuk
+                                                                                Melihat
+                                                                                Review Pembahasan</span>
+                                                                        </small>
                                                                     </h3>
                                                                 </a>
                                                             @else
                                                                 <h3 class="fs-6 text-primary">
-                                                                    {{ $tryoutName }} - {{ $row->id }}
+                                                                    {{ $no }}. {{ $tryoutName }} -
+                                                                    {{ $row->id }}
                                                                 </h3>
                                                             @endif
 
