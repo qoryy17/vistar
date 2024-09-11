@@ -24,43 +24,49 @@
                 <!-- End Page Header -->
 
                 <!-- Row -->
-                <div class="row sidemenu-height">
+                <div class="row flex-column-reverse flex-lg-row sidemenu-height">
                     <div class="col-lg-8">
                         <div class="card custom-card">
                             <div class="card-body">
-                                <div class="row row-sm">
-                                    <div class="col-xl-3 col-lg-6 col-sm-6 pe-0 ps-0 border-end">
-                                        <div class="card-body text-center">
-                                            <h6 class="mb-0">Benar</h6>
-                                            <h2 class="mb-1 mt-2 number-font"><span
-                                                    class="counter badge bg-success">{{ $exam->hasil->benar }}</span>
-                                            </h2>
-                                        </div>
+                                @foreach ($examResultPassinGrade as $slideGraphScore)
+                                    <div class="d-flex flex-column-reverse flex-lg-row align-items-center">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="2">
+                                                        <div class="text-center fs-5">
+                                                            {{ $slideGraphScore->alias }}
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                                @if ($slideGraphScore->benar === null && $slideGraphScore->salah === null)
+                                                    <tr>
+                                                        <td>Dijawab</td>
+                                                        <td>{{ $slideGraphScore->terjawab }}</td>
+                                                    </tr>
+                                                @else
+                                                    <tr>
+                                                        <td>Benar</td>
+                                                        <td>{{ $slideGraphScore->benar }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Salah</td>
+                                                        <td>{{ $slideGraphScore->salah }}</td>
+                                                    </tr>
+                                                @endif
+                                                <tr>
+                                                    <td>Dilewati</td>
+                                                    <td>{{ $slideGraphScore->terlewati }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Total Nilai</td>
+                                                    <td>{{ $slideGraphScore->total_nilai }}</td>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        <canvas id="chartEvaluation-{{ $slideGraphScore->id }}"></canvas>
                                     </div>
-                                    <div class="col-xl-3 col-lg-6 col-sm-6 pe-0 ps-0 border-end">
-                                        <div class="card-body text-center">
-                                            <h6 class="mb-0">Salah</h6>
-                                            <h2 class="mb-1 mt-2 number-font"><span
-                                                    class="counter badge bg-danger">{{ $exam->hasil->salah }}</span></h2>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-3 col-lg-6 col-sm-6 pe-0 ps-0 border-end">
-                                        <div class="card-body text-center">
-                                            <h6 class="mb-0">Terjawab</h6>
-                                            <h2 class="mb-1 mt-2 number-font"><span
-                                                    class="counter badge bg-info">{{ $exam->hasil->terjawab }}</span>
-                                            </h2>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-3 col-lg-6 col-sm-6 pe-0 ps-0">
-                                        <div class="card-body text-center">
-                                            <h6 class="mb-0">Tidak Terjawab</h6>
-                                            <h2 class="mb-1 mt-2 number-font"><span
-                                                    class="counter badge bg-warning">{{ $exam->hasil->tidak_terjawab }}</span>
-                                            </h2>
-                                        </div>
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
                         </div>
                         <div class="card custom-card">
@@ -172,9 +178,7 @@
                                 @endforeach
 
                                 @if ($unAnsweredQuestions->count() > 0)
-                                    <hr />
-
-                                    <h5>Soal Terlewati</h5>
+                                    <h4 class="text-center">Soal Terlewati</h4>
 
                                     @php
                                         $no = 1;
@@ -281,15 +285,23 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        {{-- Graph Evaluation --}}
                         <div class="card custom-card text-center">
-                            <div class="card-body">
-                                <div>
-                                    <h6 class="main-content-label mb-1">Grafik Review</h6>
-                                    <p class="text-muted  card-sub-title">Ujian Tryout</p>
+                            <div class="row row-sm">
+                                <div class="col-xl-6 col-lg-6 col-sm-12 pe-0 ps-0 border-end">
+                                    <div class="card-body text-center">
+                                        <h6 class="mb-0">Terjawab</h6>
+                                        <h2 class="mb-1 mt-2 number-font"><span
+                                                class="counter badge bg-info">{{ $exam->hasil->terjawab }}</span>
+                                        </h2>
+                                    </div>
                                 </div>
-                                <div class="chartjs-wrapper-demo">
-                                    <canvas id="chartEvaluation"></canvas>
+                                <div class="col-xl-6 col-lg-6 col-sm-12 pe-0 ps-0">
+                                    <div class="card-body text-center">
+                                        <h6 class="mb-0">Tidak Terjawab</h6>
+                                        <h2 class="mb-1 mt-2 number-font"><span
+                                                class="counter badge bg-warning">{{ $exam->hasil->tidak_terjawab }}</span>
+                                        </h2>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -312,72 +324,45 @@
             </div>
         </div>
     </div>
+@endsection
 
-    <!-- Jquery js-->
-    <script src="{{ url('resources/spruha/assets/plugins/jquery/jquery.min.js') }}"></script>
+@section('styles')
+
+@endsection
+
+@section('scripts')
     <script>
         const examResultPassinGrade = <?= json_encode($examResultPassinGrade) ?>;
 
         $(function() {
-            // Bar-Evaluasi
-            const chartEvaluation = new Chart(document.getElementById("chartEvaluation").getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: ["Evaluasi"],
-                    datasets: [{
-                        label: 'Benar',
-                        data: [{{ $exam->hasil->benar }}],
-                        borderWidth: 2,
-                        backgroundColor: '#19B159',
-                        borderColor: '#19B159',
-                        borderWidth: 2.0,
-                        pointBackgroundColor: '#ffffff',
 
-                    }, {
-                        label: 'Salah',
-                        data: [{{ $exam->hasil->salah }}],
-                        borderWidth: 2,
-                        backgroundColor: '#F16D75',
-                        borderColor: '#F16D75',
-                        borderWidth: 2.0,
-                        pointBackgroundColor: '#ffffff',
-                    }],
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    legend: {
-                        display: true
-                    },
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true,
-                                stepSize: 100,
-                                fontColor: "#77778e",
-                            },
-                            gridLines: {
-                                color: 'rgba(119, 119, 142, 0.2)'
-                            }
-                        }],
-                        xAxes: [{
-                            ticks: {
-                                display: true,
-                                fontColor: "#77778e",
-                            },
-                            gridLines: {
-                                display: false,
-                                color: 'rgba(119, 119, 142, 0.2)'
-                            }
+            for (let classification of examResultPassinGrade) {
+                const labels = [];
+                const datasetData = [];
+                const datasetBackgroundColor = [];
+                if (classification.benar === null && classification.salah === null) {
+                    labels.push('Dijawab', 'Dilewati')
+                    datasetData.push(classification.terjawab, classification.terlewati);
+                    datasetBackgroundColor.push('rgb(54, 162, 235)', 'rgb(255, 205, 86)');
+                } else {
+                    labels.push('Benar', 'Salah', 'Dilewati')
+                    datasetData.push(classification.benar, classification.salah, classification.terlewati);
+                    datasetBackgroundColor.push('rgb(54, 162, 235)', 'rgb(255, 99, 132)', 'rgb(255, 205, 86)');
+                }
+
+                new Chart(document.getElementById(`chartEvaluation-${classification.id}`).getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'My First Dataset',
+                            data: datasetData,
+                            backgroundColor: datasetBackgroundColor,
+                            hoverOffset: 4
                         }]
                     },
-                    legend: {
-                        labels: {
-                            fontColor: "#77778e"
-                        },
-                    },
-                }
-            });
+                });
+            }
 
             // Bar-Score Per Classification
             const labelsChartTotalScorePerClassification = []

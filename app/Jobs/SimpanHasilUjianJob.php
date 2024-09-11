@@ -13,6 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -60,6 +61,7 @@ class SimpanHasilUjianJob implements ShouldQueue
             }
 
             $score = 0;
+            $answered = 1;
             $right = 0;
             $wrong = 0;
             $soalArray = $soal->toArray();
@@ -76,11 +78,13 @@ class SimpanHasilUjianJob implements ShouldQueue
                 $totalPerClassification[$classificationId]['total_score'] = $totalPerClassification[$classificationId]['total_score'] + $score;
                 $totalPerClassification[$classificationId]['right'] = $totalPerClassification[$classificationId]['right'] + $right;
                 $totalPerClassification[$classificationId]['wrong'] = $totalPerClassification[$classificationId]['wrong'] + $wrong;
+                $totalPerClassification[$classificationId]['answered'] = $totalPerClassification[$classificationId]['answered'] + $answered;
             } else {
                 $totalPerClassification[$classificationId] = [
                     'total_score' => $score,
                     'right' => $right,
                     'wrong' => $wrong,
+                    'answered' => $answered,
                 ];
             }
         }
@@ -113,10 +117,10 @@ class SimpanHasilUjianJob implements ShouldQueue
 
             // Get All Classification on this Exam
             $classificationIds = SoalUjian::where('kode_soal', $questionCode)
-                ->select('klasifikasi_soal_id')
+                ->select('klasifikasi_soal_id', DB::raw('count(id) as total_question'))
                 ->groupBy('klasifikasi_soal_id')
                 ->get()
-                ->pluck('klasifikasi_soal_id')
+                ->pluck('total_question', 'klasifikasi_soal_id')
                 ->toArray();
 
             $keterangan = 'Lulus';
@@ -124,9 +128,7 @@ class SimpanHasilUjianJob implements ShouldQueue
             $savedClassification = [];
 
             $totalScore = 0;
-            $totalRight = 0;
-            $totalWrong = 0;
-            foreach ($classificationIds as $classificationId) {
+            foreach ($classificationIds as $classificationId => $classificationTotalQuestions) {
                 $classification = KlasifikasiSoal::find($classificationId);
                 if (!$classification) {
                     continue;
@@ -135,12 +137,13 @@ class SimpanHasilUjianJob implements ShouldQueue
                 $totalScorePerClassification = 0;
                 $totalRightPerClassification = 0;
                 $totalWrongPerClassification = 0;
+                $answeredPerClassification = 0;
                 if (array_key_exists($classificationId, $totalPerClassification)) {
                     $classificationResult = $totalPerClassification[$classificationId];
                     $totalScorePerClassification = $classificationResult['total_score'];
-                    $totalRightPerClassification = $classificationResult['wrong'];
-                    $totalWrongPerClassification = $classificationResult['right'];
-
+                    $totalRightPerClassification = $classificationResult['right'];
+                    $totalWrongPerClassification = $classificationResult['wrong'];
+                    $answeredPerClassification = $classificationResult['answered'];
                 }
 
                 if ($totalScorePerClassification < $classification->passing_grade) {
@@ -148,13 +151,15 @@ class SimpanHasilUjianJob implements ShouldQueue
                 }
 
                 $totalScore += $totalScorePerClassification;
-                $totalRight += $totalWrongPerClassification;
-                $totalWrong += $totalRightPerClassification;
 
                 array_push($savedClassification, [
                     'judul' => $classification->judul,
                     'alias' => $classification->alias,
                     'passing_grade' => $classification->passing_grade,
+                    'terjawab' => $answeredPerClassification,
+                    'terlewati' => $classificationTotalQuestions - $answeredPerClassification,
+                    'benar' => $classification->berbobot ? null : $totalRightPerClassification,
+                    'salah' => $classification->berbobot ? null : $totalWrongPerClassification,
                     'total_nilai' => $totalScorePerClassification,
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -164,8 +169,6 @@ class SimpanHasilUjianJob implements ShouldQueue
             $examResult = HasilUjian::create([
                 'ujian_id' => $examId,
                 'durasi_selesai' => now(),
-                'benar' => $totalRight,
-                'salah' => $totalWrong,
                 'terjawab' => $totalAnswered,
                 'tidak_terjawab' => $totalQuestions - $totalAnswered,
                 'total_nilai' => $totalScore,

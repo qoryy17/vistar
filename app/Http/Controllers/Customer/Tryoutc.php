@@ -486,7 +486,7 @@ class Tryoutc extends Controller
         if (!$examResult) {
             return redirect()->back()->with('error', 'Hasil Ujian tidak ditemukan atau belum diproses!');
         }
-        $examResultPassinGrade = HasilPassingGrade::select('id', 'judul', 'alias', 'passing_grade', 'total_nilai')
+        $examResultPassinGrade = HasilPassingGrade::select('id', 'judul', 'alias', 'passing_grade', 'terjawab', 'terlewati', 'benar', 'salah', 'total_nilai')
             ->where('hasil_ujian_id', $examResult->id)
             ->get();
         if ($examResultPassinGrade->count() <= 0) {

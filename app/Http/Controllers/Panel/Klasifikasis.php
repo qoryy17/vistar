@@ -67,6 +67,7 @@ class Klasifikasis extends Controller
             'alias' => strtoupper(htmlspecialchars($request->input('alias'))),
             'passing_grade' => strtoupper(htmlspecialchars($request->input('passingGrade'))),
             'ordering' => $request->input('ordering'),
+            'berbobot' => $request->input('berbobot'),
             'aktif' => htmlspecialchars($request->input('aktif')),
         ];
 

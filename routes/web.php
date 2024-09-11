@@ -164,7 +164,7 @@ Route::middleware(PanelRouting::class)->group(function () {
         Route::post('/duplikat-produk-tryout', 'duplikatProdukTryout')->name('tryouts.duplikat');
 
         Route::get('/soal-tryout/{id}', 'soalTryout')->name('tryouts.soal');
-        Route::get('/form-soal-tryout/{param}/{id}/{soal}', 'formSoalTryout')->name('tryouts.form-soal');
+        Route::get('/form-soal-tryout/{param}/{questionCode}/{questionId?}', 'formSoalTryout')->name('tryouts.form-soal');
         Route::post('/simpan-soal-tryout', 'simpanSoalUjian')->name('tryouts.simpan-soal');
         Route::delete('/hapus-soal-tryout', 'hapusSoalUjian')->name('tryouts.hapus-soal');
 

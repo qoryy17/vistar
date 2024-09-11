@@ -31,7 +31,7 @@
                             <div class="card-body">
                                 <div class="row p-3">
                                     <div class="col-md-12">
-                                        <a href="{{ route('tryouts.form-soal', ['param' => 'add', 'id' => $kode_soal, 'soal' => 'ujian']) }}"
+                                        <a href="{{ route('tryouts.form-soal', ['param' => 'add', 'questionCode' => $kode_soal]) }}"
                                             class="btn btn-sm btn-default btn-web">
                                             <i class="fa fa-plus"></i> Tambah Soal
                                         </a>
@@ -99,7 +99,7 @@
                                                                 </div>
                                                             </div>
                                                             <!-- End Preview modal -->
-                                                            <a href="{{ route('tryouts.form-soal', ['param' => 'update', 'id' => $kode_soal, 'soal' => Crypt::encrypt($row->id)]) }}"
+                                                            <a href="{{ route('tryouts.form-soal', ['param' => 'update', 'questionCode' => $kode_soal, 'questionId' => Crypt::encrypt($row->id)]) }}"
                                                                 title="Edit" class="btn btn-sm btn-warning">
                                                                 <i class="fa fa-edit"></i> Edit
                                                             </a>
@@ -132,19 +132,19 @@
                                                                     @if (strval($row->berbobot) === '1')
                                                                         <span>Poin</span>
                                                                         <div class="d-flex flex-1 gap-1 flex-wrap">
-                                                                            <div class="badge bg-primary text-nowrap">
+                                                                            <div class="badge bg-info text-nowrap">
                                                                                 A: <strong>{{ $row->poin_a }}</strong>
                                                                             </div>
-                                                                            <div class="badge bg-primary text-nowrap">
+                                                                            <div class="badge bg-info text-nowrap">
                                                                                 B: <strong>{{ $row->poin_b }}</strong>
                                                                             </div>
-                                                                            <div class="badge bg-primary text-nowrap">
+                                                                            <div class="badge bg-info text-nowrap">
                                                                                 C: <strong>{{ $row->poin_c }}</strong>
                                                                             </div>
-                                                                            <div class="badge bg-primary text-nowrap">
+                                                                            <div class="badge bg-info text-nowrap">
                                                                                 D: <strong>{{ $row->poin_d }}</strong>
                                                                             </div>
-                                                                            <div class="badge bg-primary text-nowrap">
+                                                                            <div class="badge bg-info text-nowrap">
                                                                                 E: <strong>{{ $row->poin_e }}</strong>
                                                                             </div>
                                                                         </div>
@@ -161,11 +161,18 @@
                                                         </div>
                                                     </td>
                                                     <td style="vertical-align: top; text-align: center;">
-                                                        {{ $row->judul }} <br>
-                                                        ({{ $row->alias }})
-                                                        <span class="badge bg-warning mt-2">
-                                                            {{ $row->passing_grade }} Passing Grade
-                                                        </span>
+                                                        <div class="d-flex flex-column align-items-center">
+                                                            <span>{{ $row->judul }}</span>
+                                                            <span>({{ $row->alias }})</span>
+                                                            <span class="badge bg-warning mt-2 inline-block">
+                                                                Passing Grade: {{ $row->passing_grade }}
+                                                            </span>
+                                                            @if ($row->berbobot == 1)
+                                                                <span class="badge bg-info mt-2 inline-block">
+                                                                    Berbobot
+                                                                </span>
+                                                            @endif
+                                                        </div>
                                                     </td>
                                                     <td style="vertical-align: top;" class="text-center">
                                                         @if ($row->gambar)

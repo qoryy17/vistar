@@ -20,6 +20,7 @@ class KlasifikasiSoal extends Model
         'judul',
         'passing_grade',
         'ordering',
+        'berbobot',
         'aktif',
     ];
 

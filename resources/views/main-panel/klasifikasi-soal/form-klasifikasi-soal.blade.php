@@ -105,6 +105,25 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group">
+                                                <label for="berbobot">
+                                                    Soal Berbobot <span class="text-danger">*</span>
+                                                </label>
+                                                <select name="berbobot" class="form-control" id="berbobot" required
+                                                    onchange="changeSoalBerbobot(this)">
+                                                    @foreach ([0, 1] as $option)
+                                                        <option value="{{ $option }}"
+                                                            {{ strval(old('berbobot', $klasifikasi?->berbobot)) === strval($option) ? 'selected' : '' }}>
+                                                            {{ $option === 1 ? 'Ya' : 'Tidak' }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                @error('berbobot')
+                                                    <small class="text-danger">
+                                                        * {{ $message }}
+                                                    </small>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="Aktif">Aktif <span class="text-danger">*</span>
                                                 </label>
                                                 <select name="aktif" id="Aktif" class="form-control" required>
@@ -156,7 +175,6 @@
                     </div>
                 </div>
                 <!-- End Row -->
-
             </div>
         </div>
     </div>

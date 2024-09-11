@@ -19,8 +19,6 @@ class HasilUjian extends Model
         'id',
         'ujian_id',
         'durasi_selesai',
-        'benar',
-        'salah',
         'terjawab',
         'tidak_terjawab',
         'total_nilai',

@@ -18,6 +18,10 @@ class HasilPassingGrade extends Model
         'judul',
         'alias',
         'passing_grade',
+        'terjawab',
+        'terlewati',
+        'benar',
+        'salah',
         'total_nilai',
     ];
 

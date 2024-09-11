@@ -277,30 +277,34 @@ class Tryouts extends Controller
         return view('main-panel.tryout.data-soal-tryout', $data);
     }
 
-    public function formSoalTryout($param = null, $id = null, $soal = null)
+    public function formSoalTryout($param, $questionCode, $questionId = null)
     {
-        if (htmlentities($param) == 'add') {
-            $form_title = 'Tambah Soal Tryout';
-            $formParam = Crypt::encrypt('add');
-            $soal = null;
-        } elseif (htmlentities($param) == 'update') {
+        $param = htmlentities($param);
+        if ($param !== 'add' && $param !== 'update') {
+            return redirect()->route('tryouts.soal')->with('error', 'Parameter tidak valid !');
+
+        }
+
+        $form_title = 'Tambah Soal Tryout';
+        $formParam = Crypt::encrypt('add');
+        $soal = null;
+
+        if (htmlentities($param) == 'update') {
             $form_title = 'Edit Soal Tryout';
             $formParam = Crypt::encrypt('update');
             $soal = SoalUjian::with('klasifikasiSoal:id,judul,alias')
-                ->where('soal_ujian.id', '=', Crypt::decrypt($soal))
+                ->where('soal_ujian.id', '=', Crypt::decrypt($questionId))
                 ->first();
-        } else {
-            return Redirect::route('tryouts.soal')->with('error', 'Parameter tidak valid !');
         }
 
         $data = [
             'page_title' => $form_title,
             'bc1' => 'Kelola Soal',
             'bc2' => $form_title,
-            'kode_soal' => $id,
+            'kode_soal' => $questionCode,
             'soal' => $soal,
             'formParam' => $formParam,
-            'klasifikasi_soal' => KlasifikasiSoal::whereNotIn('aktif', ['T'])->orderBy('created_at', 'ASC')->get(),
+            'klasifikasi_soal' => KlasifikasiSoal::select('id', 'alias', 'judul', 'berbobot')->whereNotIn('aktif', ['T'])->orderBy('ordering', 'ASC')->get(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
@@ -612,8 +616,6 @@ class Tryouts extends Controller
             ->select(
                 'hasil_ujian.id',
                 'hasil_ujian.durasi_selesai',
-                'hasil_ujian.benar',
-                'hasil_ujian.salah',
                 'hasil_ujian.terjawab',
                 'hasil_ujian.tidak_terjawab',
                 'hasil_ujian.total_nilai as skd',
@@ -646,8 +648,6 @@ class Tryouts extends Controller
                     ->select(
                         'hasil_ujian.id',
                         'hasil_ujian.durasi_selesai',
-                        'hasil_ujian.benar',
-                        'hasil_ujian.salah',
                         'hasil_ujian.terjawab',
                         'hasil_ujian.tidak_terjawab',
                         'hasil_ujian.total_nilai as skd',
@@ -674,8 +674,6 @@ class Tryouts extends Controller
                     ->select(
                         'hasil_ujian.id',
                         'hasil_ujian.durasi_selesai',
-                        'hasil_ujian.benar',
-                        'hasil_ujian.salah',
                         'hasil_ujian.terjawab',
                         'hasil_ujian.tidak_terjawab',
                         'hasil_ujian.total_nilai as skd',

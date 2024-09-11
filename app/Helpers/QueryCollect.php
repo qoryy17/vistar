@@ -49,10 +49,10 @@ class QueryCollect
                 $query->with('tryout:id,nama_tryout');
             })
             ->with('hasil', function ($query) {
-                $query->select('id', 'ujian_id', 'durasi_selesai', 'benar', 'salah', 'terjawab', 'tidak_terjawab', 'total_nilai', 'keterangan');
+                $query->select('id', 'ujian_id', 'durasi_selesai', 'terjawab', 'tidak_terjawab', 'total_nilai', 'keterangan');
                 $query->with('testimoni:id,hasil_ujian_id,testimoni,rating,publish');
                 $query->with('passing_grade', function ($query) {
-                    $query->select('id', 'hasil_ujian_id', 'alias', 'judul', 'passing_grade', 'total_nilai');
+                    $query->select('id', 'hasil_ujian_id', 'alias', 'judul', 'passing_grade', 'terjawab', 'terlewati', 'benar', 'salah', 'total_nilai');
                     $query->orderBy('judul', 'DESC');
                 });
             });
@@ -79,12 +79,8 @@ class QueryCollect
                 $query->with('tryout:id,nama_tryout');
             })
             ->with('hasil', function ($query) {
-                $query->select('id', 'ujian_id', 'durasi_selesai', 'benar', 'salah', 'terjawab', 'tidak_terjawab', 'total_nilai', 'keterangan');
+                $query->select('id', 'ujian_id', 'durasi_selesai', 'terjawab', 'tidak_terjawab', 'total_nilai', 'keterangan');
                 $query->with('testimoni:id,hasil_ujian_id,testimoni,rating,publish');
-                $query->with('passing_grade', function ($query) {
-                    $query->select('id', 'hasil_ujian_id', 'alias', 'judul', 'passing_grade', 'total_nilai');
-                    $query->orderBy('judul', 'DESC');
-                });
             });
     }
 }

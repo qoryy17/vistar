@@ -197,9 +197,13 @@
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th id="table-head-time_left">Waktu Mulai</th>
+                                                                    <th id="table-head-time_left">Sisa Waktu</th>
                                                                     <td colspan="3">
-                                                                        {{ $row->sisa_waktu }} Menit
+                                                                        @if ($row->sisa_waktu <= 0)
+                                                                            Waktu Habis
+                                                                        @else
+                                                                            {{ $row->sisa_waktu }} Menit
+                                                                        @endif
                                                                     </td>
                                                                 </tr>
                                                                 @if ($examResult)
@@ -213,17 +217,6 @@
                                                                         </th>
                                                                         <td>
                                                                             {{ $examResult->tidak_terjawab }}
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th id="table-head-correct_answer">Jawaban Benar
-                                                                        </th>
-                                                                        <td>
-                                                                            {{ $examResult->benar }}
-                                                                        </td>
-                                                                        <th id="table-head-wrong_answer">Jawaban Salah</th>
-                                                                        <td>
-                                                                            {{ $examResult->salah }}
                                                                         </td>
                                                                     </tr>
                                                                 @else

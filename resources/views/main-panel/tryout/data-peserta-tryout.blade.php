@@ -96,10 +96,8 @@
                                                     <td>
                                                         Soal Terjawab : {{ $peserta->terjawab }} <br>
                                                         Soal Tidak Terjawab : {{ $peserta->tidak_terjawab }} <br>
-                                                        Soal Benar : {{ $peserta->benar }} <br>
-                                                        Soal Salah : {{ $peserta->salah }} <br>
                                                         Total Nilai :
-                                                        <strong>{{ Number::format($peserta->skd, 3) }}</strong>
+                                                        <strong>{{ round($peserta->skd, 2) }}</strong>
 
                                                     </td>
                                                     <td>{{ $peserta->waktu_mulai }}</td>

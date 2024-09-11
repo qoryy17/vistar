@@ -61,8 +61,10 @@
                                                     <div class="tabs-menu1">
                                                         <!-- Tabs -->
                                                         <ul class="nav panel-tabs main-nav-line">
-                                                            <li class="nav-item"><a href="#soal" class="nav-link active"
-                                                                    data-bs-toggle="tab">Soal Pertanyaan</a></li>
+                                                            <li class="nav-item">
+                                                                <a href="#soal" class="nav-link active"
+                                                                    data-bs-toggle="tab">Soal Pertanyaan</a>
+                                                            </li>
 
                                                             @foreach ($options as $option)
                                                                 <li class="nav-item">
@@ -73,9 +75,11 @@
                                                                 </li>
                                                             @endforeach
 
-                                                            <li class="nav-item"><a href="#review" class="nav-link"
-                                                                    data-bs-toggle="tab">Kunci Jawaban & Review
-                                                                    Pembahasan</a></li>
+                                                            <li class="nav-item">
+                                                                <a href="#review" class="nav-link" data-bs-toggle="tab">
+                                                                    Kunci Jawaban & Review Pembahasan
+                                                                </a>
+                                                            </li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -103,7 +107,8 @@
                                                                 <label for="Klasifikasi">Klasifikasi <span
                                                                         class="text-danger">*</span></label>
                                                                 <select class="form-control selectKlasifikasi"
-                                                                    name="klasifikasi" id="Klasifikasi" required>
+                                                                    name="klasifikasi" id="Klasifikasi" required
+                                                                    onchange="changeClassification(this)">
                                                                     <option value="">
                                                                         -- Pilih Klasifikasi --
                                                                     </option>
@@ -117,6 +122,28 @@
                                                                     @endforeach
                                                                 </select>
                                                                 @error('klasifikasi')
+                                                                    <small class="text-danger">
+                                                                        * {{ $message }}
+                                                                    </small>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="berbobot">
+                                                                    Soal Berbobot <span class="text-danger">*</span>
+                                                                </label>
+                                                                <input type="hidden" name="berbobot"
+                                                                    class="form-control" />
+                                                                <select name="berbobot-select" class="form-control"
+                                                                    id="berbobot" onchange="changeSoalBerbobot(this)"
+                                                                    required disabled>
+                                                                    @foreach ([0, 1] as $option)
+                                                                        <option value="{{ $option }}"
+                                                                            {{ strval(old('berbobot', $soal?->berbobot)) === strval($option) ? 'selected' : '' }}>
+                                                                            {{ $option === 1 ? 'Ya' : 'Tidak' }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                                @error('berbobot')
                                                                     <small class="text-danger">
                                                                         * {{ $message }}
                                                                     </small>
@@ -194,26 +221,6 @@
                                                             </div>
                                                         @endforeach
                                                         <div class="tab-pane" id="review">
-                                                            <div class="form-group">
-                                                                <label for="berbobot">
-                                                                    Soal Berbobot <span class="text-danger">*</span>
-                                                                </label>
-                                                                <select name="berbobot" class="form-control"
-                                                                    id="berbobot" required
-                                                                    onchange="changeSoalBerbobot(this)">
-                                                                    @foreach ([0, 1] as $option)
-                                                                        <option value="{{ $option }}"
-                                                                            {{ strval(old('berbobot', $soal?->berbobot)) === strval($option) ? 'selected' : '' }}>
-                                                                            {{ $option === 1 ? 'Ya' : 'Tidak' }}
-                                                                        </option>
-                                                                    @endforeach
-                                                                </select>
-                                                                @error('berbobot')
-                                                                    <small class="text-danger">
-                                                                        * {{ $message }}
-                                                                    </small>
-                                                                @enderror
-                                                            </div>
                                                             <div class="form-group" id="form-kunci-jawaban">
                                                                 <label for="Kunci">
                                                                     Kunci Jawaban <span class="text-danger">*</span>
@@ -274,8 +281,6 @@
             </div>
         </div>
     </div>
-
-
 @endsection
 @section('scripts')
     <script>
@@ -284,6 +289,8 @@
             code: false,
             placeholder: ''
         };
+
+        const classifications = <?= json_encode($klasifikasi_soal) ?>;
 
         const richTextElements = [
             '.contentSoal',
@@ -296,7 +303,8 @@
         ];
 
         $(document).ready(function() {
-            changeSoalBerbobot($('[name="berbobot"]'));
+            changeClassification($('[name="klasifikasi"]'));
+            changeSoalBerbobot($('[name="berbobot-select"]'));
 
             $('#save-question').submit(function(e) {
                 if (!checkClearEmptyForm) {
@@ -321,7 +329,29 @@
 
         function changeSoalBerbobot(e) {
             const value = $(e).val();
+            $('[name="berbobot"]').val(value);
+
             if (value === '1') {
+                $('#form-kunci-jawaban').slideUp()
+            } else {
+                $('#form-kunci-jawaban').slideDown()
+            }
+        }
+
+        function changeClassification(e) {
+            const value = $(e).val();
+            const find = classifications.find(e => String(e.id) === String(value))
+            if (!find) {
+                $('[name="berbobot-select"]').attr('disabled', false);
+                return;
+            }
+
+            $('[name="berbobot-select"]').attr('disabled', true);
+
+            $('[name="berbobot-select"]').val(String(find.berbobot));
+            $('[name="berbobot"]').val(String(find.berbobot));
+
+            if (String(find.berbobot) === '1') {
                 $('#form-kunci-jawaban').slideUp()
             } else {
                 $('#form-kunci-jawaban').slideDown()

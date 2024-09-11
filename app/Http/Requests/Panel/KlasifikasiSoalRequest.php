@@ -26,6 +26,8 @@ class KlasifikasiSoalRequest extends FormRequest
             'judul' => ['required', 'string', 'max:255'],
             'passingGrade' => ['required', 'numeric'],
             'ordering' => ['required', 'numeric'],
+            'ordering' => ['required', 'numeric'],
+            'berbobot' => ['required', 'boolean'],
             'aktif' => ['required'],
         ];
     }
@@ -42,6 +44,7 @@ class KlasifikasiSoalRequest extends FormRequest
             'passingGrade.numeric' => 'Passing grade harus berupa angka',
             'ordering.required' => 'Urutan harus di isi',
             'ordering.numeric' => 'Urutan harus berupa angka',
+            'berbobot.required' => 'Berbobot wajib dipilih',
             'aktif.required' => 'Aktif wajib di isi',
         ];
     }
