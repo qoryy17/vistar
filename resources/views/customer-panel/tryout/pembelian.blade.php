@@ -107,9 +107,16 @@
                                         @if ($pembelian->status_order === 'pending' && $pembelian->snap_token)
                                             {{--  Please change the design to fit the template  --}}
                                             <button onclick="showSnap('{{ $pembelian->snap_token }}')" id="pay-button"
-                                                class="mt-2 btn btn-block btn-primary">
+                                                class="mt-3 btn btn-block btn-warning">
                                                 Bayar Sekarang <i class="mdi mdi-arrow-right"></i>
                                             </button>
+                                        @endif
+
+                                        @if ($pembelian->status_order === 'paid')
+                                            <a href="{{ route('site.tryout-berbayar') }}"
+                                                class="btn btn-primary btn-block mt-3">Mulai Ujian <i
+                                                    class="mdi mdi-arrow-right"></i>
+                                            </a>
                                         @endif
                                     </div>
                                 </div>
