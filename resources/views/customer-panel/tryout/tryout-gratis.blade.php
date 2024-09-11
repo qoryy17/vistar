@@ -150,7 +150,6 @@
                                         <table class="table table-bordered border-bottom">
                                             <thead>
                                                 <tr>
-                                                    <th>No</th>
                                                     <th>Informasi Ujian</th>
                                                     <th class="text-center">Total Nilai</th>
                                                 </tr>
@@ -173,15 +172,14 @@
                                                             $tryout?->nama_tryout ?? 'Tryout ID: ' . $tryoutId;
                                                     @endphp
                                                     <tr>
-                                                        <td style="vertical-align: top;">{{ $no }}</td>
                                                         <td>
                                                             @if ($examResult && $tryout)
                                                                 <h3 class="fs-6">
-                                                                    {{ $tryoutName }} - {{ $row->id }}
+                                                                    {{ $no }}. {{ $tryoutName }} - {{ $row->id }}
                                                                 </h3>
                                                             @else
                                                                 <h3 class="fs-6">
-                                                                    {{ $tryoutName }} - {{ $row->id }}
+                                                                    {{ $no }}. {{ $tryoutName }} - {{ $row->id }}
                                                                 </h3>
                                                             @endif
 
