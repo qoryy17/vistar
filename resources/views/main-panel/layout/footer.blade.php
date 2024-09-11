@@ -63,6 +63,7 @@
 <!-- Custom js -->
 <script src="{{ asset('resources/spruha/assets/js/custom.js') }}"></script>
 
+@yield('scripts')
 </body>
 
 </html>

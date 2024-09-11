@@ -498,6 +498,12 @@ class Tryoutc extends Controller
                     'soal_ujian.jawaban_c',
                     'soal_ujian.jawaban_d',
                     'soal_ujian.jawaban_e',
+                    'soal_ujian.poin_a',
+                    'soal_ujian.poin_b',
+                    'soal_ujian.poin_c',
+                    'soal_ujian.poin_d',
+                    'soal_ujian.poin_e',
+                    'soal_ujian.berbobot',
                     'soal_ujian.kunci_jawaban',
                     'soal_ujian.review_pembahasan'
                 )->leftJoin('soal_ujian', 'progres_ujian.soal_ujian_id', '=', 'soal_ujian.id')
@@ -513,7 +519,24 @@ class Tryoutc extends Controller
         $questionCode = $productTryout->kode_soal;
         $cacheKey = 'exam_unanswered_' . $id;
         $unAnsweredQuestions = Cache::remember($cacheKey, 10 * 60, function () use ($answeredQuestions, $questionCode) {
-            return SoalUjian::select('id', 'soal', 'gambar', 'jawaban_a', 'jawaban_b', 'jawaban_c', 'jawaban_d', 'jawaban_e', 'kunci_jawaban', 'review_pembahasan')
+            return SoalUjian::select(
+                'id',
+                'soal',
+                'gambar',
+                'jawaban_a',
+                'jawaban_b',
+                'jawaban_c',
+                'jawaban_d',
+                'jawaban_e',
+                'poin_a',
+                'poin_b',
+                'poin_c',
+                'poin_d',
+                'poin_e',
+                'berbobot',
+                'kunci_jawaban',
+                'review_pembahasan'
+            )
                 ->where('kode_soal', $questionCode)
                 ->whereNotIn('id', $answeredQuestions)
                 ->get();

@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Models\User;
-use App\Models\SoalUjian;
 use App\Helpers\Notifikasi;
 use App\Helpers\RecordLogs;
-use App\Models\LimitTryout;
-use Illuminate\Support\Str;
-use App\Models\ProdukTryout;
-use Illuminate\Http\Request;
-use App\Models\KategoriProduk;
-use App\Models\KlasifikasiSoal;
-use App\Models\PengaturanTryout;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\Panel\SoalRequest;
-use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Panel\ProdukTryoutRequest;
+use App\Http\Requests\Panel\SoalRequest;
 use App\Jobs\SendAcceptTryoutGratisJob;
 use App\Jobs\SendDeniedTryoutGratisJob;
+use App\Models\KategoriProduk;
+use App\Models\KlasifikasiSoal;
+use App\Models\LimitTryout;
 use App\Models\OrderTryout;
+use App\Models\PengaturanTryout;
+use App\Models\ProdukTryout;
+use App\Models\SoalUjian;
+use App\Models\User;
+use Exception;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Tryouts extends Controller
 {
@@ -36,7 +37,7 @@ class Tryouts extends Controller
             'bc2' => 'Produk Tryout',
             'tryouts' => DB::table('produk_tryout')->select('produk_tryout.*', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'pengaturan_tryout.passing_grade', 'kategori_produk.judul', 'kategori_produk.status as produk_status')->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->orderBy('created_at', 'DESC')->get(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.tryout.data-produk-tryout', $data);
     }
@@ -66,18 +67,59 @@ class Tryouts extends Controller
             'pengaturan' => $pengaturan,
             'formParam' => $formParam,
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.tryout.form-data-produk-tryout', $data);
     }
 
-    function simpanProdukTryout(ProdukTryoutRequest $request): RedirectResponse
+    public function simpanProdukTryout(ProdukTryoutRequest $request): RedirectResponse
     {
         // Autentifikasi user
         $users = Auth::user();
         // Validasi inputan
         $request->validated();
+
+        $savedDataPengaturanTryout = [
+            'harga' => intval(htmlspecialchars($request->input('harga'))),
+            'harga_promo' => intval(htmlspecialchars($request->input('hargaPromo'))),
+            'durasi' => intval(htmlspecialchars($request->input('durasiUjian'))),
+        ];
+
+        if (!$request->input('nilaiKeluar')) {
+            $savedDataPengaturanTryout['nilai_keluar'] = 'T';
+        } else {
+            $savedDataPengaturanTryout['nilai_keluar'] = htmlspecialchars($request->input('nilaiKeluar'));
+        }
+        if (!$request->input('grafikEvaluasi')) {
+            $savedDataPengaturanTryout['grafik_evaluasi'] = 'T';
+        } else {
+            $savedDataPengaturanTryout['grafik_evaluasi'] = htmlspecialchars($request->input('grafikEvaluasi'));
+        }
+        if (!$request->input('reviewPembahasan')) {
+            $savedDataPengaturanTryout['review_pembahasan'] = 'T';
+        } else {
+            $savedDataPengaturanTryout['review_pembahasan'] = htmlspecialchars($request->input('reviewPembahasan'));
+        }
+        if (!$request->input('ulangUjian')) {
+            $savedDataPengaturanTryout['ulang_ujian'] = 'T';
+        } else {
+            $savedDataPengaturanTryout['ulang_ujian'] = htmlspecialchars($request->input('ulangUjian'));
+        }
+        $savedDataPengaturanTryout['masa_aktif'] = intval(htmlspecialchars($request->input('masaAktif')));
+        $savedDataPengaturanTryout['passing_grade'] = htmlspecialchars($request->input('passingGrade'));
+
+        $savedDataProdukTryout = [
+            'nama_tryout' => htmlspecialchars($request->input('namaTryout')),
+            'keterangan' => htmlspecialchars($request->input('keterangan')),
+            'kategori_produk_id' => htmlspecialchars($request->input('kategori')),
+            'status' => htmlspecialchars($request->input('status')),
+        ];
+
         if (Crypt::decrypt($request->input('formParameter')) == 'add') {
+            $pengaturanTryout = PengaturanTryout::create($savedDataPengaturanTryout);
+            if (!$pengaturanTryout) {
+                return redirect()->back()->with('error', 'Pengaturan Tryout gagal dibuat!')->withInput();
+            }
 
             // Upload thumbnail produk tryout
             if (!$request->file('thumbnail')) {
@@ -86,106 +128,50 @@ class Tryouts extends Controller
             $fileThumbnail = $request->file('thumbnail');
             $fileHashname = $fileThumbnail->hashName();
 
-            $fileUpload = $fileThumbnail->storeAs('public\tryout', $fileHashname);
-            if ($fileUpload) {
-
-                $pengaturanID = rand(1, 999) . rand(1, 99);
-
-                $pengaturanTryout = new PengaturanTryout();
-                $pengaturanTryout->id = $pengaturanID;
-                $pengaturanTryout->harga = intval(htmlspecialchars($request->input('harga')));
-                $pengaturanTryout->harga_promo = intval(htmlspecialchars($request->input('hargaPromo')));
-                $pengaturanTryout->durasi = intval(htmlspecialchars($request->input('durasiUjian')));
-                if (!$request->input('nilaiKeluar')) {
-                    $pengaturanTryout->nilai_keluar = 'T';
-                } else {
-                    $pengaturanTryout->nilai_keluar = htmlspecialchars($request->input('nilaiKeluar'));
-                }
-                if (!$request->input('grafikEvaluasi')) {
-                    $pengaturanTryout->grafik_evaluasi = 'T';
-                } else {
-                    $pengaturanTryout->grafik_evaluasi = htmlspecialchars($request->input('grafikEvaluasi'));
-                }
-                if (!$request->input('reviewPembahasan')) {
-                    $pengaturanTryout->review_pembahasan = 'T';
-                } else {
-                    $pengaturanTryout->review_pembahasan = htmlspecialchars($request->input('reviewPembahasan'));
-                }
-                if (!$request->input('ulangUjian')) {
-                    $pengaturanTryout->ulang_ujian = 'T';
-                } else {
-                    $pengaturanTryout->ulang_ujian = htmlspecialchars($request->input('ulangUjian'));
-                }
-                $pengaturanTryout->masa_aktif = intval(htmlspecialchars($request->input('masaAktif')));
-                $pengaturanTryout->passing_grade = htmlspecialchars($request->input('passingGrade'));
-
-                $produkTryout = new ProdukTryout();
-                $produkTryout->id = rand(1, 999) . rand(1, 99);
-                $produkTryout->nama_tryout = htmlspecialchars($request->input('namaTryout'));
-                $produkTryout->keterangan = htmlspecialchars($request->input('keterangan'));
-                $produkTryout->kode_soal = Str::random(5) . rand(1, 999);
-                $produkTryout->pengaturan_tryout_id = $pengaturanID;
-                $produkTryout->user_id = $users->id;
-                $produkTryout->kategori_produk_id = htmlspecialchars($request->input('kategori'));
-                $produkTryout->status = htmlspecialchars($request->input('status'));
-                $produkTryout->thumbnail = $fileHashname;
-
-                // Catatan log
-                $logs = $users->name . ' telah menambahkan produk tryout ' . htmlspecialchars($request->input('nama')) . ' waktu tercatat :  ' . now();
-                $message = 'Produk tryout berhasil disimpan !';
-                $error = 'Produk tryout gagal disimpan !';
-            } else {
+            $fileUpload = $fileThumbnail->storeAs('public/tryout', $fileHashname);
+            if (!$fileUpload) {
                 return back()->with('error', 'Unggah thumbnail gagal !')->withInput();
             }
+
+            $savedDataProdukTryout['thumbnail'] = $fileHashname;
+            $savedDataProdukTryout['user_id'] = $users->id;
+            $savedDataProdukTryout['pengaturan_tryout_id'] = $pengaturanTryout->id;
+            $savedDataProdukTryout['kode_soal'] = Str::random(5) . rand(1, 999);
+
+            $saveProdukTryout = ProdukTryout::create($savedDataProdukTryout);
+
+            // Catatan log
+            $logs = $users->name . ' telah menambahkan produk tryout ' . htmlspecialchars($request->input('nama')) . ' waktu tercatat :  ' . now();
+            $message = 'Produk tryout berhasil disimpan !';
+            $error = 'Produk tryout gagal disimpan !';
+
         } elseif (Crypt::decrypt($request->input('formParameter')) == 'update') {
             // Cari produk tryout berdasarkan produk id
             $produkTryout = ProdukTryout::findOrFail(htmlspecialchars($request->input('produkID')));
             $pengaturanTryout = PengaturanTryout::findOrFail($produkTryout->pengaturan_tryout_id);
 
-            $pengaturanTryout->harga = intval(htmlspecialchars($request->input('harga')));
-            $pengaturanTryout->harga_promo = intval(htmlspecialchars($request->input('hargaPromo')));
-            $pengaturanTryout->durasi = intval(htmlspecialchars($request->input('durasiUjian')));
-            if (!$request->input('nilaiKeluar')) {
-                $pengaturanTryout->nilai_keluar = 'T';
-            } else {
-                $pengaturanTryout->nilai_keluar = htmlspecialchars($request->input('nilaiKeluar'));
+            $savePengaturanTryout = $pengaturanTryout->update($savedDataPengaturanTryout);
+            if (!$savePengaturanTryout) {
+                return redirect()->back()->with('error', 'Pengaturan Tryout gagal diperbarui!')->withInput();
             }
-            if (!$request->input('grafikEvaluasi')) {
-                $pengaturanTryout->grafik_evaluasi = 'T';
-            } else {
-                $pengaturanTryout->grafik_evaluasi = htmlspecialchars($request->input('grafikEvaluasi'));
-            }
-            if (!$request->input('reviewPembahasan')) {
-                $pengaturanTryout->review_pembahasan = 'T';
-            } else {
-                $pengaturanTryout->review_pembahasan = htmlspecialchars($request->input('reviewPembahasan'));
-            }
-            if (!$request->input('ulangUjian')) {
-                $pengaturanTryout->ulang_ujian = 'T';
-            } else {
-                $pengaturanTryout->ulang_ujian = htmlspecialchars($request->input('ulangUjian'));
-            }
-            $pengaturanTryout->masa_aktif = intval(htmlspecialchars($request->input('masaAktif')));
-            $pengaturanTryout->passing_grade = htmlspecialchars($request->input('passingGrade'));
 
-            $produkTryout->nama_tryout = htmlspecialchars($request->input('namaTryout'));
-            $produkTryout->keterangan = htmlspecialchars($request->input('keterangan'));
-            $produkTryout->kategori_produk_id = htmlspecialchars($request->input('kategori'));
             if ($request->hasFile('thumbnail')) {
                 // Upload thumbnail produk tryout
                 $fileThumbnail = $request->file('thumbnail');
                 $fileHashname = $fileThumbnail->hashName();
-                $fileUpload = $fileThumbnail->storeAs('public\tryout', $fileHashname);
+                $fileUpload = $fileThumbnail->storeAs('public/tryout', $fileHashname);
 
                 if (!$fileUpload) {
-                    // Hapus thumbnail yang lama
-                    Storage::disk('public')->delete('public\tryout' . $produkTryout->thumbnail);
-                    $produkTryout->thumbnail = $fileHashname;
-                } else {
                     return back()->with('error', 'Unggah thumbnail gagal !')->withInput();
                 }
+
+                // Hapus thumbnail yang lama
+                Storage::disk('public')->delete('tryout/' . $produkTryout->thumbnail);
+                $savedDataProdukTryout['thumbnail'] = $fileHashname;
+
             }
-            $produkTryout->status = htmlspecialchars($request->input('status'));
+
+            $saveProdukTryout = $produkTryout->update($savedDataProdukTryout);
 
             // Catatan log
             $logs = $users->name . ' telah memperbarui produk tryout dengan ID' . htmlspecialchars($request->input('produkID')) . ' waktu tercatat :  ' . now();
@@ -195,13 +181,14 @@ class Tryouts extends Controller
             return Redirect::route('tryouts.index')->with('error', 'Parameter tidak valid !');
         }
 
-        if ($pengaturanTryout->save() and $produkTryout->save()) {
-            // Simpan logs aktivitas pengguna
-            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::route('tryouts.index')->with('message', $message);
-        } else {
+        if (!$saveProdukTryout) {
             return Redirect::route('tryouts.index')->with('error', $error)->withInput();
         }
+
+        // Simpan logs aktivitas pengguna
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+        return Redirect::route('tryouts.index')->with('message', $message);
     }
 
     public function hapusProdukTryout(Request $request): RedirectResponse
@@ -213,18 +200,30 @@ class Tryouts extends Controller
             $orderTryout = OrderTryout::where('produk_tryout_id', $produkTryout->id)->first();
             $limitTryout = LimitTryout::where('produk_tryout_id', $produkTryout->id)->first();
 
-            if (!$orderTryout and !$limitTryout) {
+            if (!$orderTryout && !$limitTryout) {
                 if (!$pengaturanTryout) {
                     return Redirect::route('tryouts.index')->with('error', 'ID pengaturan tidak ditemukan !');
                 }
 
-                $soalUjian = DB::table('soal_ujian')->where('kode_soal', $produkTryout->kode_soal)->first();
-
-                if ($soalUjian) {
-                    $soalUjian->delete();
+                $soalUjian = SoalUjian::select('id', 'gambar')
+                    ->where('kode_soal', $produkTryout->kode_soal)
+                    ->get();
+                foreach ($soalUjian as $soal) {
+                    $gambar = $soal->gambar;
+                    if ($gambar && Storage::disk('public')->exists('soal/' . $gambar)) {
+                        Storage::disk('public')->delete('soal/' . $gambar);
+                    }
+                    $soal->delete();
                 }
+
+                $thumbnail = $produkTryout->thumbnail;
+                if ($thumbnail && Storage::disk('public')->exists('tryout/' . $thumbnail)) {
+                    Storage::disk('public')->delete('tryout/' . $thumbnail);
+                }
+
                 $produkTryout->delete();
                 $pengaturanTryout->delete();
+
                 // Simpan logs aktivitas pengguna
                 $logs = $users->name . ' telah menghapus produk tryout dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
@@ -254,7 +253,7 @@ class Tryouts extends Controller
             'klasifikasi' => $klasifikasiSoal,
             'totalSoal' => $totalSoal,
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
 
         return view('main-panel.tryout.detail-produk-tryout', $data);
@@ -267,10 +266,16 @@ class Tryouts extends Controller
             'bc1' => 'Manajemen Produk',
             'bc2' => 'Produk Tryout',
             'kode_soal' => $id,
-            'soal' => DB::table('soal_ujian')->select('soal_ujian.*', 'klasifikasi_soal.judul', 'klasifikasi_soal.alias', 'klasifikasi_soal.passing_grade')->leftJoin('klasifikasi_soal', 'klasifikasi_soal.id', '=', 'soal_ujian.klasifikasi_soal_id')->where('soal_ujian.kode_soal', '=', Crypt::decrypt($id))->orderBy('soal_ujian.updated_at', 'DESC')->get(),
+            'soal' => DB::table('soal_ujian')
+                ->select('soal_ujian.*', 'klasifikasi_soal.judul', 'klasifikasi_soal.alias', 'klasifikasi_soal.passing_grade')
+                ->leftJoin('klasifikasi_soal', 'klasifikasi_soal.id', '=', 'soal_ujian.klasifikasi_soal_id')
+                ->where('soal_ujian.kode_soal', '=', Crypt::decrypt($id))
+                ->orderBy('soal_ujian.updated_at', 'DESC')
+                ->get(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
+
         return view('main-panel.tryout.data-soal-tryout', $data);
     }
 
@@ -279,11 +284,13 @@ class Tryouts extends Controller
         if (htmlentities($param) == 'add') {
             $form_title = 'Tambah Soal Tryout';
             $formParam = Crypt::encrypt('add');
-            $soal = '';
+            $soal = null;
         } elseif (htmlentities($param) == 'update') {
             $form_title = 'Edit Soal Tryout';
             $formParam = Crypt::encrypt('update');
-            $soal = DB::table('soal_ujian')->select('soal_ujian.*', 'klasifikasi_soal.judul', 'klasifikasi_soal.alias')->leftJoin('klasifikasi_soal', 'klasifikasi_soal.id', '=', 'soal_ujian.klasifikasi_soal_id')->where('soal_ujian.id', '=', Crypt::decrypt($soal))->get();
+            $soal = SoalUjian::with('klasifikasiSoal:id,judul,alias')
+                ->where('soal_ujian.id', '=', Crypt::decrypt($soal))
+                ->first();
         } else {
             return Redirect::route('tryouts.soal')->with('error', 'Parameter tidak valid !');
         }
@@ -297,7 +304,7 @@ class Tryouts extends Controller
             'formParam' => $formParam,
             'klasifikasi_soal' => KlasifikasiSoal::whereNotIn('aktif', ['T'])->orderBy('created_at', 'ASC')->get(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
 
         return view('main-panel.tryout.form-data-soal-tryout', $data);
@@ -305,208 +312,301 @@ class Tryouts extends Controller
 
     public function simpanSoalUjian(SoalRequest $request): RedirectResponse
     {
-        // Autentifikasi user
-        $users = Auth::user();
         // Validasi inputan
         $request->validated();
 
-        if (Crypt::decrypt($request->input('formParameter')) == 'add') {
+        // Autentifikasi user
+        $users = Auth::user();
 
-            $soal = new SoalUjian();
+        $kode_soal = htmlspecialchars(Crypt::decrypt($request->input('kodeSoal')));
+        $soal = $request->input('soal');
+        $jawaban_a = $request->input('jawaban_a');
+        $jawaban_b = $request->input('jawaban_b');
+        $jawaban_c = $request->input('jawaban_c');
+        $jawaban_d = $request->input('jawaban_d');
+        $jawaban_e = $request->input('jawaban_e');
+        $points = [
+            'a' => htmlspecialchars($request->input('poin_a')),
+            'b' => htmlspecialchars($request->input('poin_b')),
+            'c' => htmlspecialchars($request->input('poin_c')),
+            'd' => htmlspecialchars($request->input('poin_d')),
+            'e' => htmlspecialchars($request->input('poin_e')),
+        ];
+        $berbobot = htmlspecialchars($request->input('berbobot'));
+        $kunci_jawaban = $request->input('kunciJawaban');
+        $klasifikasi_soal_id = htmlspecialchars($request->input('klasifikasi'));
+        $review_pembahasan = $request->input('reviewPembahasan');
 
-            $idSoal = rand(1, 999) . rand(1, 99);
-            $soal->id = $idSoal;
-            $soal->kode_soal = htmlspecialchars(Crypt::decrypt($request->input('kodeSoal')));
-            $soal->soal = $request->input('soal');
+        $formParameter = Crypt::decrypt($request->input('formParameter'));
 
+        if ($formParameter !== 'add' && $formParameter !== 'update') {
+            return redirect()->back()->with('error', 'Parameter tidak valid !')->withInput();
+        }
+
+        // Get max of options
+        $max_options = array_keys($points, max($points));
+
+        // Check if question not berbobot, validate kunci_jawaban
+        if ($berbobot === "0") {
+            if ($kunci_jawaban === '') {
+                return redirect()->back()->with('error', 'Silahkan pilih Kunci Jawaban karna pilihan jawaban tidak berbobot !')->withInput();
+            }
+
+            $max = intval($points[$max_options[0]]);
+
+            if ($kunci_jawaban === 'A') {
+                $points = ['a' => $max, 'b' => 0, 'c' => 0, 'd' => 0, 'e' => 0];
+            }
+            if ($kunci_jawaban === 'B') {
+                $points = ['a' => 0, 'b' => $max, 'c' => 0, 'd' => 0, 'e' => 0];
+            }
+            if ($kunci_jawaban === 'C') {
+                $points = ['a' => 0, 'b' => 0, 'c' => $max, 'd' => 0, 'e' => 0];
+            }
+            if ($kunci_jawaban === 'D') {
+                $points = ['a' => 0, 'b' => 0, 'c' => 0, 'd' => $max, 'e' => 0];
+            }
+            if ($kunci_jawaban === 'E') {
+                $points = ['a' => 0, 'b' => 0, 'c' => 0, 'd' => 0, 'e' => $max];
+            }
+
+            if ($max === 0) {
+                return redirect()->back()->with('error', 'Silahkan masukkan bobot pada Pilihan Jawaban ' . $kunci_jawaban . ' !')->withInput();
+            }
+        } else {
+            if (count($max_options) > 1) {
+                return redirect()->back()->with('error', 'Untuk Soal berbobot, silahkan masukkan bobot pada tiap Pilihan Jawaban dengan bobot yang berbeda !')->withInput();
+            }
+
+            $kunci_jawaban = strtoupper($max_options[0]);
+        }
+
+        $savedData = [
+            'kode_soal' => $kode_soal,
+            'soal' => $soal,
+
+            'jawaban_a' => $jawaban_a,
+            'jawaban_b' => $jawaban_b,
+            'jawaban_c' => $jawaban_c,
+            'jawaban_d' => $jawaban_d,
+            'jawaban_e' => $jawaban_e,
+            'poin_a' => $points['a'],
+            'poin_b' => $points['b'],
+            'poin_c' => $points['c'],
+            'poin_d' => $points['d'],
+            'poin_e' => $points['e'],
+            'berbobot' => $berbobot,
+            'kunci_jawaban' => $kunci_jawaban,
+            'klasifikasi_soal_id' => $klasifikasi_soal_id,
+            'review_pembahasan' => $review_pembahasan,
+        ];
+
+        $save = null;
+        $logs = null;
+
+        $message = 'Soal ujian berhasil disimpan !';
+        $error = 'Soal ujian gagal disimpan !';
+
+        if ($formParameter === 'add') {
             if ($request->hasFile('gambar')) {
                 $fileSoalGambar = $request->file('gambar');
                 $fileHashname = $fileSoalGambar->hashName();
 
-                $fileUpload = $fileSoalGambar->storeAs('public\soal', $fileHashname);
+                $fileUpload = $fileSoalGambar->storeAs('public/soal', $fileHashname);
                 if (!$fileUpload) {
-                    return back()->with('error', 'Unggah thumbnail gagal !')->withInput();
+                    return redirect()->back()->with('error', 'Unggah gambar gagal !')->withInput();
                 }
-                $soal->gambar = $fileHashname;
+                $savedData['gambar'] = $fileHashname;
             }
-            $soal->jawaban_a = $request->input('jawabanA');
-            $soal->jawaban_b = $request->input('jawabanB');
-            $soal->jawaban_c = $request->input('jawabanC');
-            $soal->jawaban_d = $request->input('jawabanD');
-            $soal->jawaban_e = $request->input('jawabanE');
-            $soal->poin_a = htmlspecialchars($request->input('poin_a'));
-            $soal->poin_b = htmlspecialchars($request->input('poin_b'));
-            $soal->poin_c = htmlspecialchars($request->input('poin_c'));
-            $soal->poin_d = htmlspecialchars($request->input('poin_d'));
-            $soal->poin_e = htmlspecialchars($request->input('poin_e'));
-            $soal->kunci_jawaban = $request->input('kunciJawaban');
-            $soal->klasifikasi_soal_id = htmlspecialchars($request->input('klasifikasi'));
-            $soal->review_pembahasan = $request->input('reviewPembahasan');
+
+            $save = SoalUjian::create($savedData);
 
             // Catatan log
-            $logs = $users->name . ' telah menambahkan soal ' . $idSoal . ' waktu tercatat :  ' . now();
-            $message = 'Soal ujian berhasil disimpan !';
-            $error = 'Soal ujian gagal disimpan !';
+            $logs = $users->name . ' telah menambahkan soal dengan ID:' . $save['id'] . ' waktu tercatat :  ' . now();
+
         } elseif (Crypt::decrypt($request->input('formParameter')) == 'update') {
+            $idSoal = Crypt::decrypt($request->input('idSoal'));
 
-            $soal = SoalUjian::findOrFail(htmlspecialchars(Crypt::decrypt($request->input('idSoal'))));
+            $soalUjian = SoalUjian::find($idSoal);
+            if (!$soalUjian) {
+                return redirect()->back()->with('error', 'Soal Ujian tidak ditemukan!')->withInput();
+            }
 
-            $soal->soal = $request->input('soal');
             if ($request->hasFile('gambar')) {
                 // Upload gambar produk tryout
                 $fileSoalGambar = $request->file('gambar');
                 $fileHashname = $fileSoalGambar->hashName();
-                $fileUpload = $fileSoalGambar->storeAs('public\soal', $fileHashname);
+                $fileUpload = $fileSoalGambar->storeAs('public/soal', $fileHashname);
 
                 if (!$fileUpload) {
-                    return back()->with('error', 'Unggah soal gambar gagal !')->withInput();
+                    return redirect()->back()->with('error', 'Unggah gambar gagal !')->withInput();
                 }
+
                 // Hapus gambar yang lama
-                Storage::disk('public')->delete('public/soal' . $soal->gambar);
-                $soal->gambar = $fileHashname;
+                Storage::disk('public')->delete('soal/' . $soalUjian->gambar);
+
+                $savedData['gambar'] = $fileHashname;
             }
-            $soal->jawaban_a = $request->input('jawabanA');
-            $soal->jawaban_b = $request->input('jawabanB');
-            $soal->jawaban_c = $request->input('jawabanC');
-            $soal->jawaban_d = $request->input('jawabanD');
-            $soal->jawaban_e = $request->input('jawabanE');
-            $soal->poin_a = htmlspecialchars($request->input('poin_a'));
-            $soal->poin_b = htmlspecialchars($request->input('poin_b'));
-            $soal->poin_c = htmlspecialchars($request->input('poin_c'));
-            $soal->poin_d = htmlspecialchars($request->input('poin_d'));
-            $soal->poin_e = htmlspecialchars($request->input('poin_e'));
-            $soal->kunci_jawaban = $request->input('kunciJawaban');
-            $soal->klasifikasi_soal_id = htmlspecialchars($request->input('klasifikasi'));
-            $soal->review_pembahasan = $request->input('reviewPembahasan');
+
+            $save = $soalUjian->update($savedData);
+
             // Catatan log
-            $logs = $users->name . ' telah memperbarui soal dengan ID ' . $soal->id . ' waktu tercatat :  ' . now();
+            $logs = $users->name . ' telah memperbarui soal dengan ID ' . $soalUjian->id . ' waktu tercatat :  ' . now();
             $message = 'Soal ujian berhasil diperbarui !';
             $error = 'Soal ujian gagal diperbarui !';
-        } else {
-            return Redirect::route('tryouts.soal')->with('error', 'Parameter tidak valid !');
         }
 
-        if ($soal->save()) {
+        if (!$save) {
+            return redirect()->back()->with('error', $error)->withInput();
+        }
+
+        if ($logs) {
             // Simpan logs aktivitas pengguna
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::route('tryouts.soal', ['id' => $request->input('kodeSoal')])->with('message', $message);
-        } else {
-            return Redirect::route('tryouts.soal', ['id' => $request->input('kodeSoal')])->with('error', $error);
         }
+
+        return redirect()->route('tryouts.soal', ['id' => $request->input('kodeSoal')])->with('message', $message);
     }
 
     public function hapusSoalUjian(Request $request): RedirectResponse
     {
-        $soalUjian = soalUjian::findOrFail(Crypt::decrypt($request->id));
-        if ($soalUjian) {
-            $users = Auth::user();
-            $soalUjian->delete();
-            // Simpan logs aktivitas pengguna
-            $logs = $users->name . ' telah menghapus soal ujian dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
-            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::route('tryouts.soal', ['id' => Crypt::encrypt($soalUjian->kode_soal)])->with('message', 'Soal berhasil dihapus !');
+        $soalUjian = SoalUjian::findOrFail(Crypt::decrypt($request->id));
+        if (!$soalUjian) {
+            return redirect()->back()->with('error', 'Soal tidak ditemukan !');
         }
-        return Redirect::route('tryouts.soal', ['id' => Crypt::encrypt($soalUjian->kode_soal)])->with('error', 'Soal gagal dihapus !');
+        $gambar = $soalUjian->gambar;
+
+        $users = Auth::user();
+        $delete = $soalUjian->delete();
+        if (!$delete) {
+            return redirect()->back()->with('error', 'Soal gagal dihapus !');
+        }
+
+        // Hapus gambar
+        if ($gambar && Storage::disk('public')->exists('soal/' . $gambar)) {
+            Storage::disk('public')->delete('soal/' . $gambar);
+        }
+
+        // Simpan logs aktivitas pengguna
+        $logs = $users->name . ' telah menghapus soal ujian dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+        return redirect()->route('tryouts.soal', ['id' => Crypt::encrypt($soalUjian->kode_soal)])->with('message', 'Soal berhasil dihapus !');
     }
 
     public function duplikatProdukTryout(Request $request): RedirectResponse
     {
-        $produkTryout = ProdukTryout::findOrFail(Crypt::decrypt($request->id));
-
         $users = Auth::user();
-        $kodeSoalGenerate = Str::random(5) . rand(1, 999);
-        $idPengaturanGenerate = rand(1, 999) . rand(1, 99);
 
-        $fileThumbnail = 'copy--' . $produkTryout->thumbnail;
-
+        $produkTryout = ProdukTryout::findOrFail(Crypt::decrypt($request->id));
         $pengaturanTryout = PengaturanTryout::findOrFail($produkTryout->pengaturan_tryout_id);
-        DB::table('pengaturan_tryout')->insert([
-            'id' => $idPengaturanGenerate,
-            'harga' => $pengaturanTryout->harga,
-            'harga_promo' => $pengaturanTryout->harga_promo,
-            'durasi' => $pengaturanTryout->durasi,
-            'nilai_keluar' => $pengaturanTryout->nilai_keluar,
-            'grafik_evaluasi' => $pengaturanTryout->grafik_evaluasi,
-            'review_pembahasan' => $pengaturanTryout->review_pembahasan,
-            'ulang_ujian' => $pengaturanTryout->ulang_ujian,
-            'masa_aktif' => $pengaturanTryout->masa_aktif,
-            'passing_grade' => $pengaturanTryout->passing_grade,
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s')
-        ]);
 
-        DB::table('produk_tryout')->insert([
-            'id' => rand(1, 999) . rand(1, 99),
-            'nama_tryout' => $produkTryout->nama_tryout,
-            'keterangan' => $produkTryout->keterangan,
-            'kode_soal' => $kodeSoalGenerate,
-            'pengaturan_tryout_id' => $idPengaturanGenerate,
-            'user_id' => $users->id,
-            'kategori_produk_id' => $produkTryout->kategori_produk_id,
-            'status' => 'Tidak Tersedia',
-            'thumbnail' => $fileThumbnail,
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s')
-        ]);
+        try {
+            $deletedImages = [];
 
-        Storage::disk('public')->copy('tryout/' . $produkTryout->thumbnail, 'tryout/' . $fileThumbnail);
+            DB::beginTransaction();
 
-        $soal = DB::table('soal_ujian')->where('kode_soal', '=', $produkTryout->kode_soal)->get();
-        foreach ($soal as $soalDuplikat) {
-            $fileGambar = 'copy--' . $soalDuplikat->gambar;
-            if ($soalDuplikat->gambar == null) {
-                DB::table('soal_ujian')->insert([
-                    'id' => rand(1, 999) . rand(1, 99),
-                    'kode_soal' => $kodeSoalGenerate,
-                    'soal' => $soalDuplikat->soal,
-                    'jawaban_a' => $soalDuplikat->jawaban_a,
-                    'jawaban_b' => $soalDuplikat->jawaban_b,
-                    'jawaban_c' => $soalDuplikat->jawaban_c,
-                    'jawaban_d' => $soalDuplikat->jawaban_d,
-                    'jawaban_e' => $soalDuplikat->jawaban_e,
-                    'poin_a' => $soalDuplikat->poin_a,
-                    'poin_b' => $soalDuplikat->poin_b,
-                    'poin_c' => $soalDuplikat->poin_c,
-                    'poin_d' => $soalDuplikat->poin_d,
-                    'poin_e' => $soalDuplikat->poin_e,
-                    'kunci_jawaban' => $soalDuplikat->kunci_jawaban,
-                    'klasifikasi_soal_id' => $soalDuplikat->klasifikasi_soal_id,
-                    'review_pembahasan' => $soalDuplikat->review_pembahasan,
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s')
-                ]);
-            } else {
-                DB::table('soal_ujian')->insert([
-                    'id' => rand(1, 999) . rand(1, 99),
-                    'kode_soal' => $kodeSoalGenerate,
-                    'soal' => $soalDuplikat->soal,
-                    'gambar' => $fileGambar,
-                    'jawaban_a' => $soalDuplikat->jawaban_a,
-                    'jawaban_b' => $soalDuplikat->jawaban_b,
-                    'jawaban_c' => $soalDuplikat->jawaban_c,
-                    'jawaban_d' => $soalDuplikat->jawaban_d,
-                    'jawaban_e' => $soalDuplikat->jawaban_e,
-                    'poin_a' => $soalDuplikat->poin_a,
-                    'poin_b' => $soalDuplikat->poin_b,
-                    'poin_c' => $soalDuplikat->poin_c,
-                    'poin_d' => $soalDuplikat->poin_d,
-                    'poin_e' => $soalDuplikat->poin_e,
-                    'kunci_jawaban' => $soalDuplikat->kunci_jawaban,
-                    'klasifikasi_soal_id' => $soalDuplikat->klasifikasi_soal_id,
-                    'review_pembahasan' => $soalDuplikat->review_pembahasan,
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s')
-                ]);
-                Storage::disk('public')->copy('soal/' . $soalDuplikat->gambar, 'soal/' . $fileGambar);
+            $createPengaturanTryout = PengaturanTryout::create([
+                'harga' => $pengaturanTryout->harga,
+                'harga_promo' => $pengaturanTryout->harga_promo,
+                'durasi' => $pengaturanTryout->durasi,
+                'nilai_keluar' => $pengaturanTryout->nilai_keluar,
+                'grafik_evaluasi' => $pengaturanTryout->grafik_evaluasi,
+                'review_pembahasan' => $pengaturanTryout->review_pembahasan,
+                'ulang_ujian' => $pengaturanTryout->ulang_ujian,
+                'masa_aktif' => $pengaturanTryout->masa_aktif,
+                'passing_grade' => $pengaturanTryout->passing_grade,
+            ]);
+            if (!$createPengaturanTryout) {
+                throw new Exception('Gagal menduplikat Pengaturan Tryout');
             }
-        }
 
-        if (!$soal) {
-            return Redirect::route('tryouts.index')->with('error', 'Produk tryout gagal diduplikasi !');
+            $thumbnail = $produkTryout->thumbnail;
+            $fileThumbnail = null;
+            if ($thumbnail && Storage::disk('public')->exists('tryout/' . $thumbnail)) {
+                $fileThumbnail = 'copy--' . time() . '-' . $thumbnail;
+                $path = 'tryout/' . $fileThumbnail;
+                Storage::disk('public')->copy('tryout/' . $thumbnail, $path);
+
+                array_push($deletedImages, $path);
+            }
+
+            $kodeSoalGenerate = Str::random(5) . rand(1, 999);
+
+            $createProdukTryout = ProdukTryout::create([
+                'nama_tryout' => "Duplikat " . $produkTryout->nama_tryout,
+                'keterangan' => $produkTryout->keterangan,
+                'kode_soal' => $kodeSoalGenerate,
+                'pengaturan_tryout_id' => $createPengaturanTryout['id'],
+                'user_id' => $users->id,
+                'kategori_produk_id' => $produkTryout->kategori_produk_id,
+                'status' => 'Tidak Tersedia',
+                'thumbnail' => $fileThumbnail,
+            ]);
+            if (!$createProdukTryout) {
+                throw new Exception('Gagal menduplikat Produk Tryout');
+            }
+
+            $savedDataQuestions = [];
+
+            $soal = DB::table('soal_ujian')->where('kode_soal', '=', $produkTryout->kode_soal)->get();
+            foreach ($soal as $soalDuplikat) {
+                $savedDataQuestion = [
+                    'kode_soal' => $kodeSoalGenerate,
+                    'soal' => $soalDuplikat->soal,
+                    'jawaban_a' => $soalDuplikat->jawaban_a,
+                    'jawaban_b' => $soalDuplikat->jawaban_b,
+                    'jawaban_c' => $soalDuplikat->jawaban_c,
+                    'jawaban_d' => $soalDuplikat->jawaban_d,
+                    'jawaban_e' => $soalDuplikat->jawaban_e,
+                    'poin_a' => $soalDuplikat->poin_a,
+                    'poin_b' => $soalDuplikat->poin_b,
+                    'poin_c' => $soalDuplikat->poin_c,
+                    'poin_d' => $soalDuplikat->poin_d,
+                    'poin_e' => $soalDuplikat->poin_e,
+                    'berbobot' => $soalDuplikat->berbobot,
+                    'kunci_jawaban' => $soalDuplikat->kunci_jawaban,
+                    'klasifikasi_soal_id' => $soalDuplikat->klasifikasi_soal_id,
+                    'review_pembahasan' => $soalDuplikat->review_pembahasan,
+                ];
+
+                $gambar = $soalDuplikat->gambar;
+                $newGambar = null;
+                if ($gambar && Storage::disk('public')->exists('soal/' . $gambar)) {
+                    $newGambar = 'copy--' . time() . '-' . $gambar;
+                    $path = 'soal/' . $newGambar;
+                    Storage::disk('public')->copy('soal/' . $gambar, $path);
+
+
+                    array_push($deletedImages, $path);
+                }
+                $savedDataQuestion['gambar'] = $newGambar;
+
+                array_push($savedDataQuestions, $savedDataQuestion);
+            }
+
+            $saveQuestions = SoalUjian::insert($savedDataQuestions);
+            if (!$saveQuestions) {
+                throw new Exception('Gagal menduplikat Soal');
+            }
+
+            $logs = Auth::user()->name . ' telah menduplikasi produk tryout dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
+            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+            DB::commit();
+
+            return Redirect::route('tryouts.index')->with('message', 'Produk tryout berhasil diduplikasi !');
+
+        } catch (\Throwable $th) {
+            foreach ($deletedImages as $image) {
+                Storage::disk('public')->delete($image);
+            }
+            DB::rollback();
+
+            dd($th->getMessage());
+
+            return redirect()->back()->with('error', 'Gagal menduplikasi Produk !' . $th->getMessage());
         }
-        $logs = Auth::user()->name . ' telah menduplikasi produk tryout dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
-        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-        return Redirect::route('tryouts.index')->with('message', 'Produk tryout berhasil diduplikasi !');
     }
 
     public function pesertaTryout(Request $request)
@@ -538,7 +638,6 @@ class Tryouts extends Controller
             ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
             ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
             ->where('ujian.status_ujian', 'Selesai');
-
 
         if ($request->filled('kategori')) {
             $hasilUjian->where('kategori_produk.judul', $request->kategori)->orderBy('ujian.waktu_mulai', 'DESC');
@@ -616,7 +715,7 @@ class Tryouts extends Controller
             'bc2' => 'Peserta Tryout',
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
-            'pesertaTryout' => $hasilUjian
+            'pesertaTryout' => $hasilUjian,
         ];
         return view('main-panel.tryout.data-peserta-tryout', $data);
     }
@@ -633,7 +732,7 @@ class Tryouts extends Controller
             'bc2' => 'Pengajuan Tryout Gratis',
             'permohonanTryout' => $permohonan,
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
         return view('main-panel.tryout.data-pengajuan-tryout-gratis', $data);
     }

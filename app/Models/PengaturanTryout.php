@@ -22,10 +22,11 @@ class PengaturanTryout extends Model
         'grafik_evaluasi',
         'review_pembahasan',
         'ulang_ujian',
-        'masa_aktif'
+        'masa_aktif',
+        'passing_grade',
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 

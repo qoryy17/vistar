@@ -98,7 +98,7 @@ class Main extends Controller
         $data = [
             'page_title' => 'Logs',
             'breadcumb' => 'Logs Aktivitas Pengguna',
-            'logs' => DB::table('logs')->select('logs.*', 'users.name')->leftJoin('users', 'logs.user_id', '=', 'users.id')->get(),
+            'logs' => DB::table('logs')->select('logs.*', 'users.name')->leftJoin('users', 'logs.user_id', '=', 'users.id')->orderBy('created_at', 'DESC')->get(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];

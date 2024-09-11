@@ -81,7 +81,7 @@
                                                     data-bs-target="#modalImg" data-bs-toggle="modal">
                                                 <!-- Preview modal -->
                                                 <div class="modal fade" id="modalImg">
-                                                    <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-dialog modal-lg">
                                                         <div class="modal-content modal-content-demo">
                                                             <div class="modal-header">
                                                                 <h6 class="modal-title"><i class="fa fa-book"></i>
@@ -104,21 +104,46 @@
                                                 <!-- End Preview modal -->
                                             @endif
                                             <div class="mt-2">
-                                                <p>
-                                                    <span>a. {{ strip_tags($review->jawaban_a) }}</span>
-                                                </p>
-                                                <p>
-                                                    <span>b. {{ strip_tags($review->jawaban_b) }}</span>
-                                                </p>
-                                                <p>
-                                                    <span>c. {{ strip_tags($review->jawaban_c) }}</span>
-                                                </p>
-                                                <p>
-                                                    <span>d. {{ strip_tags($review->jawaban_d) }}</span>
-                                                </p>
-                                                <p>
-                                                    <span>e. {{ strip_tags($review->jawaban_e) }}</span>
-                                                </p>
+                                                @php
+                                                    $options = [
+                                                        'a' => [
+                                                            'content' => $review->jawaban_a,
+                                                            'poin' => $review->poin_a,
+                                                        ],
+                                                        'b' => [
+                                                            'content' => $review->jawaban_b,
+                                                            'poin' => $review->poin_b,
+                                                        ],
+                                                        'c' => [
+                                                            'content' => $review->jawaban_c,
+                                                            'poin' => $review->poin_c,
+                                                        ],
+                                                        'd' => [
+                                                            'content' => $review->jawaban_d,
+                                                            'poin' => $review->poin_d,
+                                                        ],
+                                                        'e' => [
+                                                            'content' => $review->jawaban_e,
+                                                            'poin' => $review->poin_e,
+                                                        ],
+                                                    ];
+                                                @endphp
+                                                @foreach ($options as $key => $option)
+                                                    <div class="d-flex align-items-start gap-2">
+                                                        <div class="d-flex align-items-start gap-1">
+                                                            <span>
+                                                                {{ $key }}.
+                                                            </span>
+                                                            <div>
+                                                                {!! $option['content'] !!}
+                                                            </div>
+                                                        </div>
+                                                        @if ($review->berbobot == '1')
+                                                            <span class="badge bg-warning"
+                                                                title="Poin {{ $option['poin'] }}">{{ $option['poin'] }}</span>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                         <hr>
@@ -131,9 +156,11 @@
 
                                                 </div>
                                                 <div class="alert alert-success" role="alert">
-                                                    <strong>Jawaban Benar : </strong> {{ $review->kunci_jawaban }}
-                                                    <br>
-                                                    {{ strip_tags($review->review_pembahasan) }}
+                                                    @if ($review->berbobot != '1')
+                                                        <strong>Jawaban Benar : </strong> {{ $review->kunci_jawaban }}
+                                                        <br>
+                                                    @endif
+                                                    {!! $review->review_pembahasan !!}
                                                 </div>
                                             </div>
                                         </div>
@@ -187,21 +214,46 @@
                                                 <!-- End Preview modal -->
                                             @endif
                                             <div class="mt-2">
-                                                <p>
-                                                    <span>a. {{ strip_tags($review->jawaban_a) }}</span>
-                                                </p>
-                                                <p>
-                                                    <span>b. {{ strip_tags($review->jawaban_b) }}</span>
-                                                </p>
-                                                <p>
-                                                    <span>c. {{ strip_tags($review->jawaban_c) }}</span>
-                                                </p>
-                                                <p>
-                                                    <span>d. {{ strip_tags($review->jawaban_d) }}</span>
-                                                </p>
-                                                <p>
-                                                    <span>e. {{ strip_tags($review->jawaban_e) }}</span>
-                                                </p>
+                                                @php
+                                                    $options = [
+                                                        'a' => [
+                                                            'content' => $review->jawaban_a,
+                                                            'poin' => $review->poin_a,
+                                                        ],
+                                                        'b' => [
+                                                            'content' => $review->jawaban_b,
+                                                            'poin' => $review->poin_b,
+                                                        ],
+                                                        'c' => [
+                                                            'content' => $review->jawaban_c,
+                                                            'poin' => $review->poin_c,
+                                                        ],
+                                                        'd' => [
+                                                            'content' => $review->jawaban_d,
+                                                            'poin' => $review->poin_d,
+                                                        ],
+                                                        'e' => [
+                                                            'content' => $review->jawaban_e,
+                                                            'poin' => $review->poin_e,
+                                                        ],
+                                                    ];
+                                                @endphp
+                                                @foreach ($options as $key => $option)
+                                                    <div class="d-flex align-items-start gap-2">
+                                                        <div class="d-flex align-items-start gap-1">
+                                                            <span>
+                                                                {{ $key }}.
+                                                            </span>
+                                                            <div>
+                                                                {!! $option['content'] !!}
+                                                            </div>
+                                                        </div>
+                                                        @if ($review->berbobot == '1')
+                                                            <span class="badge bg-warning"
+                                                                title="Poin {{ $option['poin'] }}">{{ $option['poin'] }}</span>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                         <hr>
@@ -209,9 +261,11 @@
                                             <div class="col-md-12">
                                                 <h5>Review Pembahasan</h5>
                                                 <div class="alert alert-success" role="alert">
-                                                    <strong>Jawaban Benar : </strong> {{ $review->kunci_jawaban }}
-                                                    <br>
-                                                    {{ strip_tags($review->review_pembahasan) }}
+                                                    @if ($review->berbobot != '1')
+                                                        <strong>Jawaban Benar : </strong> {{ $review->kunci_jawaban }}
+                                                        <br>
+                                                    @endif
+                                                    {!! $review->review_pembahasan !!}
                                                 </div>
                                             </div>
                                         </div>

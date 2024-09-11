@@ -87,8 +87,8 @@
                                                                         <div class="modal-body">
                                                                             <x-accordion :jawabanA="$row->jawaban_a" :jawabanB="$row->jawaban_b"
                                                                                 :jawabanC="$row->jawaban_c" :jawabanD="$row->jawaban_d"
-                                                                                :jawabanE="$row->jawaban_e" :kunciJawaban="$row->kunci_jawaban"
-                                                                                :reviewPembahasan="$row->review_pembahasan" />
+                                                                                :jawabanE="$row->jawaban_e" :berbobot="$row->berbobot"
+                                                                                :kunciJawaban="$row->kunci_jawaban" :reviewPembahasan="$row->review_pembahasan" />
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button class="btn btn-sm ripple btn-danger"
@@ -110,9 +110,9 @@
                                                                             type: "info",
                                                                             showCancelButton: true,
                                                                             closeOnConfirm: false,
-                                                                            showLoaderOnConfirm: true }, function () 
-                                                                            { 
-                                                                            setTimeout(function(){  
+                                                                            showLoaderOnConfirm: true }, function ()
+                                                                            {
+                                                                            setTimeout(function(){
                                                                                 document.getElementById("delete-form{{ $no }}").submit();
                                                                         }, 2000); });'
                                                                 class="btn btn-sm btn-danger">
@@ -128,19 +128,35 @@
 
                                                         <div class="row mt-3">
                                                             <div class="col">
-                                                                Poin A: <strong>{{ $row->poin_a }}</strong>
-                                                            </div>
-                                                            <div class="col">
-                                                                Poin B: <strong>{{ $row->poin_b }}</strong>
-                                                            </div>
-                                                            <div class="col">
-                                                                Poin C: <strong>{{ $row->poin_c }}</strong>
-                                                            </div>
-                                                            <div class="col">
-                                                                Poin D: <strong>{{ $row->poin_d }}</strong>
-                                                            </div>
-                                                            <div class="col">
-                                                                Poin E: <strong>{{ $row->poin_e }}</strong>
+                                                                <div class="d-flex gap-2">
+                                                                    @if (strval($row->berbobot) === '1')
+                                                                        <span>Poin</span>
+                                                                        <div class="d-flex flex-1 gap-1 flex-wrap">
+                                                                            <div class="badge bg-primary text-nowrap">
+                                                                                A: <strong>{{ $row->poin_a }}</strong>
+                                                                            </div>
+                                                                            <div class="badge bg-primary text-nowrap">
+                                                                                B: <strong>{{ $row->poin_b }}</strong>
+                                                                            </div>
+                                                                            <div class="badge bg-primary text-nowrap">
+                                                                                C: <strong>{{ $row->poin_c }}</strong>
+                                                                            </div>
+                                                                            <div class="badge bg-primary text-nowrap">
+                                                                                D: <strong>{{ $row->poin_d }}</strong>
+                                                                            </div>
+                                                                            <div class="badge bg-primary text-nowrap">
+                                                                                E: <strong>{{ $row->poin_e }}</strong>
+                                                                            </div>
+                                                                        </div>
+                                                                    @else
+                                                                        <span>Kunci Jawaban</span>
+                                                                        <div class="d-flex flex-1 gap-1 flex-wrap">
+                                                                            <div class="badge bg-primary text-nowrap">
+                                                                                <strong>{{ $row->kunci_jawaban }}</strong>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -153,13 +169,15 @@
                                                     </td>
                                                     <td style="vertical-align: top;" class="text-center">
                                                         @if ($row->gambar)
-                                                            <img src="{{ asset('soal/') . '/' . $row->gambar }}"
-                                                                alt="img"
+                                                            @php
+                                                                $image = asset('storage/soal/' . $row->gambar);
+                                                            @endphp
+                                                            <img src="{{ $image }}" alt="img"
                                                                 data-bs-target="#modalImg{{ $no }}"
                                                                 data-bs-toggle="modal">
                                                             <!-- Preview modal -->
                                                             <div class="modal fade" id="modalImg{{ $no }}">
-                                                                <div class="modal-dialog modal-lg" role="document">
+                                                                <div class="modal-dialog modal-lg">
                                                                     <div class="modal-content modal-content-demo">
                                                                         <div class="modal-header">
                                                                             <h6 class="modal-title"><i
@@ -170,8 +188,8 @@
                                                                                 type="button"></button>
                                                                         </div>
                                                                         <div class="modal-body">
-                                                                            <img src="{{ asset('soal/') . '/' . $row->gambar }}"
-                                                                                alt="img">
+                                                                            <img src="{{ $image }}"
+                                                                                alt="img" />
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button class="btn btn-sm ripple btn-danger"

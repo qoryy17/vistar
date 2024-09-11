@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SoalUjian extends Model
 {
@@ -30,17 +29,18 @@ class SoalUjian extends Model
         'poin_c',
         'poin_d',
         'poin_e',
+        'berbobot',
         'kunci_jawaban',
         'klasifikasi_soal_id',
         'review_pembahasan',
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 
     public function klasifikasiSoal(): BelongsTo
     {
-        return $this->belongsTo(KlasifikasiSoal::class);
+        return $this->belongsTo(KlasifikasiSoal::class, 'klasifikasi_soal_id');
     }
 }

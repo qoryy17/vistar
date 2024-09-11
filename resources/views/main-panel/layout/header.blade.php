@@ -59,6 +59,8 @@
 
     <!-- Custome Vi Star CSS -->
     <link rel="stylesheet" href="{{ asset('resources/spruha/assets/css/vistar.css') }}">
+
+    @yield('styles')
 </head>
 
 {{-- <body class="ltr main-body leftmenu"> --}}

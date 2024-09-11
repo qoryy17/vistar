@@ -1,6 +1,10 @@
 @extends('main-panel.layout.main')
 @section('title', $page_title)
 @section('content')
+    @php
+        $options = ['a', 'b', 'c', 'd', 'e'];
+    @endphp
+
     <div class="main-content pt-0 hor-content">
 
         <div class="main-container container-fluid">
@@ -35,8 +39,19 @@
                                     </button>
                                     <strong>Perhatian !</strong> Perhatikan pengisian anda sebelum menyimpan data.
                                 </div>
+
+                                @if ($errors->any())
+                                    <div class="alert alert-danger" role="alert">
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        @foreach ($errors->all() as $error)
+                                            <p>{!! $error !!}</p>
+                                        @endforeach
+                                    </div>
+                                @endif
                                 <form action="{{ route('tryouts.simpan-soal') }}" method="POST"
-                                    enctype="multipart/form-data">
+                                    enctype="multipart/form-data" id="save-question">
                                     @csrf
                                     @method('POST')
                                     <div class="text-wrap">
@@ -48,26 +63,23 @@
                                                         <ul class="nav panel-tabs main-nav-line">
                                                             <li class="nav-item"><a href="#soal" class="nav-link active"
                                                                     data-bs-toggle="tab">Soal Pertanyaan</a></li>
-                                                            <li class="nav-item"><a href="#jawabanA" class="nav-link"
-                                                                    data-bs-toggle="tab">Jawaban A</a></li>
-                                                            <li class="nav-item"><a href="#jawabanB" class="nav-link"
-                                                                    data-bs-toggle="tab">Jawaban B</a></li>
-                                                            <li class="nav-item"><a href="#jawabanC" class="nav-link"
-                                                                    data-bs-toggle="tab">Jawaban C</a></li>
-                                                            <li class="nav-item"><a href="#jawabanD" class="nav-link"
-                                                                    data-bs-toggle="tab">Jawaban D</a></li>
-                                                            <li class="nav-item"><a href="#jawabanE" class="nav-link"
-                                                                    data-bs-toggle="tab">Jawaban E</a></li>
+
+                                                            @foreach ($options as $option)
+                                                                <li class="nav-item">
+                                                                    <a href="#tab-jawaban-{{ $option }}"
+                                                                        class="nav-link" data-bs-toggle="tab">
+                                                                        Jawaban {{ strtoupper($option) }}
+                                                                    </a>
+                                                                </li>
+                                                            @endforeach
+
                                                             <li class="nav-item"><a href="#review" class="nav-link"
                                                                     data-bs-toggle="tab">Kunci Jawaban & Review
                                                                     Pembahasan</a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                @if ($soal)
-                                                    @foreach ($soal as $row)
-                                                    @endforeach
-                                                @endif
+
                                                 <div
                                                     class="panel-body tabs-menu-body main-content-body-right border-top-0 border">
                                                     <div class="tab-content">
@@ -78,7 +90,7 @@
                                                                             class="text-danger">*</span></label>
                                                                     <input type="text" readonly name="idSoal"
                                                                         class="form-control"
-                                                                        value="{{ Crypt::encrypt($row->id) }}">
+                                                                        value="{{ $soal ? Crypt::encrypt($soal->id) : '' }}" />
                                                                 </div>
                                                             @endif
                                                             <div class="form-group" hidden>
@@ -92,48 +104,30 @@
                                                                         class="text-danger">*</span></label>
                                                                 <select class="form-control selectKlasifikasi"
                                                                     name="klasifikasi" id="Klasifikasi" required>
-                                                                    <option value="">-- Pilih Klasifikasi --
+                                                                    <option value="">
+                                                                        -- Pilih Klasifikasi --
                                                                     </option>
                                                                     @foreach ($klasifikasi_soal as $klasifikasi)
-                                                                        @if ($soal)
-                                                                            @if ($row->klasifikasi_soal_id == $klasifikasi->id)
-                                                                                <option selected
-                                                                                    value="{{ $klasifikasi->id }}">
-                                                                                    {{ $klasifikasi->judul }}
-                                                                                    ({{ $klasifikasi->alias }})
-                                                                                </option>
-                                                                            @else
-                                                                                <option value="{{ $klasifikasi->id }}">
-                                                                                    {{ $klasifikasi->judul }}
-                                                                                    ({{ $klasifikasi->alias }})
-                                                                                </option>
-                                                                            @endif
-                                                                        @else
-                                                                            @if (old('klasifikasi') == $klasifikasi->id)
-                                                                                <option selected
-                                                                                    value="{{ $klasifikasi->id }}">
-                                                                                    {{ $klasifikasi->judul }}
-                                                                                    ({{ $klasifikasi->alias }})
-                                                                                </option>
-                                                                            @else
-                                                                                <option value="{{ $klasifikasi->id }}">
-                                                                                    {{ $klasifikasi->judul }}
-                                                                                    ({{ $klasifikasi->alias }})
-                                                                                </option>
-                                                                            @endif
-                                                                        @endif
+                                                                        <option
+                                                                            {{ strval(old('klasifikasi', $soal?->klasifikasi_soal_id)) === strval($klasifikasi->id) ? 'selected' : '' }}
+                                                                            value="{{ $klasifikasi->id }}">
+                                                                            {{ $klasifikasi->judul }}
+                                                                            ({{ $klasifikasi->alias }})
+                                                                        </option>
                                                                     @endforeach
                                                                 </select>
                                                                 @error('klasifikasi')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
+                                                                    <small class="text-danger">
+                                                                        * {{ $message }}
+                                                                    </small>
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="Soal">Soal Pertanyaan <span
-                                                                        class="text-danger">*</span></label>
-                                                                <textarea required id="Soal" class="contentSoal" name="soal">{{ $soal ? $row->soal : old('soal') }}</textarea>
-                                                                @error('klasifikasi')
+                                                                <label for="Soal">
+                                                                    Soal Pertanyaan <span class="text-danger">*</span>
+                                                                </label>
+                                                                <textarea required id="Soal" class="contentSoal" name="soal">{{ old('soal', $soal?->soal ?? '') }}</textarea>
+                                                                @error('soal')
                                                                     <small class="text-danger">*
                                                                         {{ $message }}</small>
                                                                 @enderror
@@ -145,7 +139,7 @@
                                                                 </label>
                                                                 <input type="file" id="SoalGambar" class="dropify"
                                                                     data-height="200"
-                                                                    data-default-file= "{{ $soal ? asset('soal/' . $row->gambar) : '' }}"
+                                                                    data-default-file= "{{ $soal ? asset('storage/soal/' . $soal->gambar) : '' }}"
                                                                     name="gambar" />
                                                                 @error('gambar')
                                                                     <small class="text-danger">*
@@ -162,185 +156,90 @@
                                                                     value="{{ $formParam }}" readonly>
                                                             </div>
                                                         </div>
-                                                        <div class="tab-pane" id="jawabanA">
-                                                            <div class="form-group">
-                                                                <label for="poin_a">Poin A
-                                                                    <span class="text-danger">*</span>
-                                                                </label>
-                                                                <input type="text" id="poin_a" name="poin_a"
-                                                                    required
-                                                                    value="{{ $soal ? $row->poin_a : old('poin_a') ?? 0 }}"
-                                                                    class="form-control" autocomplete="off">
-                                                                @error('poin_a')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
-                                                                @enderror
+                                                        @php
+                                                            $soalArray = [];
+                                                            if ($soal) {
+                                                                $soalArray = $soal->toArray();
+                                                            }
+                                                        @endphp
+                                                        @foreach ($options as $option)
+                                                            <div class="tab-pane" id="tab-jawaban-{{ $option }}">
+                                                                <div class="form-group">
+                                                                    <label for="poin_a">Poin {{ strtoupper($option) }}
+                                                                        <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <input type="number" id="poin_{{ $option }}"
+                                                                        name="poin_{{ $option }}"
+                                                                        value="{{ old('poin_' . $option, @$soalArray['poin_' . $option] ?? 0) }}"
+                                                                        class="form-control" autocomplete="off"
+                                                                        min="0" required />
+                                                                    @error('poin_' . $option)
+                                                                        <small class="text-danger">
+                                                                            * {{ $message }}
+                                                                        </small>
+                                                                    @enderror
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="form_jawaban_{{ $option }}">
+                                                                        Jawaban {{ strtoupper($option) }}
+                                                                        <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <textarea class="contentJawaban{{ strtoupper($option) }}" id="form_jawaban_{{ $option }}"
+                                                                        name="jawaban_{{ $option }}" required>{{ old('jawaban_' . $option, @$soalArray['jawaban_' . $option] ?? '') }}</textarea>
+                                                                    @error('jawaban_' . $option)
+                                                                        <small class="text-danger">
+                                                                            * {{ $message }}</small>
+                                                                    @enderror
+                                                                </div>
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label for="JawabanA">Jawaban A <span
-                                                                        class="text-danger">*</span></label>
-                                                                <textarea class="contentJawabanA" id="JawabanA" required name="jawabanA">{{ $soal ? $row->jawaban_a : old('jawabanA') }}</textarea>
-                                                                @error('jawabanA')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-                                                        <div class="tab-pane" id="jawabanB">
-                                                            <div class="form-group">
-                                                                <label for="poin_b">Poin B
-                                                                    <span class="text-danger">*</span>
-                                                                </label>
-                                                                <input type="text" id="poin_b" name="poin_b"
-                                                                    required
-                                                                    value="{{ $soal ? $row->poin_b : old('poin_b') ?? 0 }}"
-                                                                    class="form-control" autocomplete="off">
-                                                                @error('poin_b')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
-                                                                @enderror
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="JawabanB">Jawaban B <span
-                                                                        class="text-danger">*</span></label>
-                                                                <textarea class="contentJawabanB" id="JawabanB" required name="jawabanB">{{ $soal ? $row->jawaban_b : old('jawabanB') }}</textarea>
-                                                                @error('jawabanB')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-                                                        <div class="tab-pane" id="jawabanC">
-                                                            <div class="form-group">
-                                                                <label for="poin_c">Poin C
-                                                                    <span class="text-danger">*</span>
-                                                                </label>
-                                                                <input type="text" id="poin_c" name="poin_c"
-                                                                    required
-                                                                    value="{{ $soal ? $row->poin_c : old('poin_c') ?? 0 }}"
-                                                                    class="form-control" autocomplete="off">
-                                                                @error('poin_c')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
-                                                                @enderror
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="JawabanC">Jawaban C <span
-                                                                        class="text-danger">*</span></label>
-                                                                <textarea class="contentJawabanC" id="JawabanC" required name="jawabanC">{{ $soal ? $row->jawaban_c : old('jawabanC') }}</textarea>
-                                                                @error('jawabanC')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-                                                        <div class="tab-pane" id="jawabanD">
-                                                            <div class="form-group">
-                                                                <label for="poin_d">Poin D
-                                                                    <span class="text-danger">*</span>
-                                                                </label>
-                                                                <input type="text" id="poin_d" name="poin_d"
-                                                                    required
-                                                                    value="{{ $soal ? $row->poin_d : old('poin_d') ?? 0 }}"
-                                                                    class="form-control" autocomplete="off">
-                                                                @error('poin_d')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
-                                                                @enderror
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="JawabanD">Jawaban D <span
-                                                                        class="text-danger">*</span></label>
-                                                                <textarea class="contentJawabanD" id="JawabanD" required name="jawabanD">{{ $soal ? $row->jawaban_d : old('jawabanD') }}</textarea>
-                                                                @error('jawabanD')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-                                                        <div class="tab-pane" id="jawabanE">
-                                                            <div class="form-group">
-                                                                <label for="poin_e">Poin E
-                                                                    <span class="text-danger">*</span>
-                                                                </label>
-                                                                <input type="text" id="poin_e" name="poin_e"
-                                                                    required
-                                                                    value="{{ $soal ? $row->poin_e : old('poin_e') ?? 0 }}"
-                                                                    class="form-control" autocomplete="off">
-                                                                @error('poin_e')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
-                                                                @enderror
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="JawabanE">Jawaban E <span
-                                                                        class="text-danger">*</span></label>
-                                                                <textarea class="contentJawabanE" id="JawabanE" required name="jawabanE">{{ $soal ? $row->jawaban_e : old('jawabanE') }}</textarea>
-                                                                @error('jawabanE')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
+                                                        @endforeach
                                                         <div class="tab-pane" id="review">
-                                                            @if ($soal)
-                                                            @else
-                                                                @if (old('kunciJawaban') == 'A')
-                                                                    selected
-                                                                @endif
-                                                            @endif
                                                             <div class="form-group">
-                                                                <label for="Kunci">Kunci Jawaban <span
-                                                                        class="text-danger">*</span></label>
+                                                                <label for="berbobot">
+                                                                    Soal Berbobot <span class="text-danger">*</span>
+                                                                </label>
+                                                                <select name="berbobot" class="form-control"
+                                                                    id="berbobot" required
+                                                                    onchange="changeSoalBerbobot(this)">
+                                                                    @foreach ([0, 1] as $option)
+                                                                        <option value="{{ $option }}"
+                                                                            {{ strval(old('berbobot', $soal?->berbobot)) === strval($option) ? 'selected' : '' }}>
+                                                                            {{ $option === 1 ? 'Ya' : 'Tidak' }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                                @error('berbobot')
+                                                                    <small class="text-danger">
+                                                                        * {{ $message }}
+                                                                    </small>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="form-group" id="form-kunci-jawaban">
+                                                                <label for="Kunci">
+                                                                    Kunci Jawaban <span class="text-danger">*</span>
+                                                                </label>
                                                                 <select name="kunciJawaban" class="form-control"
-                                                                    id="Kunci" required>
-                                                                    <option value="">-- Pilih Kunci Jawaban --
+                                                                    id="Kunci">
+                                                                    <option value="">
+                                                                        -- Pilih Kunci Jawaban --
                                                                     </option>
-                                                                    <option value="A"
-                                                                        @if ($soal) @if ($row->kunci_jawaban == 'A') selected @endif
-                                                                    @else
-                                                                        @if (old('kunciJawaban') == 'A') selected @endif
-                                                                        @endif>
-                                                                        A
-                                                                    </option>
-                                                                    <option value="B"
-                                                                        @if ($soal) @if ($row->kunci_jawaban == 'B') selected @endif
-                                                                    @else
-                                                                        @if (old('kunciJawaban') == 'B') selected @endif
-                                                                        @endif>
-                                                                        B
-                                                                    </option>
-                                                                    <option value="C"
-                                                                        @if ($soal) @if ($row->kunci_jawaban == 'C') selected @endif
-                                                                    @else
-                                                                        @if (old('kunciJawaban') == 'C') selected @endif
-                                                                        @endif>
-                                                                        C
-                                                                    </option>
-                                                                    <option value="D"
-                                                                        @if ($soal) @if ($row->kunci_jawaban == 'D') selected @endif
-                                                                    @else
-                                                                        @if (old('kunciJawaban') == 'D') selected @endif
-                                                                        @endif>
-                                                                        D
-                                                                    </option>
-                                                                    <option value="E"
-                                                                        @if ($soal) @if ($row->kunci_jawaban == 'E') selected @endif
-                                                                    @else
-                                                                        @if (old('kunciJawaban') == 'E') selected @endif
-                                                                        @endif>
-                                                                        E
-                                                                    </option>
+                                                                    @foreach ($options as $option)
+                                                                        <option value="{{ strtoupper($option) }}"
+                                                                            {{ strtoupper(old('kunciJawaban', $soal?->kunci_jawaban)) === strtoupper($option) ? 'selected' : '' }}>
+                                                                            {{ strtoupper($option) }}
+                                                                        </option>
+                                                                    @endforeach
                                                                 </select>
                                                                 @error('kunciJawaban')
-                                                                    <small class="text-danger">*
-                                                                        {{ $message }}</small>
+                                                                    <small class="text-danger">
+                                                                        * {{ $message }}
+                                                                    </small>
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="ReviewPembahasan">Review Pembahasan <span
                                                                         class="text-danger">*</span></label>
-                                                                <textarea class="contentReviewPembahasan" id="ReviewPembahasan" required name="reviewPembahasan">{{ $soal ? $row->review_pembahasan : old('reviewPembahasan') }}</textarea>
+                                                                <textarea class="contentReviewPembahasan" id="ReviewPembahasan" required name="reviewPembahasan">{{ $soal ? $soal->review_pembahasan : old('reviewPembahasan') }}</textarea>
                                                                 @error('reviewPembahasan')
                                                                     <small class="text-danger">*
                                                                         {{ $message }}</small>
@@ -375,4 +274,58 @@
             </div>
         </div>
     </div>
+
+
+@endsection
+@section('scripts')
+    <script>
+        let checkClearEmptyForm = false;
+        const defaultConfigRichText = {
+            code: false,
+            placeholder: ''
+        };
+
+        const richTextElements = [
+            '.contentSoal',
+            '.contentJawabanA',
+            '.contentJawabanB',
+            '.contentJawabanC',
+            '.contentJawabanD',
+            '.contentJawabanE',
+            '.contentReviewPembahasan',
+        ];
+
+        $(document).ready(function() {
+            changeSoalBerbobot($('[name="berbobot"]'));
+
+            $('#save-question').submit(function(e) {
+                if (!checkClearEmptyForm) {
+                    e.preventDefault();
+
+                    for (let richTextElement of richTextElements) {
+                        if ($(richTextElement).val().trim() == '<div><br></div>') {
+                            $(richTextElement).val('');
+                        }
+                    }
+
+                    checkClearEmptyForm = true;
+                    $('#save-question').submit();
+                } else {}
+            })
+
+
+            for (let richTextElement of richTextElements) {
+                $(richTextElement).richText(defaultConfigRichText);
+            }
+        });
+
+        function changeSoalBerbobot(e) {
+            const value = $(e).val();
+            if (value === '1') {
+                $('#form-kunci-jawaban').slideUp()
+            } else {
+                $('#form-kunci-jawaban').slideDown()
+            }
+        }
+    </script>
 @endsection

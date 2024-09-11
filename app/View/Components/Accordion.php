@@ -17,6 +17,7 @@ class Accordion extends Component
         public string $jawabanC,
         public string $jawabanD,
         public string $jawabanE,
+        public string $berbobot,
         public string $kunciJawaban,
         public string $reviewPembahasan,
     ) {
@@ -25,6 +26,7 @@ class Accordion extends Component
         $this->jawabanC = $jawabanC;
         $this->jawabanD = $jawabanD;
         $this->jawabanE = $jawabanE;
+        $this->berbobot = $berbobot;
         $this->kunciJawaban = $kunciJawaban;
         $this->reviewPembahasan = $reviewPembahasan;
     }

@@ -70,20 +70,23 @@
         </div>
     </div>
     {{-- Kunci --}}
-    <div class="card">
-        <div class="card-header" id="Kunci" role="tab">
-            <a id="header-accordion-web" aria-controls="collapseKunci" aria-expanded="false" data-bs-toggle="collapse"
-                href="#collapseKunci">Kunci
-                Jawaban</a>
-        </div>
-        <div aria-labelledby="Kunci" class="collapse" data-bs-parent="#accordion" id="collapseKunci" role="tabpanel">
-            <div class="card-body">
-                <p style="text-align: justify">
-                    {!! $kunciJawaban !!}
-                </p>
+    @if (strval($berbobot) !== "1")
+        <div class="card">
+            <div class="card-header" id="Kunci" role="tab">
+                <a id="header-accordion-web" aria-controls="collapseKunci" aria-expanded="false"
+                    data-bs-toggle="collapse" href="#collapseKunci">Kunci
+                    Jawaban</a>
+            </div>
+            <div aria-labelledby="Kunci" class="collapse" data-bs-parent="#accordion" id="collapseKunci"
+                role="tabpanel">
+                <div class="card-body">
+                    <p style="text-align: justify">
+                        {!! $kunciJawaban !!}
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
+    @endif
     {{-- ReviewPembahasan --}}
     <div class="card">
         <div class="card-header" id="ReviewPembahasan" role="tab">
