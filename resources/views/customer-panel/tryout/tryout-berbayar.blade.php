@@ -21,12 +21,6 @@
                     </div>
                 </div>
                 <!-- End Page Header -->
-
-                <div class="card-scroll" id="scrollContainer">
-                    <div class="card-slide">
-
-                    </div>
-                </div>
                 @php
                     $pembelianData = $pembelian->get();
                 @endphp
