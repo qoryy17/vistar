@@ -495,7 +495,8 @@ class Tryoutc extends Controller
 
         $cacheKey = 'exam_answered_' . $id;
         $reviewJawaban = Cache::remember($cacheKey, 10 * 60, function () use ($id) {
-            return DB::table('progres_ujian')->where('ujian_id', $id)
+            return DB::table('progres_ujian')
+                ->where('progres_ujian.ujian_id', $id)
                 ->select(
                     'progres_ujian.jawaban',
                     'progres_ujian.soal_ujian_id',
@@ -530,8 +531,8 @@ class Tryoutc extends Controller
         $questionCode = $productTryout->kode_soal;
         $cacheKey = 'exam_unanswered_' . $id;
         $unAnsweredQuestions = Cache::remember($cacheKey, 10 * 60, function () use ($answeredQuestions, $questionCode) {
-            return SoalUjian::where('kode_soal', $questionCode)
-                ->whereNotIn('id', $answeredQuestions)
+            return SoalUjian::where('soal_ujian.kode_soal', $questionCode)
+                ->whereNotIn('soal_ujian.id', $answeredQuestions)
                 ->select(
                     'soal_ujian.id',
                     'soal_ujian.soal',
