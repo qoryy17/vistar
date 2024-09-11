@@ -144,7 +144,6 @@ class Tryouts extends Controller
             $logs = $users->name . ' telah menambahkan produk tryout ' . htmlspecialchars($request->input('nama')) . ' waktu tercatat :  ' . now();
             $message = 'Produk tryout berhasil disimpan !';
             $error = 'Produk tryout gagal disimpan !';
-
         } elseif (Crypt::decrypt($request->input('formParameter')) == 'update') {
             // Cari produk tryout berdasarkan produk id
             $produkTryout = ProdukTryout::findOrFail(htmlspecialchars($request->input('produkID')));
@@ -168,7 +167,6 @@ class Tryouts extends Controller
                 // Hapus thumbnail yang lama
                 Storage::disk('public')->delete('tryout/' . $produkTryout->thumbnail);
                 $savedDataProdukTryout['thumbnail'] = $fileHashname;
-
             }
 
             $saveProdukTryout = $produkTryout->update($savedDataProdukTryout);
@@ -423,8 +421,7 @@ class Tryouts extends Controller
 
             // Catatan log
             $logs = $users->name . ' telah menambahkan soal dengan ID:' . $save['id'] . ' waktu tercatat :  ' . now();
-
-        } elseif (Crypt::decrypt($request->input('formParameter')) == 'update') {
+        } elseif ($formParameter == 'update') {
             $idSoal = Crypt::decrypt($request->input('idSoal'));
 
             $soalUjian = SoalUjian::find($idSoal);
@@ -596,7 +593,6 @@ class Tryouts extends Controller
             DB::commit();
 
             return Redirect::route('tryouts.index')->with('message', 'Produk tryout berhasil diduplikasi !');
-
         } catch (\Throwable $th) {
             foreach ($deletedImages as $image) {
                 Storage::disk('public')->delete($image);
