@@ -22,11 +22,16 @@
                 </div>
                 <!-- End Page Header -->
 
+                <div class="card-scroll" id="scrollContainer">
+                    <div class="card-slide">
+
+                    </div>
+                </div>
                 @php
                     $pembelianData = $pembelian->get();
                 @endphp
                 @if ($pembelianData->isNotEmpty())
-                    <div class="row">
+                    <div class="card-scroll" id="scrollContainer">
                         @php
                             $no = 1;
                         @endphp
@@ -42,21 +47,21 @@
                             @endphp
 
                             {{-- Informasi Paket Tryout --}}
-                            <div class="col-md-4">
+                            <div class="card-slide">
                                 <div class="card custom-card">
                                     <div class="card-body">
                                         <div>
                                             <h3 class="fs-6">Informasi Paket</h3>
                                             <h3 class="fs-6 mb-2 d-flex gap-2 align-items-center flex-wrap">
-                                                <span class="fs-4 text-primary">
+                                                <span class="fs-20 text-primary">
                                                     {{ $tryout->nama_tryout }}
                                                 </span>
-                                                <span
-                                                    class="badge bg-success">{{ Number::currency($tryout->harga, in: 'IDR') }}</span>
                                             </h3>
-                                            <div class="text-muted tx-12">
+                                            <span class="badge bg-success">{{ Number::currency($tryout->harga, in: 'IDR') }}
+                                            </span>
+                                            <div class="text-muted tx-12 mt-2">
                                                 @if ($masaAktif > 0)
-                                                    <span>
+                                                    <span style="text-align: justify;">
                                                         Klik tombol dibawah untuk melanjutkan ujian Tryout berbasis
                                                         CBT/CAT
                                                     </span>
@@ -195,7 +200,8 @@
                                                                         <td>
                                                                             {{ $examResult->terjawab }}
                                                                         </td>
-                                                                        <th id="table-head-wrong_answer">Soal Belum Terjawab
+                                                                        <th id="table-head-wrong_answer">Soal Belum
+                                                                            Terjawab
                                                                         </th>
                                                                         <td>
                                                                             {{ $examResult->tidak_terjawab }}
@@ -442,5 +448,36 @@
             $('[name="testimoni"]').val(testimoni);
             $('[name="rating"]').val(rating);
         }
+
+        const scrollContainer = document.getElementById('scrollContainer');
+
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        scrollContainer.addEventListener('mousedown', (e) => {
+            isDown = true;
+            scrollContainer.classList.add('active');
+            startX = e.pageX - scrollContainer.offsetLeft;
+            scrollLeft = scrollContainer.scrollLeft;
+        });
+
+        scrollContainer.addEventListener('mouseleave', () => {
+            isDown = false;
+            scrollContainer.classList.remove('active');
+        });
+
+        scrollContainer.addEventListener('mouseup', () => {
+            isDown = false;
+            scrollContainer.classList.remove('active');
+        });
+
+        scrollContainer.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - scrollContainer.offsetLeft;
+            const walk = (x - startX) * 2; // Adjust scrolling speed
+            scrollContainer.scrollLeft = scrollLeft - walk;
+        });
     </script>
 @endsection
