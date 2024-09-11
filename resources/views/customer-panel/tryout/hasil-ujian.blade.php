@@ -25,7 +25,7 @@
 
                 <!-- Row -->
                 <div class="row sidemenu-height">
-                    <div class="col-lg-9">
+                    <div class="col-lg-8">
                         <div class="card custom-card">
                             <div class="card-body">
                                 <div class="row row-sm">
@@ -171,115 +171,117 @@
                                     @endphp
                                 @endforeach
 
-                                <hr />
+                                @if ($unAnsweredQuestions->count() > 0)
+                                    <hr />
 
-                                <h5>Soal Terlewati</h5>
+                                    <h5>Soal Terlewati</h5>
 
-                                @php
-                                    $no = 1;
-                                @endphp
-                                @foreach ($unAnsweredQuestions as $review)
-                                    <div>
-                                        <h5>Soal No. {{ $no }}</h5>
-                                        <div style="font-size: 14px;">
-                                            <p>
-                                                {!! $review->soal !!}
-                                            </p>
-                                            @if (!empty($review->gambar))
-                                                <img height="300px" width="img img-thumbnail"
-                                                    src="{{ asset('storage/soal/' . $review->gambar) }}" alt="gambar"
-                                                    data-bs-target="#modalImg" data-bs-toggle="modal">
-                                                <!-- Preview modal -->
-                                                <div class="modal fade" id="modalImg">
-                                                    <div class="modal-dialog modal-lg" role="document">
-                                                        <div class="modal-content modal-content-demo">
-                                                            <div class="modal-header">
-                                                                <h6 class="modal-title"><i class="fa fa-book"></i>
-                                                                    Gambar Soal
-                                                                </h6><button aria-label="Close" class="btn-close"
-                                                                    data-bs-dismiss="modal" type="button"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <img src="{{ asset('soal/' . $review->gambar) }}"
-                                                                    alt="img">
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button class="btn btn-sm ripple btn-danger"
-                                                                    data-bs-dismiss="modal" type="button"><i
-                                                                        class="fa fa-times"></i> Tutup</button>
+                                    @php
+                                        $no = 1;
+                                    @endphp
+                                    @foreach ($unAnsweredQuestions as $review)
+                                        <div>
+                                            <h5>Soal No. {{ $no }}</h5>
+                                            <div style="font-size: 14px;">
+                                                <p>
+                                                    {!! $review->soal !!}
+                                                </p>
+                                                @if (!empty($review->gambar))
+                                                    <img height="300px" width="img img-thumbnail"
+                                                        src="{{ asset('storage/soal/' . $review->gambar) }}" alt="gambar"
+                                                        data-bs-target="#modalImg" data-bs-toggle="modal">
+                                                    <!-- Preview modal -->
+                                                    <div class="modal fade" id="modalImg">
+                                                        <div class="modal-dialog modal-lg" role="document">
+                                                            <div class="modal-content modal-content-demo">
+                                                                <div class="modal-header">
+                                                                    <h6 class="modal-title"><i class="fa fa-book"></i>
+                                                                        Gambar Soal
+                                                                    </h6><button aria-label="Close" class="btn-close"
+                                                                        data-bs-dismiss="modal" type="button"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <img src="{{ asset('soal/' . $review->gambar) }}"
+                                                                        alt="img">
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button class="btn btn-sm ripple btn-danger"
+                                                                        data-bs-dismiss="modal" type="button"><i
+                                                                            class="fa fa-times"></i> Tutup</button>
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <!-- End Preview modal -->
+                                                @endif
+                                                <div class="mt-2">
+                                                    @php
+                                                        $options = [
+                                                            'a' => [
+                                                                'content' => $review->jawaban_a,
+                                                                'poin' => $review->poin_a,
+                                                            ],
+                                                            'b' => [
+                                                                'content' => $review->jawaban_b,
+                                                                'poin' => $review->poin_b,
+                                                            ],
+                                                            'c' => [
+                                                                'content' => $review->jawaban_c,
+                                                                'poin' => $review->poin_c,
+                                                            ],
+                                                            'd' => [
+                                                                'content' => $review->jawaban_d,
+                                                                'poin' => $review->poin_d,
+                                                            ],
+                                                            'e' => [
+                                                                'content' => $review->jawaban_e,
+                                                                'poin' => $review->poin_e,
+                                                            ],
+                                                        ];
+                                                    @endphp
+                                                    @foreach ($options as $key => $option)
+                                                        <div class="d-flex align-items-start gap-2">
+                                                            <div class="d-flex align-items-start gap-1">
+                                                                <span>
+                                                                    {{ $key }}.
+                                                                </span>
+                                                                <div>
+                                                                    {!! $option['content'] !!}
+                                                                </div>
+                                                            </div>
+                                                            @if ($review->berbobot == '1')
+                                                                <span class="badge bg-warning"
+                                                                    title="Poin {{ $option['poin'] }}">{{ $option['poin'] }}</span>
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="row mt-1">
+                                                <div class="col-md-12">
+                                                    <h5>Review Pembahasan</h5>
+                                                    <div class="alert alert-success" role="alert">
+                                                        @if ($review->berbobot != '1')
+                                                            <strong>Jawaban Benar : </strong> {{ $review->kunci_jawaban }}
+                                                            <br>
+                                                        @endif
+                                                        {!! $review->review_pembahasan !!}
                                                     </div>
                                                 </div>
-                                                <!-- End Preview modal -->
-                                            @endif
-                                            <div class="mt-2">
-                                                @php
-                                                    $options = [
-                                                        'a' => [
-                                                            'content' => $review->jawaban_a,
-                                                            'poin' => $review->poin_a,
-                                                        ],
-                                                        'b' => [
-                                                            'content' => $review->jawaban_b,
-                                                            'poin' => $review->poin_b,
-                                                        ],
-                                                        'c' => [
-                                                            'content' => $review->jawaban_c,
-                                                            'poin' => $review->poin_c,
-                                                        ],
-                                                        'd' => [
-                                                            'content' => $review->jawaban_d,
-                                                            'poin' => $review->poin_d,
-                                                        ],
-                                                        'e' => [
-                                                            'content' => $review->jawaban_e,
-                                                            'poin' => $review->poin_e,
-                                                        ],
-                                                    ];
-                                                @endphp
-                                                @foreach ($options as $key => $option)
-                                                    <div class="d-flex align-items-start gap-2">
-                                                        <div class="d-flex align-items-start gap-1">
-                                                            <span>
-                                                                {{ $key }}.
-                                                            </span>
-                                                            <div>
-                                                                {!! $option['content'] !!}
-                                                            </div>
-                                                        </div>
-                                                        @if ($review->berbobot == '1')
-                                                            <span class="badge bg-warning"
-                                                                title="Poin {{ $option['poin'] }}">{{ $option['poin'] }}</span>
-                                                        @endif
-                                                    </div>
-                                                @endforeach
                                             </div>
                                         </div>
                                         <hr>
-                                        <div class="row mt-1">
-                                            <div class="col-md-12">
-                                                <h5>Review Pembahasan</h5>
-                                                <div class="alert alert-success" role="alert">
-                                                    @if ($review->berbobot != '1')
-                                                        <strong>Jawaban Benar : </strong> {{ $review->kunci_jawaban }}
-                                                        <br>
-                                                    @endif
-                                                    {!! $review->review_pembahasan !!}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    @php
-                                        $no++;
-                                    @endphp
-                                @endforeach
+                                        @php
+                                            $no++;
+                                        @endphp
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3">
-                        {{-- Grafik review pembahasan --}}
+                    <div class="col-lg-4">
+                        {{-- Graph Evaluation --}}
                         <div class="card custom-card text-center">
                             <div class="card-body">
                                 <div>
@@ -287,7 +289,20 @@
                                     <p class="text-muted  card-sub-title">Ujian Tryout</p>
                                 </div>
                                 <div class="chartjs-wrapper-demo">
-                                    <canvas id="chartEvaluasi"></canvas>
+                                    <canvas id="chartEvaluation"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Graph Total Score Per Classification --}}
+                        <div class="card custom-card text-center">
+                            <div class="card-body">
+                                <div>
+                                    <h6 class="main-content-label mb-1">Grafik Nilai</h6>
+                                    <p class="text-muted  card-sub-title">Berdasarkan Klasifikasi</p>
+                                </div>
+                                <div class="chartjs-wrapper-demo">
+                                    <canvas id="chartTotalScorePerClassification"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -297,13 +312,15 @@
             </div>
         </div>
     </div>
+
     <!-- Jquery js-->
     <script src="{{ url('resources/spruha/assets/plugins/jquery/jquery.min.js') }}"></script>
     <script>
+        const examResultPassinGrade = <?= json_encode($examResultPassinGrade) ?>;
+
         $(function() {
             // Bar-Evaluasi
-            var context = document.getElementById("chartEvaluasi").getContext('2d');
-            var myChartEvaluasi = new Chart(context, {
+            const chartEvaluation = new Chart(document.getElementById("chartEvaluation").getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: ["Evaluasi"],
@@ -355,6 +372,77 @@
                         }]
                     },
                     legend: {
+                        labels: {
+                            fontColor: "#77778e"
+                        },
+                    },
+                }
+            });
+
+            // Bar-Score Per Classification
+            const labelsChartTotalScorePerClassification = []
+            const passingGradeData = []
+            const userScoreData = []
+            for (let classification of examResultPassinGrade) {
+                labelsChartTotalScorePerClassification.push(classification.alias);
+                passingGradeData.push(classification.passing_grade);
+                userScoreData.push(classification.total_nilai);
+            }
+
+            const chartTotalScorePerClassification = new Chart(document.getElementById(
+                "chartTotalScorePerClassification").getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: labelsChartTotalScorePerClassification,
+                    datasets: [{
+                            label: "Passing Grade",
+                            data: passingGradeData,
+                            borderWidth: 2,
+                            borderColor: '#19B159',
+                            backgroundColor: '#19B159',
+                            fill: false,
+                            borderWidth: 2.0,
+                            pointBackgroundColor: '#ffffff',
+                        },
+                        {
+                            label: "Nilai Anda",
+                            data: userScoreData,
+                            borderWidth: 2,
+                            borderColor: '#ff9b21',
+                            backgroundColor: '#ff9b21',
+                            fill: false,
+                            borderWidth: 2.0,
+                            pointBackgroundColor: '#ffffff',
+                        }
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 20,
+                                fontColor: "#77778e",
+                            },
+                            gridLines: {
+                                color: 'rgba(119, 119, 142, 0.2)'
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                display: true,
+                                fontColor: "#77778e",
+                            },
+                            gridLines: {
+                                display: false,
+                                color: 'rgba(119, 119, 142, 0.2)'
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: true,
                         labels: {
                             fontColor: "#77778e"
                         },

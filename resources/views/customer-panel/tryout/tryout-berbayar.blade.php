@@ -216,18 +216,29 @@
                                                             </table>
 
                                                             @if ($examResult)
-                                                                <div class="row mt-2 mb-2"
-                                                                    style="white-space: normal; text-align:justify;">
-                                                                    @foreach ($examResult->passing_grade as $passing)
-                                                                        <div class="col-md-3">
-                                                                            <span class="text-primary">Total Nilai :
-                                                                                ({{ $passing->alias }})
-                                                                            </span> : <b>{{ $passing->total_nilai }}</b>
-                                                                        </div>
-                                                                    @endforeach
-                                                                </div>
-                                                                <hr>
-
+                                                                <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>#</th>
+                                                                            <th>Passing Grade</th>
+                                                                            <th>Nilai Anda</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <thead>
+                                                                        @foreach ($examResult->passing_grade as $passing)
+                                                                            <tr>
+                                                                                <td>{{ $passing->alias }}</td>
+                                                                                <td>{{ $passing->passing_grade }}</td>
+                                                                                <td>
+                                                                                    <span
+                                                                                        class="badge @if ($passing->passing_grade > $passing->total_nilai) bg-danger @else bg-success @endif">
+                                                                                        {{ $passing->total_nilai }}
+                                                                                    </span>
+                                                                                </td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                    </thead>
+                                                                </table>
                                                                 <div class="mt-1"
                                                                     style="white-space: normal; text-align:justify;">
                                                                     @php

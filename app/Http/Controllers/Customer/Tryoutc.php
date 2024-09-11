@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\TestimoniRequest;
 use App\Jobs\SimpanHasilUjianJob;
 use App\Models\Customer;
+use App\Models\HasilPassingGrade;
 use App\Models\HasilUjian;
 use App\Models\LimitTryout;
 use App\Models\OrderTryout;
@@ -423,17 +424,12 @@ class Tryoutc extends Controller
             'status_ujian' => 'Selesai',
         ]);
 
-        $dataInfoUjian = [
-            'ujianID' => $examId,
-            'kodeSoal' => $questionCode,
+        // Job untuk menyimpan informasi hasil ujian
+        SimpanHasilUjianJob::dispatch([
+            'examId' => $examId,
+            'questionCode' => $questionCode,
             'param' => $examPaidType,
-        ];
-
-        $ujianTersimpan = HasilUjian::where('ujian_id', $examId)->first();
-        if (!$ujianTersimpan) {
-            // Job untuk menyimpan informasi ujian dan hasil ujian
-            SimpanHasilUjianJob::dispatch($dataInfoUjian);
-        }
+        ]);
 
         $generateCacheName = Tryoutc::cacheNameGenerateExam($examId);
         $cacheKey = $generateCacheName['exam'];
@@ -483,6 +479,17 @@ class Tryoutc extends Controller
 
         if (!$productTryout) {
             return redirect()->back()->with('error', 'Ujian Tidak diketahui!');
+        }
+
+        $examResult = HasilUjian::select('id')->where('ujian_id', $exam->id)->first();
+        if (!$examResult) {
+            return redirect()->back()->with('error', 'Hasil Ujian tidak ditemukan atau belum diproses!');
+        }
+        $examResultPassinGrade = HasilPassingGrade::select('id', 'judul', 'alias', 'passing_grade', 'total_nilai')
+            ->where('hasil_ujian_id', $examResult->id)
+            ->get();
+        if ($examResultPassinGrade->count() <= 0) {
+            return redirect()->back()->with('error', 'Hasil Ujian tidak ditemukan atau belum diproses!');
         }
 
         $cacheKey = 'exam_answered_' . $id;
@@ -550,6 +557,7 @@ class Tryoutc extends Controller
             'exam' => $exam,
             'reviewJawaban' => $reviewJawaban,
             'unAnsweredQuestions' => $unAnsweredQuestions,
+            'examResultPassinGrade' => $examResultPassinGrade,
         ];
 
         return view('customer-panel.tryout.hasil-ujian', $data);

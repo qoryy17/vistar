@@ -27,7 +27,7 @@ class HasilUjian extends Model
         'keterangan',
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 

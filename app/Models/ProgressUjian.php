@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProgressUjian extends Model
 {
@@ -19,7 +19,7 @@ class ProgressUjian extends Model
         'ujian_id',
         'soal_ujian_id',
         'kode_soal',
-        'jawaban'
+        'jawaban',
     ];
 
     public $incrementing = true;
@@ -28,6 +28,11 @@ class ProgressUjian extends Model
 
     public function ujian(): BelongsTo
     {
-        return $this->belongsTo(Ujian::class);
+        return $this->belongsTo(Ujian::class, 'ujian_id');
+    }
+
+    public function soal(): BelongsTo
+    {
+        return $this->belongsTo(SoalUjian::class, 'soal_ujian_id');
     }
 }

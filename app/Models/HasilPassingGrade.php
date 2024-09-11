@@ -21,12 +21,12 @@ class HasilPassingGrade extends Model
         'total_nilai',
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 
-    public function ujian(): BelongsTo
+    public function hasil_ujian(): BelongsTo
     {
-        return $this->belongsTo(Ujian::class);
+        return $this->belongsTo(HasilUjian::class, 'hasil_ujian_id');
     }
 }

@@ -496,9 +496,8 @@
                 const optionLabel = document.createElement('label');
                 optionLabel.style = "margin-bottom: 0px;"
                 optionLabel.htmlFor = optionId
-                optionLabel.innerHTML = `<div class="d-flex gap-1">` + String(optionName).toLowerCase() + `. ` +
-                    option +
-                    `</div`;
+                optionLabel.innerHTML =
+                    `<div class="d-flex gap-1"><div>${String(optionName).toLowerCase()}.</div> <div>${option}</div></div>`;
 
                 optionDiv.appendChild(optionInput)
                 optionDiv.appendChild(optionLabel)

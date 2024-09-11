@@ -15,13 +15,14 @@ class KlasifikasiSoal extends Model
     protected $fillable = [
         'id',
         'judul',
-        'aktif'
+        'aktif',
+        'passing_grade',
     ];
 
     public $timestamps = true;
 
     public function soal(): HasMany
     {
-        return $this->hasMany(SoalUjian::class);
+        return $this->hasMany(SoalUjian::class, 'klasifikasi_soal_id');
     }
 }

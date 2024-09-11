@@ -565,6 +565,8 @@ class Tryouts extends Controller
                     'kunci_jawaban' => $soalDuplikat->kunci_jawaban,
                     'klasifikasi_soal_id' => $soalDuplikat->klasifikasi_soal_id,
                     'review_pembahasan' => $soalDuplikat->review_pembahasan,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ];
 
                 $gambar = $soalDuplikat->gambar;
@@ -573,7 +575,6 @@ class Tryouts extends Controller
                     $newGambar = 'copy--' . time() . '-' . $gambar;
                     $path = 'soal/' . $newGambar;
                     Storage::disk('public')->copy('soal/' . $gambar, $path);
-
 
                     array_push($deletedImages, $path);
                 }
