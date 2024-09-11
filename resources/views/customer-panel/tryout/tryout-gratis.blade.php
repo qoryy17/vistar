@@ -65,9 +65,9 @@
                                                     <span class="fs-4 text-primary">
                                                         {{ $tryout->nama_tryout }}
                                                     </span>
-                                                    <span class="badge bg-success">Gratis 1x</span>
                                                 </h3>
-                                                <div class="text-muted tx-12">
+                                                <span class="badge bg-success">Gratis 1x</span>
+                                                <div class="text-muted tx-12 mt-2">
                                                     @if ($isFinish)
                                                         <span>
                                                             <i class="fa fa-info-circle"></i> &nbsp;
@@ -150,7 +150,6 @@
                                         <table class="table table-bordered border-bottom">
                                             <thead>
                                                 <tr>
-                                                    <th>No</th>
                                                     <th>Informasi Ujian</th>
                                                     <th class="text-center">Total Nilai</th>
                                                 </tr>
@@ -173,15 +172,16 @@
                                                             $tryout?->nama_tryout ?? 'Tryout ID: ' . $tryoutId;
                                                     @endphp
                                                     <tr>
-                                                        <td style="vertical-align: top;">{{ $no }}</td>
                                                         <td>
                                                             @if ($examResult && $tryout)
                                                                 <h3 class="fs-6">
-                                                                    {{ $tryoutName }} - {{ $row->id }}
+                                                                    {{ $no }}. {{ $tryoutName }} -
+                                                                    {{ $row->id }}
                                                                 </h3>
                                                             @else
                                                                 <h3 class="fs-6">
-                                                                    {{ $tryoutName }} - {{ $row->id }}
+                                                                    {{ $no }}. {{ $tryoutName }} -
+                                                                    {{ $row->id }}
                                                                 </h3>
                                                             @endif
 

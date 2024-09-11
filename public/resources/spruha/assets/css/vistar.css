@@ -105,3 +105,17 @@
 .line-top-web {
     border-top: 1px solid black;
 }
+
+.card-scroll {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 1rem;
+}
+
+.card-slide {
+    flex: 0 0 auto;
+    max-width: 25rem;
+    text-wrap: wrap;
+    margin-right: 1rem;
+}

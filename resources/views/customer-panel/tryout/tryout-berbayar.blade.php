@@ -21,12 +21,11 @@
                     </div>
                 </div>
                 <!-- End Page Header -->
-
                 @php
                     $pembelianData = $pembelian->get();
                 @endphp
                 @if ($pembelianData->isNotEmpty())
-                    <div class="row">
+                    <div class="card-scroll" id="scrollContainer">
                         @php
                             $no = 1;
                         @endphp
@@ -42,21 +41,21 @@
                             @endphp
 
                             {{-- Informasi Paket Tryout --}}
-                            <div class="col-md-4">
+                            <div class="card-slide">
                                 <div class="card custom-card">
                                     <div class="card-body">
                                         <div>
                                             <h3 class="fs-6">Informasi Paket</h3>
                                             <h3 class="fs-6 mb-2 d-flex gap-2 align-items-center flex-wrap">
-                                                <span class="fs-4 text-primary">
+                                                <span class="fs-20 text-primary">
                                                     {{ $tryout->nama_tryout }}
                                                 </span>
-                                                <span
-                                                    class="badge bg-success">{{ Number::currency($tryout->harga, in: 'IDR') }}</span>
                                             </h3>
-                                            <div class="text-muted tx-12">
+                                            <span class="badge bg-success">{{ Number::currency($tryout->harga, in: 'IDR') }}
+                                            </span>
+                                            <div class="text-muted tx-12 mt-2">
                                                 @if ($masaAktif > 0)
-                                                    <span>
+                                                    <span style="text-align: justify;">
                                                         Klik tombol dibawah untuk melanjutkan ujian Tryout berbasis
                                                         CBT/CAT
                                                     </span>
@@ -127,7 +126,6 @@
                                         <table class="table table-bordered border-bottom">
                                             <thead>
                                                 <tr>
-                                                    <th>No</th>
                                                     <th>Informasi Ujian</th>
                                                     <th class="text-center">Total Nilai</th>
                                                 </tr>
@@ -150,18 +148,25 @@
                                                             $tryout?->nama_tryout ?? 'Tryout ID: ' . $tryoutId;
                                                     @endphp
                                                     <tr>
-                                                        <td style="vertical-align: top;">{{ $no }}</td>
                                                         <td>
                                                             @if ($examResult && $tryout)
                                                                 <a href="{{ route('ujian.hasil', ['id' => Crypt::encrypt($row->id)]) }}"
-                                                                    title="Klik untuk melihat detil">
+                                                                    title="Klik untuk melihat review pembahasan">
                                                                     <h3 class="fs-6 text-primary">
-                                                                        {{ $tryoutName }} - {{ $row->id }}
+                                                                        {{ $no }}. {{ $tryoutName }} -
+                                                                        {{ $row->id }}
+                                                                        <br>
+                                                                        <small style="padding-left: 20px;">
+                                                                            <span class="badge bg-warning">Klik Untuk
+                                                                                Melihat
+                                                                                Review Pembahasan</span>
+                                                                        </small>
                                                                     </h3>
                                                                 </a>
                                                             @else
                                                                 <h3 class="fs-6 text-primary">
-                                                                    {{ $tryoutName }} - {{ $row->id }}
+                                                                    {{ $no }}. {{ $tryoutName }} -
+                                                                    {{ $row->id }}
                                                                 </h3>
                                                             @endif
 
@@ -193,7 +198,8 @@
                                                                         <td>
                                                                             {{ $examResult->terjawab }}
                                                                         </td>
-                                                                        <th id="table-head-wrong_answer">Soal Belum Terjawab
+                                                                        <th id="table-head-wrong_answer">Soal Belum
+                                                                            Terjawab
                                                                         </th>
                                                                         <td>
                                                                             {{ $examResult->tidak_terjawab }}
@@ -437,5 +443,36 @@
             $('[name="testimoni"]').val(testimoni);
             $('[name="rating"]').val(rating);
         }
+
+        const scrollContainer = document.getElementById('scrollContainer');
+
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        scrollContainer.addEventListener('mousedown', (e) => {
+            isDown = true;
+            scrollContainer.classList.add('active');
+            startX = e.pageX - scrollContainer.offsetLeft;
+            scrollLeft = scrollContainer.scrollLeft;
+        });
+
+        scrollContainer.addEventListener('mouseleave', () => {
+            isDown = false;
+            scrollContainer.classList.remove('active');
+        });
+
+        scrollContainer.addEventListener('mouseup', () => {
+            isDown = false;
+            scrollContainer.classList.remove('active');
+        });
+
+        scrollContainer.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - scrollContainer.offsetLeft;
+            const walk = (x - startX) * 2; // Adjust scrolling speed
+            scrollContainer.scrollLeft = scrollLeft - walk;
+        });
     </script>
 @endsection
