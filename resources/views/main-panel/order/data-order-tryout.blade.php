@@ -159,7 +159,7 @@
                                             @endphp
                                             @foreach ($order as $row)
                                                 <tr>
-                                                    <td>1</td>
+                                                    <td>{{ $no }}</td>
                                                     <td>
                                                         <h6>Order ID : {{ $row->id }}</h6>
                                                         <p>
@@ -194,6 +194,9 @@
 
                                                     </td>
                                                 </tr>
+                                                @php
+                                                    $no++;
+                                                @endphp
                                             @endforeach
                                         </tbody>
                                     </table>
