@@ -45,7 +45,7 @@
                                             @endphp
                                             @foreach ($permohonanTryout as $row)
                                                 <tr>
-                                                    <td style="vertical-align: top;">1</td>
+                                                    <td style="vertical-align: top;">{{ $no }}</td>
                                                     <td style="vertical-align: top;">
                                                         <p>
                                                             Produk : <b>{{ $row->nama_tryout }}</b><br>
