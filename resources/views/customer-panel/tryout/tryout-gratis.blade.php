@@ -332,7 +332,8 @@
                                         situs utama kami atau klik tautan di bawah ini dan mulai persiapan Anda menuju
                                         sukses!"
                                     </p>
-                                    <a class="btn btn-primary btn-sm" href="{{ route('mainweb.index') }}/#coba-gratis">
+                                    <a class="btn btn-primary btn-sm d-block d-md-inline-block"
+                                        href="{{ route('mainweb.index') }}/#coba-gratis">
                                         Pengajuan Tryout Gratis <i class="fa fa-arrow-right"></i>
                                     </a>
                                 </div>
