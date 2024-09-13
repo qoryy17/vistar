@@ -37,9 +37,11 @@ Route::controller(GoogleOauth::class)->group(function () {
     Route::get('/callback', 'handleGoogleCallback')->name('auth.callback');
 });
 
-Route::controller(JobsController::class)->group(function () {
-    Route::get('/delete/logs', 'deleteLogs')->name('cron.delete-logs');
-    Route::get('/delete/cache', 'deleteCache')->name('cron.delete-cache');
+Route::middleware(PanelRouting::class)->group(function () {
+    Route::controller(JobsController::class)->group(function () {
+        Route::get('/delete/logs', 'deleteLogs')->name('cron.delete-logs');
+        Route::get('/delete/cache', 'deleteCache')->name('cron.delete-cache');
+    });
 });
 
 // Payment Routing
