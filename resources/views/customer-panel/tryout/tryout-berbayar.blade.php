@@ -208,7 +208,7 @@
                                                                 @else
                                                                     <tr>
                                                                         <td colspan="4" class="text-center">
-                                                                            <i>Hasil sedang dihitung</i>
+                                                                            <i>Hasil sedang dihitung...</i>
                                                                         </td>
                                                                     </tr>
                                                                 @endif
@@ -294,13 +294,14 @@
                                                                                 $oldTestimoni,
                                                                             );
                                                                         @endphp
-                                                                        <button class="btn btn-primary btn-sm mb-2"
+                                                                        <span class="badge bg-warning fs-6">
+                                                                            Berikan Testimoni Untuk Melihat Total Nilai dan
+                                                                            Status Kelulusan Anda !
+                                                                        </span> <br>
+                                                                        <button class="btn btn-primary btn-sm mt-2"
                                                                             onclick="showModalTestimoni({{ $examResult->id }}, {{ $tryoutId }}, `{{ $formattedTestimoni }}`, {{ $oldRating ?? 5 }})">
                                                                             <i class="fa fa-child"></i> Berikan Testimoni
-                                                                        </button><br>
-                                                                        <span class="badge bg-warning">
-                                                                            Isi Testimoni Untuk Melihat Total Score Anda
-                                                                        </span>
+                                                                        </button>
                                                                     @endif
                                                                 </div>
                                                             @endif
@@ -358,7 +359,8 @@
                                         sekarang dan buktikan sendiri mengapa banyak peserta lain memberikan review positif
                                         atas produk kami !
                                     </p>
-                                    <a class="btn btn-primary btn-sm" href="{{ route('mainweb.produk-berbayar') }}">
+                                    <a class="btn btn-primary btn-sm d-block d-md-inline-block"
+                                        href="{{ route('mainweb.produk-berbayar') }}">
                                         Lihat Sekarang <i class="fa fa-arrow-right"></i>
                                     </a>
                                 </div>
