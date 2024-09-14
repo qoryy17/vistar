@@ -82,6 +82,7 @@ class BerandaUI
             ->whereNot('kategori_produk.status', 'Gratis')
             ->whereNot('kategori_produk.aktif', 'T')
             ->whereYear('order_tryout.created_at', $tahun)
+            ->where('order_tryout.status_order', 'paid')
             ->groupBy(DB::raw('MONTH(order_tryout.created_at)'))
             ->orderBy(DB::raw('MONTH(order_tryout.created_at)'))
             ->pluck('total_orders', 'month');
