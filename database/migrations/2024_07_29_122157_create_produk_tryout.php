@@ -70,7 +70,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('kategori_produk_id');
             $table->string('status', 100);
-            $table->string('thumbnail');
+            $table->string('thumbnail', 500);
             $table->timestamps();
 
             $table->foreign('pengaturan_tryout_id')->references('id')->on('pengaturan_tryout')->onDelete('cascade')->onUpdate('cascade');
