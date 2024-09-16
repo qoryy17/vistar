@@ -3,7 +3,7 @@
     $web = BerandaUI::web();
 @endphp
 <!-- Footer Start -->
-<footer class="footer">
+<footer class="footer d-print-none">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -55,30 +55,20 @@
 
                         <div class="col-lg-3 col-md-4 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0">
                             <h5 class="footer-head">Pembayaran</h5>
-
-                            <img height="20" src="{{ asset('resources/midtrans.png') }}" alt="midtrans">
-
-                            <div class="row mt-2">
-                                <div class="col p-2">
-                                    <img height="20" src="{{ asset('resources/Bank-CIMB-Niaga.png') }}"
-                                        alt="CIMB Niaga">
-                                </div>
-                                <div class="col p-2">
-                                    <img height="20" src="{{ asset('resources/Bank-BRI.png') }}" alt="BRI">
-                                </div>
-                                <div class="col p-2">
-                                    <img height="20" src="{{ asset('resources/Bank-BNI.png') }}" alt="BNI">
-                                </div>
-                                <div class="col p-2">
-                                    <img height="20" src="{{ asset('resources/Bank-Mandiri.png') }}" alt="Mandiri">
-                                </div>
-                                <div class="col p-2">
-                                    <img height="20" src="{{ asset('resources/Gopay.png') }}" alt="Gopay">
-                                </div>
-                                <div class="col p-2">
-                                    <img height="20" src="{{ asset('resources/Bank-Permata.png') }}" alt="Permata">
-                                </div>
-
+                            <div class="d-flex gap-4 flex-wrap mt-4">
+                                <img height="20" src="{{ asset('resources/Bank-CIMB-Niaga.png') }}"
+                                    alt="Logo CIMB Niaga" />
+                                <img height="20" src="{{ asset('resources/Bank-BRI.png') }}" alt="Logo BRI" />
+                                <img height="20" src="{{ asset('resources/Bank-BNI.png') }}" alt="Logo BNI" />
+                                <img height="20" src="{{ asset('resources/Bank-Mandiri.png') }}"
+                                    alt="Logo Mandiri" />
+                                <img height="20" src="{{ asset('resources/Gopay.png') }}" alt="Logo Gopay" />
+                                <img height="20" src="{{ asset('resources/Bank-Permata.png') }}"
+                                    alt="Logo Permata" />
+                            </div>
+                            <div class="d-flex gap-2 mt-3 justify-content-center align-items-center">
+                                <span>Powered By</span>
+                                <img height="20" src="{{ asset('resources/midtrans.png') }}" alt="Logo Midtrans" />
                             </div>
                         </div><!--end col-->
                     </div><!--end row-->
@@ -92,11 +82,9 @@
             <div class="row align-items-center">
                 <div class="col-lg-12">
                     <div class="text-sm-start">
-                        <p class="mb-0">Copyright ©
-                            <script>
-                                document.write(new Date().getFullYear())
-                            </script> Design & Develop By <a href="https://vistar.id/" target="_blank"
-                                class="text-reset">{{ $web->nama_bisnis }}</a>.
+                        <p class="mb-0">
+                            Copyright © {{ date('Y') }} Design & Develop By <a href="{{ url('/') }}"
+                                class="text-reset">{{ $web->nama_bisnis }} </a>.
                         </p>
                     </div>
                 </div><!--end col-->

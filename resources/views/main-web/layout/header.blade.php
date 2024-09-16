@@ -40,15 +40,6 @@
         rel="stylesheet" type="text/css">
 
     @yield('styles')
-
-    <style type="text/css">
-        @media print {
-            header {
-                display: none;
-            }
-        }
-    </style>
-
 </head>
 
 <body>

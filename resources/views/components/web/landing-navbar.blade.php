@@ -1,5 +1,5 @@
 <!-- Navbar Start -->
-<header id="topnav" class="defaultscroll sticky">
+<header id="topnav" class="defaultscroll sticky d-print-none">
     <div class="container">
         <!-- Logo container-->
         <a class="logo" href="{{ url('/') }}">
