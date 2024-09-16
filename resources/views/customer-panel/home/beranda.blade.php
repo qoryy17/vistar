@@ -99,7 +99,7 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                <a href="{{ route('mainweb.produk-berbayar') }}">
+                                <a href="{{ route('mainweb.product') }}">
                                     <div class="card custom-card">
                                         <div class="card-body">
                                             <div class="row row-sm">
@@ -111,8 +111,10 @@
                                                         <span class="d-block tx-12 mb-0 text-muted">Tersedia Untuk CPNS,
                                                             PPPK, Kedinasan</span>
                                                     </div>
-                                                    <p class="mb-0 tx-24 mt-2"><b style="color: #0075B8;">Mulai dari
-                                                            {{ Number::currency(90000, in: 'IDR') }}</b>
+                                                    <p class="mb-0 tx-24 mt-2">
+                                                        <strong style="color: #0075B8;">
+                                                            Mulai dari Rp. {{ number_format(49000, 0) }}
+                                                        </strong>
                                                     </p>
                                                 </div>
                                             </div>
@@ -170,7 +172,7 @@
                                         <span class="fs-20 me-2">{{ $tryoutTerbaru->nama_tryout }}</span>
                                     </h6>
                                     <span class="text-muted tx-14">{{ $tryoutTerbaru->keterangan }}</span>
-                                    <a href="{{ route('mainweb.produk-berbayar') }}"
+                                    <a href="{{ route('mainweb.product') }}"
                                         class="btn btn-block btn-default mt-2 btn-web1"><i class="fa fa-shopping-cart"></i>
                                         Beli Sekarang</a>
                                 </div>

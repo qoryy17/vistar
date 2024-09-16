@@ -55,7 +55,7 @@ class Autentifikasi extends Controller
                 return redirect()->intended('/main/dashboard');
             }
             // Jika bukan alihkan kehalaman produk berbayar
-            return redirect()->route('mainweb.produk-berbayar');
+            return redirect()->route('mainweb.product');
         }
         return back()->with('error', 'Username/Password salah !')->withInput();
     }

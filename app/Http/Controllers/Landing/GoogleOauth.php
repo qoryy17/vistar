@@ -30,7 +30,7 @@ class GoogleOauth extends Controller
                     return redirect()->intended('/');
                 }
                 // Jika customer alihkan kehalaman produk berbayar
-                return redirect()->route('mainweb.produk-berbayar');
+                return redirect()->route('mainweb.product');
             }
 
             // check apakah sebelumnya sudah pernah mendaftar

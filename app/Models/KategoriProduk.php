@@ -17,15 +17,15 @@ class KategoriProduk extends Model
         'id',
         'judul',
         'status',
-        'aktif'
+        'aktif',
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 
     public function produkTryout(): BelongsTo
     {
-        return $this->belongsTo(ProdukTryout::class);
+        return $this->belongsTo(ProdukTryout::class, 'kategori_produk_id');
     }
 }

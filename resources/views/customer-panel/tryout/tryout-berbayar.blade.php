@@ -51,7 +51,7 @@
                                                     {{ $tryout->nama_tryout }}
                                                 </span>
                                             </h3>
-                                            <span class="badge bg-success">{{ Number::currency($tryout->harga, in: 'IDR') }}
+                                            <span class="badge bg-success">Rp. {{ number_format($tryout->harga, 0) }}
                                             </span>
                                             <div class="text-muted tx-12 mt-2">
                                                 @if ($masaAktif > 0)
@@ -360,7 +360,7 @@
                                         atas produk kami !
                                     </p>
                                     <a class="btn btn-primary btn-sm d-block d-md-inline-block"
-                                        href="{{ route('mainweb.produk-berbayar') }}">
+                                        href="{{ route('mainweb.product') }}">
                                         Lihat Sekarang <i class="fa fa-arrow-right"></i>
                                     </a>
                                 </div>

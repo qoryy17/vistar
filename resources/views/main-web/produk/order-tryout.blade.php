@@ -38,8 +38,8 @@
                                                 <p>Keterangan : {{ $order->keterangan }}</p>
                                             </div>
                                         </td>
-                                        <td class="text-center">{{ Number::currency($order->harga, in: 'IDR') }}</td>
-                                        <td class="text-center">{{ Number::currency($order->harga_promo, in: 'IDR') }}
+                                        <td class="text-center">Rp. {{ number_format($order->harga, 0) }}</td>
+                                        <td class="text-center">Rp. {{ number_format($order->harga_promo, 0) }}
                                         </td>
                                     </tr>
 
@@ -67,7 +67,7 @@
                                 <tr class="bg-light">
                                     <th id="total" class="h6 ps-4 py-3">Total</th>
                                     <th id="total" class="text-end fw-bold pe-4">
-                                        {{ Number::currency($total, in: 'IDR') }}
+                                        Rp. {{ number_format($total, 0) }}
                                     </th>
                                 </tr>
                             </thead>
@@ -144,9 +144,6 @@
                 });
             });
         });
-
-
-
 
         function showSnapMidtrans(snapToken) {
             snap.pay(snapToken, {

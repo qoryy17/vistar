@@ -23,13 +23,7 @@ use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Middleware\Auth\PanelRouting;
 use App\Http\Middleware\Auth\ProdukAuth;
 use App\Http\Middleware\Customer\LoggedCustomer;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
-
-// Routing untuk website utama
-Route::get('/', function () {
-    return Redirect::to('/');
-});
 
 // Routing untuk autentifikasi menggunakan Google OAuth
 Route::controller(GoogleOauth::class)->group(function () {
@@ -72,11 +66,11 @@ Route::controller(Emails::class)->group(function () {
 // Routing untuk menu utama landing website Vi Star Indonesia
 Route::controller(MainWebsite::class)->group(function () {
     Route::get('/', 'index')->name('mainweb.index');
+    Route::get('/sitemap.xml', 'sitemap')->name('mainweb.sitemap');
     Route::get('/profil-saya', 'profil')->name('mainweb.profil-saya')->middleware(PanelRouting::class);
-    Route::get('/produk-berbayar', 'produkBerbayar')->name('mainweb.produk-berbayar');
-    Route::get('/produk-gratis', 'produkGratis')->name('mainweb.produk-gratis');
-    Route::get('/search-tryout-berbayar/search', 'searchProdukBerbayar')->name('mainweb.search-produk-berbayar');
-    Route::get('/search-tryout-gratis/search', 'searchProdukGratis')->name('mainweb.search-produk-gratis')->middleware(LoggedCustomer::class);
+    Route::get('/product', 'products')->name('mainweb.product');
+    Route::get('/free-product', 'freeProducts')->name('mainweb.free-product');
+    Route::get('/product/{id}', 'productShow')->name('mainweb.product-show');
     Route::post('/pesan-tryout-berbayar', 'pesanTryoutBerbayar')->name('mainweb.pesan-tryout-berbayar')->middleware(LoggedCustomer::class);
     Route::get('/keranjang-pesanan', 'keranjangPesanan')->name('mainweb.keranjang')->middleware(PanelRouting::class);
     Route::delete('/hapus-item-pesanan', 'hapusItemPesanan')->name('mainweb.hapus-item')->middleware(PanelRouting::class);

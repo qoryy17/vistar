@@ -54,150 +54,81 @@
     <!-- Hero End -->
 
     <!-- Product Start -->
-    <section class="section" id="produk">
-        <div class="container">
-            <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
-                <div class="col-12 text-center">
-                    <div class="section-title mb-4 pb-2">
-                        <h4 class="title mb-4">Bidang Kompetensi Pilih Paket Ujian</h4>
-                        <p class="text-muted para-desc mb-0 mx-auto">Temukan paket ujian tryout yang sempurna untuk Anda!
-                            Dengan berbagai pilihan paket yang dirancang sesuai kebutuhan, <span
-                                class="text-primary fw-bold">{{ $web->nama_bisnis }}</span> memberikan
-                            solusi terbaik untuk persiapan ujian Anda.</p>
-                    </div>
-                </div><!--end col-->
-            </div><!--end row-->
+    @if (count($productCategories) > 0)
+        <section class="section" id="produk">
+            <div class="container">
+                <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
+                    <div class="col-12 text-center">
+                        <div class="section-title mb-4 pb-2">
+                            <h4 class="title mb-4">Bidang Kompetensi Pilih Paket Ujian</h4>
+                            <p class="text-muted para-desc mb-0 mx-auto">
+                                Temukan paket ujian tryout yang sempurna untuk Anda! Dengan berbagai pilihan paket yang
+                                dirancang sesuai kebutuhan, <span
+                                    class="text-primary fw-bold">{{ $web->nama_bisnis }}</span> memberikan
+                                solusi terbaik untuk persiapan ujian Anda.
+                            </p>
+                        </div>
+                    </div><!--end col-->
+                </div><!--end row-->
 
-            <div class="row wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
-                <div class="col-lg-4 col-md-6 mt-4 pt-2">
-                    <div class="card pricing pricing-primary business-rate border-0 p-4 rounded-md shadow">
-                        <div class="card-body p-0">
-                            <span
-                                class="py-2 px-4 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">PPPK</span>
-                            <h2 class="fw-bold mb-0 mt-3"><sup><small>Mulai dari</small></sup>
-                                Rp. {{ number_format(50000, 0) }}</h2>
-                            <p class="text-muted">Sekali Beli</p>
+                <div class="row wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
+                    @foreach ($productCategories as $category)
+                        <div class="col-lg-4 col-md-6 mt-4 pt-2">
+                            <div class="card pricing pricing-primary business-rate border-0 p-4 rounded-md shadow">
+                                <div class="card-body p-0">
+                                    @if ($category['is_popular'])
+                                        <div class="ribbon ribbon-right ribbon-warning overflow-hidden">
+                                            <span class="text-center d-block shadow small h6">
+                                                Populer
+                                            </span>
+                                        </div>
+                                    @endif
+                                    <span class="py-2 px-4 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">
+                                        {{ $category['title'] }}
+                                    </span>
+                                    <h2 class="fw-bold mb-0 mt-3">
+                                        <sup><small>Mulai dari</small></sup>
+                                        <span class="text-nowrap">Rp. {{ number_format($category['price'], 0) }}</span>
+                                    </h2>
+                                    <p class="text-muted">Sekali Beli</p>
+                                    <p class="text-muted">Fitur yang anda dapatkan dalam paket ini</p>
 
-                            <p class="text-muted">Fitur yang anda dapatkan dalam paket ini</p>
+                                    <ul class="list-unstyled pt-3 border-top">
+                                        @foreach ($category['features'] as $feature)
+                                            <li class="h6 text-muted mb-0">
+                                                <span class="icon h5 me-2">
+                                                    <i class="uil uil-check-circle align-middle"></i>
+                                                </span>
+                                                {{ $feature }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
 
-                            <ul class="list-unstyled pt-3 border-top">
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Ujian Tidak Terbatas
-                                </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Hasil Ujian
-                                </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Grafik Hasil Ujian
-                                </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Review Pembahasan Soal
-                                </li>
-                                {{-- <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Akses Bagikan Referal
-                                </li> --}}
-                            </ul>
-
-                            <div class="mt-4">
-                                <div class="d-grid">
-                                    <a href="{{ route('mainweb.search-produk-berbayar', ['paketTryout=PPPK&cariPaket=']) }}"
-                                        class="btn btn-pills btn-primary">Beli Sekarang</a>
+                                    <div class="mt-4">
+                                        <div class="d-grid">
+                                            <a href="{{ route('mainweb.product', ['category_id' => $category['id']]) }}"
+                                                class="btn btn-pills btn-primary">
+                                                Beli Sekarang
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div><!--end col-->
+                        </div><!--end col-->
+                    @endforeach
+                </div><!--end row-->
+            </div><!--end container-->
+            <!-- Price End -->
 
-                <div class="col-lg-4 col-md-6 mt-4 pt-2">
-                    <div class="card pricing pricing-primary business-rate border-0 p-4 rounded-md shadow">
-                        <div class="ribbon ribbon-right ribbon-warning overflow-hidden"><span
-                                class="text-center d-block shadow small h6">Populer</span></div>
-                        <div class="card-body p-0">
-                            <span
-                                class="py-2 px-4 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">CPNS</span>
-                            <h2 class="fw-bold mb-0 mt-3"><sup><small>Mulai dari</small></sup>
-                                Rp. {{ number_format(50000, 0) }}</h2>
-                            <p class="text-muted">Sekali Beli</p>
+            <!-- Coba Gratis -->
+            <x-web.container-coba-gratis />
 
-                            <p class="text-muted">Fitur yang anda dapatkan dalam paket ini</p>
+            <!-- Keunggulan -->
+            <x-web.container-produk-unggulan />
 
-                            <ul class="list-unstyled pt-3 border-top">
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Ujian Tidak Terbatas
-                                </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Hasil Ujian
-                                </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Grafik Hasil Ujian
-                                </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Review Pembahasan Soal
-                                </li>
-                                {{-- <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Akses Bagikan Referal
-                                </li> --}}
-                            </ul>
+        </section><!--end section-->
+    @endif
 
-                            <div class="mt-4">
-                                <div class="d-grid">
-                                    <a href="{{ route('mainweb.search-produk-berbayar', ['paketTryout=CPNS&cariPaket=']) }}"
-                                        class="btn btn-pills btn-primary">Beli Sekarang</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div><!--end col-->
-
-                <div class="col-lg-4 col-md-6 mt-4 pt-2">
-                    <div class="card pricing pricing-primary business-rate border-0 p-4 rounded-md shadow">
-                        <div class="card-body p-0">
-                            <span
-                                class="py-2 px-4 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">Kedinasan</span>
-                            <h2 class="fw-bold mb-0 mt-3"><sup><small>Mulai dari</small></sup>
-                                Rp. {{ number_format(50000, 0) }}</h2>
-                            <p class="text-muted">Sekali Beli</p>
-
-                            <p class="text-muted">Fitur yang anda dapatkan dalam paket ini</p>
-
-                            <ul class="list-unstyled pt-3 border-top">
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Ujian Tidak Terbatas
-                                </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Hasil Ujian
-                                </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Grafik Hasil Ujian
-                                </li>
-                                <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Review Pembahasan Soal
-                                </li>
-                                {{-- <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                        <i class="uil uil-check-circle align-middle"></i></span>Akses Bagikan Referal
-                                </li> --}}
-                            </ul>
-
-                            <div class="mt-4">
-                                <div class="d-grid">
-                                    <a href="{{ route('mainweb.search-produk-berbayar', ['paketTryout=Kedinasan&cariPaket=']) }}"
-                                        class="btn btn-pills btn-primary">Beli Sekarang</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div><!--end col-->
-            </div><!--end row-->
-        </div><!--end container-->
-        <!-- Price End -->
-
-        <!-- Coba Gratis -->
-        <x-web.container-coba-gratis />
-
-        <!-- Keunggulan -->
-        <x-web.container-produk-unggulan />
-
-    </section><!--end section-->
     <!-- Counter End -->
 
     <!-- Feature Start -->

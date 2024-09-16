@@ -62,8 +62,8 @@
                                                       <h6 class="mb-0 ms-3">{{ $row->nama_tryout }}</h6>
                                                   </div>
                                               </td>
-                                              <td class="text-center">{{ Number::currency($row->harga, in: 'IDR') }}</td>
-                                              <td class="text-center">{{ Number::currency($row->harga_promo, in: 'IDR') }}
+                                              <td class="text-center">Rp. {{ number_format($row->harga, 0) }}</td>
+                                              <td class="text-center">Rp. {{ number_format($row->harga_promo, 0) }}
                                               </td>
                                               <td class="text-center">
                                                   <div class="d-flex flex-nowrap gap-1">
@@ -127,7 +127,7 @@
                                   <h3 class="fw-bold mb-0 mt-3">
                                       Rp. {{ number_format($row->harga, 0) }}</h2>
                                       @if ($row->harga_promo != null and $row->harga_promo != 0)
-                                          <p class="text-muted">Promo {{ Number::currency($row->harga_promo, in: 'IDR') }}
+                                          <p class="text-muted">Promo Rp. {{ number_format($row->harga_promo, 0) }}
                                           </p>
                                       @endif
                                       <div class="accordion" id="buyingquestion">
@@ -220,7 +220,7 @@
               </div>
               <div class="row mt-5">
                   <div class="col-lg-12 text-center">
-                      <a href="{{ route('mainweb.produk-berbayar') }}" class="btn btn-pills btn-soft-primary">
+                      <a href="{{ route('mainweb.product') }}" class="btn btn-pills btn-soft-primary">
                           Lihat Semua Produk <i class="uil uil-arrow-right"></i>
                       </a>
                   </div>

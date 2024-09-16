@@ -169,7 +169,7 @@
 
                      <div class="col-md-4 mt-4 mt-sm-0">
                          <div class="text-md-end text-center">
-                             <a href="{{ route('mainweb.produk-berbayar') }}" class="btn btn-light btn-pills">Pesan
+                             <a href="{{ route('mainweb.product') }}" class="btn btn-light btn-pills">Pesan
                                  Sekarang</a>
                          </div>
                      </div><!--end col-->

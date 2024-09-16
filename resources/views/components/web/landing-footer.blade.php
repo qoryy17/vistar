@@ -39,7 +39,7 @@
                                     <li><a href="{{ route('auth.signin') }}" class="text-foot"><i
                                                 class="uil uil-angle-right-b me-1"></i> Sign In</a></li>
                                 @endif
-                                <li><a href="{{ route('mainweb.produk-berbayar') }}" class="text-foot"><i
+                                <li><a href="{{ route('mainweb.product') }}" class="text-foot"><i
                                             class="uil uil-angle-right-b me-1"></i> Produk</a></li>
                                 <li><a href="{{ route('mainweb.kebijakan-privasi') }}" class="text-foot"><i
                                             class="uil uil-angle-right-b me-1"></i> Kebijakan & Privasi</a></li>

@@ -9,9 +9,11 @@ use App\Models\KategoriProduk;
 use App\Models\KeranjangOrder;
 use App\Models\LimitTryout;
 use App\Models\OrderTryout;
+use App\Models\ProdukTryout;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -31,41 +33,191 @@ class MainWebsite extends Controller
 
         $web = BerandaUI::web();
 
+        // This is should from the database
+        $productCategories = [
+            [
+                'id' => 5550,
+                'title' => 'PPPK',
+                'price' => 50000,
+                'is_popular' => false,
+                'features' => [
+                    'Ujian Tidak Terbatas',
+                    'Hasil Ujian',
+                    'Grafik Hasil Ujian',
+                    'Review Pembahasan Soal',
+                    // 'Akses Bagikan Referal'
+                ],
+            ],
+            [
+                'id' => 19571,
+                'title' => 'CPNS',
+                'price' => 50000,
+                'is_popular' => true,
+                'features' => [
+                    'Ujian Tidak Terbatas',
+                    'Hasil Ujian',
+                    'Grafik Hasil Ujian',
+                    'Review Pembahasan Soal',
+                ],
+            ],
+            [
+                'id' => 86539,
+                'title' => 'Kedinasan',
+                'price' => 50000,
+                'is_popular' => false,
+                'features' => [
+                    'Ujian Tidak Terbatas',
+                    'Hasil Ujian',
+                    'Grafik Hasil Ujian',
+                    'Review Pembahasan Soal',
+                ],
+            ],
+        ];
+
         $data = [
             'title' => $web->nama_bisnis . " " . $web->tagline,
             'testimoni' => $testimoni,
             'web' => $web,
+            'productCategories' => $productCategories,
         ];
+
         return view('main-web.home.beranda', $data);
     }
 
-    public function produkBerbayar()
+    public function products(Request $request)
     {
-        $data = [
-            'title' => 'Produk Paket Tryout',
-            'kategoriProduk' => KategoriProduk::where('aktif', 'Y')->where('status', 'Berbayar'),
-            'searchpaketTryout' => '',
-            'searchcariPaket' => '',
-            'allProduk' => DB::table('produk_tryout')->select(
-                'produk_tryout.*',
-                'pengaturan_tryout.harga',
-                'pengaturan_tryout.nilai_keluar',
-                'pengaturan_tryout.grafik_evaluasi',
-                'pengaturan_tryout.review_pembahasan',
-                'pengaturan_tryout.masa_aktif',
-                'pengaturan_tryout.harga_promo',
-                'kategori_produk.judul',
-                'kategori_produk.status as produk_status'
-            )->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
+        $title = 'Produk Paket Tryout';
+        $searchCategoryId = $request->category_id;
+        $searchName = $request->search_name;
+
+        if ($searchCategoryId || $searchName) {
+            $title = 'Cari Produk Paket Tryout';
+        }
+
+        $productStatus = 'Berbayar';
+        $products = Cache::remember('products_main_web:category_id' . $searchCategoryId . ':status:' . $productStatus . ':search:' . $searchName, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
+            $data = DB::table('produk_tryout')
+                ->select(
+                    'produk_tryout.*',
+                    'pengaturan_tryout.harga',
+                    'pengaturan_tryout.nilai_keluar',
+                    'pengaturan_tryout.grafik_evaluasi',
+                    'pengaturan_tryout.review_pembahasan',
+                    'pengaturan_tryout.masa_aktif',
+                    'pengaturan_tryout.harga_promo',
+                    'kategori_produk.judul',
+                    'kategori_produk.status as produk_status'
+                )
+                ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
                 ->where('produk_tryout.status', 'Tersedia')
-                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get(),
+                ->where('kategori_produk.status', $productStatus)
+                ->orderBy('produk_tryout.updated_at', 'DESC');
+
+            if ($searchCategoryId) {
+                $data = $data->where('kategori_produk.id', '=', $searchCategoryId);
+            }
+            if ($searchName) {
+                $data = $data->whereLike('produk_tryout.nama_tryout', "%{$searchName}%");
+            }
+
+            return $data->get();
+        });
+
+        $categoryStatus = 'Berbayar';
+        $categoryActive = 'Y';
+        $categories = Cache::remember('product_categories_main_web:status' . $categoryStatus . ':active:' . $categoryActive, 7 * 24 * 60 * 60, function () use ($categoryStatus, $categoryActive) {
+            return KategoriProduk::where('aktif', $categoryActive)
+                ->select('id', 'judul')
+                ->where('status', $categoryStatus)
+                ->get();
+        });
+
+        $data = [
+            'title' => $title,
+            'categories' => $categories,
+            'products' => $products,
+            'searchCategoryId' => $searchCategoryId,
+            'searchName' => $searchName,
         ];
         return view('main-web.produk.tryout-berbayar', $data);
     }
 
-    public function produkGratis()
+    public function productShow(int $id)
     {
+        $product = Cache::remember('product_show_main_web:' . $id, 7 * 24 * 60 * 60, function () use ($id) {
+            $data = ProdukTryout::where('id', $id)
+                ->select(
+                    'id',
+                    'nama_tryout',
+                    'keterangan',
+                    'thumbnail',
+                    'kategori_produk_id',
+                    'pengaturan_tryout_id',
+                )
+                ->with('category', function ($query) {
+                    $query->select('id', 'judul', 'status');
+                })
+                ->with('setting', function ($query) {
+                    $query->select('id', 'harga', 'harga_promo', 'durasi', 'nilai_keluar', 'grafik_evaluasi', 'review_pembahasan', 'ulang_ujian', 'masa_aktif');
+                });
+
+            return $data->first();
+        });
+
+        if (!$product) {
+            return redirect()->route('mainweb.product')->with(['errorMessage' => 'Produk tidak ditemukan, silahkan pilih produk yang tersedia']);
+        }
+
+        $order = null;
+        if (Auth::check()) {
+            $order = OrderTryout::where('produk_tryout_id', $product->id)
+                ->where('customer_id', Auth::user()->customer_id)
+                ->where('status_order', 'paid')
+                ->first();
+        }
+
+        $title = 'Produk - ' . $product->nama_tryout;
+
+        $productStatus = 'Berbayar';
+        $recommendProducts = Cache::remember('products_main_web:except' . $id . ':status:' . $productStatus, 7 * 24 * 60 * 60, function () use ($id, $productStatus) {
+            $data = DB::table('produk_tryout')
+                ->select(
+                    'produk_tryout.*',
+                    'pengaturan_tryout.harga',
+                    'pengaturan_tryout.nilai_keluar',
+                    'pengaturan_tryout.grafik_evaluasi',
+                    'pengaturan_tryout.review_pembahasan',
+                    'pengaturan_tryout.masa_aktif',
+                    'pengaturan_tryout.harga_promo',
+                    'kategori_produk.judul',
+                    'kategori_produk.status as produk_status'
+                )
+                ->where('produk_tryout.id', '!=', $id)
+                ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
+                ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
+                ->where('produk_tryout.status', 'Tersedia')
+                ->where('kategori_produk.status', $productStatus)
+                ->orderBy('produk_tryout.updated_at', 'DESC');
+
+            return $data->limit(3)->get();
+        });
+
+        $data = [
+            'title' => $title,
+            'product' => $product,
+            'order' => $order,
+            'recommendProducts' => $recommendProducts,
+        ];
+        return view('main-web.produk.tryout-show', $data);
+    }
+
+    public function freeProducts(Request $request)
+    {
+        $title = 'Produk Paket Tryout Gratis';
+        $searchCategoryId = $request->category_id;
+        $searchName = $request->search_name;
+
         // Cek apakah sudah pilih produk tryout gratis
         $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Disetujui')->orderBy('created_at', 'ASC')->get();
         if ($cekGratisan->count() > 0) {
@@ -84,81 +236,55 @@ class MainWebsite extends Controller
             return redirect()->route('mainweb.index', '#coba-gratis');
         }
 
-        $data = [
-            'title' => 'Produk Paket Tryout Gratis',
-            'kategoriProduk' => KategoriProduk::where('aktif', 'Y')->where('status', 'Gratis'),
-            'searchpaketTryout' => '',
-            'searchcariPaket' => '',
-            'allProduk' => DB::table('produk_tryout')->select(
-                'produk_tryout.*',
-                'pengaturan_tryout.harga',
-                'pengaturan_tryout.nilai_keluar',
-                'pengaturan_tryout.grafik_evaluasi',
-                'pengaturan_tryout.review_pembahasan',
-                'pengaturan_tryout.masa_aktif',
-                'pengaturan_tryout.harga_promo',
-                'kategori_produk.judul',
-                'kategori_produk.status as produk_status'
-            )->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->whereNot('kategori_produk.status', 'Berbayar')->orderBy('produk_tryout.updated_at', 'DESC')->get(),
-        ];
-        return view('main-web.produk.tryout-gratis', $data);
-    }
+        if ($searchCategoryId || $searchName) {
+            $title = 'Cari Produk Paket Tryout Gratis';
+        }
 
-    public function searchProdukBerbayar(Request $request)
-    {
-        if ($request->paketTryout) {
-            $query = DB::table('produk_tryout')->select('produk_tryout.*', 'pengaturan_tryout.harga', 'pengaturan_tryout.nilai_keluar', 'pengaturan_tryout.grafik_evaluasi', 'pengaturan_tryout.review_pembahasan', 'pengaturan_tryout.masa_aktif', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status as produk_status')
+        $productStatus = 'Gratis';
+        $products = Cache::remember('products_main_web:category_id' . $searchCategoryId . ':status:' . $productStatus . ':search:' . $searchName, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
+            $data = DB::table('produk_tryout')
+                ->select(
+                    'produk_tryout.*',
+                    'pengaturan_tryout.harga',
+                    'pengaturan_tryout.nilai_keluar',
+                    'pengaturan_tryout.grafik_evaluasi',
+                    'pengaturan_tryout.review_pembahasan',
+                    'pengaturan_tryout.masa_aktif',
+                    'pengaturan_tryout.harga_promo',
+                    'kategori_produk.judul',
+                    'kategori_produk.status as produk_status'
+                )
                 ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
                 ->where('produk_tryout.status', 'Tersedia')
-                ->where('kategori_produk.judul', '=', $request->input('paketTryout'))->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get();
-        } elseif ($request->cariPaket) {
-            $query = DB::table('produk_tryout')->select('produk_tryout.*', 'pengaturan_tryout.harga', 'pengaturan_tryout.nilai_keluar', 'pengaturan_tryout.grafik_evaluasi', 'pengaturan_tryout.review_pembahasan', 'pengaturan_tryout.masa_aktif', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status as produk_status')
-                ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
-                ->where('produk_tryout.status', 'Tersedia')
-                ->whereLike('produk_tryout.nama_tryout', "%{$request->input('cariPaket')}%")->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get();
-        } else {
-            return Redirect::to('/produk-berbayar');
-        }
-        $data = [
-            'title' => 'Produk Paket Tryout',
-            'kategoriProduk' => KategoriProduk::where('aktif', 'Y')->where('status', 'Berbayar'),
-            'allProduk' => $query,
-            'searchpaketTryout' => $request->paketTryout,
-            'searchcariPaket' => $request->cariPaket,
-        ];
-        return view('main-web.produk.tryout-berbayar', $data);
-    }
+                ->where('kategori_produk.status', $productStatus)
+                ->orderBy('produk_tryout.updated_at', 'DESC');
 
-    public function searchProdukGratis(Request $request)
-    {
-        // Cek apakah sudah pilih produk tryout gratis
-        $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->first();
-        if ($cekGratisan->produk_tryout_id != null) {
-            return redirect()->route('site.tryout-gratis');
-        }
+            if ($searchCategoryId) {
+                $data = $data->where('kategori_produk.id', '=', $searchCategoryId);
+            }
+            if ($searchName) {
+                $data = $data->whereLike('produk_tryout.nama_tryout', "%{$searchName}%");
+            }
 
-        if ($request->paketTryout) {
-            $query = DB::table('produk_tryout')->select('produk_tryout.*', 'pengaturan_tryout.harga', 'pengaturan_tryout.nilai_keluar', 'pengaturan_tryout.grafik_evaluasi', 'pengaturan_tryout.review_pembahasan', 'pengaturan_tryout.masa_aktif', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status as produk_status')
-                ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
-                ->where('kategori_produk.judul', '=', $request->input('paketTryout'))->whereNot('kategori_produk.status', 'Berbayar')->orderBy('produk_tryout.updated_at', 'DESC')->get();
-        } elseif ($request->cariPaket) {
-            $query = DB::table('produk_tryout')->select('produk_tryout.*', 'pengaturan_tryout.harga', 'pengaturan_tryout.nilai_keluar', 'pengaturan_tryout.grafik_evaluasi', 'pengaturan_tryout.review_pembahasan', 'pengaturan_tryout.masa_aktif', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status as produk_status')
-                ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
-                ->whereLike('produk_tryout.nama_tryout', "%{$request->input('cariPaket')}%")->whereNot('kategori_produk.status', 'Berbayar')->orderBy('produk_tryout.updated_at', 'DESC')->get();
-        } else {
-            return Redirect::to('/produk-gratis');
-        }
+            return $data->get();
+        });
+
+        $categoryStatus = 'Gratis';
+        $categoryActive = 'Y';
+        $categories = Cache::remember('product_categories_main_web:status' . $categoryStatus . ':active:' . $categoryActive, 7 * 24 * 60 * 60, function () use ($categoryStatus, $categoryActive) {
+            return KategoriProduk::where('aktif', $categoryActive)
+                ->select('id', 'judul')
+                ->where('status', $categoryStatus)
+                ->get();
+        });
+
         $data = [
-            'title' => 'Produk Paket Tryout Gratis',
-            'kategoriProduk' => KategoriProduk::where('aktif', 'Y')->where('status', 'Gratis'),
-            'allProduk' => $query,
-            'searchpaketTryout' => $request->paketTryout,
-            'searchcariPaket' => $request->cariPaket,
+            'title' => $title,
+            'categories' => $categories,
+            'searchCategoryId' => $searchCategoryId,
+            'searchName' => $searchName,
+            'products' => $products,
         ];
         return view('main-web.produk.tryout-gratis', $data);
     }
@@ -243,7 +369,7 @@ class MainWebsite extends Controller
                 return redirect()->route('site.tryout-gratis');
             }
 
-            return redirect()->route('mainweb.produk-gratis');
+            return redirect()->route('mainweb.free-product');
         }
 
         $data = [
@@ -288,4 +414,93 @@ class MainWebsite extends Controller
         ];
         return view('main-web.tentang.kontak', $data);
     }
+
+    public function sitemap()
+    {
+        $urls = [
+            [
+                'changefreq' => 'yearly',
+                'lastmod' => '2021-03-01',
+                'priority' => 0.8,
+                'title' => 'HomePage',
+                'loc' => route('mainweb.index'),
+            ],
+            [
+                'changefreq' => 'yearly',
+                'lastmod' => '2021-03-01',
+                'priority' => 0.8,
+                'title' => 'Produk ' . config('app.name'),
+                'loc' => route('mainweb.product'),
+            ],
+            [
+                'changefreq' => 'yearly',
+                'lastmod' => '2021-03-01',
+                'priority' => 0.6,
+                'title' => 'Tentang',
+                'loc' => route('mainweb.tentang'),
+            ],
+            [
+                'changefreq' => 'yearly',
+                'lastmod' => '2021-03-01',
+                'priority' => 0.6,
+                'title' => 'Hubungi ' . config('app.name'),
+                'loc' => route('mainweb.kontak'),
+            ],
+            [
+                'changefreq' => 'yearly',
+                'lastmod' => '2021-03-01',
+                'priority' => 0.5,
+                'title' => 'Kebijakan Privasi' . config('app.name'),
+                'loc' => route('mainweb.kebijakan-privasi'),
+            ],
+            [
+                'changefreq' => 'yearly',
+                'lastmod' => '2021-03-01',
+                'priority' => 0.5,
+                'title' => 'Masuk - ' . config('app.name'),
+                'loc' => route('auth.signin'),
+            ],
+            [
+                'changefreq' => 'yearly',
+                'lastmod' => '2021-03-01',
+                'priority' => 0.5,
+                'title' => 'Daftar - ' . config('app.name'),
+                'loc' => route('auth.signup'),
+            ],
+            [
+                'changefreq' => 'yearly',
+                'lastmod' => '2021-03-01',
+                'priority' => 0.5,
+                'title' => 'Reset Password - ' . config('app.name'),
+                'loc' => route('auth.reset-password'),
+            ],
+        ];
+
+        // Take Product Data
+        $products = Cache::remember('products_sitemap_all', 7 * 24 * 60 * 60, function () {
+            return \App\Models\ProdukTryout::select(
+                'id',
+                'nama_tryout',
+                'updated_at'
+            )
+                ->orderBy('created_at', 'DESC')
+                ->get();
+        });
+        foreach ($products as $item) {
+            array_push($urls, [
+                'changefreq' => 'monthly',
+                'lastmod' => date('Y-m-d', strtotime($item->updated_at)),
+                'priority' => 0.8,
+                'title' => $item->nama_tryout . ' - Produk ' . config('app.name'),
+                'loc' => route('mainweb.product-show', ['id' => $item->id]),
+            ]);
+        }
+
+        return response()->view('main-web.home.sitemap', ['urls' => $urls])
+            ->header(
+                'Content-Type',
+                'application/xml'
+            );
+    }
+
 }

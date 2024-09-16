@@ -207,8 +207,11 @@ class Orders extends Controller
         $tryoutGratis = LimitTryout::where('customer_id', Auth::user()->customer_id)
             ->whereNull('produk_tryout_id')
             ->where('status_validasi', 'Disetujui')
-            ->orderBy('created_at', 'ASC')
+            ->orderBy('created_at', 'DESC')
             ->first();
+        if (!$tryoutGratis) {
+            return redirect()->back()->with('errorMessage', 'Tidak ada pengajuan Tryout Gratis yang disetujui !');
+        }
         if ($tryoutGratis->produk_tryout_id !== null) {
             return redirect()->route('site.main');
         }
