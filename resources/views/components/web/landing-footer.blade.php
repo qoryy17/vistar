@@ -55,20 +55,20 @@
 
                         <div class="col-lg-3 col-md-4 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0">
                             <h5 class="footer-head">Pembayaran</h5>
-                            <div class="d-flex gap-4 flex-wrap mt-4">
-                                <img height="20" src="{{ asset('resources/Bank-CIMB-Niaga.png') }}"
+                            <div class="d-flex gap-4 flex-wrap mt-4 justify-content-around">
+                                <img height="20" src="{{ asset('resources/payment-methods/Bank-CIMB-Niaga.png') }}"
                                     alt="Logo CIMB Niaga" />
-                                <img height="20" src="{{ asset('resources/Bank-BRI.png') }}" alt="Logo BRI" />
-                                <img height="20" src="{{ asset('resources/Bank-BNI.png') }}" alt="Logo BNI" />
-                                <img height="20" src="{{ asset('resources/Bank-Mandiri.png') }}"
+                                <img height="20" src="{{ asset('resources/payment-methods/Bank-BRI.png') }}" alt="Logo BRI" />
+                                <img height="20" src="{{ asset('resources/payment-methods/Bank-BNI.png') }}" alt="Logo BNI" />
+                                <img height="20" src="{{ asset('resources/payment-methods/Bank-Mandiri.png') }}"
                                     alt="Logo Mandiri" />
-                                <img height="20" src="{{ asset('resources/Gopay.png') }}" alt="Logo Gopay" />
-                                <img height="20" src="{{ asset('resources/Bank-Permata.png') }}"
+                                <img height="20" src="{{ asset('resources/payment-methods/Gopay-white.png') }}" alt="Logo Gopay" />
+                                <img height="20" src="{{ asset('resources/payment-methods/Bank-Permata-white.png') }}"
                                     alt="Logo Permata" />
                             </div>
                             <div class="d-flex gap-2 mt-3 justify-content-center align-items-center">
                                 <span>Powered By</span>
-                                <img height="20" src="{{ asset('resources/midtrans.png') }}" alt="Logo Midtrans" />
+                                <img height="20" src="{{ asset('resources/payment-methods/midtrans.png') }}" alt="Logo Midtrans" />
                             </div>
                         </div><!--end col-->
                     </div><!--end row-->
