@@ -102,9 +102,9 @@
                                  </div>
                                  <span
                                      class="py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">{{ $row->nama_tryout }}</span>
-                                 <h3 class="fw-bold mb-0 mt-3"> {{ Number::currency($row->harga, in: 'IDR') }}</h3>
+                                 <h3 class="fw-bold mb-0 mt-3"> Rp. {{ number_format($row->harga, 0) }}</h3>
                                  @if ($row->harga_promo != null and $row->harga_promo != 0)
-                                     <p class="text-muted">Promo {{ Number::currency($row->harga_promo, in: 'IDR') }}</p>
+                                     <p class="text-muted">Promo Rp. {{ number_format($row->harga_promo, 0) }}</p>
                                  @endif
 
                                  <p class="text-muted">Fitur dalam paket ini</p>
