@@ -75,7 +75,7 @@
                             <span
                                 class="py-2 px-4 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">PPPK</span>
                             <h2 class="fw-bold mb-0 mt-3"><sup><small>Mulai dari</small></sup>
-                                {{ Number::currency(90000, in: 'IDR') }}</h2>
+                                {{ Number::currency(50000, in: 'IDR') }}</h2>
                             <p class="text-muted">Sekali Beli</p>
 
                             <p class="text-muted">Fitur yang anda dapatkan dalam paket ini</p>
@@ -116,7 +116,7 @@
                             <span
                                 class="py-2 px-4 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">CPNS</span>
                             <h2 class="fw-bold mb-0 mt-3"><sup><small>Mulai dari</small></sup>
-                                {{ Number::currency(90000, in: 'IDR') }}</h2>
+                                {{ Number::currency(50000, in: 'IDR') }}</h2>
                             <p class="text-muted">Sekali Beli</p>
 
                             <p class="text-muted">Fitur yang anda dapatkan dalam paket ini</p>
@@ -155,7 +155,7 @@
                             <span
                                 class="py-2 px-4 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">Kedinasan</span>
                             <h2 class="fw-bold mb-0 mt-3"><sup><small>Mulai dari</small></sup>
-                                {{ Number::currency(90000, in: 'IDR') }}</h2>
+                                {{ Number::currency(50000, in: 'IDR') }}</h2>
                             <p class="text-muted">Sekali Beli</p>
 
                             <p class="text-muted">Fitur yang anda dapatkan dalam paket ini</p>
