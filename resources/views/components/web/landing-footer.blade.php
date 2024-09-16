@@ -57,6 +57,27 @@
                             <h5 class="footer-head">Pembayaran</h5>
 
                             <img height="20" src="{{ asset('resources/midtrans.png') }}" alt="midtrans">
+
+                            <div class="row mt-2">
+                                <div class="col p-1">
+                                    <img height="20" src="{{ asset('resources/CIMB_Niaga_logo.png') }}"
+                                        alt="CIMB Niaga">
+                                </div>
+                                <div class="col p-1">
+                                    <img height="20" src="{{ asset('resources/BANK_BRI_logo.png') }}"
+                                        alt="BRI">
+                                </div>
+                                <div class="col p-1">
+                                    <img height="20" src="{{ asset('resources/BankNegaraIndonesia46-logo.png') }}"
+                                        alt="BNI">
+                                </div>
+                                <div class="col p-1">
+                                    <img height="20" src="{{ asset('resources/Logo Gopay.png') }}" alt="Gopay">
+                                </div>
+                                <div class="col p-1">
+                                    <img height="30" src="{{ asset('resources/Permata Bank.png') }}" alt="BRI">
+                                </div>
+                            </div>
                         </div><!--end col-->
                     </div><!--end row-->
                 </div>
