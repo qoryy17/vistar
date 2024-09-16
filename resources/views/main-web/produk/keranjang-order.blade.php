@@ -125,7 +125,7 @@
                                   <span
                                       class="py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">{{ $row->nama_tryout }}</span>
                                   <h3 class="fw-bold mb-0 mt-3">
-                                      {{ Number::currency($row->harga, in: 'IDR') }}</h2>
+                                      Rp. {{ number_format($row->harga, 0) }}</h2>
                                       @if ($row->harga_promo != null and $row->harga_promo != 0)
                                           <p class="text-muted">Promo {{ Number::currency($row->harga_promo, in: 'IDR') }}
                                           </p>
