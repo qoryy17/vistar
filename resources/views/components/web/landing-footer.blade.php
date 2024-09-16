@@ -59,24 +59,26 @@
                             <img height="20" src="{{ asset('resources/midtrans.png') }}" alt="midtrans">
 
                             <div class="row mt-2">
-                                <div class="col p-1">
-                                    <img height="20" src="{{ asset('resources/CIMB_Niaga_logo.png') }}"
+                                <div class="col p-2">
+                                    <img height="20" src="{{ asset('resources/Bank-CIMB-Niaga.png') }}"
                                         alt="CIMB Niaga">
                                 </div>
-                                <div class="col p-1">
-                                    <img height="20" src="{{ asset('resources/BANK_BRI_logo.png') }}"
-                                        alt="BRI">
+                                <div class="col p-2">
+                                    <img height="20" src="{{ asset('resources/Bank-BRI.png') }}" alt="BRI">
                                 </div>
-                                <div class="col p-1">
-                                    <img height="20" src="{{ asset('resources/BankNegaraIndonesia46-logo.png') }}"
-                                        alt="BNI">
+                                <div class="col p-2">
+                                    <img height="20" src="{{ asset('resources/Bank-BNI.png') }}" alt="BNI">
                                 </div>
-                                <div class="col p-1">
-                                    <img height="20" src="{{ asset('resources/Logo Gopay.png') }}" alt="Gopay">
+                                <div class="col p-2">
+                                    <img height="20" src="{{ asset('resources/Bank-Mandiri.png') }}" alt="Mandiri">
                                 </div>
-                                <div class="col p-1">
-                                    <img height="30" src="{{ asset('resources/Permata Bank.png') }}" alt="BRI">
+                                <div class="col p-2">
+                                    <img height="20" src="{{ asset('resources/Gopay.png') }}" alt="Gopay">
                                 </div>
+                                <div class="col p-2">
+                                    <img height="20" src="{{ asset('resources/Bank-Permata.png') }}" alt="Permata">
+                                </div>
+
                             </div>
                         </div><!--end col-->
                     </div><!--end row-->
