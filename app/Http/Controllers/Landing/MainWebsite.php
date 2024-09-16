@@ -209,7 +209,7 @@ class MainWebsite extends Controller
             )->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
                 ->where('produk_tryout.status', 'Tersedia')
-                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->get(),
+                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->limit(3)->get(),
         ];
 
         return view('main-web.produk.keranjang-order', $data);
