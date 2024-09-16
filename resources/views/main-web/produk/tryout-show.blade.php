@@ -1,7 +1,7 @@
  @extends('main-web.layout.main')
  @section('title', $title)
  @section('content')
-     <section class="section" style="padding-top: 100px;">
+     <section class="section" style="margin-top: 20px;">
          <div class="container">
              @if (session()->has('successMessage'))
                  <div class="row">
@@ -24,14 +24,16 @@
              @endif
 
              <div class="row">
-                 <img class="img-fluid col-3" alt="Thumbnail {{ $product->nama_tryout }}"
-                     src={{ asset('storage/tryout/' . $product->thumbnail) }} loading="lazy" />
-                 <div class="col-9">
-                     <h2>
+                 <div class="col-lg-4">
+                     <img class="img-fluid" alt="Thumbnail {{ $product->nama_tryout }}"
+                         src={{ asset('storage/tryout/' . $product->thumbnail) }} loading="lazy" />
+                 </div>
+                 <div class="col-lg-8">
+                     <h2 class="text-primary fw-bold">
                          {{ $product->nama_tryout }}
                      </h2>
                      @if ($product->category)
-                         <p>
+                         <p> Kategori :
                              <span class="badge bg-warning">
                                  {{ $product->category->judul }}
                              </span>
@@ -44,26 +46,27 @@
                                  $price = $product->setting->harga_promo;
                              }
                          @endphp
-                         <p class="mt-4">
-                             <span class="text-muted">
+                         <p class="mt-2">
+                             <span class="text-muted fs-3 fw-bold">
                                  Rp. {{ number_format($price, 0) }}
                              </span>
                          </p>
                      @endif
                      <div class="d-flex flex-row gap-2">
+                         <span>Bagikan :</span>
                          <a href="https://web.facebook.com/share_channel/?link={{ url()->current() }}&source_surface=external_reshare&display&hashtag"
                              target="_blank" class="share-it share-fb">
-                             <i class="fa fa-facebook"></i>
+                             <i class="mdi mdi-facebook"></i>
                              <span>Facebook</span>
                          </a>
                          <a href="https://api.whatsapp.com/send/?text={{ urlencode('Lihat ' . $product->nama_tryout . ' Produk dari ' . config('app.name') . ' disini ' . url()->current()) }}&type=custom_url&app_absent=0"
                              target="_blank" class="share-it share-wa">
-                             <i class="fa fa-whatsapp"></i>
+                             <i class="mdi mdi-whatsapp"></i>
                              <span>Whatsapp</span>
                          </a>
                          <a href="https://x.com/intent/tweet?url={{ url()->current() }}&text={{ urlencode('Lihat ' . $product->nama_tryout . ' Produk dari ' . config('app.name')) }}"
                              target="_blank" class="share-it share-tw">
-                             <i class="fa fa-twitter"></i>
+                             <i class="mdi mdi-twitter"></i>
                              <span>Twitter</span>
                          </a>
                      </div>
@@ -75,8 +78,8 @@
                                      method="POST">
                                      @csrf
                                      @method('POST')
-                                     <button type="submit" class="btn btn-pills btn-primary">
-                                         Mulai Ujian
+                                     <button type="submit" class="btn btn-pills btn-primary d-block d-md-inline-block">
+                                         Mulai Ujian <i class="mdi mdi-arrow-right"></i>
                                      </button>
                                  </form>
                              @else
@@ -86,8 +89,8 @@
                                      @csrf
                                      @method('POST')
 
-                                     <button type="submit" class="btn btn-pills btn-primary">
-                                         Beli Sekarang
+                                     <button type="submit" class="btn btn-pills btn-primary d-block d-md-inline-block">
+                                         Beli Sekarang <i class="mdi mdi-arrow-right"></i>
                                      </button>
                                  </form>
                              @endif
