@@ -214,6 +214,7 @@
                         <label for="screenshot">Screenshot Soal Ujian <span class="text-danger">*</span></label>
                         <input type="file" required name="screenshot" id="screenshot" class="dropify"
                             data-height="100" />
+                        <small class="text-danger">Hanya boleh bertipe png/jpg/png. Maksimal 2MB</small>
                     </div>
 
                 </div>
