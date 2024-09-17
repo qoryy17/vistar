@@ -4,7 +4,7 @@
     <!-- Hero Start -->
     <section class="bg-half-170 border-bottom d-table w-100">
         <div class="container">
-            <div class="row align-items-center">
+            <div class="row align-items-center">d
                 <div class="col-lg-7 col-md-7 wow animate__animated animate__fadeInLeft" data-wow-delay=".1s">
                     <div class="title-heading mt-4 d-flex flex-column gap-3">
                         <div class="heading text d-flex flex-column">

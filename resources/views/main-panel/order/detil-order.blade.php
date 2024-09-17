@@ -63,7 +63,7 @@
                                         </tr>
                                         <tr>
                                             <td>Harga Pembelian</td>
-                                            <td>{{ Number::currency($detilOrder->nominal, in: 'IDR') }}</td>
+                                            <td>Rp. {{ number_format($detilOrder->nominal, 0) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Waktu Transaksi</td>
