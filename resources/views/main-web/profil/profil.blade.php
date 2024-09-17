@@ -400,3 +400,30 @@
      </section><!--end section-->
      <!-- Profile Setting End -->
  @endsection
+ @section('scripts')
+     <script src="{{ asset('resources/web/dist/assets/js/geolocation.js') }}"></script>
+
+     <script>
+         $(document).ready(function() {
+
+             initGeolocation({
+                 formIdProvinsi: 'select2-provinsi',
+                 formIdKabupaten: 'select2-kabupaten',
+                 formIdKecamatan: 'select2-kecamatan',
+                 provinsiId: '{{ @$customer->provinsi }}',
+                 kabupatenId: '{{ @$customer->kabupaten }}',
+                 kecamatanId: '{{ @$customer->kecamatan }}',
+             });
+
+             const tanggalLahirElement = document.getElementById("tanggalLahir");
+             if (tanggalLahirElement) {
+                 tanggalLahirElement.addEventListener("input", function(e) {
+                     let value = e.target.value.replace(/[^0-9]/g, ""); // Hanya izinkan angka
+                     if (value.length >= 2) value = value.slice(0, 2) + "/" + value.slice(2);
+                     if (value.length >= 5) value = value.slice(0, 5) + "/" + value.slice(5);
+                     e.target.value = value.slice(0, 10); // Batasi panjang maksimal
+                 });
+             }
+         });
+     </script>
+ @endsection
