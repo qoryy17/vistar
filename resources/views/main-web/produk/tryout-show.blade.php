@@ -183,7 +183,8 @@
                                          <img class="img-fluid mb-3" src="{{ asset('storage/tryout/' . $row->thumbnail) }}"
                                              alt="Thubmnail {{ $row->nama_tryout }}" loading="lazy" />
                                      </div>
-                                     <span class="py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">
+                                     <span
+                                         class="text-center py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-md">
                                          {{ $row->nama_tryout }}
                                      </span>
                                      <h3 class="fw-bold mb-0 mt-3">
