@@ -95,7 +95,7 @@ class MainWebsite extends Controller
         }
 
         $productStatus = 'Berbayar';
-        $products = Cache::remember('products_main_web:category_id' . $searchCategoryId . ':status:' . $productStatus . ':search:' . $searchName, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
+        $products = Cache::remember('products_main_web:category_id:' . $searchCategoryId . ',status:' . $productStatus . ',search:' . $searchName, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
             $data = DB::table('produk_tryout')
                 ->select(
                     'produk_tryout.*',
@@ -126,7 +126,7 @@ class MainWebsite extends Controller
 
         $categoryStatus = 'Berbayar';
         $categoryActive = 'Y';
-        $categories = Cache::remember('product_categories_main_web:status' . $categoryStatus . ':active:' . $categoryActive, 7 * 24 * 60 * 60, function () use ($categoryStatus, $categoryActive) {
+        $categories = Cache::remember('product_categories_main_web:status:' . $categoryStatus . ',active:' . $categoryActive, 7 * 24 * 60 * 60, function () use ($categoryStatus, $categoryActive) {
             return KategoriProduk::where('aktif', $categoryActive)
                 ->select('id', 'judul')
                 ->where('status', $categoryStatus)
@@ -180,7 +180,7 @@ class MainWebsite extends Controller
         $title = 'Produk - ' . $product->nama_tryout;
 
         $productStatus = 'Berbayar';
-        $recommendProducts = Cache::remember('products_main_web:except' . $id . ':status:' . $productStatus, 7 * 24 * 60 * 60, function () use ($id, $productStatus) {
+        $recommendProducts = Cache::remember('products_main_web:except:' . $id . ',status:' . $productStatus, 7 * 24 * 60 * 60, function () use ($id, $productStatus) {
             $data = DB::table('produk_tryout')
                 ->select(
                     'produk_tryout.*',
@@ -241,7 +241,7 @@ class MainWebsite extends Controller
         }
 
         $productStatus = 'Gratis';
-        $products = Cache::remember('products_main_web:category_id' . $searchCategoryId . ':status:' . $productStatus . ':search:' . $searchName, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
+        $products = Cache::remember('products_main_web:category_id:' . $searchCategoryId . ',status:' . $productStatus . ',search:' . $searchName, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
             $data = DB::table('produk_tryout')
                 ->select(
                     'produk_tryout.*',
@@ -272,7 +272,7 @@ class MainWebsite extends Controller
 
         $categoryStatus = 'Gratis';
         $categoryActive = 'Y';
-        $categories = Cache::remember('product_categories_main_web:status' . $categoryStatus . ':active:' . $categoryActive, 7 * 24 * 60 * 60, function () use ($categoryStatus, $categoryActive) {
+        $categories = Cache::remember('product_categories_main_web:status:' . $categoryStatus . ',active:' . $categoryActive, 7 * 24 * 60 * 60, function () use ($categoryStatus, $categoryActive) {
             return KategoriProduk::where('aktif', $categoryActive)
                 ->select('id', 'judul')
                 ->where('status', $categoryStatus)
