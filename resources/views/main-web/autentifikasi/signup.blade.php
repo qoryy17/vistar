@@ -42,14 +42,14 @@
                             <div class="col-12">
                                 <div class="card login-page border-0" style="z-index: 1">
                                     <div class="card-body p-0">
-                                        <h4 class="card-title text-center">
+                                        <div class="card-title text-center">
                                             <a href="{{ route('mainweb.index') }}">
                                                 <img id="img-logo" src="{{ asset('storage/' . $web->logo) }}"
                                                     alt="logo">
                                             </a>
-                                        </h4>
-                                        <form action="{{ route('auth.register') }}" class="login-form mt-4"
-                                            method="POST">
+                                        </div>
+                                        <form id="formRegister" action="{{ route('auth.register') }}"
+                                            class="login-form mt-4" method="POST">
                                             @csrf
                                             @method('POST')
                                             <div class="row">
@@ -89,8 +89,9 @@
 
                                                 <div class="col-lg-12">
                                                     <div class="mb-3">
-                                                        <label class="form-label" id="password">Password <span
-                                                                class="text-danger">*</span></label>
+                                                        <label for="password" class="form-label" id="password">
+                                                            Password <span class="text-danger">*</span>
+                                                        </label>
                                                         <div class="form-icon position-relative">
                                                             <i data-feather="key" class="fea icon-sm icons"></i>
                                                             <input type="password" class="form-control ps-5"
@@ -106,15 +107,16 @@
 
                                                 <div class="col-lg-12">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="password_confirmation">Konfirmasi
-                                                            Password <span class="text-danger">*</span></label>
+                                                        <label class="form-label" for="password_confirmation">
+                                                            Konfirmasi Password <span class="text-danger">*</span>
+                                                        </label>
                                                         <div class="form-icon position-relative">
                                                             <i data-feather="key" class="fea icon-sm icons"></i>
                                                             <input type="password" class="form-control ps-5"
                                                                 placeholder="Konfirmasi Password..."
                                                                 id="password_confirmation" required
-                                                                name="password_confirmation" autocomplete="of"
-                                                                value="{{ old('konfirmasiPassword') }}">
+                                                                name="password_confirmation" autocomplete="off"
+                                                                value="{{ old('konfirmasiPassword') }}" />
                                                         </div>
                                                         @error('konfirmasiPassword')
                                                             <small class="text-danger"> {{ $message }}</small>
@@ -136,19 +138,25 @@
                                                         <div class="col-12 mt-3">
                                                             <div class="d-grid">
                                                                 <a href="{{ route('auth.google') }}"
-                                                                    class="btn btn-light"><i
-                                                                        class="mdi mdi-google text-danger"></i>
-                                                                    Google</a>
+                                                                    class="btn btn-light">
+                                                                    <i class="mdi mdi-google text-danger"></i>
+                                                                    Google
+                                                                </a>
                                                             </div>
                                                         </div><!--end col-->
                                                     </div>
                                                 </div><!--end col-->
 
                                                 <div class="col-12 text-center">
-                                                    <p class="mb-0 mt-3"><small class="text-dark me-2">Sudah punya
-                                                            akun
-                                                            ?</small> <a href="{{ route('auth.signin') }}"
-                                                            class="text-dark fw-bold">Klik disini</a></p>
+                                                    <p class="mb-0 mt-3">
+                                                        <small class="text-dark me-2">
+                                                            Sudah punya akun ?
+                                                        </small>
+                                                        <a href="{{ route('auth.signin') }}"
+                                                            class="text-dark fw-bold">
+                                                            Klik disini
+                                                        </a>
+                                                    </p>
                                                 </div><!--end col-->
                                             </div><!--end row-->
                                         </form>
@@ -170,6 +178,67 @@
     <!-- SignUp End -->
 
     <x-web.footer-auth />
+
+    {{--  Analytics  --}}
+    {{--  Google tag (gtag.js)  --}}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.analytic.google.id') }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        $(document).ready(function() {
+            gtag('js', new Date());
+            gtag('config', "{{ config('services.analytic.google.id') }}");
+        });
+    </script>
+
+    <!-- Meta Pixel Code -->
+    <script>
+        ! function(f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function() {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+
+        $(document).ready(function() {
+            fbq('init', "{{ config('services.analytic.facebook.id') }}");
+            fbq('track', 'PageView');
+        });
+    </script>
+    <noscript><img alt="" height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id={{ config('services.analytic.facebook.id') }}&ev=PageView&noscript=1" /></noscript>
+    <!-- End Meta Pixel Code -->
+
+    <script src="{{ asset('resources/web/dist/assets/js/analytics.js') }}"></script>
+    <script>
+        $('#formRegister').on('submit', function() {
+            const fullName = $('[name="namaLengkap"]').val();
+            const email = $('[name="email"]').val();
+
+            analyticsRegisterEvent({
+                method: 'manual',
+                userData: {
+                    full_name: fullName,
+                    email: email,
+                },
+            })
+        });
+    </script>
 </body>
 
 </html>

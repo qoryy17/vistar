@@ -12,7 +12,7 @@ return [
     | location for this type of information, allowing packages to have
     | a conventional file to locate the various service credentials.
     |
-    */
+     */
 
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
@@ -42,12 +42,21 @@ return [
     ],
 
     'midtrans' => [
-        'merchant_id'    => env('MIDTRANS_MERCHANT_ID'),
-        'client_key'     => env('MIDTRANS_CLIENT_KEY'),
-        'server_key'     => env('MIDTRANS_SERVER_KEY'),
-        'is_production'  => env('MIDTRANS_IS_PRODUCTION', false),
-        'is_sanitized'   => env('MIDTRANS_IS_SANITIZED', true),
-        'is_3ds'         => env('MIDTRANS_IS_3DS', true),
+        'merchant_id' => env('MIDTRANS_MERCHANT_ID'),
+        'client_key' => env('MIDTRANS_CLIENT_KEY'),
+        'server_key' => env('MIDTRANS_SERVER_KEY'),
+        'is_production' => env('MIDTRANS_IS_PRODUCTION', false),
+        'is_sanitized' => env('MIDTRANS_IS_SANITIZED', true),
+        'is_3ds' => env('MIDTRANS_IS_3DS', true),
+    ],
+
+    'analytic' => [
+        'google' => [
+            'id' => env('ANALYTIC_GOOGLE_ID', null),
+        ],
+        'facebook' => [
+            'id' => env('ANALYTIC_FACEBOOK_ID', null),
+        ],
     ],
 
 ];

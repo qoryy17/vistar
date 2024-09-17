@@ -70,7 +70,10 @@
                              <h5 class="fw-bold">Kontak</h5>
                              <p class="text-muted">Jangan ragu untuk
                                  menghubungi kami, kami selalu di sini untuk Anda</p>
-                             <a href="tel:{{ $web->kontak }}" class="read-more">{{ $web->kontak }}</a>
+                             <a onclick="analyticsContactEvent({contact_type: 'phone', value: '{{ $web->kontak }}'})"
+                                 href="tel:{{ $web->kontak }}" class="read-more">
+                                 {{ $web->kontak }}
+                             </a>
                          </div>
                      </div>
                  </div>
@@ -82,7 +85,10 @@
                          <div class="content mt-4">
                              <h5 class="fw-bold">Email</h5>
                              <p class="text-muted">Butuh solusi? Kirimkan email Anda dan kami akan segera merespon</p>
-                             <a href="mailto:{{ $web->email }}" class="read-more">{{ $web->email }}</a>
+                             <a onclick="analyticsContactEvent({contact_type: 'email', value: '{{ $web->email }}'})"
+                                 href="mailto:{{ $web->email }}" class="read-more">
+                                 {{ $web->email }}
+                             </a>
                          </div>
                      </div>
                  </div>

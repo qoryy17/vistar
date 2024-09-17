@@ -80,6 +80,16 @@ class Orders extends Controller
 
         $grossAmount = intval($grossAmount);
 
+        $purchaseItems = [
+            [
+                'item_id' => $tryout->idProduk,
+                'item_name' => $tryout->nama_tryout,
+                'discount' => 0,
+                'price' => $grossAmount,
+                'quantity' => 1,
+            ],
+        ];
+
         $midtransService = new MidtransService();
         $snapToken = $midtransService->createOrder([
             'orderID' => $orderID,
@@ -148,6 +158,18 @@ class Orders extends Controller
                 'result' => 'success',
                 'title' => 'Order berhasil dibuat',
                 'data' => [
+                    'transaction_id' => $orderID,
+                    'total_price' => $grossAmount,
+                    'total_tax' => 0,
+                    'total_shipping' => 0,
+                    'currency' => 'IDR',
+                    'coupon' => null,
+                    'purchase_items' => $purchaseItems,
+                    'user_data' => [
+                        'id' => Auth::id(),
+                        'full_name' => Auth::user()->name,
+                        'email' => Auth::user()->email,
+                    ],
                     'snap_token' => $snapToken,
                 ],
             ], 200);

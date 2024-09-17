@@ -40,7 +40,8 @@
                          alt="">
                  </div>
                  <div class="col-md-8">
-                     <form action="{{ route('orders.simpan-gratis') }}" method="POST" enctype="multipart/form-data">
+                     <form action="{{ route('orders.simpan-gratis') }}" method="POST" enctype="multipart/form-data"
+                         id="formRegisterFreeTryout">
                          @csrf
                          @method('POST')
                          <div class="form-group">
@@ -107,7 +108,7 @@
                              <label for="informasi" class="form-label">
                                  Sumber Informasi Yang Anda Dapat ? <span class="text-danger">*</span>
                              </label>
-                             <select name="informasi" id="informasi" class="form-control">
+                             <select name="informasi" id="informasi" class="form-control" required>
                                  <option value="">Pilih</option>
                                  <option value="Website">Website</option>
                                  <option value="Facebook">Facebook</option>
@@ -124,7 +125,7 @@
                                  Alasan Anda Ikut Tryout Gratis ? <span class="text-danger">*</span>
                              </label>
                              <textarea name="alasan" id="alasan" class="form-control"
-                                 placeholder="Alasan Anda Ikut Tryout Gratis Dari Kami..."></textarea>
+                                 placeholder="Alasan Anda Ikut Tryout Gratis Dari Kami..." required></textarea>
                              @error('informasi')
                                  <small class="text-danger mt-3">* {{ $message }}</small>
                              @enderror
@@ -169,8 +170,9 @@
 
                      <div class="col-md-4 mt-4 mt-sm-0">
                          <div class="text-md-end text-center">
-                             <a href="{{ route('mainweb.product') }}" class="btn btn-light btn-pills">Pesan
-                                 Sekarang</a>
+                             <a href="{{ route('mainweb.product') }}" class="btn btn-light btn-pills">
+                                 Pesan Sekarang
+                             </a>
                          </div>
                      </div><!--end col-->
                  </div><!--end row-->
@@ -178,5 +180,25 @@
          </div>
          <!-- End -->
      </section><!--end section-->
+ @endsection
+ @section('scripts')
+     <script>
+         $('#formRegisterFreeTryout').on('submit', function() {
+             const userId = "{{ Auth::id() }}";
+             const fullName = $('[name="namaLengkap"]').val();
+             const email = $('[name="email"]').val();
+             const phone = $('[name="kontak"]').val();
 
+             analyticsLeadEvent({
+                 userData: {
+                     id: userId,
+                     full_name: fullName,
+                     email: email,
+                     phone: phone,
+                 },
+                 totalPrice: 0,
+                 currency: "IDR",
+             })
+         });
+     </script>
  @endsection

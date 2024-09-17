@@ -118,7 +118,29 @@
                 id: "{{ Crypt::encrypt($order->id) }}"
             }).done(function(data, status) {
                 if (data.result === 'success') {
-                    const snapToken = data?.data?.snap_token;
+                    const purchaseData = data?.data;
+                    if (!purchaseData) {
+                        swal({
+                            title: "Notifikasi",
+                            text: "Gagal memperoleh informasi pembayaran",
+                            type: 'error'
+                        });
+                        return;
+                    }
+
+                    // Record Analytics
+                    analyticsInitiateCheckoutEvent({
+                        transactionId: purchaseData.transaction_id,
+                        totalPrice: purchaseData.total_price,
+                        currency: purchaseData.currency,
+                        totalTax: purchaseData.total_tax,
+                        totalShipping: purchaseData.total_shipping,
+                        coupon: purchaseData.coupon,
+                        items: purchaseData.purchase_items,
+                        userData: purchaseData.user_data,
+                    });
+
+                    const snapToken = purchaseData.snap_token;
                     if (!snapToken) {
                         swal({
                             title: "Notifikasi",
