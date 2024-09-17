@@ -61,7 +61,7 @@
                                                         <p style="text-align: justify; margin: 0px; padding: 0px;">
                                                             {!! $row->soal !!}
                                                             <small>
-                                                                Created at : {{ $row->created_at }} | Created at :
+                                                                Created at : {{ $row->created_at }} | Updated at :
                                                                 {{ $row->updated_at }}
                                                             </small>
                                                         </p>
