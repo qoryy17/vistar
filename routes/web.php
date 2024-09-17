@@ -77,6 +77,7 @@ Route::controller(MainWebsite::class)->group(function () {
 
     Route::get('/daftar-tryout-gratis', 'daftarTryoutGratis')->name('mainweb.daftar-tryout-gratis')->middleware(ProdukAuth::class);
     Route::get('/kebijakan-privasi', 'kebijakanPrivasi')->name('mainweb.kebijakan-privasi');
+    Route::get('/term-of-service', 'termOfService')->name('mainweb.term-of-service');
     Route::get('/tentang', 'tentang')->name('mainweb.tentang');
     Route::get('/kontak', 'kontak')->name('mainweb.kontak');
 });

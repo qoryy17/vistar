@@ -50,12 +50,25 @@
                                         </a>
                                     </li>
                                 @endif
-                                <li><a href="{{ route('mainweb.product') }}" class="text-foot"><i
-                                            class="uil uil-angle-right-b me-1"></i> Produk</a></li>
-                                <li><a href="{{ route('mainweb.kebijakan-privasi') }}" class="text-foot"><i
-                                            class="uil uil-angle-right-b me-1"></i> Kebijakan & Privasi</a></li>
-                                <li><a href="{{ route('mainweb.kontak') }}" class="text-foot"><i
-                                            class="uil uil-angle-right-b me-1"></i> Kontak</a></li>
+                                <li>
+                                    <a href="{{ route('mainweb.product') }}" class="text-foot">
+                                        <i class="uil uil-angle-right-b me-1"></i> Produk
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('mainweb.kontak') }}" class="text-foot">
+                                        <i class="uil uil-angle-right-b me-1"></i> Kontak</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('mainweb.kebijakan-privasi') }}" class="text-foot">
+                                        <i class="uil uil-angle-right-b me-1"></i> Kebijakan & Privasi
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('mainweb.term-of-service') }}" class="text-foot">
+                                        <i class="uil uil-angle-right-b me-1"></i> Syarat & Ketentuan
+                                    </a>
+                                </li>
                             </ul>
                         </div><!--end col-->
 

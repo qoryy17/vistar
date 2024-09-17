@@ -397,6 +397,15 @@ class MainWebsite extends Controller
         return view('main-web.tentang.kebijakan-privasi', $data);
     }
 
+    public function termOfService()
+    {
+        $data = [
+            'title' => 'Syarat & Ketentuan',
+            'web' => BerandaUI::web(),
+        ];
+        return view('main-web.tentang.term-of-service', $data);
+    }
+
     public function tentang()
     {
         $data = [
