@@ -44,6 +44,24 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Card Customer -->
+                                <div class="card custom-card">
+                                    <div class="card-body">
+                                        <div class="card-order ">
+                                            <label class="main-content-label mb-3 pt-1">Customer Terdaftar</label>
+                                            <h2 class="text-end card-item-icon card-icon">
+                                                <i style="color: #0075B8;"
+                                                    class="mdi mdi-account-multiple icon-size float-start"></i>
+                                                <span class="font-weight-bold">{{ $countCustomer }}</span>
+                                            </h2>
+                                            <p class="mb-0 mt-4 text-muted">Customer Hari Ini<span
+                                                    class="float-end">{{ $countCustomerPerhari }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="col-md-6">
                                 <div class="card custom-card">
@@ -58,6 +76,21 @@
                                             <p class="mb-0 mt-4 text-muted">Profit Masuk Hari Ini<span
                                                     class="float-end">{{ Number::currency($sumTryoutPerhariPaid, in: 'IDR') }}</span>
                                             </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card Tryout Terjual -->
+                                <div class="card custom-card">
+                                    <div class="card-body">
+                                        <div class="card-order">
+                                            <label class="main-content-label mb-3 pt-1">Total Tryout Terjual</label>
+                                            <h2 class="text-end"><i style="color: #0075B8;"
+                                                    class="icon-size mdi mdi-airplay float-start"></i>
+                                                <span class="font-weight-bold">{{ $countTryout }}</span>
+                                            </h2>
+                                            <p class="mb-0 mt-4 text-muted">Tryout Terjual Hari Ini<span
+                                                    class="float-end">{{ $countTryoutPerhari }}</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -83,9 +116,39 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
+                        {{-- Notifikasi Kendala Soal Ujian --}}
+                        <div class="card custom-card ">
+                            <div class="card-header border-bottom-0 pb-0">
+                                <div>
+                                    <div class="d-flex">
+                                        <label class="main-content-label my-auto pt-2">Kendala Soal
+                                            Ujian</label>
+                                    </div>
+                                    <span class="d-block tx-12 mt-2 mb-0 text-muted"> Notifikasi Kendala Soal Ujian
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                @if ($reportExam->isNotEmpty())
+                                    @foreach ($reportExam as $exams)
+                                        <p>Produk : <strong class="badge bg-warning">{{ $exams->nama_tryout }}</strong>
+                                            <br><small>Created At : {{ $exams->created_at }}</small>
+                                        </p>
+                                    @endforeach
+                                    <a href="{{ route('report.exams') }}" class="btn btn-md btn-block btn-primary">Lihat
+                                        Seluruh Kendala <i class="fa fa-arrow-right"></i></a>
+                                @else
+                                    <p class="fw-bold">
+                                        Belum Ada Laporan Kendala Ujian
+                                    </p>
+
+                                @endif
+                            </div>
+                        </div>
+
                         {{-- Statistik Produk Penjualan Tryout --}}
                         <div class="card custom-card">
-                            <div class="card-header  border-bottom-0 pb-0">
+                            <div class="card-header border-bottom-0 pb-0">
                                 <div>
                                     <div class="d-flex">
                                         <label class="main-content-label my-auto pt-2">Statistik Produk</label>
@@ -141,8 +204,9 @@
                                         <div class="progress ht-6 my-auto">
                                             <div style="background-color: #0075B8;"
                                                 class="progress-bar ht-6 wd-$countStatistikKedinasan->count() }}p"
-                                                role="progressbar" aria-valuenow="{{ $countStatistikKedinasan->count() }}"
-                                                aria-valuemin="0" aria-valuemax="1000">
+                                                role="progressbar"
+                                                aria-valuenow="{{ $countStatistikKedinasan->count() }}" aria-valuemin="0"
+                                                aria-valuemax="1000">
                                             </div>
                                         </div>
                                     </div>
@@ -151,36 +215,6 @@
                                             <span class="tx-13"><b>{{ $countStatistikKedinasan->count() }}</b></span>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card custom-card">
-                            <div class="card-body">
-                                <div class="card-order ">
-                                    <label class="main-content-label mb-3 pt-1">Customer Terdaftar</label>
-                                    <h2 class="text-end card-item-icon card-icon">
-                                        <i style="color: #0075B8;"
-                                            class="mdi mdi-account-multiple icon-size float-start"></i>
-                                        <span class="font-weight-bold">{{ $countCustomer }}</span>
-                                    </h2>
-                                    <p class="mb-0 mt-4 text-muted">Customer Hari Ini<span
-                                            class="float-end">{{ $countCustomerPerhari }}</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card custom-card">
-                            <div class="card-body">
-                                <div class="card-order">
-                                    <label class="main-content-label mb-3 pt-1">Total Tryout Terjual</label>
-                                    <h2 class="text-end"><i style="color: #0075B8;"
-                                            class="icon-size mdi mdi-airplay float-start"></i>
-                                        <span class="font-weight-bold">{{ $countTryout }}</span>
-                                    </h2>
-                                    <p class="mb-0 mt-4 text-muted">Tryout Terjual Hari Ini<span
-                                            class="float-end">{{ $countTryoutPerhari }}</span></p>
                                 </div>
                             </div>
                         </div>

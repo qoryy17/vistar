@@ -20,7 +20,7 @@
             font-size: 0.9em;
             top: 5px;
             left: 5px;
-            border-left: 3px solid #99cc33;
+            border-left: 3px solid #1ED760;
             background: #FFFFFF;
             padding: 5px 10px;
             border-radius: 10px;
@@ -94,6 +94,15 @@
                                         <i class="fe fe-menu header-icons"></i>
                                         Daftar Soal
                                     </a>
+                                    {{-- <a href="javascript:void(0)" class="btn btn-sm btn-warning"
+                                        data-bs-target="#modalKendala" data-bs-toggle="modal">
+                                        <i class="fe fe-info header-icons"></i>
+                                        Laporkan Soal
+                                    </a> --}}
+                                    <button class="btn btn-sm btn-warning" onclick="reportQuestion()">
+                                        <i class="fe fe-info header-icons"></i>
+                                        Laporkan Soal
+                                    </button>
                                 </div>
 
                                 <div>
@@ -177,6 +186,49 @@
         </div>
     </div>
     <!-- End Sidebar -->
+
+    <!-- Preview modal -->
+    <div class="modal fade" id="modalKendala">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content modal-content-demo">
+                <div class="modal-header">
+                    <h6 class="modal-title"><i class="fa fa-info-circle"></i>
+                        Laporkan Kendala Masalah Soal !
+                    </h6><button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="modal-body mt-0 pt-0">
+                    <div class="form-group">
+                        <input type="text" required placeholder="ID Produk" class="form-control" name="idProduk"
+                            readonly value="{{ $tryoutProduct->id }}" hidden>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" required placeholder="ID Soal" class="form-control" name="idSoal"
+                            readonly value="" hidden>
+                    </div>
+                    <div class="form-group">
+                        <label for="deskripsi">Deskripsi Permasalahan <span class="text-danger">*</span></label>
+                        <textarea name="deskripsi" id="deskripsi" class="form-control" autocomplete="off"
+                            placeholder="Deskripsikan Permasalahan Soal Ujian" required rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="screenshot">Screenshot Soal Ujian <span class="text-danger">*</span></label>
+                        <input type="file" required name="screenshot" id="screenshot" class="dropify"
+                            data-height="100" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button onclick="sendingReportExam()" class="btn btn-md btn-block btn-primary">
+                        <i class="fa fa-send"></i> Kirim Laporan
+                    </button>
+                    <button class="btn btn-md btn-block btn-danger" data-bs-dismiss="modal" type="button">
+                        <i class="fa fa-times"></i> Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Preview modal -->
     <!-- Jquery js-->
     <script src="{{ url('resources/spruha/assets/plugins/jquery/jquery.min.js') }}"></script>
     <script>
@@ -771,6 +823,75 @@
             } else {
                 document.querySelector("input[name='jawaban']:checked").checked = false;
             }
+        }
+
+        function reportQuestion() {
+            const questionIdElement = document.getElementsByName('soal_ujian_id')[0];
+            const idSoal = document.getElementsByName('idSoal')[0];
+
+            idSoal.value = questionIdElement.value;
+
+            $('#modalKendala').modal('show');
+
+        }
+
+        function sendingReportExam() {
+            const inputs = {
+                idProduk: document.getElementsByName('idProduk')[0].value,
+                idSoal: document.getElementsByName('idSoal')[0].value,
+                deskripsi: document.getElementsByName('deskripsi')[0].value,
+                screenshot: document.getElementsByName('screenshot')[0].files[0]
+            };
+
+            for (const key in inputs) {
+                if (!inputs[key]) {
+                    swal({
+                        title: "Notifikasi",
+                        text: `${key} harus diisi.`,
+                        type: "info"
+                    });
+                    return;
+                }
+            }
+
+            let formData = new FormData();
+            formData.append('idProduk', inputs.idProduk);
+            formData.append('idSoal', inputs.idSoal);
+            formData.append('deskripsi', inputs.deskripsi);
+            formData.append('screenshot', inputs.screenshot);
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{ route('report.send-exam') }}",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    swal({
+                        title: "Notifikasi",
+                        text: "Terimakasih. Laporan kendala berhasil dikirim !",
+                        type: "success"
+                    });
+
+                    inputs.deskripsi.value = '';
+                    inputs.screenshot.value = '';
+
+                    $('#modalKendala').modal('hide');
+                },
+                error: function(xhr, status, error) {
+                    swal({
+                        title: "Notifikasi",
+                        text: "Laporan kendala gagal dikirim !",
+                        type: "error"
+                    });
+
+                    inputs.deskripsi.value = '';
+                    inputs.screenshot.value = '';
+                }
+            });
         }
     </script>
 @endsection

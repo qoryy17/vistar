@@ -1,29 +1,30 @@
 <?php
 
-use App\Http\Controllers\Cron\JobsController;
+use App\Http\Controllers\Panel\Main;
+use App\Http\Controllers\Panel\Users;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Customer\Site;
-use App\Http\Controllers\Customer\Tryoutc;
-use App\Http\Controllers\Landing\Autentifikasi;
+use App\Http\Controllers\Panel\Tryouts;
 use App\Http\Controllers\Landing\Emails;
-use App\Http\Controllers\Landing\GoogleOauth;
-use App\Http\Controllers\Landing\MainWebsite;
 use App\Http\Controllers\Landing\Orders;
+use App\Http\Controllers\Panel\Referral;
+use App\Http\Middleware\Auth\ProdukAuth;
 use App\Http\Controllers\Landing\Profils;
 use App\Http\Controllers\Panel\Customers;
 use App\Http\Controllers\Panel\Kategoris;
-use App\Http\Controllers\Panel\Klasifikasis;
+use App\Http\Controllers\Customer\Tryoutc;
 use App\Http\Controllers\Panel\ListOrders;
-use App\Http\Controllers\Panel\Main;
 use App\Http\Controllers\Panel\Pengaturan;
-use App\Http\Controllers\Panel\Referral;
 use App\Http\Controllers\Panel\Testimonis;
-use App\Http\Controllers\Panel\Tryouts;
-use App\Http\Controllers\Panel\Users;
-use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Middleware\Auth\PanelRouting;
-use App\Http\Middleware\Auth\ProdukAuth;
+use App\Http\Controllers\Panel\Klasifikasis;
+use App\Http\Controllers\Cron\JobsController;
+use App\Http\Controllers\Landing\GoogleOauth;
+use App\Http\Controllers\Landing\MainWebsite;
+use App\Http\Controllers\Landing\Autentifikasi;
 use App\Http\Middleware\Customer\LoggedCustomer;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Exam\ReportExamController;
+use App\Http\Controllers\Payment\TransactionController;
 
 // Routing untuk autentifikasi menggunakan Google OAuth
 Route::controller(GoogleOauth::class)->group(function () {
@@ -248,5 +249,15 @@ Route::middleware(PanelRouting::class)->group(function () {
 
         Route::get('/testimoni-ujian', 'testimoniUjian')->name('ujian.testimoni');
         Route::post('/simpan-testimoni', 'simpanTestimoni')->name('ujian.simpan-testimoni');
+    });
+});
+
+// Route customer dan admin untuk report ujian
+Route::middleware(PanelRouting::class)->group(function () {
+    Route::controller(ReportExamController::class)->group(function () {
+        Route::get('/report/exam-trouble', 'examTrouble')->name('report.exams');
+        Route::post('/report/exam', 'sendReportExam')->name('report.send-exam');
+        Route::get('/report/validated/{id}', 'validatedReportExam')->name('report.validated-exam');
+        Route::delete('/report/deleted', 'deleteReportExam')->name('report.delete-exam');
     });
 });

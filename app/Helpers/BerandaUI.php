@@ -87,4 +87,13 @@ class BerandaUI
             ->orderBy(DB::raw('MONTH(order_tryout.created_at)'))
             ->pluck('total_orders', 'month');
     }
+
+    public static function reportExam()
+    {
+        return DB::table('report_ujian')->select(
+            'report_ujian.*',
+            'produk_tryout.nama_tryout',
+            'produk_tryout.kode_soal',
+        )->leftJoin('produk_tryout', 'report_ujian.produk_tryout_id', 'produk_tryout.id')->where('report_ujian.status', 'Waiting');
+    }
 }
