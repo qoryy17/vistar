@@ -1,5 +1,26 @@
+ @php
+     $tags = ['</p>', '<br />', '<br>', '<hr />', '<hr>', '</h1>', '</h2>', '</h3>', '</h4>', '</h5>', '</h6>'];
+
+     $descriptionPlainText = trim(strip_tags(str_replace($tags, '. ', $product->keterangan)));
+     if (strlen($descriptionPlainText) > 170) {
+         $descriptionPlainText = substr($descriptionPlainText, 0, 167) . '...';
+     }
+
+     $keywords = [];
+     if ($product->category) {
+         if (!in_array($product->category->judul, $keywords)) {
+             array_push($keywords, $product->category->judul);
+         }
+     }
+     if (!in_array($product->nama_tryout, $keywords)) {
+         array_push($keywords, $product->nama_tryout);
+     }
+ @endphp
  @extends('main-web.layout.main')
  @section('title', $title)
+ @section('image', asset('storage/tryout/' . $product->thumbnail))
+ @section('description', $descriptionPlainText)
+ @section('keywords', implode(', ', $keywords))
  @section('content')
      <section class="section" style="margin-top: 20px;">
          <div class="container">

@@ -13,6 +13,8 @@
     if (is_file($uploadedLogo)) {
         $logo = $uploadedLogo;
     }
+
+    $keywords = $web->meta_keyword ? $web->meta_keyword : '';
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -23,8 +25,13 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <meta name="author" content="{{ $web->meta_author ? $web->meta_author : '' }}">
-    <meta name="keywords" content="{{ $web->meta_keyword ? $web->meta_keyword : '' }}">
-    <meta name="description" content="{{ $web->meta_description ? $web->meta_description : '' }}">
+    <meta name="keywords"
+        content="@hasSection('keywords')
+@yield('keywords'), {{ $keywords }}
+@else
+{{ $keywords }}
+@endif">
+    <meta name="description" content="@yield('description', $web->meta_description ? $web->meta_description : '')">
 
     <link rel="canonical" href="{{ url()->current() }}" />
 
@@ -58,7 +65,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ url()->full() }}" />
     <meta property="og:image" content="@yield('image', asset($logo))" />
-    <meta property="og:description" content="{{ $web->meta_description ? $web->meta_description : '' }}" />
+    <meta property="og:description" content="@yield('description', $web->meta_description ? $web->meta_description : '')" />
 
     {{--  Note: Create App Config APP ID after vistar using social account login with facebook --}}
     <meta property="fb:app_id" content="1235512704325801" />
