@@ -1,4 +1,4 @@
-<p align="center"><a href="https://vistar.id" target="_blank"><img src="public/resources/vistar-indonesia.png" width="350" alt="Logo"></a></p>
+<p align="center"><a href="https://vistar.id" target="_blank"><img src="public/resources/images/vistar-indonesia.png" width="350" alt="Logo"></a></p>
 
 ## Tentang Vi Start
 

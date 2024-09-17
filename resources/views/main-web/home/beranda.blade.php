@@ -6,29 +6,30 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-7 col-md-7 wow animate__animated animate__fadeInLeft" data-wow-delay=".1s">
-                    <div class="title-heading mt-4">
-
-                        <h1 class="heading text mb-3"><span class="fw-bold">{{ $web->nama_bisnis }}</span><br>
-                            <span class="fs-2">{{ $web->tagline }}</span> <br>
-                            <span style="color: #0075B8;" class="text-primary typewrite" data-period="2000"
-                                data-type='["Tryout CPNS", "Tryout PPPK", "Tryout Kedinasan"]'>
-                                <span class="wrap"></span>
-                            </span>
-                        </h1>
-                        <p class="para-desc text-muted" style="text-align: justify">{{ $web->nama_bisnis }} merupakan Pusat
-                            Kegiatan Akademik
-                            Bidang ICT dan Science
-                            Terbaik #1 di Indonesia dengan
-                            mengedepankan VI (6 angka Romawi) dan Star (Bintang dalam Inggris) “6 Bintang” dibidang <span
-                                class="text-primary fw-bold">Si</span> yaitu
-                            :
-                            Kompeten<span class="text-primary fw-bold">Si</span>, Kompeti<span
-                                class="text-primary fw-bold">Si</span>, Litera<span class="text-primary fw-bold">Si</span>,
-                            Okupa<span class="text-primary fw-bold">Si</span>, Presta<span
-                                class="text-primary fw-bold">Si</span>,
+                    <div class="title-heading mt-4 d-flex flex-column gap-3">
+                        <div class="heading text d-flex flex-column">
+                            <h1 class="d-flex flex-column">
+                                <span class="fw-bold">{{ $web->nama_bisnis }}</span>
+                                <span class="fs-4">{{ $web->tagline }}</span>
+                            </h1>
+                        </div>
+                        <div style="color: #0075B8; overflow-y: hidden !important;" class="py-2 fs-1 text-primary typewrite"
+                            data-period="2000" data-type='["Tryout CPNS", "Tryout PPPK", "Tryout Kedinasan"]'>
+                        </div>
+                        <h2 class="para-desc text-muted" style="text-align: justify">
+                            {{ $web->nama_bisnis }} merupakan Pusat Kegiatan Akademik Bidang ICT dan Science Terbaik
+                            &num;1 di Indonesia dengan mengedepankan VI (6 angka Romawi) dan Star (Bintang dalam Inggris) “6
+                            Bintang” dibidang
+                            <span class="text-primary fw-bold">Si</span>
+                            yaitu :
+                            Kompeten<span class="text-primary fw-bold">Si</span>,
+                            Kompeti<span class="text-primary fw-bold">Si</span>,
+                            Litera<span class="text-primary fw-bold">Si</span>,
+                            Okupa<span class="text-primary fw-bold">Si</span>,
+                            Presta<span class="text-primary fw-bold">Si</span>,
                             dan
                             Sertifika<span class="text-primary fw-bold">Si</span>
-                        </p>
+                        </h2>
                         <div class="mt-4">
                             <a href="#produk" class="btn btn-primary btn-pills"><i class="uil uil-arrow-down"></i>
                                 Mulai Jelajah</a>
@@ -39,8 +40,8 @@
                 <div class="col-lg-5 col-md-5 mt-4 pt-2 mt-sm-0 pt-sm-0 wow animate__animated animate__fadeInUp"
                     data-wow-delay=".1s">
                     <div class="position-relative">
-                        <img src="{{ url('resources/images/model1.png') }}" class="rounded img-fluid mx-auto d-block"
-                            alt="">
+                        <img width="400" src="{{ url('resources/images/model1.png') }}"
+                            class="rounded img-fluid mx-auto d-block" alt="">
                         {{-- <div class="play-icon">
                             <a href="#!" data-type="youtube" data-id="yba7hPeTSjk" class="play-btn lightbox border-0">
                                 <i class="mdi mdi-play text-primary rounded-circle shadow"></i>
@@ -60,7 +61,7 @@
                 <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
                     <div class="col-12 text-center">
                         <div class="section-title mb-4 pb-2">
-                            <h4 class="title mb-4">Bidang Kompetensi Pilih Paket Ujian</h4>
+                            <h2 class="title mb-4">Bidang Kompetensi Pilih Paket Ujian</h2>
                             <p class="text-muted para-desc mb-0 mx-auto">
                                 Temukan paket ujian tryout yang sempurna untuk Anda! Dengan berbagai pilihan paket yang
                                 dirancang sesuai kebutuhan, <span
@@ -83,13 +84,13 @@
                                             </span>
                                         </div>
                                     @endif
-                                    <span class="py-2 px-4 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">
+                                    <h3 class="py-2 px-4 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">
                                         {{ $category['title'] }}
-                                    </span>
-                                    <h2 class="fw-bold mb-0 mt-3">
+                                    </h3>
+                                    <p class="fs-3 fw-bold mb-0 mt-3">
                                         <sup><small>Mulai dari</small></sup>
                                         <span class="text-nowrap">Rp. {{ number_format($category['price'], 0) }}</span>
-                                    </h2>
+                                    </p>
                                     <p class="text-muted">Sekali Beli</p>
                                     <p class="text-muted">Fitur yang anda dapatkan dalam paket ini</p>
 

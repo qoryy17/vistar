@@ -1,2 +1,9 @@
+Sitemap: https://vistar.id/sitemap.xml
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /api/*
+Disallow: /*.json$
+Disallow: /*_buildManifest.js$
+Disallow: /*_middlewareManifest.js$
+Disallow: /*_ssgManifest.js$
+Disallow: /*.js$

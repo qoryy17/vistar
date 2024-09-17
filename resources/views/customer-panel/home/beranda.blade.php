@@ -61,7 +61,7 @@
                                                     @if ($latestTestimoni)
                                                         <div class="carousel-item active">
                                                             <img alt="img" class="d-block w-100 op-3"
-                                                                src="{{ url('resources/bg-img.jpg') }}">
+                                                                src="{{ url('resources/images/bg-img.jpg') }}">
                                                             <div class="carousel-caption d-none d-md-block">
                                                                 <h5>{{ $latestTestimoni->nama_lengkap }}</h5>
                                                                 <p class="tx-14">
@@ -76,7 +76,7 @@
                                                         @foreach ($testimoni->get() as $slideTestimoni)
                                                             <div class="carousel-item">
                                                                 <img alt="img" class="d-block w-100 op-3"
-                                                                    src="{{ url('resources/bg-img.jpg') }}">
+                                                                    src="{{ url('resources/images/bg-img.jpg') }}">
                                                                 <div class="carousel-caption d-none d-md-block">
                                                                     <h5>{{ $slideTestimoni->nama_lengkap }}</h5>
                                                                     <p class="tx-14">{{ $slideTestimoni->testimoni }}

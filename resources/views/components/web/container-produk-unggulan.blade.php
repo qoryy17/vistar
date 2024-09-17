@@ -3,7 +3,7 @@
      <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
          <div class="col-12 text-center">
              <div class="section-title mb-4 pb-2">
-                 <h4 class="title mb-4">Keunggulan Tryout Vi Star Indonesia</h4>
+                 <h2 class="title mb-4">Keunggulan Tryout Vi Star Indonesia</h2>
                  <p class="text-muted para-desc mx-auto mb-0">Mengapa memilih Tryout <span class="text-primary fw-bold">Vi
                          Start Indonesia</span> ? Berikut
                      adalah keunggulan luar biasa dari produk kami yang membuat persiapan ujian Anda lebih efektif
@@ -20,7 +20,7 @@
                  </div>
 
                  <div class="content mt-4">
-                     <h5>Ujian Berbasis CAT/CBT</h5>
+                     <h3 class="fs-5">Ujian Berbasis CAT/CBT</h3>
                      <p class="text-muted mb-0" style="text-align: justify">Nikmati pengalaman ujian berbasis
                          komputer dengan sistem CAT
                          (Computer Assisted Test) dan CBT (Computer Based Test) yang interaktif dan modern.</p>
@@ -35,7 +35,7 @@
                  </div>
 
                  <div class="content mt-4">
-                     <h5>Harga Paket Tryout yang Murah</h5>
+                     <h3 class="fs-5">Harga Paket Tryout yang Murah</h3>
                      <p class="text-muted mb-0" style="text-align: justify">Dapatkan akses ke berbagai paket tryout
                          dengan harga yang terjangkau,
                          sesuai dengan kebutuhan Anda.</p>
@@ -50,7 +50,7 @@
                  </div>
 
                  <div class="content mt-4">
-                     <h5>Fitur Ujian yang Lengkap</h5>
+                     <h3 class="fs-5">Fitur Ujian yang Lengkap</h3>
                      <p class="text-muted mb-0" style="text-align: justify">Review Soal,
                          Hasil Ujian secara langsung setelah menyelesaikan tryout,
                          Perangkingan Antar Peserta: Bersaing dengan peserta lain dari seluruh Indonesia dan lihat
@@ -66,7 +66,7 @@
                  </div>
 
                  <div class="content mt-4">
-                     <h5>Soal-Soal Ujian Terbaru</h5>
+                     <h3 class="fs-5">Soal-Soal Ujian Terbaru</h3>
                      <p class="text-muted mb-0" style="text-align: justify">Latihan dengan soal-soal terbaru yang
                          sesuai dengan standar ujian
                          terkini.</p>
@@ -81,7 +81,7 @@
                  </div>
 
                  <div class="content mt-4">
-                     <h5>Dapat Uji Coba Gratis</h5>
+                     <h3 class="fs-5">Dapat Uji Coba Gratis</h3>
                      <p class="text-muted mb-0" style="text-align: justify">Coba fitur tryout secara gratis sebelum
                          memutuskan untuk membeli
                          paket lengkap.</p>

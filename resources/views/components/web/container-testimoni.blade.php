@@ -3,7 +3,7 @@
      <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
          <div class="col-12 text-center">
              <div class="section-title mb-4 pb-2">
-                 <h4 class="title mb-4">Testimoni Dari Peserta</h4>
+                 <h2 class="title mb-4">Testimoni Dari Peserta</h2>
                  <p class="text-muted para-desc mx-auto mb-0">Dengarkan cerita sukses dari mereka yang telah
                      merasakan manfaat Tryout <span class="text-primary fw-bold">Vi Star Indonesia</span>! Para
                      peserta kami telah berhasil meningkatkan
@@ -28,10 +28,12 @@
                                          </li>
                                      @endfor
                                  </ul>
-                                 <p class="text-muted mt-2">" {{ $testimoniPeserta->testimoni }} "</p>
-                                 <h6 class="text-primary">
-                                     {{ $testimoniPeserta->nama_lengkap }}
-                                 </h6>
+                                 <div class="d-flex flex-column-reverse">
+                                     <h3 class="text-primary fs-6">
+                                         {{ $testimoniPeserta->nama_lengkap }}
+                                     </h3>
+                                     <h4 class="text-muted mt-2 fs-6">"{{ $testimoniPeserta->testimoni }}"</h4>
+                                 </div>
                                  <small class="text-muted">
                                      {{ $testimoniPeserta->pendidikan }} - {{ $testimoniPeserta->jurusan }}
                                  </small>

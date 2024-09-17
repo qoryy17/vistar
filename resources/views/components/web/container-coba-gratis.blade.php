@@ -3,9 +3,9 @@
     <div class="row align-items-center">
         <div class="col-lg-6 wow animate__animated animate__fadeInLeft" data-wow-delay=".1s">
             <div class="section-title">
-                <h4 class="title mb-4">Uji Coba Tryout Gratis <br>
+                <h2 class="title mb-4">Uji Coba Tryout Gratis <br>
                     <span class="text-primary">{{ $web->nama_bisnis }}</span>
-                </h4>
+                </h2>
                 <p class="text-muted para-desc" style="text-align: justify;">Tunggu Kesempatan Apalagi, Segera
                     Daftarkan Diri Anda Untuk
                     Mengikuti Uji Coba Tryout Gratis Dengan 1x Kesempatan Ujian Dan Lihat Hasil Yang Anda Dapatkan
