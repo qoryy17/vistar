@@ -30,8 +30,8 @@ class Tryoutc extends Controller
     public static function cacheNameGenerateExam(string $id): array
     {
         return [
-            'exam' => 'exam_' . $id . '_data',
-            'question' => 'exam_' . $id . '_questions',
+            'exam' => 'exam:' . $id . ':data',
+            'question' => 'exam:' . $id . ':questions',
         ];
     }
 
