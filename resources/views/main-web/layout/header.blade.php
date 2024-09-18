@@ -20,26 +20,25 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta name="author" content="{{ $web->meta_author ? $web->meta_author : '' }}">
-    <meta name="keywords"
-        content="@hasSection('keywords')
-@yield('keywords'), {{ $keywords }}
-@else
-{{ $keywords }}
-@endif">
+    @hasSection('keywords')
+        <meta name="keywords" content="@yield('keywords'), {{ $keywords }}">
+    @else
+        <meta name="keywords" content="{{ $keywords }}">
+    @endif
     <meta name="description" content="@yield('description', $web->meta_description ? $web->meta_description : '')">
 
     <link rel="canonical" href="{{ url()->current() }}" />
 
-    <meta name="msapplication-TileColor" content="{{ $themeColor }}" />
+    <meta name="apple-mobile-web-app-title" content="Vistar">
+    <meta name="application-name" content="Vistar">
+
+    <meta name="msapplication-TileColor" content="#da532c" />
     <meta name="msapplication-TileImage" content="{{ asset('resources/images/icons/ms-icon-144x144.png') }}" />
 
-    <meta name="theme-color" media="{{ 'prefers-color-scheme: ' . $prefersColorScheme }}"
-        content="{{ $themeColor }}" />
+    <meta name="theme-color" content="{{ $themeColor }}" />
 
     <link rel="icon" type="image shortcut" href="{{ asset('favicon.ico') }}" />
     <link rel="icon" type="image/png" sizes="16x16"
@@ -61,6 +60,10 @@
     <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('resources/images/icons/apple-icon-152x152.png') }}" />
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('resources/images/icons/apple-icon-180x180.png') }}" />
 
+    <link rel="mask-icon" href="{{ asset('resources/images/icons/safari-pinned-tab.svg') }}" color="#5bbad5">
+
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}" />
+
     <meta property="og:title" content="@yield('title')" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ url()->full() }}" />
@@ -70,9 +73,8 @@
     {{--  Note: Create App Config APP ID after vistar using social account login with facebook --}}
     <meta property="fb:app_id" content="1235512704325801" />
 
-    <link rel="manifest" href="{{ asset('manifest.json') }}" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Title -->
     <title>@yield('title')</title>
 
     <!-- Css -->
@@ -89,10 +91,8 @@
     <link href="{{ asset('resources/web/dist/assets/libs/@iconscout/unicons/css/line.css') }}" type="text/css"
         rel="stylesheet">
     <!-- Style Css-->
-    <link href="{{ asset('resources/web/dist/assets/css/select2.min.css') }}" id="color-opt" class="theme-opt"
-        rel="stylesheet" type="text/css">
-    <link href="{{ asset('resources/web/dist/assets/css/style.min.css') }}" id="color-opt" class="theme-opt"
-        rel="stylesheet" type="text/css">
+    <link href="{{ asset('resources/web/dist/assets/css/select2.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('resources/web/dist/assets/css/style.min.css') }}" rel="stylesheet" type="text/css">
 
     @yield('styles')
 </head>
