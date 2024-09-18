@@ -133,10 +133,22 @@ class MainWebsite extends Controller
                 ->get();
         });
 
+        $perPage = 6; // Number of items per page
+        $page = request()->input('page', 1); // Get the current page number from the request
+        $offset = ($page * $perPage) - $perPage; // Calculate the offset
+
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            array_slice($products->toArray(), $offset, $perPage), // Slice the data to show only the items for the current page
+            count($products), // Total count of items
+            $perPage, // Items per page
+            $page, // Current page number
+            ['path' => request()->url(), 'query' => request()->query()] // URL and query parameters
+        );
+
         $data = [
             'title' => $title,
             'categories' => $categories,
-            'products' => $products,
+            'products' => $paginator,
             'searchCategoryId' => $searchCategoryId,
             'searchName' => $searchName,
         ];
@@ -279,12 +291,24 @@ class MainWebsite extends Controller
                 ->get();
         });
 
+        $perPage = 6; // Number of items per page
+        $page = request()->input('page', 1); // Get the current page number from the request
+        $offset = ($page * $perPage) - $perPage; // Calculate the offset
+
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            array_slice($products->toArray(), $offset, $perPage), // Slice the data to show only the items for the current page
+            count($products), // Total count of items
+            $perPage, // Items per page
+            $page, // Current page number
+            ['path' => request()->url(), 'query' => request()->query()] // URL and query parameters
+        );
+
         $data = [
             'title' => $title,
             'categories' => $categories,
             'searchCategoryId' => $searchCategoryId,
             'searchName' => $searchName,
-            'products' => $products,
+            'products' => $paginator,
         ];
         return view('main-web.produk.tryout-gratis', $data);
     }

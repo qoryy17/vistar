@@ -78,9 +78,9 @@
              <div class="row">
                  @if ($products->isEmpty())
                      <div class="col-lg-12 col-md-12 mt-4 pt-2">
-                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                         <div class="alert bg-soft-warning fw-medium fade show" role="alert">
+                             <i class="uil uil-info-circle fs-5 align-middle me-1"></i>
                              <strong>Informasi</strong> Maaf Paket Tryout Tidak Ditemukan...!!!
-                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"> </button>
                          </div>
                      </div>
                  @endif
@@ -130,7 +130,9 @@
                          $no++;
                      @endphp
                  @endforeach
-
+                 <div class="mt-5">
+                     {{ $products->links() }}
+                 </div>
              </div><!--end row-->
          </div><!--end container-->
          <!-- Price End -->

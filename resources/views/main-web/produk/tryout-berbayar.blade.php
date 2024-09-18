@@ -162,6 +162,9 @@
                              </div>
                          </div><!--end col-->
                      @endforeach
+                     <div class="mt-5">
+                         {{ $products->links() }}
+                     </div>
                  @endif
              </div><!--end row-->
          </div><!--end container-->
