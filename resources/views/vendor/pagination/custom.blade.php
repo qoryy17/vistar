@@ -25,7 +25,7 @@
                     @foreach ($element as $page => $url)
                         @if ($page == $paginator->currentPage())
                             <li class="page-item active" aria-current="page"><a class="page-link">{{ $page }}
-                                    <span class="sr-only">(current)</span></a></li>
+                                    <span class="sr-only"></span></a></li>
                         @else
                             <li class="page-item"><a class="page-link"
                                     href="{{ $url }}">{{ $page }}</a></li>
