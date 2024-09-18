@@ -13,15 +13,17 @@ return new class extends Migration
     {
         Schema::create('report_ujian', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('produk_tryout_id')->nullable();
-            $table->unsignedBigInteger('soal_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('produk_tryout_id')->nullable(false);
+            $table->unsignedBigInteger('soal_id')->nullable(false);
             $table->text('deskripsi');
             $table->text('screenshot');
             $table->string('status', 10);
             $table->timestamps();
 
-            $table->foreign('produk_tryout_id')->references('id')->on('produk_tryout')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('soal_id')->references('id')->on('soal_ujian')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('SET NULL');
+            $table->foreign('produk_tryout_id')->references('id')->on('produk_tryout')->onDelete('cascade');
+            $table->foreign('soal_id')->references('id')->on('soal_ujian')->onDelete('cascade');
         });
     }
 

@@ -29,16 +29,34 @@
 
                         <div class="card custom-card">
                             <div class="card-body">
+                                <form method="GET">
+                                    <div class="d-flex gap-2 mb-3 align-items-center justify-content-center">
+                                        <label class="fw-bold mb-0" for="status">Status</label>
+                                        <select id="status" name="status" class="form-control">
+                                            <option value="">-- Semua --</option>
+                                            @foreach ($statusList as $statusKey => $statusValue)
+                                                <option value="{{ $statusKey }}"
+                                                    {{ $status === $statusKey ? 'selected' : '' }}>
+                                                    {{ $statusValue }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit"
+                                            class="btn bg-info d-flex gap-2 align-items-center justify-content-center">
+                                            <i class="fe fe-search"></i>
+                                            <span>Filter</span>
+                                        </button>
+                                    </div>
+                                </form>
                                 <div class="table-responsive">
                                     <table class="table table-bordered border-bottom" id="example1">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Produk</th>
+                                                <th>Laporan</th>
                                                 <th>Status</th>
-                                                <th>Screenshot</th>
-                                                <th>Created At</th>
-                                                <th>Updated At</th>
+                                                <th>Lampiran</th>
+                                                <th>Dilaporkan Pada</th>
+                                                <th>Diperbarui Pada</th>
                                                 <th>Kelola</th>
                                             </tr>
                                         </thead>
@@ -50,24 +68,45 @@
                                                 <tr>
                                                     <td style="vertical-align: top">{{ $no }}</td>
                                                     <td>
-                                                        <p>
-                                                            Produk : <strong>{{ $row->nama_tryout }}</strong> <br>
-                                                            Deksripsi Masalah : {{ $row->deskripsi }} <br>
-                                                            <a href="{{ route('tryouts.form-soal', ['param' => 'update', 'questionCode' => Crypt::encrypt($row->kode_soal), 'questionId' => Crypt::encrypt($row->soal_id)]) }}"
-                                                                class="btn btn-primary btn-sm mt-2"
-                                                                title="Klik untuk edit soal !">Lihat Soal ID :
-                                                                {{ $row->soal_id }}
-                                                            </a>
-                                                        </p>
+                                                        <table>
+                                                            <tr>
+                                                                <th id="report_id">ID Laporan</th>
+                                                                <td><span class="badge bg-info">{{ $row->id }}</span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th id="product_name">Produk</th>
+                                                                <td>
+                                                                    <span class="fw-bold text-wrap">
+                                                                        {{ $row->nama_tryout }}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="2">
+                                                                    <div class="d-flex flex-column gap-1">
+                                                                        <div class="fw-bold">
+                                                                            Deksripsi Masalah
+                                                                        </div>
+                                                                        <div class="text-wrap">
+                                                                            {{ $row->deskripsi }}
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+
+                                                        <a href="{{ route('tryouts.form-soal', ['param' => 'update', 'questionCode' => Crypt::encrypt($row->kode_soal), 'questionId' => Crypt::encrypt($row->soal_id)]) }}"
+                                                            class="btn btn-primary btn-sm mt-2"
+                                                            title="Klik untuk edit soal !">
+                                                            Lihat Soal
+                                                        </a>
                                                     </td>
                                                     <td>
-                                                        @if ($row->status == 'Waiting')
-                                                            <span class="badge bg-warning">{{ $row->status }}</span>
-                                                        @elseif ($row->status == 'Fixed')
-                                                            <span class="badge bg-success">{{ $row->status }}</span>
-                                                        @else
-                                                            {{ $row->status }}
-                                                        @endif
+                                                        <span
+                                                            class="badge {{ $row->status === \App\Enums\ReportExamStatus::FIXED->value ? 'bg-success' : 'bg-warning' }}">
+                                                            {{ @$statusList[$row->status] }}
+                                                        </span>
                                                     </td>
                                                     <td>
                                                         <button data-bs-target="#modalPreview{{ $no }}"
@@ -80,7 +119,7 @@
                                                             @method('POST')
                                                             @csrf
                                                             <div class="modal fade" id="modalPreview{{ $no }}">
-                                                                <div class="modal-dialog modal-lg" role="document">
+                                                                <div class="modal-dialog modal-lg">
                                                                     <div class="modal-content modal-content-demo">
                                                                         <div class="modal-header">
                                                                             <h6 class="modal-title">
@@ -109,19 +148,19 @@
                                                         <!-- End Preview modal -->
                                                     </td>
                                                     <td>
-                                                        {{ $row->created_at }}
+                                                        {{ \Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i') }}
                                                     </td>
                                                     <td>
-                                                        {{ $row->updated_at }}
+                                                        {{ \Carbon\Carbon::parse($row->updated_at)->format('d/m/Y H:i') }}
                                                     </td>
                                                     <td>
-                                                        @if ($row->status == 'Waiting')
+                                                        @if ($row->status === \App\Enums\ReportExamStatus::WAITING->value)
                                                             <a title="Validasi"
                                                                 href="{{ route('report.validated-exam', ['id' => Crypt::encrypt($row->id)]) }}"
                                                                 class="btn btn-sm btn-success">
                                                                 <i class="fa fa-check"></i>
                                                             </a>
-                                                        @elseif ($row->status == 'Fixed')
+                                                        @elseif ($row->status === \App\Enums\ReportExamStatus::FIXED->value)
                                                             <a title="Batalkan validasi"
                                                                 href="{{ route('report.validated-exam', ['id' => Crypt::encrypt($row->id)]) }}"
                                                                 class="btn btn-sm btn-warning">

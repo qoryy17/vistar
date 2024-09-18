@@ -33,7 +33,7 @@ class Main extends Controller
             'sumTryoutPerhariPaid' => BerandaUI::sumTryoutPerhariPaid(),
             'sumTryoutPending' => BerandaUI::sumTryoutPending(),
             'sumTryoutPerhariPending' => BerandaUI::sumTryoutPerhariPending(),
-            'reportExam' => BerandaUI::reportExam()->get()
+            'waitingReportExam' => BerandaUI::reportExam()->get()
         ];
 
         return view('main-panel.home.beranda', $data);

@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Enums\ReportExamStatus;
+use App\Http\Controllers\Panel\Users;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ReportExamModel extends Model
 {
@@ -16,16 +18,30 @@ class ReportExamModel extends Model
 
     protected $fillable = [
         'id',
+        'user_id',
         'produk_tryout_id',
         'soal_id',
         'deskripsi',
         'screenshot',
-        'status'
+        'status',
     ];
 
     public $incrementing = true;
 
     public $timestamps = true;
+
+    public static function getStatusList()
+    {
+        return [
+            ReportExamStatus::WAITING->value => 'Menunggu',
+            ReportExamStatus::FIXED->value => 'Telah diperbaiki',
+        ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(Users::class, 'user_id');
+    }
 
     public function produkTryout(): BelongsTo
     {

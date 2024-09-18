@@ -116,35 +116,43 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        {{-- Notifikasi Kendala Soal Ujian --}}
-                        <div class="card custom-card ">
-                            <div class="card-header border-bottom-0 pb-0">
-                                <div>
-                                    <div class="d-flex">
-                                        <label class="main-content-label my-auto pt-2">Kendala Soal
-                                            Ujian</label>
+                        @if ($waitingReportExam->isNotEmpty())
+                            {{-- Notifikasi Kendala Soal Ujian --}}
+                            <div class="card custom-card ">
+                                <div class="card-header border-bottom-0 pb-0">
+                                    <div>
+                                        <div class="d-flex">
+                                            <span class="main-content-label my-auto pt-2">
+                                                Kendala Soal Ujian
+                                            </span>
+                                        </div>
+                                        <span class="d-block tx-12 mt-2 mb-0 text-muted">
+                                            Notifikasi Kendala Soal Ujian
+                                        </span>
                                     </div>
-                                    <span class="d-block tx-12 mt-2 mb-0 text-muted"> Notifikasi Kendala Soal Ujian
-                                    </span>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                @if ($reportExam->isNotEmpty())
-                                    @foreach ($reportExam as $exams)
-                                        <p>Produk : <strong class="badge bg-warning">{{ $exams->nama_tryout }}</strong>
-                                            <br><small>Created At : {{ $exams->created_at }}</small>
+                                <div class="card-body">
+                                    @foreach ($waitingReportExam as $row)
+                                        <p style="font-size: 0.9em">
+                                            Produk: <span class="badge bg-warning text-wrap"
+                                                style="font-size: 0.8em !important;">
+                                                {{ $row->nama_tryout }}
+                                            </span>
+                                            <br />
+                                            <small>Dilaporkan Pada :</small>
+                                            <small>
+                                                {{ \Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i') }}
+                                            </small>
                                         </p>
                                     @endforeach
-                                    <a href="{{ route('report.exams') }}" class="btn btn-md btn-block btn-primary">Lihat
-                                        Seluruh Kendala <i class="fa fa-arrow-right"></i></a>
-                                @else
-                                    <p class="fw-bold">
-                                        Belum Ada Laporan Kendala Ujian
-                                    </p>
 
-                                @endif
+                                    <a href="{{ route('report.exams', ['status' => \App\Enums\ReportExamStatus::WAITING->value]) }}"
+                                        class="btn btn-md btn-block btn-primary">
+                                        Lihat Seluruh Kendala <i class="fa fa-arrow-right"></i>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+                        @endif
 
                         {{-- Statistik Produk Penjualan Tryout --}}
                         <div class="card custom-card">

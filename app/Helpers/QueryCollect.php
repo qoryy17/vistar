@@ -84,12 +84,20 @@ class QueryCollect
             });
     }
 
-    public static function reportExam()
+    public static function reportExam($status)
     {
-        return DB::table('report_ujian')->select(
-            'report_ujian.*',
-            'produk_tryout.nama_tryout',
-            'produk_tryout.kode_soal',
-        )->leftJoin('produk_tryout', 'report_ujian.produk_tryout_id', 'produk_tryout.id');
+        $query = DB::table('report_ujian')
+            ->select(
+                'report_ujian.*',
+                'produk_tryout.nama_tryout',
+                'produk_tryout.kode_soal',
+            )
+            ->leftJoin('produk_tryout', 'report_ujian.produk_tryout_id', 'produk_tryout.id');
+
+        if ($status) {
+            $query = $query->where('report_ujian.status', $status);
+        }
+
+        return $query;
     }
 }

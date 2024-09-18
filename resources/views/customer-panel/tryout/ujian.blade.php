@@ -94,14 +94,8 @@
                                         <i class="fe fe-menu header-icons"></i>
                                         Daftar Soal
                                     </a>
-                                    {{-- <a href="javascript:void(0)" class="btn btn-sm btn-warning"
-                                        data-bs-target="#modalKendala" data-bs-toggle="modal">
-                                        <i class="fe fe-info header-icons"></i>
-                                        Laporkan Soal
-                                    </a> --}}
-                                    <button class="btn btn-sm btn-warning" onclick="reportQuestion()">
-                                        <i class="fe fe-info header-icons"></i>
-                                        Laporkan Soal
+                                    <button class="btn btn-sm btn-warning" onclick="reportQuestion()" title="Laporkan Soal">
+                                        <i class="fe fe-alert-octagon header-icons"></i>
                                     </button>
                                 </div>
 
@@ -188,22 +182,23 @@
     <!-- End Sidebar -->
 
     <!-- Preview modal -->
-    <div class="modal fade" id="modalKendala">
-        <div class="modal-dialog modal-lg" role="document">
+    <div class="modal fade" data-bs-keyboard="false" data-bs-backdrop="static" id="modalReport">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content modal-content-demo">
                 <div class="modal-header">
                     <h6 class="modal-title"><i class="fa fa-info-circle"></i>
                         Laporkan Kendala Masalah Soal !
-                    </h6><button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                    </h6>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body mt-0 pt-0">
                     <div class="form-group">
-                        <input type="text" required placeholder="ID Produk" class="form-control" name="idProduk"
-                            readonly value="{{ $tryoutProduct->id }}" hidden>
+                        <input type="hidden" required placeholder="ID Produk" class="form-control" name="idProduk"
+                            readonly value="{{ $tryoutProduct->id }}" />
                     </div>
                     <div class="form-group">
-                        <input type="text" required placeholder="ID Soal" class="form-control" name="idSoal"
-                            readonly value="" hidden>
+                        <input type="hidden" required placeholder="ID Soal" class="form-control" name="idSoal"
+                            readonly value="" />
                     </div>
                     <div class="form-group">
                         <label for="deskripsi">Deskripsi Permasalahan <span class="text-danger">*</span></label>
@@ -245,6 +240,15 @@
 
         $(document).ready(async function() {
 
+            $('#modalReport').on('shown.bs.modal', function() {
+                // Enabled refresh or key R on show modal
+                enabledRefresh();
+            })
+            $('#modalReport').on('hide.bs.modal', function() {
+                // Disable refresh
+                disabledRefresh();
+            })
+
             getQuestion(async function(data) {
                 setQuestions(examId, data.questions)
                 await mergeSavedQuestions(data.savedQuestions)
@@ -253,7 +257,7 @@
                 init();
             });
 
-            $(document).on("keydown", disableF5);
+            disabledRefresh();
 
             window.onbeforeunload = function() {
                 syncAnswer(null, function() {
@@ -309,7 +313,16 @@
             }, 1000);
         });
 
-        function disableF5(e) {
+
+        function enabledRefresh() {
+            document.removeEventListener("keydown", preventPageRefresh);
+        };
+
+        function disabledRefresh() {
+            document.addEventListener("keydown", preventPageRefresh);
+        };
+
+        function preventPageRefresh(e) {
             if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) e.preventDefault();
         };
 
@@ -494,12 +507,12 @@
                                 </div>
                                 <div class="modal-body">
                                     <img src="` + questionAssetPath + `/` + question.gambar + `"
-                                        alt="Gambar Soal No ` + no + `">
+                                        alt="Gambar Soal No ` + no + `" />
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-sm ripple btn-danger"
-                                        data-bs-dismiss="modal" type="button"><i
-                                            class="fa fa-times"></i> Tutup</button>
+                                    <button class="btn btn-sm ripple btn-danger" data-bs-dismiss="modal" type="button">
+                                        <i class="fa fa-times"></i> Tutup
+                                    </button>
                                 </div>
                             </div>
                         </div></div>`;
@@ -586,6 +599,8 @@
 
             calculateAnswered();
             updateButtonNavigation(no);
+
+            clearFormReport();
         }
 
         function updateButtonNavigation(no) {
@@ -826,14 +841,19 @@
             }
         }
 
+        function clearFormReport() {
+            document.getElementsByName('idSoal')[0].value = null
+            document.getElementsByName('deskripsi')[0].value = null
+            $('[name="screenshot"]').parent().find(".dropify-clear").trigger('click');
+        }
+
         function reportQuestion() {
             const questionIdElement = document.getElementsByName('soal_ujian_id')[0];
             const idSoal = document.getElementsByName('idSoal')[0];
 
             idSoal.value = questionIdElement.value;
 
-            $('#modalKendala').modal('show');
-
+            $('#modalReport').modal('show');
         }
 
         function sendingReportExam() {
@@ -843,6 +863,15 @@
                 deskripsi: document.getElementsByName('deskripsi')[0].value,
                 screenshot: document.getElementsByName('screenshot')[0].files[0]
             };
+            if (!inputs.idProduk || !inputs.idSoal) {
+                $('#modalReport').modal('hide');
+                swal({
+                    title: "Notifikasi",
+                    text: `Ada masalah saat memuat laporan, silahkan buka kembali.`,
+                    type: "info"
+                });
+                return;
+            }
 
             for (const key in inputs) {
                 if (!inputs[key]) {
@@ -871,26 +900,50 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    swal({
-                        title: "Notifikasi",
-                        text: "Terimakasih. Laporan kendala berhasil dikirim !",
-                        type: "success"
-                    });
+                    if (response.result === 'success') {
 
-                    inputs.deskripsi.value = '';
-                    inputs.screenshot.value = '';
 
-                    $('#modalKendala').modal('hide');
+                        swal({
+                            title: "Notifikasi",
+                            text: "Terimakasih. Laporan kendala berhasil dikirim !",
+                            type: "success"
+                        });
+
+                        clearFormReport();
+
+                        $('#modalReport').modal('hide');
+                    } else {
+                        swal({
+                            title: "Notifikasi",
+                            html: true,
+                            text: response.title,
+                            type: "error"
+                        });
+                    }
                 },
-                error: function(xhr, status, error) {
+                error: function(xhr) {
+                    let errorMessage = "Laporan kendala gagal dikirim !";
+
+                    const responseJson = xhr?.responseJSON
+                    if (responseJson) {
+                        if (responseJson.errors) {
+                            errorMessage = '';
+                            for (let errors of Object.values(responseJson.errors)) {
+                                for (let error of errors) {
+                                    errorMessage += error + '<br />'
+                                }
+                            }
+                        } else if (responseJson.title) {
+                            errorMessage = responseJson.title;
+                        }
+                    }
+
                     swal({
                         title: "Notifikasi",
-                        text: "Laporan kendala gagal dikirim !",
+                        html: true,
+                        text: errorMessage,
                         type: "error"
                     });
-
-                    inputs.deskripsi.value = '';
-                    inputs.screenshot.value = '';
                 }
             });
         }
