@@ -2,7 +2,7 @@
  @section('title', $title)
  @section('content')
      <!-- About Start -->
-     <section class="section" class="bg-half-170 bg-light d-table w-100 mt-100">
+     <section class="section" style="margin-top: 50px;">
          <div class="container">
              <div class="row align-items-center">
                  <div class="col-lg-5 col-md-5 mt-4 pt-2 mt-sm-0 pt-sm-0 wow animate__animated animate__fadeInLeft"

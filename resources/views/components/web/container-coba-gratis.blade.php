@@ -12,16 +12,22 @@
                 </p>
                 <ul class="list-unstyled text-muted">
                     <li class="mb-1"><span class="text-primary h5 me-2">
-                            <i class="uil uil-check-circle align-middle"></i></span>Bagikan Informasi Produk Kami,
-                        Kepada Keluarga/Kerabat Anda
+                            <i class="uil uil-check-circle align-middle"></i>
+                        </span>Bagikan Informasi Produk Kami,Kepada Keluarga/Kerabat Anda
                     </li>
-                    <li class="mb-1"><span class="text-primary h5 me-2"><i
-                                class="uil uil-check-circle align-middle"></i></span>Dapatkan Uji Coba 1x</li>
-                    <li class="mb-1"><span class="text-primary h5 me-2"><i
-                                class="uil uil-check-circle align-middle"></i></span>Lihat Hasil Ujian Anda</li>
+                    <li class="mb-1">
+                        <span class="text-primary h5 me-2">
+                            <i class="uil uil-check-circle align-middle"></i>
+                        </span>Dapatkan Uji Coba 1x Ujian Tryout
+                    </li>
+                    <li class="mb-1"><span class="text-primary h5 me-2">
+                            <i class="uil uil-check-circle align-middle"></i>
+                        </span>Lihat Hasil Ujian Anda
+                    </li>
                 </ul>
-                <a href="{{ route('mainweb.daftar-tryout-gratis') }}" class="btn btn-primary btn-pills">Daftar
-                    Sekarang</a>
+                <a href="{{ route('mainweb.daftar-tryout-gratis') }}" class="btn btn-primary btn-pills">
+                    Daftar Sekarang <i class="mdi mdi-arrow-right"></i>
+                </a>
             </div>
         </div><!--end col-->
 
@@ -54,7 +60,7 @@
                 <div class="col-md-6 col-12">
                     <div class="row pt-lg-4 mt-lg-4">
                         <div class="col-12 mt-4 pt-2">
-                            <div class="card counter-box border-0 bg-success bg-gradient shadow text-center rounded">
+                            <div class="card counter-box border-0 bg-warning bg-gradient shadow text-center rounded">
                                 <div class="card-body py-5">
                                     <h2 class="text-white mb-0"><span class="counter-value" data-target="10">10</span>+
                                     </h2>

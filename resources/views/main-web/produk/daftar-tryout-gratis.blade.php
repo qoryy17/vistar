@@ -1,7 +1,7 @@
  @extends('main-web.layout.main')
  @section('title', $title)
  @section('content')
-     <section class="section" style="padding-top: 100px;">
+     <section class="section" style="margin-top: 50px;">
          <div class="container">
              <div class="row justify-content-center">
                  <div class="col-12 text-center">
@@ -37,7 +37,7 @@
              <div class="row">
                  <div class="col-md-4">
                      <img src="{{ url('resources/images/model2.png') }}" class="rounded img-fluid mx-auto d-block"
-                         alt="">
+                         alt="model" loading="lazy">
                  </div>
                  <div class="col-md-8">
                      <form action="{{ route('orders.simpan-gratis') }}" method="POST" enctype="multipart/form-data"

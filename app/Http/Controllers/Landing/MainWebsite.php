@@ -511,5 +511,4 @@ class MainWebsite extends Controller
                 'application/xml'
             );
     }
-
 }

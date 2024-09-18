@@ -1,7 +1,7 @@
  @extends('main-web.layout.main')
  @section('title', $title)
  @section('content')
-     <section class="section" style="padding-top: 100px;">
+     <section class="section" style="margin-top: 50px;">
          <div class="container">
              <div class="row justify-content-center">
                  <div class="col-12 text-center">
@@ -34,22 +34,22 @@
                              </select>
                          </div>
                      </div>
-                     <div class="col-md-4 mb-2">
+                     <div class="col-md-5 mb-2">
                          <div class="form-group">
                              <label for="searchName">Cari Paket Tryout</label>
                              <input type="text" autocomplete="off" placeholder="Cari Paket Tryout..." id="searchName"
                                  class="form-control" name="search_name" value="{{ $searchName ? $searchName : '' }}" />
                          </div>
                      </div>
-                     <div class="col-md-4 mb-2">
+                     <div class="col-md-3 mb-2">
                          <div class="form-group">
                              <label for="">Filter / Cari / Reset</label>
                              <div>
-                                 <button type="submit" class="btn btn-pills btn-primary btn-block ">
+                                 <button type="submit" class="btn btn-block btn-pills btn-primary">
                                      <i class="mdi mdi-search-web"></i>
                                      Filter
                                  </button>
-                                 <a href="{{ route('mainweb.product') }}" class="btn btn-pills btn-warning btn-block ">
+                                 <a href="{{ route('mainweb.product') }}" class="btn btn-block btn-pills btn-warning">
                                      <i class="mdi mdi-refresh"></i>
                                      Reset
                                  </a>
@@ -81,9 +81,9 @@
              <div class="row">
                  @if ($products->isEmpty())
                      <div class="col-lg-12 col-md-12 mt-4 pt-2">
-                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                         <div class="alert bg-soft-warning fw-medium fade show" role="alert">
+                             <i class="uil uil-info-circle fs-5 align-middle me-1"></i>
                              <strong>Informasi</strong> Maaf Paket Tryout Tidak Ditemukan...!!!
-                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"> </button>
                          </div>
                      </div>
                  @else
@@ -153,7 +153,7 @@
                                                  @csrf
                                                  @method('POST')
                                                  <button type="submit" class="btn btn-pills btn-primary">
-                                                     Beli Sekarang
+                                                     Beli Sekarang <i class="mdi mdi-arrow-right"></i>
                                                  </button>
                                              </form>
                                          </div>

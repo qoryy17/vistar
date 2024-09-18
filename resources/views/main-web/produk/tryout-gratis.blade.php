@@ -1,7 +1,7 @@
  @extends('main-web.layout.main')
  @section('title', $title)
  @section('content')
-     <section class="section" style="padding-top: 100px;">
+     <section class="section" style="margin-top: 50px;">
          <div class="container">
              <div class="row justify-content-center">
                  <div class="col-12 text-center">
@@ -46,8 +46,7 @@
                                      <i class="mdi mdi-search-web"></i>
                                      Filter
                                  </button>
-                                 <a href="{{ route('mainweb.free-product') }}"
-                                     class="btn btn-pills btn-warning btn-block ">
+                                 <a href="{{ route('mainweb.free-product') }}" class="btn btn-pills btn-warning btn-block ">
                                      <i class="mdi mdi-refresh"></i>
                                      Reset
                                  </a>

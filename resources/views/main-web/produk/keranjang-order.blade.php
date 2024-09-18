@@ -2,7 +2,7 @@
   @section('title', $title)
   @section('content')
       <!-- Start -->
-      <section class="section" style="padding-top: 100px;">
+      <section class="section" style="margin-top: 50px;">
           <div class="container">
               <div class="row justify-content-center">
                   <div class="col-12 text-center">

@@ -22,7 +22,7 @@
  @section('description', $descriptionPlainText)
  @section('keywords', implode(', ', $keywords))
  @section('content')
-     <section class="section" style="margin-top: 20px;">
+     <section class="section" style="margin-top: 50px;">
          <div class="container">
              @if (session()->has('successMessage'))
                  <div class="row">
@@ -88,7 +88,7 @@
                          <a href="https://x.com/intent/tweet?url={{ url()->current() }}&text={{ urlencode('Lihat ' . $product->nama_tryout . ' Produk dari ' . config('app.name')) }}"
                              target="_blank" class="share-it share-tw">
                              <i class="mdi mdi-twitter"></i>
-                             <span>Twitter</span>
+                             <span>Twitter / X</span>
                          </a>
                      </div>
                      @if (@$product->category->status === 'Berbayar')
@@ -150,7 +150,7 @@
                          @endforeach
                      </ul>
                  @endif
-                 {!! $product->keterangan !!}
+                 Deskripsi : {!! $product->keterangan !!}
              </div><!--end row-->
 
              @if ($recommendProducts->isNotEmpty())

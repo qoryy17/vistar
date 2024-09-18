@@ -2,7 +2,7 @@
 @section('title', $title)
 @section('content')
     <!-- Hero Start -->
-    <section class="bg-half-170 border-bottom d-table w-100">
+    <section class="bg-half-100 d-table w-100">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-7 col-md-7 wow animate__animated animate__fadeInLeft" data-wow-delay=".1s">
@@ -41,7 +41,7 @@
                     data-wow-delay=".1s">
                     <div class="position-relative">
                         <img width="400" src="{{ url('resources/images/model1.png') }}"
-                            class="rounded img-fluid mx-auto d-block" alt="">
+                            class="rounded img-fluid mx-auto d-block" alt="model" loading="lazy">
                         {{-- <div class="play-icon">
                             <a href="#!" data-type="youtube" data-id="yba7hPeTSjk" class="play-btn lightbox border-0">
                                 <i class="mdi mdi-play text-primary rounded-circle shadow"></i>
@@ -84,12 +84,12 @@
                                             </span>
                                         </div>
                                     @endif
-                                    <h3 class="py-2 px-4 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">
-                                        {{ $category['title'] }}
+                                    <h3
+                                        class="py-2 px-4 d-inline-block bg-soft-{{ $category['is_popular'] ? 'warning' : 'primary' }} h6 mb-0 text-{{ $category['is_popular'] ? 'warning' : 'primary' }} rounded-lg">
+                                        Kategori : {{ $category['title'] }}
                                     </h3>
                                     <p class="fs-3 fw-bold mb-0 mt-3">
-                                        <sup><small>Mulai dari</small></sup>
-                                        <span class="text-nowrap">Rp. {{ number_format($category['price'], 0) }}</span>
+                                        <span class="text-nowrap">Paket Tryout {{ $category['title'] }}</span>
                                     </p>
                                     <p class="text-muted">Sekali Beli</p>
                                     <p class="text-muted">Fitur yang anda dapatkan dalam paket ini</p>
@@ -108,8 +108,8 @@
                                     <div class="mt-4">
                                         <div class="d-grid">
                                             <a href="{{ route('mainweb.product', ['category_id' => $category['id']]) }}"
-                                                class="btn btn-pills btn-primary">
-                                                Beli Sekarang
+                                                class="btn btn-pills {{ $category['is_popular'] ? 'btn-warning' : 'btn-primary' }}">
+                                                Lihat Produk Tryout <i class="mdi mdi-arrow-right"></i>
                                             </a>
                                         </div>
                                     </div>
