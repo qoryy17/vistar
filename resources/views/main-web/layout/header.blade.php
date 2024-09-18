@@ -41,13 +41,13 @@
     <meta name="theme-color" content="{{ $themeColor }}" />
 
     <link rel="icon" type="image shortcut" href="{{ asset('favicon.ico') }}" />
-    <link rel="icon" type="image/png" sizes="16x16"
+    <link rel="icon" type="image/png shortcut" sizes="16x16"
         href="{{ asset('resources/images/icons/favicon-16x16.png') }}" />
-    <link rel="icon" type="image/png" sizes="32x32"
+    <link rel="icon" type="image/png shortcut" sizes="32x32"
         href="{{ asset('resources/images/icons/favicon-32x32.png') }}" />
-    <link rel="icon" type="image/png" sizes="96x96"
+    <link rel="icon" type="image/png shortcut" sizes="96x96"
         href="{{ asset('resources/images/icons/favicon-96x96.png') }}" />
-    <link rel="icon" type="image/png" sizes="192x192"
+    <link rel="icon" type="image/png shortcut" sizes="192x192"
         href="{{ asset('resources/images/icons/icon-192x192.png') }}" />
 
     <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('resources/images/icons/apple-icon-57x57.png') }}" />
