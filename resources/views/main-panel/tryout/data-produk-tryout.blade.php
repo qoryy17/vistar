@@ -41,13 +41,12 @@
                                     <table class="table table-bordered border-bottom" id="example1">
                                         <thead>
                                             <tr>
-                                                <td>No</td>
-                                                <th>Judul Produk Tryout</th>
-                                                <th>Kategori</th>
-                                                <th>Harga</th>
-                                                <th>Created at</th>
-                                                <th>Updated at</th>
-                                                <td>Kelola</td>
+                                                <td id="no">No</td>
+                                                <th id="name">Judul Produk Tryout</th>
+                                                <th id="category">Kategori</th>
+                                                <th id="price">Harga</th>
+                                                <th id="created_at">Dibuat Pada</th>
+                                                <td id="actions">Kelola</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -74,10 +73,7 @@
                                                         {{ $row->harga_promo != null ? Number::currency($row->harga_promo, in: 'IDR') : 'IDR ' . 0 }}
                                                     </td>
                                                     <td>
-                                                        {{ $row->created_at }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $row->updated_at }}
+                                                        {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i') : '-' }}
                                                     </td>
                                                     <td>
                                                         <a href="{{ route('tryouts.soal', ['id' => Crypt::encrypt($row->kode_soal)]) }}"
@@ -91,9 +87,9 @@
                                                                         type: "info",
                                                                         showCancelButton: true,
                                                                         closeOnConfirm: false,
-                                                                        showLoaderOnConfirm: true }, function () 
-                                                                        { 
-                                                                        setTimeout(function(){  
+                                                                        showLoaderOnConfirm: true }, function ()
+                                                                        {
+                                                                        setTimeout(function(){
                                                                            document.getElementById("duplikasi-form{{ $no }}").submit();
                                                                         }, 2000); });'>
                                                             <i class="fa fa-copy"></i>
@@ -114,9 +110,9 @@
                                                                         type: "info",
                                                                         showCancelButton: true,
                                                                         closeOnConfirm: false,
-                                                                        showLoaderOnConfirm: true }, function () 
-                                                                        { 
-                                                                        setTimeout(function(){  
+                                                                        showLoaderOnConfirm: true }, function ()
+                                                                        {
+                                                                        setTimeout(function(){
                                                                             document.getElementById("delete-form{{ $no }}").submit();
                                                                         }, 2000); });'
                                                             class="btn btn-sm btn-danger">

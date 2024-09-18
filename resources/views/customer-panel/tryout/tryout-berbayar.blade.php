@@ -174,11 +174,11 @@
                                                                 <tr>
                                                                     <th id="table-head-start_time">Waktu Mulai</th>
                                                                     <td>
-                                                                        {{ \Carbon\Carbon::parse($row->waktu_mulai)->format('d/m/Y H:i:s') }}
+                                                                        {{ \Carbon\Carbon::parse($row->waktu_mulai)->format('d/m/Y H:i') }}
                                                                     </td>
                                                                     <th id="table-head-end_time">Selesai</th>
                                                                     <td>
-                                                                        {{ \Carbon\Carbon::parse($row->waktu_berakhir)->format('d/m/Y H:i:s') }}
+                                                                        {{ \Carbon\Carbon::parse($row->waktu_berakhir)->format('d/m/Y H:i') }}
                                                                     </td>
                                                                 </tr>
                                                                 <tr>

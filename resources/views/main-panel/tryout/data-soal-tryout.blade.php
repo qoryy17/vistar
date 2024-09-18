@@ -44,10 +44,12 @@
                                     <table class="table table-bordered border-bottom" id="example1">
                                         <thead>
                                             <tr>
-                                                <td>No</td>
-                                                <td width="70%">Soal Pertanyaan</td>
-                                                <td width="10%" class="text-center">Klasifikasi</td>
-                                                <th width="20%" class="text-center">Gambar</th>
+                                                <th id="no">No</th>
+                                                <th id="question">Soal Pertanyaan</th>
+                                                <th id="classification" style='width: 10%;' class="text-center">
+                                                    Klasifikasi
+                                                </th>
+                                                <th id="image" style='width: 20%;' class="text-center">Gambar</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -61,8 +63,10 @@
                                                         <p style="text-align: justify; margin: 0px; padding: 0px;">
                                                             {!! $row->soal !!}
                                                             <small>
-                                                                Created at : {{ $row->created_at }} | Updated at :
-                                                                {{ $row->updated_at }}
+                                                                Dibuat Pada :
+                                                                {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i') : '-' }}
+                                                                | Diperbarui Pada :
+                                                                {{ $row->updated_at ? \Carbon\Carbon::parse($row->updated_at)->format('d/m/Y H:i') : '-' }}
                                                             </small>
                                                         </p>
                                                         <div>
