@@ -130,7 +130,7 @@
                          $no++;
                      @endphp
                  @endforeach
-                 <div class="mt-5">
+                 <div class="mt-5 table-responsive">
                      {{ $products->links() }}
                  </div>
              </div><!--end row-->

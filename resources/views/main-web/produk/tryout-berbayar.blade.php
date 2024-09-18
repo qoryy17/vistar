@@ -162,7 +162,7 @@
                              </div>
                          </div><!--end col-->
                      @endforeach
-                     <div class="mt-5">
+                     <div class="mt-5 table-responsive">
                          {{ $products->links() }}
                      </div>
                  @endif
