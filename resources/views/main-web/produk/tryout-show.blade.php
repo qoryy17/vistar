@@ -46,7 +46,7 @@
 
              <div class="row">
                  <div class="col-lg-4">
-                     <img class="img-fluid" alt="Thumbnail {{ $product->nama_tryout }}"
+                     <img class="img-fluid mb-2" alt="Thumbnail {{ $product->nama_tryout }}"
                          src={{ asset('storage/tryout/' . $product->thumbnail) }} loading="lazy" />
                  </div>
                  <div class="col-lg-8">
@@ -78,17 +78,17 @@
                          <a href="https://web.facebook.com/share_channel/?link={{ url()->current() }}&source_surface=external_reshare&display&hashtag"
                              target="_blank" class="share-it share-fb">
                              <i class="mdi mdi-facebook"></i>
-                             <span>Facebook</span>
+                             <span class="fw-bold">Facebook</span>
                          </a>
                          <a href="https://api.whatsapp.com/send/?text={{ urlencode('Lihat ' . $product->nama_tryout . ' Produk dari ' . config('app.name') . ' disini ' . url()->current()) }}&type=custom_url&app_absent=0"
                              target="_blank" class="share-it share-wa">
                              <i class="mdi mdi-whatsapp"></i>
-                             <span>Whatsapp</span>
+                             <span class="fw-bold">Whatsapp</span>
                          </a>
                          <a href="https://x.com/intent/tweet?url={{ url()->current() }}&text={{ urlencode('Lihat ' . $product->nama_tryout . ' Produk dari ' . config('app.name')) }}"
                              target="_blank" class="share-it share-tw">
                              <i class="mdi mdi-twitter"></i>
-                             <span>Twitter / X</span>
+                             <span class="fw-bold">X</span>
                          </a>
                      </div>
                      @if (@$product->category->status === 'Berbayar')
