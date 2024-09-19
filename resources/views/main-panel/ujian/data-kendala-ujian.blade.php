@@ -29,24 +29,26 @@
 
                         <div class="card custom-card">
                             <div class="card-body">
-                                <form method="GET">
-                                    <div class="d-flex gap-2 mb-3 align-items-center justify-content-center">
-                                        <label class="fw-bold mb-0" for="status">Status</label>
-                                        <select id="status" name="status" class="form-control">
-                                            <option value="">-- Semua --</option>
-                                            @foreach ($statusList as $statusKey => $statusValue)
-                                                <option value="{{ $statusKey }}"
-                                                    {{ $status === $statusKey ? 'selected' : '' }}>
-                                                    {{ $statusValue }}</option>
-                                            @endforeach
-                                        </select>
-                                        <button type="submit"
-                                            class="btn bg-info d-flex gap-2 align-items-center justify-content-center">
-                                            <i class="fe fe-search"></i>
-                                            <span>Filter</span>
-                                        </button>
-                                    </div>
-                                </form>
+                                <div class="p-3">
+                                    <form method="GET">
+                                        <div class="d-flex gap-2 mb-3 align-items-center justify-content-center">
+                                            <label class="fw-bold mb-0" for="status">Status</label>
+                                            <select id="status" name="status" class="form-control">
+                                                <option value="">-- Semua --</option>
+                                                @foreach ($statusList as $statusKey => $statusValue)
+                                                    <option value="{{ $statusKey }}"
+                                                        {{ $status === $statusKey ? 'selected' : '' }}>
+                                                        {{ $statusValue }}</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="submit"
+                                                class="btn bg-primary d-flex gap-2 align-items-center justify-content-center">
+                                                <i class="fe fe-search"></i>
+                                                <span>Filter</span>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                                 <div class="table-responsive">
                                     <table class="table table-bordered border-bottom" id="example1">
                                         <thead>
