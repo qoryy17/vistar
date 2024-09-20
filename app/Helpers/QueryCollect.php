@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\OrderTryout;
+use App\Models\ProdukTryout;
 use App\Models\Ujian;
 use Illuminate\Support\Facades\DB;
 
@@ -99,5 +100,30 @@ class QueryCollect
         }
 
         return $query;
+    }
+
+    public static function examProducts()
+    {
+        return DB::table('order_tryout')->select(
+            'order_tryout.id',
+            'order_tryout.produk_tryout_id',
+            'order_tryout.status_order',
+            'order_tryout.khusus',
+            'order_tryout.created_at',
+            'order_tryout.updated_at',
+            'produk_tryout.id as idProduk',
+            'produk_tryout.nama_tryout'
+        )->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
+            ->where('order_tryout.status_order', 'paid')->where('order_tryout.khusus', '1')
+            ->groupBy(
+                'order_tryout.id',
+                'order_tryout.produk_tryout_id',
+                'order_tryout.status_order',
+                'order_tryout.khusus',
+                'order_tryout.created_at',
+                'order_tryout.updated_at',
+                'produk_tryout.id',
+                'produk_tryout.nama_tryout'
+            )->orderBy('order_tryout.updated_at', 'desc')->get();
     }
 }

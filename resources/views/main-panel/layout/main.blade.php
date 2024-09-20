@@ -237,6 +237,9 @@
                                 <li class="nav-sub-item"><a class="nav-sub-link"
                                         href="{{ route('report.exams') }}">Laporan Kendala</a>
                                 </li>
+                                <li class="nav-sub-item"><a class="nav-sub-link"
+                                        href="{{ route('exam-special.products') }}">Partisipan Ujian</a>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item">

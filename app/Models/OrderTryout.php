@@ -19,9 +19,11 @@ class OrderTryout extends Model
         'id',
         'faktur_id',
         'customer_id',
+        'nama',
         'produk_tryout_id',
         'payment_id',
         'status_order',
+        'khusus'
     ];
 
     public $incrementing = false;

@@ -80,7 +80,7 @@ return new class extends Migration
 
         Schema::create('order_tryout', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(Str::uuid());
-            $table->string('faktur_id', 12);
+            $table->string('faktur_id', 12)->nullable();
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('produk_tryout_id');
             $table->uuid('payment_id')->nullable();

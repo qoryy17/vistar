@@ -25,6 +25,7 @@ use App\Http\Controllers\Landing\Autentifikasi;
 use App\Http\Middleware\Customer\LoggedCustomer;
 use App\Http\Controllers\Exam\ReportExamController;
 use App\Http\Controllers\Payment\TransactionController;
+use App\Http\Controllers\Exam\ExamParticipantController;
 
 // Routing untuk autentifikasi menggunakan Google OAuth
 Route::controller(GoogleOauth::class)->group(function () {
@@ -195,6 +196,7 @@ Route::middleware(PanelRouting::class)->group(function () {
     });
 });
 
+// Routing untuk main panel klasifikasi soal
 Route::middleware(PanelRouting::class)->group(function () {
     Route::controller(Klasifikasis::class)->group(function () {
         Route::get('/klasifikasi-soal', 'index')->name('klasifikasi.index');
@@ -206,7 +208,7 @@ Route::middleware(PanelRouting::class)->group(function () {
     });
 });
 
-// Routing untuk main panel testimoni
+// Routing untuk main panel referral
 Route::middleware(PanelRouting::class)->group(function () {
     Route::controller(Referral::class)->group(function () {
         Route::get('/referral', 'index')->name('referral.main');
@@ -218,8 +220,20 @@ Route::middleware(PanelRouting::class)->group(function () {
 Route::middleware(PanelRouting::class)->group(function () {
     Route::controller(Testimonis::class)->group(function () {
         Route::get('/testimoni', 'index')->name('testimoni.main');
-        Route::get('publish-testimoni/{id}/{publish}', 'publishTestimoni')->name('testimoni.publish');
+        Route::get('/publish-testimoni/{id}/{publish}', 'publishTestimoni')->name('testimoni.publish');
         Route::delete('/hapus-testimoni', 'hapusTestimoni')->name('testimoni.hapus');
+    });
+});
+
+// Routing untuk main panel ujian untuk customer
+Route::middleware(PanelRouting::class)->group(function () {
+    Route::controller(ExamParticipantController::class)->group(function () {
+        Route::get('/exam-special/products', 'examProducts')->name('exam-special.products');
+        Route::get('/exam-special/participants/{id}', 'examParticipant')->name('exam-special.participants');
+        Route::get('/exam-special/participants/detail/{id}', 'examParticipantDetail')->name('exam-special.participants-detail');
+        Route::get('/exam-special/form/{param}/{id}', 'formExamSpecial')->name('exam-special.form');
+        Route::post('/exam-special/save', 'saveExamSpecial')->name('exam-special.save');
+        Route::delete('/exam-special/delete', 'deleteExamSpecial')->name('exam-special.delete');
     });
 });
 

@@ -89,4 +89,16 @@ $(function () {
         searchInputPlaceholder: "Search",
         width: "100%",
     });
+
+    $(".selectProduct").select2({
+        placeholder: "Pilih Produk Tryout",
+        searchInputPlaceholder: "Search",
+        width: "100%",
+    });
+    
+    $(".selectCustomer").select2({
+        placeholder: "Pilih Customer",
+        searchInputPlaceholder: "Search",
+        width: "100%",
+    });
 });
