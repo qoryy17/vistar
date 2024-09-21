@@ -377,7 +377,6 @@
                             <form action="{{ route('ujian.simpan-testimoni') }}" method="POST">
                                 @csrf
                                 @method('POST')
-
                                 <div class="modal-header">
                                     <h6 class="modal-title">
                                         <i class="fa fa-testimoni"></i>
@@ -386,9 +385,7 @@
                                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button">
                                     </button>
                                 </div>
-
                                 <div class="modal-body">
-
                                     <div class="form-group">
                                         <input type="hidden" class="form-control" required name="exam_result_id"
                                             value="" readonly />
@@ -418,13 +415,13 @@
                                         @enderror
                                     </div>
                                 </div>
-
                                 <div class="modal-footer">
-                                    <button class="btn btn-sm ripple btn-default btn-web" type="submit">
+                                    <button class="btn btn-md btn-block btn-default btn-web" type="submit">
                                         <i class="fa fa-save"></i>
                                         Simpan
                                     </button>
-                                    <button class="btn btn-sm ripple btn-danger" data-bs-dismiss="modal" type="button">
+                                    <button class="btn btn-md btn-block btn-danger" data-bs-dismiss="modal"
+                                        type="button">
                                         <i class="fa fa-times"></i>
                                         Tutup
                                     </button>
