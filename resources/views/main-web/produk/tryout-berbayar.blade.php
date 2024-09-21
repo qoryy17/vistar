@@ -6,7 +6,7 @@
              <div class="row justify-content-center">
                  <div class="col-12 text-center">
                      <div class="section-title mb-4 pb-2">
-                         <h4 class="title mb-4">Bidang Kompetensi Pilih Paket Ujian</h4>
+                         <h1 class="title mb-4">{{ $title }}</h1>
                          <p class="text-muted para-desc mb-0 mx-auto">
                              Temukan paket ujian tryout yang sempurna untuk Anda!
                              Dengan berbagai pilihan paket yang dirancang sesuai kebutuhan,
@@ -107,13 +107,16 @@
                                      <a href="{{ route('mainweb.product-show', ['id' => $row->id]) }}"
                                          class="d-inline-block">
                                          <img class="img-fluid mb-3" src="{{ asset('storage/tryout/' . $row->thumbnail) }}"
-                                             alt="Thubmnail {{ $row->nama_tryout }}" loading="lazy" />
+                                             alt="Thubmnail {{ $row->nama_tryout }}"
+                                             title="Thubmnail {{ $row->nama_tryout }}" loading="lazy" />
                                      </a>
-                                     <a href="{{ route('mainweb.product-show', ['id' => $row->id]) }}"
-                                         class="text-center py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">
-                                         {{ $row->nama_tryout }}
-                                     </a>
-                                     <h3 class="fw-bold mb-0 mt-3">Rp. {{ number_format($row->harga, 0) }}</h3>
+                                     <h2>
+                                         <a href="{{ route('mainweb.product-show', ['id' => $row->id]) }}"
+                                             class="text-center py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">
+                                             {{ $row->nama_tryout }}
+                                         </a>
+                                     </h2>
+                                     <p class="fs-2 fw-bold mb-0 mt-3">Rp. {{ number_format($row->harga, 0) }}</p>
                                      @if ($row->harga_promo != null && $row->harga_promo != 0)
                                          <p class="text-muted">Promo Rp. {{ number_format($row->harga_promo, 0) }}
                                          </p>
@@ -137,12 +140,6 @@
                                              </span>
                                              Akses Bagikan Referal
                                          </li>  --}}
-                                         <li class="h6 text-muted mb-0">
-                                             <span class="icon h5 me-2">
-                                                 <i class="uil uil-check-circle align-middle"></i>
-                                             </span>
-                                             Masa Aktif {{ $row->masa_aktif }} Hari
-                                         </li>
                                      </ul>
 
                                      <div class="mt-4">

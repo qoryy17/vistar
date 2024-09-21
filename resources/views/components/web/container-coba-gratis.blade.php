@@ -38,9 +38,10 @@
                         <div class="col-12 mt-4 mt-lg-0 pt-2 pt-lg-0">
                             <div class="card counter-box border-0 bg-light bg-gradient shadow text-center rounded">
                                 <div class="card-body py-5">
-                                    <h2 class="mb-0"><span class="counter-value" data-target="357">357</span>+
-                                    </h2>
-                                    <h5 class="counter-head mb-0">Peserta Gratis</h5>
+                                    <h3 class="fs-2 mb-0">
+                                        <span class="counter-value" data-target="357">0</span>+
+                                        <p class="fs-5 counter-head mb-0">Peserta Gratis</p>
+                                    </h3>
                                 </div>
                             </div>
                         </div><!--end col-->
@@ -48,9 +49,10 @@
                         <div class="col-12 mt-4 pt-2">
                             <div class="card counter-box border-0 bg-primary bg-gradient shadow text-center rounded">
                                 <div class="card-body py-5">
-                                    <h2 class="text-white mb-0"><span class="counter-value" data-target="20">20</span>+
-                                    </h2>
-                                    <h5 class="counter-head mb-0 text-white">Tryout CPNS Gratis</h5>
+                                    <h3 class="fs-2 text-white mb-0">
+                                        <span class="counter-value" data-target="195">0</span>+
+                                        <p class="fs-5 counter-head mb-0 text-white">Tryout CPNS Gratis</p>
+                                    </h3>
                                 </div>
                             </div>
                         </div><!--end col-->
@@ -62,9 +64,10 @@
                         <div class="col-12 mt-4 pt-2">
                             <div class="card counter-box border-0 bg-warning bg-gradient shadow text-center rounded">
                                 <div class="card-body py-5">
-                                    <h2 class="text-white mb-0"><span class="counter-value" data-target="10">10</span>+
-                                    </h2>
-                                    <h5 class="counter-head mb-0 text-white">Tryout PPPK Gratis</h5>
+                                    <h3 class="fs-2 text-white mb-0">
+                                        <span class="counter-value" data-target="64">0</span>+
+                                        <p class="fs-5 counter-head mb-0 text-white">Tryout PPPK Gratis</p>
+                                    </h3>
                                 </div>
                             </div>
                         </div><!--end col-->
@@ -72,9 +75,10 @@
                         <div class="col-12 mt-4 pt-2">
                             <div class="card counter-box border-0 bg-light bg-gradient shadow text-center rounded">
                                 <div class="card-body py-5">
-                                    <h2 class="mb-0"><span class="counter-value" data-target="15">15</span>+
-                                    </h2>
-                                    <h5 class="counter-head mb-0">Tryout Kedinasan Gratis</h5>
+                                    <h3 class="fs-2 mb-0">
+                                        <span class="counter-value" data-target="98">0</span>+
+                                        <p class="fs-5 counter-head mb-0">Tryout Kedinasan Gratis</p>
+                                    </h3>
                                 </div>
                             </div>
                         </div><!--end col-->

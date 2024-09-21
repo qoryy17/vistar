@@ -7,9 +7,11 @@
               <div class="row justify-content-center">
                   <div class="col-12 text-center">
                       <div class="section-title mb-4 pb-2">
-                          <h4 class="title mb-4">Keranjang Pesanan Anda</h4>
-                          <p class="text-muted para-desc mb-0 mx-auto">Berikut keranjang pesanan produk tryout, anda dapat
-                              melakukan pembayaran dan juga menghapus item produk keranjang</p>
+                          <h1 class="fs-3 title mb-4">Keranjang Pesanan Anda</h1>
+                          <p class="text-muted para-desc mb-0 mx-auto">
+                              Berikut keranjang pesanan produk, anda dapat melakukan pembayaran dan juga menghapus
+                              item produk keranjang
+                          </p>
                       </div>
                   </div><!--end col-->
               </div><!--end row-->
@@ -40,7 +42,7 @@
                               <thead>
                                   <tr>
                                       <th class="border-bottom text-start py-3" style="min-width: 10px;">No</th>
-                                      <th class="border-bottom text-start py-3" style="min-width: 300px;">Paket Tryout</th>
+                                      <th class="border-bottom text-start py-3" style="min-width: 300px;">Produk</th>
                                       <th class="border-bottom text-center py-3" style="min-width: 150px;">Harga</th>
                                       <th class="border-bottom text-center py-3" style="min-width: 150px;">Promo</th>
                                       <th class="border-bottom text-center py-3" style="min-width: 150px;">Aksi</th>
@@ -58,8 +60,8 @@
                                                   {{ $no }}
                                               </td>
                                               <td>
-                                                  <div class="d-flex align-items-center">
-                                                      <h6 class="mb-0 ms-3">{{ $row->nama_tryout }}</h6>
+                                                  <div class="d-flex align-items-center mb-0 ms-3 fw-bold">
+                                                      {{ $row->nama_tryout }}
                                                   </div>
                                               </td>
                                               <td class="text-center">Rp. {{ number_format($row->harga, 0) }}</td>
@@ -105,10 +107,10 @@
 
               <div class="row mt-6">
                   <div class="col-lg-12 col-md-12 mt-4 pt-2">
-                      <h5> Rekomendasi Produk Tryout Pilihan</h5>
+                      <h2 class="fs-5">Rekomendasi Produk Pilihan</h2>
                       <p class="text-muted">
-                          Jangan Lewatkan Kesempatan Ini! Pilih Paket Tryout yang Sesuai dengan Target Anda dan Bersiaplah
-                          untuk Sukses di Ujian!
+                          Jangan Lewatkan Kesempatan Ini! Pilih Produk yang Sesuai dengan Target Anda dan
+                          Bersiaplah untuk Sukses!
                       </p>
                   </div>
                   @php
@@ -120,96 +122,80 @@
                               <div class="card-body p-0">
                                   <div class="d-inline-block">
                                       <img class="img-fluid mb-3" src="{{ asset('storage/tryout/' . $row->thumbnail) }}"
-                                          alt="thubmnail" loading="lazy">
+                                          alt="Thubmnail {{ $row->nama_tryout }}"
+                                          title="Thubmnail {{ $row->nama_tryout }}" loading="lazy" />
                                   </div>
-                                  <span
-                                      class="text-center py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-md">{{ $row->nama_tryout }}</span>
-                                  <h3 class="fw-bold mb-0 mt-3">
+                                  <h3
+                                      class="text-center py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-md">
+                                      {{ $row->nama_tryout }}
+                                  </h3>
+                                  <p class="fs-4 fw-bold mb-0 mt-3">
                                       Rp. {{ number_format($row->harga, 0) }}</h2>
                                       @if ($row->harga_promo != null and $row->harga_promo != 0)
                                           <p class="text-muted">Promo Rp. {{ number_format($row->harga_promo, 0) }}
                                           </p>
                                       @endif
-                                      <div class="accordion" id="buyingquestion">
-                                          <div class="accordion-item rounded">
-                                              <h2 class="accordion-header" id="headingOne{{ $no }}">
-                                                  <button class="accordion-button border-0 bg-light" type="button"
-                                                      data-bs-toggle="collapse"
-                                                      data-bs-target="#collapseOne{{ $no }}" aria-expanded="true"
-                                                      aria-controls="collapseOne{{ $no }}">
-                                                      Fitur dalam paket ini
-                                                  </button>
-                                              </h2>
-                                              <div id="collapseOne{{ $no }}"
-                                                  class="accordion-collapse border-0 collapse "
-                                                  aria-labelledby="headingOne{{ $no }}"
-                                                  data-bs-parent="#buyingquestion">
-                                                  <div class="accordion-body text-muted">
-                                                      <ul class="list-unstyled pt-3 border-top">
-                                                          <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                                                  <i
-                                                                      class="uil uil-check-circle align-middle"></i></span>Ujian
-                                                              Tidak Terbatas
+                                  <div class="accordion" id="buyingquestion">
+                                      <div class="accordion-item rounded">
+                                          <p class="accordion-header" id="headingOne{{ $no }}">
+                                              <button class="accordion-button border-0 bg-light" type="button"
+                                                  data-bs-toggle="collapse"
+                                                  data-bs-target="#collapseOne{{ $no }}" aria-expanded="true"
+                                                  aria-controls="collapseOne{{ $no }}">
+                                                  Fitur dalam paket ini
+                                              </button>
+                                          </p>
+                                          <div id="collapseOne{{ $no }}"
+                                              class="accordion-collapse border-0 collapse "
+                                              aria-labelledby="headingOne{{ $no }}"
+                                              data-bs-parent="#buyingquestion">
+                                              <div class="accordion-body text-muted">
+                                                  <ul class="list-unstyled pt-3 border-top">
+                                                      @if ($row->nilai_keluar == 'Y')
+                                                          <li class="h6 text-muted mb-0">
+                                                              <span class="icon h5 me-2">
+                                                                  <i class="uil uil-check-circle align-middle"></i>
+                                                              </span>
+                                                              Hasil Ujian
                                                           </li>
-                                                          @if ($row->nilai_keluar == 'Y')
-                                                              <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                                                      <i
-                                                                          class="uil uil-check-circle align-middle"></i></span>Hasil
-                                                                  Ujian
-                                                              </li>
-                                                          @endif
+                                                      @endif
 
-                                                          @if ($row->grafik_evaluasi == 'Y')
-                                                              <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                                                      <i
-                                                                          class="uil uil-check-circle align-middle"></i></span>Grafik
-                                                                  Hasil
-                                                                  Ujian
-                                                              </li>
-                                                          @endif
-
-                                                          @if ($row->review_pembahasan == 'Y')
-                                                              <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                                                      <i
-                                                                          class="uil uil-check-circle align-middle"></i></span>Review
-                                                                  Pembahasan
-                                                                  Soal
-                                                              </li>
-                                                          @endif
-
-                                                          {{-- <li class="h6 text-muted mb-0"><span class="icon h5 me-2"><i
-                                                 class="uil uil-check-circle align-middle"></i></span>Akses Bagikan Referal
-                                     </li> --}}
-                                                          <li class="h6 text-muted mb-0"><span class="icon h5 me-2">
-                                                                  <i
-                                                                      class="uil uil-check-circle align-middle"></i></span>Masa
-                                                              Aktif
-                                                              {{ $row->masa_aktif }} Hari
+                                                      @if ($row->grafik_evaluasi == 'Y')
+                                                          <li class="h6 text-muted mb-0">
+                                                              <span class="icon h5 me-2">
+                                                                  <i class="uil uil-check-circle align-middle"></i>
+                                                              </span>
+                                                              Grafik Hasil Ujian
                                                           </li>
-                                                      </ul>
-                                                  </div>
+                                                      @endif
+
+                                                      @if ($row->review_pembahasan == 'Y')
+                                                          <li class="h6 text-muted mb-0">
+                                                              <span class="icon h5 me-2">
+                                                                  <i class="uil uil-check-circle align-middle"></i>
+                                                              </span>
+                                                              Review Pembahasan Soal
+                                                          </li>
+                                                      @endif
+                                                  </ul>
                                               </div>
                                           </div>
+                                      </div>
 
+                                  </div>
+                                  <div class="mt-4">
+                                      <div class="d-grid">
+                                          <form
+                                              action="{{ route('mainweb.pesan-tryout-berbayar', ['idProdukTryout' => Crypt::encrypt($row->id)]) }}"
+                                              method="POST">
+                                              @csrf
+                                              @method('POST')
+                                              <button type="submit" class="btn btn-pills btn-primary">
+                                                  Beli Sekarang
+                                              </button>
+                                          </form>
                                       </div>
-                                      <div class="mt-4">
-                                          <div class="d-grid">
-                                              <a onclick="submitForm{{ $no }}()" href="javascript:void(0)"
-                                                  class="btn btn-pills btn-primary">Beli
-                                                  Sekarang</a>
-                                              <form id="keranjangForm{{ $no }}"
-                                                  action="{{ route('mainweb.pesan-tryout-berbayar', ['idProdukTryout' => Crypt::encrypt($row->id)]) }}"
-                                                  method="POST">
-                                                  @csrf
-                                                  @method('POST')
-                                              </form>
-                                              <script>
-                                                  function submitForm{{ $no }}() {
-                                                      document.getElementById('keranjangForm{{ $no }}').submit();
-                                                  }
-                                              </script>
-                                          </div>
-                                      </div>
+                                  </div>
                               </div>
                           </div>
                       </div><!--end col-->

@@ -8,12 +8,12 @@
                 <div class="col-lg-9">
                     <div class="card shadow rounded border-0">
                         <div class="card-body">
-                            <h2 class="text-primary fw-bold text-center mb-3">
+                            <h1 class="fs-2 text-primary fw-bold text-center mb-3">
                                 Syarat & Ketentuan
                             </h2>
 
                             <div>
-                                <h5>1. Ketentuan</h5>
+                                <h2 class="fs-5">1. Ketentuan</h2>
                                 <p>
                                     Dengan mengakses situs web <a title="{{ $web->nama_bisnis }}"
                                         href="{{ route('mainweb.index') }}"
@@ -25,7 +25,7 @@
                                     dilindungi oleh undang-undang hak cipta dan merek dagang yang berlaku.
                                 </p>
 
-                                <h5>2. Gunakan Lisensi</h5>
+                                <h2 class="fs-5">2. Gunakan Lisensi</h2>
                                 <ol>
                                     <li>
                                         Izin diberikan untuk mengunduh sementara satu salinan materi (informasi atau
@@ -53,7 +53,7 @@
                                     </li>
                                 </ol>
 
-                                <h5>3. Penafian</h5>
+                                <h2 class="fs-5">3. Penafian</h2>
                                 <ol>
                                     <li>
                                         Bahan-bahan di situs web {{ $web->nama_bisnis }} disediakan atas dasar 'apa
@@ -72,7 +72,7 @@
                                     </li>
                                 </ol>
 
-                                <h5>4. Keterbatasan</h5>
+                                <h2 class="fs-5">4. Keterbatasan</h2>
                                 <p>Dalam keadaan apa pun, {{ $web->nama_bisnis }} atau pemasoknya tidak bertanggung jawab
                                     atas segala
                                     kerusakan (termasuk, tanpa batasan, kerusakan karena kehilangan data atau laba, atau
@@ -86,7 +86,7 @@
                                     insidental, batasan ini mungkin tidak berlaku untuk Anda.
                                 </p>
 
-                                <h5>5. Akurasi bahan</h5>
+                                <h2 class="fs-5">5. Akurasi bahan</h2>
                                 <p>
                                     Materi yang muncul di situs web {{ $web->nama_bisnis }} dapat mencakup kesalahan
                                     teknis, tipografi atau fotografi. {{ $web->nama_bisnis }} tidak menjamin bahwa semua
@@ -96,7 +96,7 @@
                                     {{ $web->nama_bisnis }} tidak membuat komitmen untuk memperbarui materi.
                                 </p>
 
-                                <h5>6. Tautan</h5>
+                                <h2 class="fs-5">6. Tautan</h2>
                                 <p>{{ $web->nama_bisnis }} belum meninjau semua situs yang terhubung ke situs webnya dan
                                     tidak
                                     bertanggung jawab atas isi dari situs yang terhubung tersebut. Dimasukkannya tautan
@@ -104,7 +104,7 @@
                                     tersebut. Penggunaan
                                     situs web yang ditautkan tersebut merupakan risiko pengguna sendiri.</p>
 
-                                <h5>7. Modifikasi</h5>
+                                <h2 class="fs-5">7. Modifikasi</h2>
                                 <p>
                                     {{ $web->nama_bisnis }} dapat merevisi ketentuan layanan ini untuk situs webnya kapan
                                     saja tanpa
@@ -112,7 +112,7 @@
                                     versi terbaru dari ketentuan layanan ini.
                                 </p>
 
-                                <h5>8. Hukum Yang Mengatur</h5>
+                                <h2 class="fs-5">8. Hukum Yang Mengatur</h2>
                                 <p>
                                     Syarat dan ketentuan ini diatur oleh dan ditafsirkan sesuai dengan hukum Indonesia yang
                                     berlaku dan Anda tidak dapat ditarik kembali tunduk kepada yurisdiksi eksklusif

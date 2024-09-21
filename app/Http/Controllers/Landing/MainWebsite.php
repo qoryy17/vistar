@@ -41,7 +41,6 @@ class MainWebsite extends Controller
                 'price' => 50000,
                 'is_popular' => false,
                 'features' => [
-                    'Ujian Tidak Terbatas',
                     'Hasil Ujian',
                     'Grafik Hasil Ujian',
                     'Review Pembahasan Soal',
@@ -54,7 +53,6 @@ class MainWebsite extends Controller
                 'price' => 50000,
                 'is_popular' => true,
                 'features' => [
-                    'Ujian Tidak Terbatas',
                     'Hasil Ujian',
                     'Grafik Hasil Ujian',
                     'Review Pembahasan Soal',
@@ -66,7 +64,6 @@ class MainWebsite extends Controller
                 'price' => 50000,
                 'is_popular' => false,
                 'features' => [
-                    'Ujian Tidak Terbatas',
                     'Hasil Ujian',
                     'Grafik Hasil Ujian',
                     'Review Pembahasan Soal',
@@ -86,15 +83,40 @@ class MainWebsite extends Controller
 
     public function products(Request $request)
     {
-        $title = 'Produk Paket Tryout';
+        $title = 'Produk ' . config('app.name');
         $searchCategoryId = $request->category_id;
         $searchName = $request->search_name;
-
-        if ($searchCategoryId || $searchName) {
-            $title = 'Cari Produk Paket Tryout';
+        if ($searchName) {
+            $searchName = htmlentities($searchName);
         }
 
         $productStatus = 'Berbayar';
+
+        $productCategory = null;
+        if ($searchCategoryId) {
+            $productCategory = Cache::remember('product_category_main_web:id:' . $searchCategoryId . ',status:' . $productStatus, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus) {
+                return DB::table('kategori_produk')
+                    ->select(
+                        'kategori_produk.id',
+                        'kategori_produk.judul'
+                    )
+                    ->where('kategori_produk.status', $productStatus)
+                    ->where('kategori_produk.id', $searchCategoryId)
+                    ->first();
+            });
+        }
+
+        if ($productCategory || $searchName) {
+            $additionalTitle = [];
+            if ($searchName) {
+                array_push($additionalTitle, '`' . $searchName . '`');
+            }
+            if ($productCategory) {
+                array_push($additionalTitle, 'Kategori `' . $productCategory->judul . '`');
+            }
+            $title = 'Cari ' . implode(' ', $additionalTitle) . ' Produk ' . config('app.name');
+        }
+
         $products = Cache::remember('products_main_web:category_id:' . $searchCategoryId . ',status:' . $productStatus . ',search:' . $searchName, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
             $data = DB::table('produk_tryout')
                 ->select(
@@ -142,7 +164,7 @@ class MainWebsite extends Controller
             count($products), // Total count of items
             $perPage, // Items per page
             $page, // Current page number
-            ['path' => request()->url(), 'query' => request()->query()] // URL and query parameters
+            ['path' => request()->url(), 'query' => request()->query()]// URL and query parameters
         );
 
         $data = [
@@ -300,7 +322,7 @@ class MainWebsite extends Controller
             count($products), // Total count of items
             $perPage, // Items per page
             $page, // Current page number
-            ['path' => request()->url(), 'query' => request()->query()] // URL and query parameters
+            ['path' => request()->url(), 'query' => request()->query()]// URL and query parameters
         );
 
         $data = [
@@ -315,12 +337,19 @@ class MainWebsite extends Controller
 
     public function pesanTryoutBerbayar(Request $request): RedirectResponse
     {
+        $userRole = Auth::user()->role;
+        if ($userRole !== 'Customer') {
+            return redirect()->back()->with('errorMessage', 'Jenis Akun Anda tidak dapat melakukan transaksi !');
+        }
+
         // Check apakah pernah memesan produk yang sama
         $tryout = OrderTryout::where('produk_tryout_id', Crypt::decrypt($request->idProdukTryout))->where('status_order', 'paid')->where('customer_id', Auth::user()->customer_id)->first();
-        $keranjang = KeranjangOrder::where('produk_tryout_id', Crypt::decrypt($request->idProdukTryout))->where('customer_id', Auth::user()->customer_id)->first();
         if ($tryout) {
             return Redirect::route('mainweb.keranjang')->with('errorMessage', 'Tidak dapat memesan produk yang sama sebelumnya !');
-        } elseif ($keranjang) {
+        }
+
+        $keranjang = KeranjangOrder::where('produk_tryout_id', Crypt::decrypt($request->idProdukTryout))->where('customer_id', Auth::user()->customer_id)->first();
+        if ($keranjang) {
             return Redirect::route('mainweb.keranjang')->with('errorMessage', 'Tidak dapat menambahkan produk yang sama pada keranjang pesanan !');
         }
 
@@ -328,12 +357,13 @@ class MainWebsite extends Controller
         $keranjangOrder->id = rand(1, 99) . rand(1, 999);
         $keranjangOrder->produk_tryout_id = Crypt::decrypt($request->idProdukTryout);
         $keranjangOrder->customer_id = Auth::user()->customer_id;
+        $save = $keranjangOrder->save();
 
-        if ($keranjangOrder->save()) {
-            return redirect()->route('mainweb.keranjang');
-        } else {
+        if (!$save) {
             return redirect()->back()->with('errorMessage', 'Produk gagal ditambahkan dikeranjang !');
         }
+
+        return redirect()->route('mainweb.keranjang');
     }
 
     public function keranjangPesanan()
@@ -406,7 +436,7 @@ class MainWebsite extends Controller
     public function profil()
     {
         $data = [
-            'title' => 'Profil Saya',
+            'title' => 'Profil Saya - ' . config('app.name'),
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
         ];
         return view('main-web.profil.profil', $data);
@@ -415,7 +445,7 @@ class MainWebsite extends Controller
     public function kebijakanPrivasi()
     {
         $data = [
-            'title' => 'Kebijakan Privasi',
+            'title' => 'Kebijakan Privasi - ' . config('app.name'),
             'web' => BerandaUI::web(),
         ];
         return view('main-web.tentang.kebijakan-privasi', $data);
@@ -424,7 +454,7 @@ class MainWebsite extends Controller
     public function termOfService()
     {
         $data = [
-            'title' => 'Syarat & Ketentuan',
+            'title' => 'Syarat & Ketentuan - ' . config('app.name'),
             'web' => BerandaUI::web(),
         ];
         return view('main-web.tentang.term-of-service', $data);
@@ -433,7 +463,7 @@ class MainWebsite extends Controller
     public function tentang()
     {
         $data = [
-            'title' => 'Tentang Vistar Indonesia',
+            'title' => 'Tentang - ' . config('app.name'),
             'web' => BerandaUI::web(),
         ];
         return view('main-web.tentang.tentang', $data);
@@ -442,7 +472,7 @@ class MainWebsite extends Controller
     public function kontak()
     {
         $data = [
-            'title' => 'Kontak',
+            'title' => 'Kontak - ' . config('app.name'),
             'web' => BerandaUI::web(),
         ];
         return view('main-web.tentang.kontak', $data);

@@ -8,9 +8,9 @@
                 <div class="col-lg-9">
                     <div class="card shadow rounded border-0">
                         <div class="card-body">
-                            <h2 class="text-primary fw-bold text-center mb-3">
+                            <h1 class="fs-2 text-primary fw-bold text-center mb-3">
                                 Kebijakan Privasi {{ $web->nama_bisnis }}
-                            </h2>
+                            </h1>
                             <p class="text-muted" style="text-align: justify">
                                 Kerahasian data pengguna merupakan hal yang amat penting bagi . Kami memegang teguh komitmen
                                 untuk melindungi dan menghormati privasi pelanggan Kami sebelum, selama dan sesudah
@@ -25,36 +25,46 @@
                                 berikan.
                             </p>
 
-                            <h5 class="card-title">Kebijakan Privasi ini mencakup beberapa hal, yaitu :</h5>
+                            <h2 class="fs-4 card-title">Kebijakan Privasi ini mencakup beberapa hal, yaitu :</h2>
                             <ul class="list-unstyled text-muted">
-                                <li><i data-feather="arrow-right" class="fea icon-sm me-2"></i>
+                                <li>
+                                    <i data-feather="arrow-right" class="fea icon-sm me-2"></i>
                                     Informasi Personal yang berhak Kami kumpulkan
                                 </li>
-                                <li><i data-feather="arrow-right" class="fea icon-sm me-2"></i>
+                                <li>
+                                    <i data-feather="arrow-right" class="fea icon-sm me-2"></i>
                                     Pemanfaatan informasi Personal
                                 </li>
-                                <li><i data-feather="arrow-right" class="fea icon-sm me-2"></i>
+                                <li>
+                                    <i data-feather="arrow-right" class="fea icon-sm me-2"></i>
                                     Publikasi informasi Personal
                                 </li>
-                                <li><i data-feather="arrow-right" class="fea icon-sm me-2"></i>
+                                <li>
+                                    <i data-feather="arrow-right" class="fea icon-sm me-2"></i>
                                     Arsip informasi Personal
                                 </li>
-                                <li><i data-feather="arrow-right" class="fea icon-sm me-2"></i>
+                                <li>
+                                    <i data-feather="arrow-right" class="fea icon-sm me-2"></i>
                                     Hak pengguna
                                 </li>
-                                <li><i data-feather="arrow-right" class="fea icon-sm me-2"></i>
+                                <li>
+                                    <i data-feather="arrow-right" class="fea icon-sm me-2"></i>
                                     Kebijakan cookies
                                 </li>
-                                <li><i data-feather="arrow-right" class="fea icon-sm me-2"></i>
+                                <li>
+                                    <i data-feather="arrow-right" class="fea icon-sm me-2"></i>
                                     Pengakuan dan persetujuan
                                 </li>
-                                <li><i data-feather="arrow-right" class="fea icon-sm me-2"></i>
+                                <li>
+                                    <i data-feather="arrow-right" class="fea icon-sm me-2"></i>
                                     Konten promosi
                                 </li>
-                                <li><i data-feather="arrow-right" class="fea icon-sm me-2"></i>
+                                <li>
+                                    <i data-feather="arrow-right" class="fea icon-sm me-2"></i>
                                     Amandemen kebijakan privasi Kami
                                 </li>
-                                <li><i data-feather="arrow-right" class="fea icon-sm me-2"></i>
+                                <li>
+                                    <i data-feather="arrow-right" class="fea icon-sm me-2"></i>
                                     Kontak informasi dan keluhan
                                 </li>
                             </ul>
@@ -64,7 +74,7 @@
                                 pendekatan dan cara-cara yang digambarkan dalam Kebijakan Privasi ini
                             </p>
 
-                            <h5 class="card-title">A. Informasi Personal yang berhak Kami kumpulkan</h5>
+                            <h3 class="fs-5 card-title">A. Informasi Personal yang berhak Kami kumpulkan</h3>
                             <p class="text-muted" style="text-align: justify">
                                 Kami berhak mengumpulkan informasi Personal seperti :
                             <ol class="text-muted" style="text-align: justify;">
@@ -121,7 +131,7 @@
                             </ol>
                             </p>
 
-                            <h5 class="card-title">B. Pemanfaatan informasi Personal</h5>
+                            <h3 class="fs-5 card-title">B. Pemanfaatan informasi Personal</h3>
                             <p class="text-muted" style="text-align: justify;">
                                 Cara-cara Kami memanfaatkan Informasi Personal adalah sebagai berikut:
                             <ol class="text-muted" style="text-align: justify;">
@@ -191,7 +201,7 @@
                             </ol>
                             </p>
 
-                            <h5 class="card-title">C. Publikasi informasi Personal</h5>
+                            <h3 class="fs-5 card-title">C. Publikasi informasi Personal</h3>
                             <p class="text-muted" style="text-align: justify;">
                                 Kami berhak membagi atau mempublikasi Data Personal bersama anggota kelompok bisnis Kami,
                                 yang melingkupi cabang dan anak perusahaan, serta perusahaan induk utama maupun anak
@@ -242,7 +252,7 @@
                             </ul>
                             </p>
 
-                            <h5 class="card-title">D. Arsip informasi Personal</h5>
+                            <h3 class="fs-5 card-title">D. Arsip informasi Personal</h3>
                             <p class="text-muted" style="text-align: justify;">
                                 Segenap informasi Personal yang Anda serahkan kepada Kami disimpan di server yang aman.
                                 Seluruh transaksi keuangan pada Platform akan dienkripsi. Dengan memberikan Informasi
@@ -274,7 +284,7 @@
                                 ilegal.
                             </p>
 
-                            <h5 class="card-title">E. Hak pengguna</h5>
+                            <h3 class="fs-5 card-title">E. Hak pengguna</h3>
                             <p class="text-muted" style="text-align: justify;">
                                 Anda dapat mengajukan permohonan penghapusan Informasi Personal Anda di Platform ataupun
                                 menarik kembali persetujuan Anda untuk sebagian atau seluruh pengumpulan, pemanfaatan atau
@@ -302,7 +312,7 @@
                                 tersebut. Mohon diperiksa kebijakan-kebijakan tersebut sebelum Anda memberikan informasi apa
                                 pun ke dalam situs-situs tersebut.
                             </p>
-                            <h5 class="card-title">F. Kebijakan Cookies</h5>
+                            <h3 class="fs-5 card-title">F. Kebijakan Cookies</h3>
                             <p class="text-muted" style="text-align: justify;">
                                 Ketika Anda mengakses Platform, Kami berhak menempatkan sejumlah <i>cookies</i> dalam
                                 browser Anda.
@@ -370,7 +380,7 @@
                                 Platform Kami.
                             </p>
 
-                            <h5 class="card-title">G. Pengakuan dan persetujuan</h5>
+                            <h3 class="fs-5 card-title">G. Pengakuan dan persetujuan</h3>
                             <p class="text-muted" style="text-align: justify;">
                                 Dengan disetujuinya Kebijakan Privasi, Anda menyatakan bahwa Anda sudah membaca dan memahami
                                 Kebijakan Privasi ini dan menyetujui seluruh ketentuan yang berlaku di dalamnya. Khususnya,
@@ -387,7 +397,7 @@
                                 pengelolahan Informasi Personal tersebut oleh Kami.
                             </p>
 
-                            <h5 class="card-title">H. Konten promosi</h5>
+                            <h3 class="fs-5 card-title">H. Konten promosi</h3>
                             <p class="text-muted" style="text-align: justify;">
                                 Perubahan apa saja yang Kami terbitkan terhadap Kebijakan Privasi ini di kemudian hari akan
                                 diinformasikan melalui halaman ini dan pada saat diperlukan, atau akan diinformasikan kepada
@@ -396,7 +406,7 @@
                                 Kebijakan Privasi Kami.
                             </p>
 
-                            <h5 class="card-title">I. Amandemen kebijakan privasi Kami</h5>
+                            <h3 class="fs-5 card-title">I. Amandemen kebijakan privasi Kami</h3>
                             <p class="text-muted" style="text-align: justify;">
                                 Perubahan apa saja yang Kami terbitkan terhadap Kebijakan Privasi ini di kemudian hari akan
                                 diinformasikan melalui halaman ini dan pada saat diperlukan, atau akan diinformasikan kepada
@@ -405,7 +415,7 @@
                                 Kebijakan Privasi Kami.
                             </p>
 
-                            <h5 class="card-title">J. Kontak informasi dan keluhan</h5>
+                            <h3 class="fs-5 card-title">J. Kontak informasi dan keluhan</h3>
                             <p class="text-muted" style="text-align: justify;">
                                 Jika Anda memiliki pertanyaan tentang Kebijakan Privasi ini atau Anda ingin mendapatkan
                                 akses dan/atau melakukan koreksi terhadap Informasi Personal Anda, silahkan menghubungi Kami

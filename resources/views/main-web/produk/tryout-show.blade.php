@@ -50,9 +50,9 @@
                          src={{ asset('storage/tryout/' . $product->thumbnail) }} loading="lazy" />
                  </div>
                  <div class="col-lg-8">
-                     <h2 class="text-primary fw-bold">
+                     <h1 class="text-primary fs-2 fw-bold">
                          {{ $product->nama_tryout }}
-                     </h2>
+                     </h1>
                      @if ($product->category)
                          <p> Kategori :
                              <span class="badge bg-warning">
@@ -75,17 +75,20 @@
                      @endif
                      <div class="d-flex flex-row gap-2">
                          <span>Bagikan :</span>
-                         <a href="https://web.facebook.com/share_channel/?link={{ url()->current() }}&source_surface=external_reshare&display&hashtag"
+                         <a title="Bagikan {{ $product->nama_tryout }} ke Facebook"
+                             href="https://web.facebook.com/share_channel/?link={{ url()->current() }}&source_surface=external_reshare&display&hashtag"
                              target="_blank" class="share-it share-fb">
                              <i class="mdi mdi-facebook"></i>
                              <span class="fw-bold">Facebook</span>
                          </a>
-                         <a href="https://api.whatsapp.com/send/?text={{ urlencode('Lihat ' . $product->nama_tryout . ' Produk dari ' . config('app.name') . ' disini ' . url()->current()) }}&type=custom_url&app_absent=0"
+                         <a title="Bagikan {{ $product->nama_tryout }} ke Whatsapp"
+                             href="https://api.whatsapp.com/send/?text={{ urlencode('Lihat ' . $product->nama_tryout . ' Produk dari ' . config('app.name') . ' disini ' . url()->current()) }}&type=custom_url&app_absent=0"
                              target="_blank" class="share-it share-wa">
                              <i class="mdi mdi-whatsapp"></i>
                              <span class="fw-bold">Whatsapp</span>
                          </a>
-                         <a href="https://x.com/intent/tweet?url={{ url()->current() }}&text={{ urlencode('Lihat ' . $product->nama_tryout . ' Produk dari ' . config('app.name')) }}"
+                         <a title="Bagikan {{ $product->nama_tryout }} ke Twitter/X"
+                             href="https://x.com/intent/tweet?url={{ url()->current() }}&text={{ urlencode('Lihat ' . $product->nama_tryout . ' Produk dari ' . config('app.name')) }}"
                              target="_blank" class="share-it share-tw">
                              <i class="mdi mdi-twitter"></i>
                              <span class="fw-bold">X</span>
@@ -150,17 +153,17 @@
                          @endforeach
                      </ul>
                  @endif
-                 Deskripsi : {!! $product->keterangan !!}
+                 {!! $product->keterangan !!}
              </div><!--end row-->
 
              @if ($recommendProducts->isNotEmpty())
-                 <div class="row mt-6">
+                 <br />
+                 <div class="row mt-6 border-top">
                      <div class="col-lg-12 col-md-12 mt-4 pt-2">
-                         <h5>Rekomendasi Produk Tryout Pilihan</h5>
+                         <h2 class="fs-5">Rekomendasi Produk Pilihan</h2>
                          <p class="text-muted">
-                             Jangan Lewatkan Kesempatan Ini! Pilih Paket Tryout yang Sesuai dengan Target Anda dan
-                             Bersiaplah
-                             untuk Sukses di Ujian!
+                             Jangan Lewatkan Kesempatan Ini! Pilih Produk yang Sesuai dengan Target Anda dan
+                             Bersiaplah untuk Sukses!
                          </p>
                      </div>
                      @foreach ($recommendProducts as $row)
@@ -181,30 +184,31 @@
                                  <div class="card-body p-0">
                                      <div class="d-inline-block">
                                          <img class="img-fluid mb-3" src="{{ asset('storage/tryout/' . $row->thumbnail) }}"
-                                             alt="Thubmnail {{ $row->nama_tryout }}" loading="lazy" />
+                                             alt="Thubmnail {{ $row->nama_tryout }}"
+                                             title="Thubmnail {{ $row->nama_tryout }}" loading="lazy" />
                                      </div>
-                                     <span
-                                         class="text-center py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-md">
+                                     <h3
+                                         class="text-center py-2 px-2 d-inline-block bg-soft-primary fs-6 mb-0 text-primary rounded-md">
                                          {{ $row->nama_tryout }}
-                                     </span>
-                                     <h3 class="fw-bold mb-0 mt-3">
+                                     </h3>
+                                     <p class="fs-4 fw-bold mb-0 mt-3">
                                          Rp. {{ number_format($row->harga, 0) }}
                                          @if ($row->harga_promo != null && $row->harga_promo != 0)
                                              <p class="text-muted">
                                                  Promo Rp. {{ number_format($row->harga_promo, 0) }}
                                              </p>
                                          @endif
-                                     </h3>
+                                     </p>
                                      <div class="accordion" id="buyingquestion">
                                          <div class="accordion-item rounded">
-                                             <h2 class="accordion-header" id="headingOne{{ $row->id }}">
+                                             <p class="accordion-header" id="headingOne{{ $row->id }}">
                                                  <button class="accordion-button border-0 bg-light" type="button"
                                                      data-bs-toggle="collapse"
                                                      data-bs-target="#collapseOne{{ $row->id }}" aria-expanded="true"
                                                      aria-controls="collapseOne{{ $row->id }}">
                                                      Fitur dalam paket ini
                                                  </button>
-                                             </h2>
+                                             </p>
                                              <div id="collapseOne{{ $row->id }}"
                                                  class="accordion-collapse border-0 collapse "
                                                  aria-labelledby="headingOne{{ $row->id }}"
@@ -219,22 +223,15 @@
                                                                  {{ $item }}
                                                              </li>
                                                          @endforeach
-
-                                                         <li class="h6 text-muted mb-0">
-                                                             <span class="icon h5 me-2">
-                                                                 <i class="uil uil-check-circle align-middle"></i>
-                                                             </span>
-                                                             Masa Aktif {{ $row->masa_aktif }} Hari
-                                                         </li>
                                                      </ul>
                                                  </div>
                                              </div>
                                          </div>
-
                                      </div>
                                      <div class="mt-4">
                                          <div class="d-grid">
-                                             <a href="{{ route('mainweb.product-show', ['id' => $row->id]) }}"
+                                             <a title="Lihat Produk {{ $row->nama_tryout }}"
+                                                 href="{{ route('mainweb.product-show', ['id' => $row->id]) }}"
                                                  class="btn btn-pills btn-primary">
                                                  Lihat <i class="fa fa-chevron-right"></i>
                                              </a>
@@ -247,7 +244,8 @@
                  </div>
                  <div class="row mt-5">
                      <div class="col-lg-12 text-center">
-                         <a href="{{ route('mainweb.product') }}" class="btn btn-pills btn-soft-primary">
+                         <a title="Lihat Semua Produk {{ config('app.name') }}" href="{{ route('mainweb.product') }}"
+                             class="btn btn-pills btn-soft-primary">
                              Lihat Semua Produk <i class="uil uil-arrow-right"></i>
                          </a>
                      </div>

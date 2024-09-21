@@ -18,22 +18,36 @@
                                 dan
                                 Kedinasan Terpercaya Seluruh Indonesia.</p>
                             <ul class="list-unstyled social-icon foot-social-icon mb-0 mt-3">
-                                <li class="list-inline-item mb-0">
-                                    <a title="Kunjungi Instagram {{ $web->nama_bisnis }}" href="{{ $web->instagram }}"
-                                        target="_blank" class="rounded">
-                                        {{--  SEO Purpose  --}}
-                                        <span class="hide">Instagram</span>
-                                        <i class="uil uil-instagram align-middle"></i>
-                                    </a>
-                                </li>
-                                <li class="list-inline-item mb-0">
-                                    <a title="Kirim Email ke {{ $web->nama_bisnis }}" href="mailto:{{ $web->email }}"
-                                        class="rounded">
-                                        {{--  SEO Purpose  --}}
-                                        <span class="hide">E-Mail</span>
-                                        <i class="uil uil-envelope align-middle"></i>
-                                    </a>
-                                </li>
+                                @if ($web->facebook && $web->facebook !== '')
+                                    <li class="list-inline-item mb-0">
+                                        <a title="Kunjungi Facebook {{ $web->nama_bisnis }}" href="{{ $web->facebook }}"
+                                            target="_blank" class="rounded">
+                                            {{--  SEO Purpose  --}}
+                                            <span class="hide">Facebook</span>
+                                            <i class="uil uil-facebook align-middle"></i>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if ($web->instagram && $web->instagram !== '')
+                                    <li class="list-inline-item mb-0">
+                                        <a title="Kunjungi Instagram {{ $web->nama_bisnis }}"
+                                            href="{{ $web->instagram }}" target="_blank" class="rounded">
+                                            {{--  SEO Purpose  --}}
+                                            <span class="hide">Instagram</span>
+                                            <i class="uil uil-instagram align-middle"></i>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if ($web->email && $web->email !== '')
+                                    <li class="list-inline-item mb-0">
+                                        <a title="Kirim Email ke {{ $web->nama_bisnis }}"
+                                            href="mailto:{{ $web->email }}" class="rounded">
+                                            {{--  SEO Purpose  --}}
+                                            <span class="hide">E-Mail</span>
+                                            <i class="uil uil-envelope align-middle"></i>
+                                        </a>
+                                    </li>
+                                @endif
                             </ul><!--end icon-->
                             <p class="mt-3">
                                 {{ $web->perusahaan }}
@@ -81,23 +95,23 @@
                             <p class="footer-head fs-5">Pembayaran</p>
                             <div class="d-flex gap-4 flex-wrap mt-4 justify-content-around">
                                 <img height="20" src="{{ asset('resources/payment-methods/Bank-CIMB-Niaga.png') }}"
-                                    alt="Logo CIMB Niaga" />
+                                    alt="Logo CIMB Niaga" title="Logo CIMB Niaga" loading="lazy" />
                                 <img height="20" src="{{ asset('resources/payment-methods/Bank-BRI.png') }}"
-                                    alt="Logo BRI" />
+                                    alt="Logo BRI" title="Logo BRI" loading="lazy" />
                                 <img height="20" src="{{ asset('resources/payment-methods/Bank-BNI.png') }}"
-                                    alt="Logo BNI" />
+                                    alt="Logo BNI" title="Logo BNI" loading="lazy" />
                                 <img height="20" src="{{ asset('resources/payment-methods/Bank-Mandiri.png') }}"
-                                    alt="Logo Mandiri" />
+                                    alt="Logo Mandiri" title="Logo Mandiri" loading="lazy" />
                                 <img height="20" src="{{ asset('resources/payment-methods/Gopay-white.png') }}"
-                                    alt="Logo Gopay" />
+                                    alt="Logo Gopay" title="Logo Gopay" loading="lazy" />
                                 <img height="20"
                                     src="{{ asset('resources/payment-methods/Bank-Permata-white.png') }}"
-                                    alt="Logo Permata" />
+                                    alt="Logo Permata" title="Logo Permata" loading="lazy" />
                             </div>
-                            <div class="d-flex gap-2 mt-3 justify-content-center align-items-center">
+                            <div class="d-flex gap-2 mt-4 justify-content-center align-items-center">
                                 <span>Powered By</span>
                                 <img height="20" src="{{ asset('resources/payment-methods/midtrans.png') }}"
-                                    alt="Logo Midtrans" />
+                                    alt="Logo Midtrans" title="Logo Midtrans" loading="lazy" />
                             </div>
                         </div><!--end col-->
                     </div><!--end row-->
@@ -112,8 +126,9 @@
                 <div class="col-lg-12">
                     <div class="text-sm-start">
                         <p class="mb-0">
-                            Copyright © {{ date('Y') }} Design & Develop By <a href="{{ url('/') }}"
-                                class="text-reset">{{ $web->nama_bisnis }} </a>.
+                            Copyright © {{ date('Y') }} Design & Develop By <a
+                                title="Beranda {{ config('app.name') }}" href="{{ url('/') }}"
+                                class="text-reset">{{ $web->nama_bisnis }}</a>.
                         </p>
                     </div>
                 </div><!--end col-->

@@ -9,7 +9,7 @@
             <div class="row mt-5 justify-content-center">
                 <div class="col-lg-12 text-center">
                     <div class="pages-heading">
-                        <h4 class="title mb-0">Informasi Kontak</h4>
+                        <h1 class="title mb-0">Kontak {{ config('app.name') }}</h1>
                     </div>
                 </div> <!--end col-->
             </div><!--end row-->
@@ -19,7 +19,7 @@
                 <div class="col-lg-4 col-md-6  mt-4 pt-2">
                     <div class="card shadow rounded border-0">
                         <div class="card-body py-5">
-                            <h4 class="card-title text-primary">Informasi Kontak</h4>
+                            <h2 class="fs-4 card-title text-primary">Informasi Kontak</h2>
                             <p>
                                 {{ $web->nama_bisnis }} Siap memenuhi semua kebutuhan dan menjawab pertanyaan Anda! Cek
                                 informasi kontak kami
@@ -50,9 +50,10 @@
                             <i class="uil uil-phone rounded h3 mb-0"></i>
                         </div>
                         <div class="content mt-4">
-                            <h5 class="fw-bold">Kontak</h5>
-                            <p class="text-muted">Jangan ragu untuk
-                                menghubungi kami, kami selalu di sini untuk Anda</p>
+                            <h3 class="fs-5 fw-bold">Telepon</h3>
+                            <p class="text-muted">
+                                Jangan ragu untuk menghubungi kami, kami selalu di sini untuk Anda
+                            </p>
                             <a onclick="analyticsContactEvent({contact_type: 'phone', value: '{{ $web->kontak }}'})"
                                 href="tel:{{ $web->kontak }}" class="read-more">
                                 {{ $web->kontak }}
@@ -67,7 +68,7 @@
                             <i class="uil uil-envelope rounded h3 mb-0"></i>
                         </div>
                         <div class="content mt-4">
-                            <h5 class="fw-bold">Email</h5>
+                            <h3 class="fs-5 fw-bold">Email</h3>
                             <p class="text-muted">Butuh solusi? Kirimkan email Anda dan kami akan segera merespon</p>
                             <a onclick="analyticsContactEvent({contact_type: 'email', value: '{{ $web->email }}'})"
                                 href="mailto:{{ $web->email }}" class="read-more">
@@ -83,7 +84,7 @@
                             <i class="uil uil-map-marker rounded h3 mb-0"></i>
                         </div>
                         <div class="content mt-4">
-                            <h5 class="fw-bold">Alamat</h5>
+                            <h3 class="fs-5 fw-bold">Alamat</h3>
                             <p class="text-muted">{{ $web->alamat }}</p>
                         </div>
                     </div>

@@ -2,11 +2,11 @@
 <header id="topnav" class="defaultscroll sticky d-print-none">
     <div class="container">
         <!-- Logo container-->
-        <a class="logo" href="{{ url('/') }}">
+        <a title="Beranda {{ config('app.name') }}" class="logo" href="{{ url('/') }}">
             <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}" height="40" class="logo-light-mode"
-                alt="">
+                alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo">
             <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}" height="40" class="logo-dark-mode"
-                alt="">
+                alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo">
         </a>
         <!-- Logo End -->
 
@@ -33,16 +33,10 @@
                     <form id="formLogout" action="{{ route('auth.signout-proses') }}" method="POST">
                         @csrf
                         @method('POST')
-                        <a href="#" class="btn btn-primary btn-pills" onclick="submitForm()">
+                        <button type="submit" class="btn btn-primary btn-pills" title="Keluar">
                             Keluar
-                        </a>
+                        </button>
                     </form>
-                    <script>
-                        function submitForm() {
-                            document.getElementById('formLogout').submit();
-                        }
-                    </script>
-
                 </li>
             @else
                 <li class="list-inline-item ps-1 mb-0">
@@ -51,8 +45,6 @@
                     </a>
                 </li>
             @endif
-
-
         </ul>
         <!--Login button End-->
 
