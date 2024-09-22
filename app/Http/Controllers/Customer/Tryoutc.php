@@ -227,7 +227,7 @@ class Tryoutc extends Controller
         $cacheKeyQuestion = $generateCacheName['question'];
 
         // Get All Question
-        $questions = Cache::remember($cacheKeyQuestion, $cacheDurationExam, function () use ($questionCode) {
+        $questions = Cache::tags(['user_exam_question:' . $questionCode])->remember($cacheKeyQuestion, $cacheDurationExam, function () use ($questionCode) {
             return SoalUjian::where('kode_soal', $questionCode)
                 ->select(
                     'soal_ujian.id',
@@ -244,6 +244,7 @@ class Tryoutc extends Controller
                 )
                 ->leftJoin('klasifikasi_soal', 'soal_ujian.klasifikasi_soal_id', '=', 'klasifikasi_soal.id')
                 ->orderBy('klasifikasi_soal.ordering', 'ASC')
+                ->inRandomOrder()
                 ->get();
         });
         $totalQuestion = $questions->count();
@@ -482,6 +483,8 @@ class Tryoutc extends Controller
             return redirect()->back()->with('error', 'Ujian Tidak diketahui!');
         }
 
+        $questionCode = $productTryout->kode_soal;
+
         $examResult = HasilUjian::select('id')->where('ujian_id', $exam->id)->first();
         if (!$examResult) {
             return redirect()->back()->with('error', 'Hasil Ujian tidak ditemukan atau belum diproses!');
@@ -494,7 +497,7 @@ class Tryoutc extends Controller
         }
 
         $cacheKey = 'exam_answered_' . $id;
-        $reviewJawaban = Cache::remember($cacheKey, 10 * 60, function () use ($id) {
+        $reviewJawaban = Cache::tags(['user_exam_question:' . $questionCode])->remember($cacheKey, 100 * 60, function () use ($id) {
             return DB::table('progres_ujian')
                 ->where('progres_ujian.ujian_id', $id)
                 ->select(
@@ -530,7 +533,7 @@ class Tryoutc extends Controller
 
         $questionCode = $productTryout->kode_soal;
         $cacheKey = 'exam_unanswered_' . $id;
-        $unAnsweredQuestions = Cache::remember($cacheKey, 10 * 60, function () use ($answeredQuestions, $questionCode) {
+        $unAnsweredQuestions = Cache::tags(['user_exam_question:' . $questionCode])->remember($cacheKey, 100 * 60, function () use ($answeredQuestions, $questionCode) {
             return SoalUjian::where('soal_ujian.kode_soal', $questionCode)
                 ->whereNotIn('soal_ujian.id', $answeredQuestions)
                 ->select(

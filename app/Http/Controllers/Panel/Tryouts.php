@@ -500,6 +500,8 @@ class Tryouts extends Controller
             RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
         }
 
+        Cache::tags(['user_exam_question:' . $kode_soal])->flush();
+
         return redirect()->route('tryouts.soal', ['id' => $request->input('kodeSoal')])->with('message', $message);
     }
 
@@ -509,6 +511,7 @@ class Tryouts extends Controller
         if (!$soalUjian) {
             return redirect()->back()->with('error', 'Soal tidak ditemukan !');
         }
+        $questionCode = $soalUjian->kode_soal;
         $gambar = $soalUjian->gambar;
 
         $users = Auth::user();
@@ -521,6 +524,8 @@ class Tryouts extends Controller
         if ($gambar && Storage::disk('public')->exists('soal/' . $gambar)) {
             Storage::disk('public')->delete('soal/' . $gambar);
         }
+
+        Cache::tags(['user_exam_question:' . $questionCode])->flush();
 
         // Simpan logs aktivitas pengguna
         $logs = $users->name . ' telah menghapus soal ujian dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
