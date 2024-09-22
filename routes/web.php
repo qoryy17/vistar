@@ -170,7 +170,6 @@ Route::middleware(PanelRouting::class)->group(function () {
         Route::get('/data-peserta-tryout', 'pesertaTryout')->name('tryouts.peserta-tryout');
         Route::get('/pengajuan-tryout-gratis', 'tryoutGratis')->name('tryouts.pengajuan-tryout-gratis');
         Route::post('/validasi-pengajuan-tryout-gratis', 'validasiTryoutGratis')->name('tryouts.validasi-pengajuan-tryout-gratis');
-        // route::get('/see-email', 'email');
     });
 });
 

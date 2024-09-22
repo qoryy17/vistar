@@ -4,16 +4,16 @@ namespace App\Http\Controllers\Panel;
 
 use App\Helpers\Notifikasi;
 use App\Helpers\RecordLogs;
-use App\Models\LimitTryout;
-use Illuminate\Http\Request;
-use App\Models\KategoriProduk;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Panel\KategoriRequest;
+use App\Models\KategoriProduk;
+use App\Models\LimitTryout;
 use App\Models\ProdukTryout;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 
 class Kategoris extends Controller
 {
@@ -25,8 +25,9 @@ class Kategoris extends Controller
             'bc2' => 'Produk ' . ucfirst($produk),
             'kategori' => KategoriProduk::all(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
         ];
+
         return view('main-panel.kategori.data-kategori-produk', $data);
     }
 
@@ -41,7 +42,7 @@ class Kategoris extends Controller
             $kategori = KategoriProduk::findOrFail(Crypt::decrypt($id));
             $formParam = Crypt::encrypt('update');
         } else {
-            return Redirect::back()->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
 
         $data = [
@@ -51,8 +52,9 @@ class Kategoris extends Controller
             'kategori' => $kategori,
             'formParam' => $formParam,
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
-            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Disetujui')->count()
+            'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Disetujui')->count(),
         ];
+
         return view('main-panel.kategori.form-kategori-produk', $data);
     }
 
@@ -62,8 +64,10 @@ class Kategoris extends Controller
         $users = Auth::user();
         // Validasi inputan
         $request->validated();
-        if (Crypt::decrypt($request->input('formParameter')) == 'add') {
 
+        $updatedId = null;
+
+        if (Crypt::decrypt($request->input('formParameter')) == 'add') {
             $kategori = new KategoriProduk();
             $kategori->id = rand(1, 999) . rand(1, 99);
             $kategori->judul = ucwords(htmlspecialchars($request->input('judul')));
@@ -76,66 +80,96 @@ class Kategoris extends Controller
             $error = 'Kategori produk gagal disimpan !';
         } elseif (Crypt::decrypt($request->input('formParameter')) == 'update') {
             $kategori = KategoriProduk::findOrFail($request->input('kategoriID'));
+            $updatedId = $kategori->id;
             $kategori->judul = ucwords(htmlspecialchars($request->input('judul')));
             $kategori->status = htmlspecialchars($request->input('status'));
             $kategori->aktif = htmlspecialchars($request->input('aktif'));
 
             // Catatan log
-            $logs = $users->name . ' telah memperbarui kategori produk dengan ID' . $request->input('kategoriID') . ' waktu tercatat :  ' . now();
+            $logs = $users->name . ' telah memperbarui kategori produk dengan ID' . $updatedId . ' waktu tercatat :  ' . now();
             $message = 'Kategori produk berhasil diperbarui !';
             $error = 'Kategori produk gagal diperbarui !';
         } else {
-            return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
 
-        if ($kategori->save()) {
-            // Simpan logs aktivitas pengguna
-            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('message', $message);
-        } else {
-            return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('error', $error)->withInput();
+        $save = $kategori->save();
+        if (!$save) {
+            return redirect()->back()->with('error', $error)->withInput();
         }
+
+        // Delete Necessarily cache
+        Cache::tags(['product_categories_main_web'])->flush();
+        if ($updatedId) {
+            Cache::tags(['product_category_main_web:' . $updatedId])->flush();
+        }
+
+        // Simpan logs aktivitas pengguna
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+        return redirect()->route('kategori.index', ['produk' => 'tryout'])->with('message', $message);
     }
 
     public function ubahAktifKategori(Request $request): RedirectResponse
     {
         $kategori = KategoriProduk::findOrFail(Crypt::decrypt($request->id));
-        if ($kategori) {
-            $users = Auth::user();
-            if ($kategori->aktif == 'Y') {
-                $kategori->aktif = 'T';
-                $kategori->save();
-                // Simpan logs aktivitas pengguna
-                $logs = $users->name . ' telah menonaktifkan kategori dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
-                RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('message', 'Kategori produk berhasil dinonaktifkan !');
-            } else {
-                $kategori->aktif = 'Y';
-                $kategori->save();
-                // Simpan logs aktivitas pengguna
-                $logs = $users->name . ' telah mengaktifkan kategori dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
-                RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('message', 'Kategori produk berhasil diaktifkan !');
-            }
+        if (!$kategori) {
+            return redirect()->back()->with('error', 'Kategori tidak ditemukan !');
         }
-        return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('error', 'Kategori gagal diubah !');
+
+        $users = Auth::user();
+
+        $message = '';
+        $logs = '';
+        if ($kategori->aktif == 'Y') {
+            $kategori->aktif = 'T';
+            $logs = $users->name . ' telah menonaktifkan kategori dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
+            $message = 'Kategori produk berhasil dinonaktifkan !';
+        } else {
+            $kategori->aktif = 'Y';
+            $logs = $users->name . ' telah mengaktifkan kategori dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
+            $message = 'Kategori produk berhasil diaktifkan !';
+        }
+
+        $save = $kategori->save();
+        if (!$save) {
+            return redirect()->back()->with('error', 'Kategori gagal diubah !');
+        }
+
+        // Delete Necessarily cache
+        Cache::tags(['product_categories_main_web'])->flush();
+        Cache::tags(['product_category_main_web:' . $kategori->id])->flush();
+
+        // Simpan logs aktivitas pengguna
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+        return redirect()->back()->with('message', $message);
     }
 
     public function hapusKategori(Request $request): RedirectResponse
     {
         $kategori = KategoriProduk::findOrFail(Crypt::decrypt($request->id));
-        if ($kategori) {
-            $produkTryout = ProdukTryout::where('kategori_produk_id', $kategori->id);
-            if ($produkTryout) {
-                return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('error', 'Kategori sudah dipakai tryout, tidak dapat dihapus !');
-            }
-            $users = Auth::user();
-            $kategori->delete();
-            // Simpan logs aktivitas pengguna
-            $logs = $users->name . ' telah menghapus kategori dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
-            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('message', 'Kategori berhasil dihapus !');
+        if (!$kategori) {
+            return redirect()->back()->with('error', 'Kategori tidak ditemukan !');
         }
-        return Redirect::route('kategori.index', ['produk' => 'tryout'])->with('error', 'Kategori gagal dihapus !');
+        $produkTryout = ProdukTryout::where('kategori_produk_id', $kategori->id)->first();
+        if ($produkTryout) {
+            return redirect()->back()->with('error', 'Kategori sudah dipakai tryout, tidak dapat dihapus !');
+        }
+
+        $delete = $kategori->delete();
+        if (!$delete) {
+            return redirect()->back()->with('error', 'Kategori gagal dihapus !');
+        }
+
+        $users = Auth::user();
+
+        // Delete Necessarily cache
+        Cache::tags(['product_categories_main_web'])->flush();
+        Cache::tags(['product_category_main_web:' . $kategori->id])->flush();
+
+        // Simpan logs aktivitas pengguna
+        $logs = $users->name . ' telah menghapus kategori dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+        return redirect()->back()->with('message', 'Kategori berhasil dihapus !');
     }
 }

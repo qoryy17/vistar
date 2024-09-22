@@ -21,9 +21,9 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -55,7 +55,7 @@ class Tryouts extends Controller
             $tryout = ProdukTryout::findOrFail(Crypt::decrypt($id));
             $pengaturan = PengaturanTryout::findOrFail($tryout->pengaturan_tryout_id);
         } else {
-            return Redirect::route('tryouts.index')->with('error', 'Parameter tidak valid !');
+            return redirect()->route('tryouts.index')->with('error', 'Parameter tidak valid !');
         }
 
         $data = [
@@ -115,6 +115,8 @@ class Tryouts extends Controller
             'status' => htmlspecialchars($request->input('status')),
         ];
 
+        $updatedId = null;
+
         if (Crypt::decrypt($request->input('formParameter')) == 'add') {
             $pengaturanTryout = PengaturanTryout::create($savedDataPengaturanTryout);
             if (!$pengaturanTryout) {
@@ -149,6 +151,8 @@ class Tryouts extends Controller
             $produkTryout = ProdukTryout::findOrFail(htmlspecialchars($request->input('produkID')));
             $pengaturanTryout = PengaturanTryout::findOrFail($produkTryout->pengaturan_tryout_id);
 
+            $updatedId = $produkTryout->id;
+
             $savePengaturanTryout = $pengaturanTryout->update($savedDataPengaturanTryout);
             if (!$savePengaturanTryout) {
                 return redirect()->back()->with('error', 'Pengaturan Tryout gagal diperbarui!')->withInput();
@@ -172,65 +176,89 @@ class Tryouts extends Controller
             $saveProdukTryout = $produkTryout->update($savedDataProdukTryout);
 
             // Catatan log
-            $logs = $users->name . ' telah memperbarui produk tryout dengan ID' . htmlspecialchars($request->input('produkID')) . ' waktu tercatat :  ' . now();
+            $logs = $users->name . ' telah memperbarui produk tryout dengan ID' . $updatedId . ' waktu tercatat :  ' . now();
             $message = 'Produk tryout berhasil diperbarui !';
             $error = 'Produk tryout gagal diperbarui !';
         } else {
-            return Redirect::route('tryouts.index')->with('error', 'Parameter tidak valid !');
+            return redirect()->back()->with('error', 'Parameter tidak valid !');
         }
 
         if (!$saveProdukTryout) {
-            return Redirect::route('tryouts.index')->with('error', $error)->withInput();
+            return redirect()->back()->with('error', $error)->withInput();
+        }
+
+        // Delete Necessarily cache
+        Cache::forget('products_sitemap_all');
+        Cache::tags(['products_main_web'])->flush();
+        if ($updatedId) {
+            Cache::forget('product_show_main_web:' . $updatedId);
         }
 
         // Simpan logs aktivitas pengguna
         RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
 
-        return Redirect::route('tryouts.index')->with('message', $message);
+        return redirect()->route('tryouts.index')->with('message', $message);
     }
 
     public function hapusProdukTryout(Request $request): RedirectResponse
     {
-        $produkTryout = ProdukTryout::findOrFail(Crypt::decrypt($request->id));
-        if ($produkTryout) {
-            $users = Auth::user();
-            $pengaturanTryout = PengaturanTryout::findOrFail($produkTryout->pengaturan_tryout_id);
-            $orderTryout = OrderTryout::where('produk_tryout_id', $produkTryout->id)->first();
-            $limitTryout = LimitTryout::where('produk_tryout_id', $produkTryout->id)->first();
+        $id = Crypt::decrypt($request->id);
 
-            if (!$orderTryout && !$limitTryout) {
-                if (!$pengaturanTryout) {
-                    return Redirect::route('tryouts.index')->with('error', 'ID pengaturan tidak ditemukan !');
-                }
+        $produkTryout = ProdukTryout::findOrFail($id);
+        if (!$produkTryout) {
+            return redirect()->back()->with('error', 'Produk tidak ditemukan !');
+        }
 
-                $soalUjian = SoalUjian::select('id', 'gambar')
-                    ->where('kode_soal', $produkTryout->kode_soal)
-                    ->get();
-                foreach ($soalUjian as $soal) {
-                    $gambar = $soal->gambar;
-                    if ($gambar && Storage::disk('public')->exists('soal/' . $gambar)) {
-                        Storage::disk('public')->delete('soal/' . $gambar);
-                    }
-                    $soal->delete();
-                }
+        $users = Auth::user();
 
-                $thumbnail = $produkTryout->thumbnail;
-                if ($thumbnail && Storage::disk('public')->exists('tryout/' . $thumbnail)) {
-                    Storage::disk('public')->delete('tryout/' . $thumbnail);
-                }
+        $orderTryout = OrderTryout::where('produk_tryout_id', $produkTryout->id)->first();
+        if ($orderTryout) {
+            return redirect()->back()->with('error', 'Produk sudah diorder tidak dapat dihapus !');
+        }
+        $limitTryout = LimitTryout::where('produk_tryout_id', $produkTryout->id)->first();
+        if ($limitTryout) {
+            return redirect()->back()->with('error', 'Produk sudah diorder tidak dapat dihapus !');
+        }
 
-                $produkTryout->delete();
-                $pengaturanTryout->delete();
+        $deletedImages = [];
 
-                // Simpan logs aktivitas pengguna
-                $logs = $users->name . ' telah menghapus produk tryout dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
-                RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::route('tryouts.index')->with('message', 'Produk tryout berhasil dihapus !');
-            } else {
-                return Redirect::route('tryouts.index')->with('error', 'Produk sudah diorder tidak dapat dihapus !');
+        $soalUjian = SoalUjian::select('id', 'gambar')
+            ->where('kode_soal', $produkTryout->kode_soal)
+            ->get();
+        foreach ($soalUjian as $soal) {
+            array_push($deletedImages, 'soal/' . $soal->gambar);
+
+            $soal->delete();
+        }
+
+        array_push($deletedImages, 'tryout/' . $produkTryout->thumbnail);
+
+        $delete = $produkTryout->delete();
+        if (!$delete) {
+            return redirect()->back()->with('error', 'Produk gagal dihapus !');
+        }
+
+        $pengaturanTryout = PengaturanTryout::findOrFail($produkTryout->pengaturan_tryout_id);
+        if ($pengaturanTryout) {
+            $pengaturanTryout->delete();
+        }
+
+        // Delete Images
+        foreach ($deletedImages as $image) {
+            if ($image && Storage::disk('public')->exists($image)) {
+                Storage::disk('public')->delete($image);
             }
         }
-        return Redirect::route('tryouts.index')->with('error', 'Produk tryout gagal dihapus !');
+
+        // Delete Necessarily cache
+        Cache::forget('products_sitemap_all');
+        Cache::tags(['products_main_web'])->flush();
+        Cache::forget('product_show_main_web:' . $id);
+
+        // Simpan logs aktivitas pengguna
+        $logs = $users->name . ' telah menghapus produk tryout dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+        return redirect()->back()->with('message', 'Produk tryout berhasil dihapus !');
     }
 
     public function detailProduk($id = null)
@@ -238,8 +266,14 @@ class Tryouts extends Controller
         $tryout = ProdukTryout::findOrFail(Crypt::decrypt($id));
         $pengaturan = PengaturanTryout::findOrFail($tryout->pengaturan_tryout_id);
         $kategori = KategoriProduk::findOrFail($tryout->kategori_produk_id);
-        $klasifikasiSoal = KlasifikasiSoal::all();
+
         $totalSoal = SoalUjian::where('kode_soal', $tryout->kode_soal)->count();
+        $questionClassificationIds = SoalUjian::where('kode_soal', $tryout->kode_soal)
+            ->select('klasifikasi_soal_id')
+            ->groupBy('klasifikasi_soal_id')
+            ->pluck('klasifikasi_soal_id')
+            ->toArray();
+        $klasifikasiSoal = KlasifikasiSoal::whereIn('id', $questionClassificationIds)->get();
 
         $data = [
             'page_title' => 'Detail Produk Tryout',
@@ -597,14 +631,16 @@ class Tryouts extends Controller
 
             DB::commit();
 
-            return Redirect::route('tryouts.index')->with('message', 'Produk tryout berhasil diduplikasi !');
+            // Delete Necessarily cache
+            Cache::forget('products_sitemap_all');
+            Cache::tags(['products_main_web'])->flush();
+
+            return redirect()->back()->with('message', 'Produk tryout berhasil diduplikasi !');
         } catch (\Throwable $th) {
             foreach ($deletedImages as $image) {
                 Storage::disk('public')->delete($image);
             }
             DB::rollback();
-
-            dd($th->getMessage());
 
             return redirect()->back()->with('error', 'Gagal menduplikasi Produk !' . $th->getMessage());
         }
@@ -754,22 +790,9 @@ class Tryouts extends Controller
                 SendDeniedTryoutGratisJob::dispatch($email);
                 $message = 'Validasi berhasil ditolak !';
             }
-            return Redirect::route('tryouts.pengajuan-tryout-gratis')->with('message', $message);
+            return redirect()->route('tryouts.pengajuan-tryout-gratis')->with('message', $message);
         } else {
-            return Redirect::route('tryouts.pengajuan-tryout-gratis')->with('error', 'Validasi berhasil !');
+            return redirect()->route('tryouts.pengajuan-tryout-gratis')->with('error', 'Validasi berhasil !');
         }
     }
-
-    // public function email()
-    // {
-    //     // return view('main-panel.tryout.tryout-gratis-email');
-
-    //     $permohonan = LimitTryout::findOrFail('93318');
-    //     $emailCustomer = User::where('customer_id', $permohonan->customer_id)->first();
-    //     $tryout = ProdukTryout::find($permohonan->produk_tryout_id)->first();
-
-    //     // Kirim email invoice
-    //     Mail::to($emailCustomer->email)->send(new EmailValidasiTryoutGratis($tryout));
-    //     return response()->json(['message' => 'Pemesanan berhasil dan email invoice telah dikirim']);
-    // }
 }
