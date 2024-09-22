@@ -6,10 +6,12 @@
              <div class="row justify-content-center">
                  <div class="col-12 text-center">
                      <div class="section-title mb-4 pb-2">
-                         <h4 class="title mb-4">Pilih Paket Ujian Tryout Gratis</h4>
-                         <p class="text-muted para-desc mb-0 mx-auto">Temukan paket ujian tryout gratis yang bisa anda coba
-                             sekali ! <span class="text-primary fw-bold">Vi Star Indonesia</span> memberikan
-                             solusi terbaik untuk persiapan ujian Anda.</p>
+                         <h4 class="title mb-4">{{ $title }}</h4>
+                         <p class="text-muted para-desc mb-0 mx-auto">
+                             Temukan produk gratis yang bisa anda coba sekali !
+                             <span class="text-primary fw-bold">Vistar Indonesia</span>
+                             memberikan solusi terbaik untuk persiapan Anda.
+                         </p>
                      </div>
                  </div><!--end col-->
              </div><!--end row-->

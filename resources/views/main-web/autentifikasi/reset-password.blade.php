@@ -1,4 +1,4 @@
-<x-web.header-auth :title="'Atur Ulang Password - Vistar Indonesia'" />
+<x-web.header-auth :title="'Atur Ulang Password - Vistar Indonesia'" :keywords="'Reset Password, Reset Password Vistar Indonesia, Atur Ulang Password, Atur Ulang Password Vistar Indonesia'" />
 
 <body>
     @if (session()->has('error'))

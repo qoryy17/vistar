@@ -85,6 +85,9 @@ class MainWebsite extends Controller
     {
         $title = 'Produk ' . config('app.name');
         $searchCategoryId = $request->category_id;
+        if ($searchCategoryId) {
+            $searchCategoryId = htmlentities($searchCategoryId);
+        }
         $searchName = $request->search_name;
         if ($searchName) {
             $searchName = htmlentities($searchName);
@@ -250,7 +253,29 @@ class MainWebsite extends Controller
     {
         $title = 'Produk Paket Tryout Gratis';
         $searchCategoryId = $request->category_id;
-        $searchName = $request->search_name;
+        if ($searchCategoryId) {
+            $searchCategoryId = htmlentities($searchCategoryId);
+        }
+        $searchName = htmlentities($request->search_name);
+        if ($searchName) {
+            $searchName = htmlentities($searchName);
+        }
+
+        $productStatus = 'Gratis';
+
+        $productCategory = null;
+        if ($searchCategoryId) {
+            $productCategory = Cache::remember('product_category_main_web:id:' . $searchCategoryId . ',status:' . $productStatus, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus) {
+                return DB::table('kategori_produk')
+                    ->select(
+                        'kategori_produk.id',
+                        'kategori_produk.judul'
+                    )
+                    ->where('kategori_produk.status', $productStatus)
+                    ->where('kategori_produk.id', $searchCategoryId)
+                    ->first();
+            });
+        }
 
         // Cek apakah sudah pilih produk tryout gratis
         $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Disetujui')->orderBy('created_at', 'ASC')->get();
@@ -270,11 +295,17 @@ class MainWebsite extends Controller
             return redirect()->route('mainweb.index', '#coba-gratis');
         }
 
-        if ($searchCategoryId || $searchName) {
-            $title = 'Cari Produk Paket Tryout Gratis';
+        if ($productCategory || $searchName) {
+            $additionalTitle = [];
+            if ($searchName) {
+                array_push($additionalTitle, '`' . $searchName . '`');
+            }
+            if ($productCategory) {
+                array_push($additionalTitle, 'Kategori `' . $productCategory->judul . '`');
+            }
+            $title = 'Cari ' . implode(' ', $additionalTitle) . ' Produk Gratis ' . config('app.name');
         }
 
-        $productStatus = 'Gratis';
         $products = Cache::remember('products_main_web:category_id:' . $searchCategoryId . ',status:' . $productStatus . ',search:' . $searchName, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
             $data = DB::table('produk_tryout')
                 ->select(

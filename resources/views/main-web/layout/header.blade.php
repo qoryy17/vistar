@@ -14,7 +14,32 @@
         $logo = $uploadedLogo;
     }
 
-    $keywords = $web->meta_keyword ? $web->meta_keyword : '';
+    $keywords = implode(
+        ', ',
+        array_filter(
+            array_unique(
+                array_merge(
+                    explode(', ', strtolower($web->meta_keyword ? $web->meta_keyword : '')),
+                    explode(', ', strtolower(View::getSection('keywords'))),
+                ),
+                SORT_REGULAR,
+            ),
+            'strlen',
+        ),
+    );
+
+    $metaDescription = $web->meta_description ? $web->meta_description : '';
+    if (View::hasSection('description')) {
+        $metaDescriptionSection = View::getSection('description');
+        if (strlen($metaDescriptionSection) < 170) {
+            $metaDescription = $metaDescriptionSection . ' :. ' . $metaDescription;
+        }
+    } else {
+        $metaDescription = View::getSection('title') . ' :. ' . $metaDescription;
+    }
+    if (strlen($metaDescription) > 170) {
+        $metaDescription = substr($metaDescription, 0, 168) . '..';
+    }
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -23,12 +48,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta name="author" content="{{ $web->meta_author ? $web->meta_author : '' }}">
-    @hasSection('keywords')
-        <meta name="keywords" content="@yield('keywords'), {{ $keywords }}">
-    @else
-        <meta name="keywords" content="{{ $keywords }}">
-    @endif
-    <meta name="description" content="@yield('description', $web->meta_description ? $web->meta_description : '')">
+    <meta name="keywords" content="{{ $keywords }}">
+
+    <meta name="description" content="{{ $metaDescription }}">
 
     <link rel="canonical" href="{{ url()->current() }}" />
 
@@ -68,7 +90,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ url()->full() }}" />
     <meta property="og:image" content="@yield('image', asset($logo))" />
-    <meta property="og:description" content="@yield('description', $web->meta_description ? $web->meta_description : '')" />
+    <meta property="og:description" content="{{ $metaDescription }}" />
 
     {{--  Note: Create App Config APP ID after vistar using social account login with facebook --}}
     <meta property="fb:app_id" content="1235512704325801" />

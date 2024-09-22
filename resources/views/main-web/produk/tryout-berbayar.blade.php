@@ -8,10 +8,10 @@
                      <div class="section-title mb-4 pb-2">
                          <h1 class="title mb-4">{{ $title }}</h1>
                          <p class="text-muted para-desc mb-0 mx-auto">
-                             Temukan paket ujian tryout yang sempurna untuk Anda!
+                             Temukan produk yang sempurna untuk Anda!
                              Dengan berbagai pilihan paket yang dirancang sesuai kebutuhan,
-                             <span class="text-primary fw-bold">Vistar Indonesia</span> memberikan
-                             solusi terbaik untuk persiapan ujian Anda.
+                             <span class="text-primary fw-bold">Vistar Indonesia</span>
+                             memberikan solusi terbaik untuk persiapan ujian Anda.
                          </p>
                      </div>
                  </div><!--end col-->

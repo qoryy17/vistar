@@ -1,4 +1,4 @@
-<x-web.header-auth :title="'Lupa Password - Vistar Indonesia'" />
+<x-web.header-auth :title="'Lupa Password - Vistar Indonesia'" :keywords="'Forget Password, Forget Password Vistar Indonesia, Lupa Password, Lupa Password Vistar Indonesia'" />
 
 <body>
     @if (session()->has('message'))

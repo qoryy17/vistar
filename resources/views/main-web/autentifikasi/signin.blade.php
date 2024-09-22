@@ -1,4 +1,4 @@
-<x-web.header-auth :title="'Masuk - Vistar Indonesia'" />
+<x-web.header-auth :title="'Masuk - Vistar Indonesia'" :keywords="'Login, Login Vistar Indonesia, Masuk, Masuk Vistar Indonesia'" />
 
 <body>
     @if (session()->has('message'))
@@ -59,6 +59,8 @@
                                                         alt="{{ config('app.name') }} Logo"
                                                         title="{{ config('app.name') }} Logo" />
                                                 </a>
+                                                {{--  SEO Purpose  --}}
+                                                <h1 class="fs-4 hide my-3">Masuk</h1>
                                             </div>
                                             <form id="formLogin" action="{{ route('auth.signin-proses') }}"
                                                 class="login-form mt-4" method="POST">
@@ -101,9 +103,11 @@
 
                                                     <div class="col-lg-12">
                                                         <div class="d-flex justify-content-between">
-                                                            <p class="forgot-pass mb-3"><a
+                                                            <p class="forgot-pass mb-3">
+                                                                <a title="Lupa Password ?"
                                                                     href="{{ route('auth.reset-password') }}"
-                                                                    class="text-dark fw-bold">Lupa Password ?</a></p>
+                                                                    class="text-dark fw-bold">Lupa Password ?</a>
+                                                            </p>
                                                         </div>
                                                     </div><!--end col-->
 

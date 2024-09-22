@@ -1,4 +1,4 @@
-<x-web.header-auth :title="'Daftar - Vistar Indonesia'" />
+<x-web.header-auth :title="'Daftar - Vistar Indonesia'" :keywords="'Register, Register Vistar Indonesia, Daftar, Daftar Vistar Indonesia'" />
 
 <body>
     @if (session()->has('message'))
@@ -49,6 +49,8 @@
                                                         alt="{{ config('app.name') }} Logo"
                                                         title="{{ config('app.name') }} Logo" />
                                                 </a>
+                                                {{--  SEO Purpose  --}}
+                                                <h1 class="fs-4 hide my-3">Daftar</h1>
                                             </div>
                                             <form id="formRegister" action="{{ route('auth.register') }}"
                                                 class="login-form mt-4" method="POST">
