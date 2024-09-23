@@ -112,6 +112,8 @@
         rel="stylesheet" type="text/css">
     <link href="{{ asset('resources/web/dist/assets/libs/@iconscout/unicons/css/line.css') }}" type="text/css"
         rel="stylesheet">
+    <!-- Internal Sweet-Alert css-->
+    <link href="{{ url('resources/spruha/assets/plugins/sweet-alert/sweetalert.css') }}" rel="stylesheet">
     <!-- Style Css-->
     <link href="{{ asset('resources/web/dist/assets/css/select2.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('resources/web/dist/assets/css/style.min.css') }}" rel="stylesheet" type="text/css">

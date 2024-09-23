@@ -20,16 +20,23 @@ class Payment extends Model
         'customer_id',
         'ref_order_id',
         'snap_token',
-        'status_transaksi',
+        'transaksi_id',
 
+        'subtotal',
+        'promo_type',
+        'promo_code',
+        'promo_data',
+        'discount',
 
-        'status_order',
-        'status_pesan',
         'nominal',
-        'batas_pembayaran',
-        'jenis_pembayaran',
+
+        'metode',
         'biaya_admin',
-        'status',
+        'status_transaksi',
+        'status_fraud',
+        'waktu_transaksi',
+        'metadata',
+
     ];
 
     public $incrementing = false;
@@ -38,22 +45,22 @@ class Payment extends Model
         'pending' => [
             'title' => 'Menunggu Pembayaran',
             'color' => '#ffffff',
-            'bg-color' => '#d7a701'
+            'bg-color' => '#d7a701',
         ],
         'paid' => [
             'title' => 'Sudah Dibayar',
             'color' => '#ffffff',
-            'bg-color' => '#27a168'
+            'bg-color' => '#27a168',
         ],
         'failed' => [
             'title' => 'Pembayaran Gagal',
             'color' => '#ffffff',
-            'bg-color' => '#fd6074'
+            'bg-color' => '#fd6074',
         ],
         'expired' => [
             'title' => 'Pembayaran Kadaluarsa',
             'color' => '#ffffff',
-            'bg-color' => '#fd6074'
+            'bg-color' => '#fd6074',
         ],
     ];
 

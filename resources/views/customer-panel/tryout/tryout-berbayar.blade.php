@@ -51,8 +51,6 @@
                                                     {{ $tryout->nama_tryout }}
                                                 </span>
                                             </h3>
-                                            <span class="badge bg-success">Rp. {{ number_format($tryout->harga, 0) }}
-                                            </span>
                                             <div class="text-muted tx-12 mt-2">
                                                 @if ($masaAktif > 0)
                                                     <span style="text-align: justify;">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Landing;
 
+use App\Enums\UserRole;
 use App\Helpers\BerandaUI;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
@@ -399,15 +400,23 @@ class MainWebsite extends Controller
 
     public function keranjangPesanan()
     {
-        $data = [
-            'title' => 'Keranjang Pesanan',
-            'tryout' => DB::table('keranjang_order')->select('keranjang_order.*', 'produk_tryout.id as idProduk', 'produk_tryout.nama_tryout', 'produk_tryout.keterangan', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status')
-                ->leftJoin('produk_tryout', 'keranjang_order.produk_tryout_id', '=', 'produk_tryout.id')
-                ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
-                ->where('keranjang_order.customer_id', '=', Auth::user()->customer_id)
-                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('keranjang_order.updated_at', 'DESC'),
-            'allProduk' => DB::table('produk_tryout')->select(
+
+        $cartItems = DB::table('keranjang_order')->select('keranjang_order.*', 'produk_tryout.id as idProduk', 'produk_tryout.nama_tryout', 'produk_tryout.keterangan', 'pengaturan_tryout.harga', 'pengaturan_tryout.harga_promo', 'kategori_produk.judul', 'kategori_produk.status')
+            ->leftJoin('produk_tryout', 'keranjang_order.produk_tryout_id', '=', 'produk_tryout.id')
+            ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
+            ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
+            ->where('keranjang_order.customer_id', '=', Auth::user()->customer_id)
+            ->whereNot('kategori_produk.status', 'Gratis')
+            ->orderBy('keranjang_order.updated_at', 'DESC')
+            ->get();
+
+        $productIdsSelected = [];
+        foreach ($cartItems as $item) {
+            array_push($productIdsSelected, $item->idProduk);
+        }
+
+        $recommendProducts = DB::table('produk_tryout')
+            ->select(
                 'produk_tryout.*',
                 'pengaturan_tryout.harga',
                 'pengaturan_tryout.nilai_keluar',
@@ -417,10 +426,20 @@ class MainWebsite extends Controller
                 'pengaturan_tryout.harga_promo',
                 'kategori_produk.judul',
                 'kategori_produk.status as produk_status'
-            )->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
-                ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
-                ->where('produk_tryout.status', 'Tersedia')
-                ->whereNot('kategori_produk.status', 'Gratis')->orderBy('produk_tryout.updated_at', 'DESC')->limit(3)->get(),
+            )
+            ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
+            ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
+            ->where('produk_tryout.status', 'Tersedia')
+            ->whereNot('kategori_produk.status', 'Gratis')
+            ->whereNotIn('produk_tryout.id', $productIdsSelected)
+            ->orderBy('produk_tryout.updated_at', 'DESC')
+            ->limit(3)
+            ->get();
+
+        $data = [
+            'title' => 'Keranjang Pesanan',
+            'cartItems' => $cartItems,
+            'recommendProducts' => $recommendProducts,
         ];
 
         return view('main-web.produk.keranjang-order', $data);
@@ -464,13 +483,18 @@ class MainWebsite extends Controller
         return view('main-web.produk.daftar-tryout-gratis', $data);
     }
 
-    public function profil()
+    public function profile()
     {
+        $costumerData = null;
+        if (Auth::user()->role === UserRole::CUSTOMER->value) {
+            $costumerData = Customer::findOrFail(Auth::user()->customer_id);
+        }
         $data = [
             'title' => 'Profil Saya - ' . config('app.name'),
-            'customer' => Customer::findOrFail(Auth::user()->customer_id),
+            'customer' => $costumerData,
         ];
-        return view('main-web.profil.profil', $data);
+
+        return view('main-web.profile.profile', $data);
     }
 
     public function kebijakanPrivasi()

@@ -1,3 +1,6 @@
+ @php
+     $promoCode = \App\Http\Controllers\PromoCodeController::getPromoCode();
+ @endphp
  @extends('main-web.layout.main')
  @section('title', $title)
  @section('content')
@@ -116,11 +119,36 @@
                                              {{ $row->nama_tryout }}
                                          </a>
                                      </h2>
-                                     <p class="fs-2 fw-bold mb-0 mt-3">Rp. {{ number_format($row->harga, 0) }}</p>
-                                     @if ($row->harga_promo != null && $row->harga_promo != 0)
-                                         <p class="text-muted">Promo Rp. {{ number_format($row->harga_promo, 0) }}
+                                     @php
+                                         $price = $row->harga;
+                                         $normalPrice = $price;
+                                         if ($row->harga_promo != null && $row->harga_promo != 0) {
+                                             $price = $row->harga_promo;
+                                         }
+
+                                         // Apply promo code
+                                         if ($promoCode) {
+                                             if ($promoCode['promo']['type'] === 'percent') {
+                                                 $normalPrice = $price;
+                                                 $price = $price - ($price * $promoCode['promo']['value']) / 100;
+                                             } elseif ($promoCode['promo']['type'] === 'deduction') {
+                                                 if ($promoCode['promo']['type'] === 'percent') {
+                                                     $normalPrice = $price;
+                                                     $price = $price - $promoCode['promo']['value'];
+                                                 }
+                                             }
+                                         }
+                                     @endphp
+                                     <div class="mb-3">
+                                         <p class="fs-2 fw-bold mb-0 mt-3">
+                                             Rp. {{ number_format($price, 0) }}
                                          </p>
-                                     @endif
+                                         @if ($normalPrice > $price)
+                                             <p class="mb-0 text-muted text-decoration-line-through">
+                                                 Harga Normal Rp. {{ number_format($normalPrice, 0) }}
+                                             </p>
+                                         @endif
+                                     </div>
 
                                      <p class="text-muted">Fitur dalam paket ini</p>
 

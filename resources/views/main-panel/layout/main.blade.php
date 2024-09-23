@@ -98,8 +98,9 @@
                             <!-- Profile -->
                             <div class="dropdown main-profile-menu">
                                 <a class="d-flex" href="javascript:void(0)">
-                                    <span class="main-img-user"><img alt="avatar"
-                                            src="{{ asset('storage/user/user-default.png') }}"></span>
+                                    <span class="main-img-user">
+                                        <img alt="avatar" src="{{ asset('resources/images/user-default.png') }}">
+                                    </span>
                                 </a>
                                 <div class="dropdown-menu">
                                     <div class="header-navheading">
@@ -148,7 +149,7 @@
                     <ul class="menu-nav nav">
                         <li class="nav-header"><span class="nav-label">Dashboard</span></li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('main.beranda') }}">
+                            <a class="nav-link" href="{{ route('main.dashboard') }}">
                                 <span class="shape1"></span>
                                 <span class="shape2"></span>
                                 <i class="ti-home sidemenu-icon menu-icon "></i>

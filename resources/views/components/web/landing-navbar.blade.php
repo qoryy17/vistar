@@ -57,35 +57,31 @@
                 <li><a href="{{ route('mainweb.kontak') }}" class="sub-menu-item">Kontak</a></li>
 
                 @if (Auth::check())
-                    @if (Auth::user()->role == 'Customer')
-                        <li class="has-submenu parent-parent-menu-item">
-                            <a href="javascript:void(0)">Akun</a><span class="menu-arrow"></span>
-                            <ul class="submenu">
-                                <li><a href="{{ route('mainweb.profil-saya') }}" class="sub-menu-item">
-                                        Profil
-                                    </a>
-                                </li>
-                                <li><a href="{{ route('site.main') }}" class="sub-menu-item">Go To Dashboard</a>
-                                </li>
-                                <li><a href="{{ route('mainweb.keranjang') }}" class="sub-menu-item">
+                    <li class="has-submenu parent-parent-menu-item">
+                        <a href="javascript:void(0)">Dashboard</a><span class="menu-arrow"></span>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('user.dashboard') }}" class="sub-menu-item">Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('mainweb.profile') }}" class="sub-menu-item">
+                                    Profil
+                                </a>
+                            </li>
+                            @if (Auth::user()->role == 'Customer')
+                                <li>
+                                    <a href="{{ route('mainweb.keranjang') }}" class="sub-menu-item">
                                         Keranjang Pesanan
                                     </a>
                                 </li>
-                                <li><a href="{{ route('mainweb.free-product') }}" class="sub-menu-item">
+                                <li>
+                                    <a href="{{ route('mainweb.free-product') }}" class="sub-menu-item">
                                         Tryout Gratis
                                     </a>
                                 </li>
-                            </ul>
-                        </li>
-                    @else
-                        <li class="has-submenu parent-parent-menu-item">
-                            <a href="javascript:void(0)">Profil</a><span class="menu-arrow"></span>
-                            <ul class="submenu">
-                                <li><a href="{{ route('main.beranda') }}" class="sub-menu-item">Go To Dashboard</a>
-                                </li>
-                            </ul>
-                        </li>
-                    @endif
+                            @endif
+                        </ul>
+                    </li>
                 @else
                     <li><a href="{{ route('auth.signup') }}" class="sub-menu-item">Daftar</a></li>
                 @endif

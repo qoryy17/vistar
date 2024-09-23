@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Landing;
 
+use App\Enums\UserRole;
 use App\Helpers\RecordLogs;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Customer;
+use App\Models\OrderTryout;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,23 +43,34 @@ class Autentifikasi extends Controller
             'password' => $request->input('password'),
         ];
 
-        if (Auth::attempt($credentials)) {
-            // Generate session ulang
-            $request->session()->regenerate();
-            $user = Auth::user();
-
-            // Jika user bukan customer alihkan kehalaman panel kendali khusus superadmin/admin/finance/tentor
-            if ($user->role != 'Customer') {
-                // Simpan log aktivitas pengguna
-                $logs = $user->name . ' telah login aplikasi, waktu tercatat : ' . now();
-                RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                session(['user' => $user]);
-                return redirect()->intended('/main/dashboard');
-            }
-            // Jika bukan alihkan kehalaman produk berbayar
-            return redirect()->route('mainweb.product');
+        if (!Auth::attempt($credentials)) {
+            return back()->with('error', 'Username/Password salah !')->withInput();
         }
-        return back()->with('error', 'Username/Password salah !')->withInput();
+
+        // Generate session ulang
+        $request->session()->regenerate();
+        $user = Auth::user();
+
+        // Simpan log aktivitas pengguna
+        $logs = $user->name . ' telah login aplikasi, waktu tercatat : ' . now();
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+        session(['user' => $user]);
+
+        $redirectRoute = 'user.dashboard';
+
+        // redirect user to product page if user never purchase product
+        if ($user->role === UserRole::CUSTOMER->value) {
+            $orderExists = OrderTryout::select('id')
+                ->where('customer_id', Auth::user()->customer_id)
+                ->where('status_order', 'paid')
+                ->first();
+            if (!$orderExists) {
+                $redirectRoute = 'mainweb.product';
+            }
+        }
+
+        return redirect()->route($redirectRoute);
     }
 
     public function authSignOut(Request $request): RedirectResponse
@@ -65,7 +78,8 @@ class Autentifikasi extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return Redirect::to('/');
+
+        return redirect()->route('mainweb.index');
     }
 
     public function registerUser(Request $request): RedirectResponse
@@ -111,16 +125,16 @@ class Autentifikasi extends Controller
         $user->kode_referral = Str::random(5);
         $user->blokir = 'Y';
 
-        if ($customer->save() and $user->save()) {
-
-            // event(new Registered($user));
-            // Send email registration to customer with email
-            $this->sendVerificationEmail($user);
-
-            return redirect()->route('auth.signup')->with('message', 'Silahkan konfirmasi akun melalui email !');
-        } else {
+        if ($customer->save() && $user->save()) {
             return back()->with('error', 'Registrasi akun gagal !')->withInput();
+
         }
+
+        // event(new Registered($user));
+        // Send email registration to customer with email
+        $this->sendVerificationEmail($user);
+
+        return redirect()->route('auth.signup')->with('message', 'Silahkan konfirmasi akun melalui email !');
     }
 
     protected function sendVerificationEmail($user)

@@ -66,7 +66,7 @@ class Tryoutc extends Controller
             }
 
             $ujian = DB::table('order_tryout')
-                ->select('order_tryout.id', 'produk_tryout.id as produk_id', 'pengaturan_tryout.durasi')
+                ->select('order_tryout.id', 'produk_tryout.id as produk_id', 'pengaturan_tryout.durasi', 'pengaturan_tryout.masa_aktif', 'order_tryout.created_at as purchase_time')
                 ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
                 ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->where('order_tryout.id', '=', $id)
@@ -83,7 +83,7 @@ class Tryoutc extends Controller
                 return redirect()->route('ujian.progress', ['id' => Crypt::encrypt($cekWaitingExam->id), 'param' => $request->param]);
             }
 
-            $ujian = DB::table('limit_tryout')->select('limit_tryout.id', 'produk_tryout.id as produk_id', 'pengaturan_tryout.durasi')
+            $ujian = DB::table('limit_tryout')->select('limit_tryout.id', 'produk_tryout.id as produk_id', 'pengaturan_tryout.durasi', 'pengaturan_tryout.masa_aktif', 'limit_tryout.created_at as purchase_time')
                 ->leftJoin('produk_tryout', 'limit_tryout.produk_tryout_id', '=', 'produk_tryout.id')
                 ->leftJoin('pengaturan_tryout', 'produk_tryout.pengaturan_tryout_id', '=', 'pengaturan_tryout.id')
                 ->where('limit_tryout.id', '=', $id)
@@ -91,7 +91,15 @@ class Tryoutc extends Controller
 
             $newExamData['limit_tryout_id'] = $id;
         } else {
-            return Redirect::route('site.main')->with('error', 'Parameter tidak valid !');
+            return redirect()->route('site.tryout-berbayar')->with('error', 'Parameter tidak valid !');
+        }
+
+        // Check Activation period
+        $date = \Carbon\Carbon::parse($ujian->purchase_time);
+        $newDate = $date->addDays($ujian->masa_aktif);
+        $activationPeriod = now()->diffInSeconds($newDate, false);
+        if ($activationPeriod < 0) {
+            return redirect()->route('site.tryout-berbayar')->with('error', "Masa Aktif Paket Telah Berakhir pada: " . $newDate->diffForHumans());
         }
 
         $newExam = Ujian::create(array_merge($newExamData, [

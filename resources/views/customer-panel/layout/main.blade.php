@@ -68,7 +68,7 @@
                             <div class="dropdown main-profile-menu">
                                 <a class="d-flex" href="javascript:void(0)">
                                     <span class="main-img-user"><img alt="avatar"
-                                            src="{{ $customer->foto ? asset('storage/user/' . $customer->foto) : asset('storage/user/user-default.png') }}"></span>
+                                            src="{{ $customer->foto ? asset('storage/user/' . $customer->foto) : asset('resources/images/user-default.png') }}"></span>
                                 </a>
                                 <div class="dropdown-menu">
                                     <div class="header-navheading">
@@ -76,7 +76,7 @@
                                         <p class="main-notification-text text-bold">{{ $customer->pendidikan }} -
                                             {{ $customer->jurusan }}</p>
                                     </div>
-                                    <a class="dropdown-item" href="{{ route('mainweb.profil-saya') }}">
+                                    <a class="dropdown-item" href="{{ route('mainweb.profile') }}">
                                         <i class="fe fe-user"></i> Profile
                                     </a>
                                     <a class="dropdown-item" href="{{ route('site.pembelian') }}">

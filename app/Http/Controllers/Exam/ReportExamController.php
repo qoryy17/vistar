@@ -24,10 +24,8 @@ class ReportExamController extends Controller
 
         $statusList = ReportExamModel::getStatusList();
 
-        if ($status) {
-            if (!array_key_exists($status, $statusList)) {
-                return redirect()->back()->with('error', 'Status Laporan tidak dikenali');
-            }
+        if ($status && !array_key_exists($status, $statusList)) {
+            return redirect()->back()->with('error', 'Status Laporan tidak dikenali');
         }
 
         $data = [

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Customer;
 
+use App\Enums\UserRole;
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProfilRequest extends FormRequest
@@ -21,18 +23,25 @@ class ProfilRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'namaLengkap' => ['required', 'string', 'max:255'],
-            'tanggalLahir' => ['required'],
-            'jenisKelamin' => ['required'],
-            'kontak' => ['required', 'max:15'],
-            'alamat' => ['required', 'string', 'max:300'],
-            'provinsi' => ['required', 'string', 'max:100'],
-            'kotaKab' => ['required', 'string', 'max:100'],
-            'kecamatan' => ['required', 'string', 'max:100'],
-            'pendidikan' => ['required', 'string'],
-            'jurusan' => ['required', 'string'],
         ];
+
+        if (in_array(Auth::user()->role, [UserRole::CUSTOMER->value])) {
+            $rules = array_merge($rules, [
+                'tanggalLahir' => ['required'],
+                'jenisKelamin' => ['required'],
+                'kontak' => ['required', 'max:15'],
+                'alamat' => ['required', 'string', 'max:300'],
+                'provinsi' => ['required', 'string', 'max:100'],
+                'kotaKab' => ['required', 'string', 'max:100'],
+                'kecamatan' => ['required', 'string', 'max:100'],
+                'pendidikan' => ['required', 'string'],
+                'jurusan' => ['required', 'string'],
+            ]);
+        }
+
+        return $rules;
     }
 
     public function messages(): array
@@ -60,7 +69,7 @@ class ProfilRequest extends FormRequest
             'pendidikan.required' => 'Pendidikan wajib di isi',
             'pendidikan.string' => 'Pendidikan harus berupa kalimat',
             'jurusan.required' => 'Jurusan wajib di isi',
-            'jurusan.string' => 'Jurusan harus berupa kalimat'
+            'jurusan.string' => 'Jurusan harus berupa kalimat',
         ];
     }
 }

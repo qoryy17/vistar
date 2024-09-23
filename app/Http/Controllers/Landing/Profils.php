@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Landing;
 
-use App\Models\User;
-use App\Models\Customer;
+use App\Enums\UserRole;
 use App\Helpers\RecordLogs;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\Rules\Password;
 use App\Http\Requests\Customer\FotoRequest;
 use App\Http\Requests\Customer\ProfilRequest;
+use App\Models\Customer;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
 class Profils extends Controller
@@ -41,9 +42,9 @@ class Profils extends Controller
                 // // Simpan logs aktivitas pengguna
                 $logs = Auth::user()->name . ' telah melengkapi foto profil akun waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::to('/profil-saya')->with('profilMessage', 'Foto berhasil disimpan !');
+                return Redirect::route('mainweb.profile')->with('profilMessage', 'Foto berhasil disimpan !');
             } else {
-                return Redirect::to('/profil-saya')->with('errorMessage', 'Foto gagal disimpan !');
+                return Redirect::route('mainweb.profile')->with('errorMessage', 'Foto gagal disimpan !');
             }
         }
         return back()->with('errorMessage', 'Unggah foto gagal !')->withInput();
@@ -51,38 +52,45 @@ class Profils extends Controller
 
     public function ubahProfil(ProfilRequest $request)
     {
-        // Autentifikasi user
-        $users = Auth::user();
         $request->validated();
 
-        $user = Customer::findOrFail($users->customer_id);
-        $user->nama_lengkap = htmlspecialchars($request->input('namaLengkap'));
+        $user = Auth::user();
 
-        // Ubah format tanggal menjadi YYYY/MM/DD
-        $formattedDate = \Carbon\Carbon::createFromFormat('d/m/Y', htmlspecialchars($request->input('tanggalLahir')))->format('Y-m-d');
+        if ($user->role === UserRole::CUSTOMER->value) {
+            $customer = Customer::findOrFail($user->customer_id);
 
-        $user->tanggal_lahir = $formattedDate;
-        $user->jenis_kelamin = htmlspecialchars($request->input('jenisKelamin'));
-        $user->kontak = htmlspecialchars($request->input('kontak'));
-        $user->alamat = htmlspecialchars($request->input('alamat'));
-        $user->provinsi = htmlspecialchars($request->input('provinsi'));
-        $user->kabupaten = htmlspecialchars($request->input('kotaKab'));
-        $user->kecamatan = strtoupper(htmlspecialchars($request->input('kecamatan')));
-        $user->pendidikan = htmlspecialchars($request->input('pendidikan'));
-        $user->jurusan = htmlspecialchars($request->input('jurusan'));
+            // Ubah format tanggal menjadi YYYY/MM/DD
+            $formattedDate = \Carbon\Carbon::createFromFormat('d/m/Y', htmlspecialchars($request->input('tanggalLahir')))->format('Y-m-d');
 
-        $akun = User::findOrFail($users->id);
-
-        $akun->name = htmlspecialchars($request->input('namaLengkap'));
-
-        if ($user->save() and $akun->save()) {
-            // // Simpan logs aktivitas pengguna
-            $logs = htmlspecialchars($request->input('namaLengkap')) . ' telah melengkapi data profil akun waktu tercatat :  ' . now();
-            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::to('/profil-saya')->with('profilMessage', 'Profil berhasil disimpan !');
-        } else {
-            return Redirect::to('/profil-saya')->with('errorMessage', 'Profil gagal disimpan !');
+            $updateCustomer = $customer->update([
+                'nama_lengkap' => htmlspecialchars($request->input('namaLengkap')),
+                'tanggal_lahir' => $formattedDate,
+                'jenis_kelamin' => htmlspecialchars($request->input('jenisKelamin')),
+                'kontak' => htmlspecialchars($request->input('kontak')),
+                'alamat' => htmlspecialchars($request->input('alamat')),
+                'provinsi' => htmlspecialchars($request->input('provinsi')),
+                'kabupaten' => htmlspecialchars($request->input('kotaKab')),
+                'kecamatan' => strtoupper(htmlspecialchars($request->input('kecamatan'))),
+                'pendidikan' => htmlspecialchars($request->input('pendidikan')),
+                'jurusan' => htmlspecialchars($request->input('jurusan')),
+            ]);
+            if (!$updateCustomer) {
+                return redirect()->route('mainweb.profile')->with('errorMessage', 'Profil gagal disimpan !');
+            }
         }
+
+        $updateUser = User::where('id', Auth::id())
+            ->update([
+                'name' => htmlspecialchars($request->input('namaLengkap')),
+            ]);
+        if (!$updateUser) {
+            return redirect()->route('mainweb.profile')->with('errorMessage', 'Profil gagal disimpan !');
+        }
+
+        // Simpan logs aktivitas pengguna
+        $logs = htmlspecialchars($request->input('namaLengkap')) . ' telah melengkapi data profil akun waktu tercatat :  ' . now();
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+        return Redirect::route('mainweb.profile')->with('profilMessage', 'Profil berhasil disimpan !');
     }
 
     public function ubahPassword(Request $request) //: RedirectResponse
@@ -96,16 +104,16 @@ class Profils extends Controller
                     'passwordBaru' => [
                         'string',
                         'min:8',
-                        'regex:/[A-Z]/',       // must contain at least one uppercase letter
-                        'regex:/[a-z]/',       // must contain at least one lowercase letter
-                        'regex:/[0-9]/',       // must contain at least one digit
-                        'regex:/[@$!%*?&]/',   // must contain a special character,
+                        'regex:/[A-Z]/', // must contain at least one uppercase letter
+                        'regex:/[a-z]/', // must contain at least one lowercase letter
+                        'regex:/[0-9]/', // must contain at least one digit
+                        'regex:/[@$!%*?&]/', // must contain a special character,
                         'same:konfirmasiPassword', // mencocokkan dengan konfirmasi password
                     ],
                 ], [
                     'passwordBaru.min' => 'Password harus mengandung 8 karakter.',
                     'passwordBaru.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
-                    'passwordBaru.same' => 'Password konfirmasi tidak cocok'
+                    'passwordBaru.same' => 'Password konfirmasi tidak cocok',
                 ]);
 
                 $passwordUser = User::findOrFail($user->id);
@@ -115,7 +123,7 @@ class Profils extends Controller
                 // // Simpan logs aktivitas pengguna
                 $logs = Auth::user()->name . ' telah memperbarui password waktu tercatat :  ' . now();
                 RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return redirect()->route('mainweb.profil-saya')->with('profilMessage', 'Password berhasil disimpan !');
+                return redirect()->route('mainweb.profile')->with('profilMessage', 'Password berhasil disimpan !');
             }
         } else {
             if ($request->filled('passwordBaru')) {
@@ -127,16 +135,16 @@ class Profils extends Controller
                         'passwordBaru' => [
                             'string',
                             'min:8',
-                            'regex:/[A-Z]/',       // must contain at least one uppercase letter
-                            'regex:/[a-z]/',       // must contain at least one lowercase letter
-                            'regex:/[0-9]/',       // must contain at least one digit
-                            'regex:/[@$!%*?&]/',   // must contain a special character,
+                            'regex:/[A-Z]/', // must contain at least one uppercase letter
+                            'regex:/[a-z]/', // must contain at least one lowercase letter
+                            'regex:/[0-9]/', // must contain at least one digit
+                            'regex:/[@$!%*?&]/', // must contain a special character,
                             'same:konfirmasiPassword', // mencocokkan dengan konfirmasi password
                         ],
                     ], [
                         'passwordBaru.min' => 'Password harus mengandung 8 karakter.',
                         'passwordBaru.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
-                        'passwordBaru.same' => 'Password konfirmasi tidak cocok'
+                        'passwordBaru.same' => 'Password konfirmasi tidak cocok',
                     ]);
 
                     if (!Hash::check($request->passwordLama, $user->password)) {
@@ -152,10 +160,10 @@ class Profils extends Controller
                     // // Simpan logs aktivitas pengguna
                     $logs = Auth::user()->name . ' telah memperbarui password waktu tercatat :  ' . now();
                     RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                    return redirect()->route('mainweb.profil-saya')->with('profilMessage', 'Password berhasil disimpan !');
+                    return redirect()->route('mainweb.profile')->with('profilMessage', 'Password berhasil disimpan !');
                 }
             }
         }
-        return redirect()->route('mainweb.profil-saya')->with('profilMessage', 'Password tidak diubah !');
+        return redirect()->route('mainweb.profile')->with('profilMessage', 'Password tidak diubah !');
     }
 }

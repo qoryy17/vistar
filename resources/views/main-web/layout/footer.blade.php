@@ -20,6 +20,31 @@
 <script src="{{ asset('resources/web/dist/assets/libs/feather-icons/feather.min.js') }}"></script>
 <script src="{{ asset('resources/web/dist/assets/js/plugins.init.js') }}"></script>
 <script src="{{ asset('resources/web/dist/assets/js/app.js') }}"></script>
+<!-- Internal Sweet-Alert js-->
+<script src="{{ url('resources/spruha/assets/plugins/sweet-alert/sweetalert.min.js') }}"></script>
+
+@if (session()->has('message'))
+    <script>
+        window.onload = function() {
+            swal({
+                title: "Notifikasi",
+                text: " {{ session('message') }}",
+                type: "success"
+            });
+        }
+    </script>
+@endif
+@if (session()->has('error'))
+    <script>
+        window.onload = function() {
+            swal({
+                title: "Notifikasi",
+                text: " {{ session('error') }}",
+                type: "error"
+            });
+        }
+    </script>
+@endif
 
 {{--  Analytics  --}}
 {{--  Google tag (gtag.js)  --}}
@@ -68,6 +93,14 @@
 
 <script src="{{ asset('resources/web/dist/assets/js/analytics.js') }}"></script>
 
+<script>
+    function number_format(number, options) {
+        const locale = 'id';
+        const formatter = new Intl.NumberFormat(locale, options);
+
+        return formatter.format(number)
+    }
+</script>
 @yield('scripts')
 
 </body>

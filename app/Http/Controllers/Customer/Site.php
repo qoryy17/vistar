@@ -70,29 +70,31 @@ class Site extends Controller
         return view('customer-panel.event.event-tryout-berbayar', $data);
     }
 
-    public function generatePembelianData($filter): \Illuminate\Support\Collection
+    public function generatePembelianData($filter): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         // Check Pending Transaction
         $paymentService = new PaymentService();
         $paymentService->checkPendingTransaction(Auth::user()->customer_id);
 
-        $pembelian = DB::table('order_tryout')->select(
-            'order_tryout.*',
-            'produk_tryout.nama_tryout',
-            'produk_tryout.keterangan',
-            'produk_tryout.status',
-            'produk_tryout.kategori_produk_id',
-            'kategori_produk.judul'
-        )->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
+        $pembelian = DB::table('order_tryout')
+            ->select(
+                'order_tryout.*',
+                'produk_tryout.nama_tryout',
+                'produk_tryout.keterangan',
+                'produk_tryout.status',
+                'produk_tryout.kategori_produk_id',
+                'kategori_produk.judul'
+            )
+            ->leftJoin('produk_tryout', 'order_tryout.produk_tryout_id', '=', 'produk_tryout.id')
             ->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')
             ->where('kategori_produk.status', 'Berbayar')
             ->where('order_tryout.customer_id', Auth::user()->customer_id);
 
         $pembelian->leftJoin('payment', 'order_tryout.id', '=', 'payment.ref_order_id')
-            ->addSelect('payment.snap_token');
+            ->addSelect('payment.snap_token', 'payment.id as transaction_id', 'payment.nominal as total');
 
         $checkFilter = false;
-        if (array_key_exists('category', $filter) && $filter['category']) {
+        if (array_key_exists('category_id', $filter) && $filter['category_id']) {
             $checkFilter = true;
         }
         if (array_key_exists('year', $filter) && $filter['year']) {
@@ -101,8 +103,8 @@ class Site extends Controller
 
         if ($checkFilter) {
             $pembelian->where(function ($query) use ($filter) {
-                if (array_key_exists('category', $filter)) {
-                    $query->where('kategori_produk.judul', $filter['category']);
+                if (array_key_exists('category_id', $filter)) {
+                    $query->where('kategori_produk.id', $filter['category_id']);
                 }
 
                 if (array_key_exists('year', $filter)) {
@@ -111,7 +113,9 @@ class Site extends Controller
             });
         }
 
-        $pembelian = $pembelian->orderBy('order_tryout.created_at', 'DESC')->get();
+        $pembelian = $pembelian
+            ->orderBy('order_tryout.created_at', 'DESC')
+            ->paginate(10);
 
         return $pembelian;
     }
@@ -126,8 +130,8 @@ class Site extends Controller
             'page_title' => 'Pembelian',
             'breadcumb' => 'Pembelian Produk',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
-            'search' => $pembelian,
             'transactionStatusList' => $transactionStatusList,
+            'transactions' => $pembelian,
         ];
 
         return view('customer-panel.tryout.pembelian', $data);
@@ -136,7 +140,7 @@ class Site extends Controller
     public function searchPembelian(Request $request)
     {
         $pembelian = $this->generatePembelianData([
-            'category' => $request->input('kategori'),
+            'category_id' => $request->input('category_id'),
             'year' => $request->input('tahun'),
         ]);
 

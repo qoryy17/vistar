@@ -1,4 +1,6 @@
  @php
+     $promoCode = \App\Http\Controllers\PromoCodeController::getPromoCode();
+
      $tags = ['</p>', '<br />', '<br>', '<hr />', '<hr>', '</h1>', '</h2>', '</h3>', '</h4>', '</h5>', '</h6>'];
 
      $descriptionPlainText = trim(strip_tags(str_replace($tags, '. ', $product->keterangan)));
@@ -14,6 +16,30 @@
      }
      if (!in_array($product->nama_tryout, $keywords)) {
          array_push($keywords, $product->nama_tryout);
+     }
+
+     $price = null;
+     $normalPrice = null;
+     $productSetting = $product->setting;
+     if ($productSetting) {
+         $price = $productSetting->harga;
+         $normalPrice = $price;
+         if ($productSetting->harga_promo != null && $productSetting->harga_promo != 0) {
+             $price = $productSetting->harga_promo;
+         }
+
+         // Apply promo code
+         if ($promoCode) {
+             if ($promoCode['promo']['type'] === 'percent') {
+                 $normalPrice = $price;
+                 $price = $price - ($price * $promoCode['promo']['value']) / 100;
+             } elseif ($promoCode['promo']['type'] === 'deduction') {
+                 if ($promoCode['promo']['type'] === 'percent') {
+                     $normalPrice = $price;
+                     $price = $price - $promoCode['promo']['value'];
+                 }
+             }
+         }
      }
  @endphp
  @extends('main-web.layout.main')
@@ -60,18 +86,17 @@
                              </span>
                          </p>
                      @endif
-                     @if ($product->setting)
-                         @php
-                             $price = $product->setting->harga;
-                             if ($product->setting->harga_promo != null and $product->setting->harga_promo != 0) {
-                                 $price = $product->setting->harga_promo;
-                             }
-                         @endphp
-                         <p class="mt-2">
+                     @if ($price !== null)
+                         <div class="my-3">
                              <span class="text-muted fs-3 fw-bold">
                                  Rp. {{ number_format($price, 0) }}
                              </span>
-                         </p>
+                             @if ($normalPrice > $price)
+                                 <p class="text-muted text-decoration-line-through">
+                                     Harga Normal Rp. {{ number_format($normalPrice, 0) }}
+                                 </p>
+                             @endif
+                         </div>
                      @endif
                      <div class="d-flex flex-row gap-2">
                          <span>Bagikan :</span>
@@ -178,6 +203,25 @@
                              if ($row->review_pembahasan === 'Y') {
                                  array_push($features, 'Review Pembahasan Soal');
                              }
+
+                             $price = $row->harga;
+                             $normalPrice = $price;
+                             if ($row->harga_promo != null && $row->harga_promo != 0) {
+                                 $price = $row->harga_promo;
+                             }
+
+                             // Apply promo code
+                             if ($promoCode) {
+                                 if ($promoCode['promo']['type'] === 'percent') {
+                                     $normalPrice = $price;
+                                     $price = $price - ($price * $promoCode['promo']['value']) / 100;
+                                 } elseif ($promoCode['promo']['type'] === 'deduction') {
+                                     if ($promoCode['promo']['type'] === 'percent') {
+                                         $normalPrice = $price;
+                                         $price = $price - $promoCode['promo']['value'];
+                                     }
+                                 }
+                             }
                          @endphp
                          <div class="col-lg-4 col-md-6">
                              <div class="card pricing pricing-primary business-rate border-0 p-4 rounded-md shadow">
@@ -192,10 +236,10 @@
                                          {{ $row->nama_tryout }}
                                      </h3>
                                      <p class="fs-4 fw-bold mb-0 mt-3">
-                                         Rp. {{ number_format($row->harga, 0) }}
-                                         @if ($row->harga_promo != null && $row->harga_promo != 0)
-                                             <p class="text-muted">
-                                                 Promo Rp. {{ number_format($row->harga_promo, 0) }}
+                                         Rp. {{ number_format($price, 0) }}
+                                         @if ($normalPrice > $price)
+                                             <p class="text-muted text-decoration-line-through">
+                                                 Harga Normal Rp. {{ number_format($price, 0) }}
                                              </p>
                                          @endif
                                      </p>

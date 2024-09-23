@@ -40,9 +40,9 @@ class GoogleOauth extends Controller
                     // Tautkan ke google account
                     $emailRegister->google_id = $user->id;
                     $emailRegister->save();
-                    return redirect()->route('mainweb.profil-saya')->with('profilMessage', 'Akun anda berhasil ditautkan ke Google !');
+                    return redirect()->route('mainweb.profile')->with('profilMessage', 'Akun anda berhasil ditautkan ke Google !');
                 } else {
-                    return redirect()->route('mainweb.profil-saya')->with('errorMessage', 'Email Google tidak cocok dengan akun yang terdaftar !');
+                    return redirect()->route('mainweb.profile')->with('errorMessage', 'Email Google tidak cocok dengan akun yang terdaftar !');
                 }
             }
 

@@ -23,114 +23,94 @@
                 </div>
                 <!-- End Page Header -->
 
-                {{-- Filter pembelian produk --}}
-                <form action="{{ route('site.search-pembelian') }}" method="GET">
-                    {{-- @csrf
-                    @method('POST') --}}
-                    <div class="row mb-3">
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label for="kategori">Kategori</label>
-                                <select name="kategori" class="form-control selectProduk" id="kategori">
-                                    <option value="">-- Pilih Kategori --</option>
-                                    <option value="CPNS">CPNS (Calon Pegawai Negeri Sipil)</option>
-                                    <option value="PPK">PPPK (Pegawai Pemerintah Dengan Perjanjian Kerja)</option>
-                                    <option value="Kedinasan">Kedinasan</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="tahun">Tahun </label>
-                                <select name="tahun" id="tahun" class="form-control selectTahun">
-                                    <option value="">-- Pilih Tahun --</option>
-                                    @for ($tahun = 2024; $tahun <= 2026; $tahun++)
-                                        <option value="{{ $tahun }}">{{ $tahun }}</option>
-                                    @endfor
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="Filter">Filter </label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <button class="btn btn-block btn-default btn-web"><i class="fa fas fa-search"></i>
-                                            Filter</button>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <a href="{{ route('site.pembelian') }}"
-                                            class="btn btn-block btn-default btn-web1"><i class="fa fas fa-refresh"></i>
-                                            Reset</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-
                 <!-- Row -->
                 <div class="row sidemenu-height">
-                    @foreach ($search as $pembelian)
-                        @php
-                            $statusCheck = null;
-                            if (array_key_exists($pembelian->status_order, $transactionStatusList)) {
-                                $statusCheck = $transactionStatusList[$pembelian->status_order];
-                            }
-                        @endphp
-                        <div class="col-lg-6">
-                            {{-- Informasi Paket Tryout --}}
-                            <div class="card custom-card">
-                                <div class="card-body">
-                                    <div>
-                                        <h6>
-                                            Informasi Paket
-                                        </h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered border-bottom">
+                            <thead>
+                                <tr>
+                                    <td id="no">No</td>
+                                    <th id="action">Aksi</th>
+                                    <th id="transaction">ID Transaksi</th>
+                                    <th id="email">Produk</th>
+                                    <th id="profit">Status</th>
+                                    <th id="name">Total</th>
+                                    <th id="created_at">Waktu Transaksi</th>
+                                </tr>
+                            </thead>
+                            {{--  IDEA: Next progress using ajax load using yajra datatables or other pacakges --}}
+                            <tbody>
+                                @php
+                                    $page = $transactions->currentPage();
+                                    $perPage = $transactions->perPage();
 
-                                        {{--  Show Transaction Status  --}}
-                                        @if ($statusCheck)
+                                    $no = 1 + ($page - 1) * $perPage;
+                                @endphp
+                                @foreach ($transactions as $row)
+                                    @php
+                                        $statusCheck = null;
+                                        if (array_key_exists($row->status_order, $transactionStatusList)) {
+                                            $statusCheck = $transactionStatusList[$row->status_order];
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $no }}</td>
+                                        <td>
+                                            @if ($row->status_order === 'pending' && $row->snap_token)
+                                                {{--  Please change the design to fit the template  --}}
+                                                <button onclick="showSnap('{{ $row->snap_token }}')" id="pay-button"
+                                                    class="mt-3 btn btn-block btn-warning text-nowrap">
+                                                    Bayar Sekarang <i class="mdi mdi-arrow-right"></i>
+                                                </button>
+                                            @endif
+
+                                            @if ($row->status_order === 'paid')
+                                                <form
+                                                    action="{{ route('ujian.main', ['id' => Crypt::encrypt($row->id), 'param' => Crypt::encrypt('berbayar')]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('POST')
+                                                    <button type="submit"
+                                                        class="btn btn-pills btn-primary d-block d-md-inline-block text-nowrap">
+                                                        Mulai Ujian <i class="mdi mdi-arrow-right"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{ $row->transaction_id }}
+                                        </td>
+                                        <td>
+                                            {{ $row->nama_tryout }}
+                                        </td>
+                                        <td>
                                             <span class="badge"
-                                                style="background: {{ $statusCheck['bg-color'] }}; color: {{ $statusCheck['color'] }}">{{ $statusCheck['title'] }}</span>
-                                        @endif
-
-                                        {{--  Show Transaction Status  --}}
-                                        <h6 class="mb-2 text-primary">
-                                            <span class="fs-25 me-2">{{ $pembelian->nama_tryout }}</span><br>
-                                            <span class="pt-4 text-muted fw-normal">{{ $pembelian->keterangan }}</span>
-                                        </h6>
-                                        <span class="text-muted tx-12">
-                                            Waktu Pembelian : {{ $pembelian->created_at }}
-                                        </span>
-                                        {{--  Note: This is shouldn't be here
-                                            It should be another page to show transaction status.
-                                        --}}
-                                        @if ($pembelian->status_order === 'pending' && $pembelian->snap_token)
-                                            {{--  Please change the design to fit the template  --}}
-                                            <button onclick="showSnap('{{ $pembelian->snap_token }}')" id="pay-button"
-                                                class="mt-3 btn btn-block btn-warning">
-                                                Bayar Sekarang <i class="mdi mdi-arrow-right"></i>
-                                            </button>
-                                        @endif
-
-                                        @if ($pembelian->status_order === 'paid')
-                                            <a href="{{ route('site.tryout-berbayar') }}"
-                                                class="btn btn-primary btn-block mt-3">Mulai Ujian <i
-                                                    class="mdi mdi-arrow-right"></i>
-                                            </a>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-
+                                                style="background: {{ $statusCheck['bg-color'] }}; color: {{ $statusCheck['color'] }}">
+                                                {{ $statusCheck['title'] }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {{ Number::currency($row->total, in: 'IDR') }}
+                                        </td>
+                                        <td>
+                                            {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i') : '-' }}
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $no++;
+                                    @endphp
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    {!! $transactions->links() !!}
                 </div>
                 <!-- End Row -->
             </div>
         </div>
     </div>
-
-    <script src="{{ url('resources/web/dist/assets/js/jquery-3.7.1.min.js') }}"></script>
+@endsection
+@section('scripts')
     <script
         src="{{ !config('services.midtrans.is_production') ? 'https://app.sandbox.midtrans.com/snap/snap.js' : 'https://app.midtrans.com/snap/snap.js' }}"
         data-client-key="{{ config('services.midtrans.client_key') }}"></script>
@@ -142,12 +122,10 @@
                 },
                 onPending: function(result) {
                     window.location.href = "{{ route('site.pembelian') }}";
-
                 },
                 onError: function(result) {
                     window.location.href = "{{ route('site.pembelian') }}";
                 }
-
             });
         };
     </script>
