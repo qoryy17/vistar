@@ -99,14 +99,15 @@
 
     <title>@yield('title')</title>
 
-    <!-- Css -->
-    <link href="{{ asset('resources/web/dist/assets/libs/tiny-slider/tiny-slider.css') }}" rel="stylesheet">
-    <link href="{{ asset('resources/web/dist/assets/libs/tobii/css/tobii.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('resources/web/dist/assets/libs/animate.css/animate.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('resources/web/dist/assets/libs/swiper/css/swiper.min.css') }}" rel="stylesheet">
     <!-- Bootstrap Css -->
     <link href="{{ asset('resources/web/dist/assets/css/bootstrap.min.css') }}" id="bootstrap-style" class="theme-opt"
         rel="stylesheet" type="text/css">
+
+    @yield('styles-top')
+
+    <!-- Css -->
+    <link href="{{ asset('resources/web/dist/assets/libs/animate.css/animate.min.css') }}" rel="stylesheet">
+
     <!-- Icons Css -->
     <link href="{{ asset('resources/web/dist/assets/libs/@mdi/font/css/materialdesignicons.min.css') }}"
         rel="stylesheet" type="text/css">
@@ -115,7 +116,6 @@
     <!-- Internal Sweet-Alert css-->
     <link href="{{ url('resources/spruha/assets/plugins/sweet-alert/sweetalert.css') }}" rel="stylesheet">
     <!-- Style Css-->
-    <link href="{{ asset('resources/web/dist/assets/css/select2.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('resources/web/dist/assets/css/style.min.css') }}" rel="stylesheet" type="text/css">
 
     @yield('styles')

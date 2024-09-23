@@ -23,15 +23,6 @@ class MainWebsite extends Controller
 {
     public function index()
     {
-        $testimoni = DB::table('testimoni')->select(
-            'testimoni.*',
-            'customer.nama_lengkap',
-            'customer.pendidikan',
-            'customer.jurusan',
-            'customer.foto'
-        )->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')
-            ->where('publish', 'Y')->orderBy('updated_at', 'desc')->limit(10);
-
         $web = BerandaUI::web();
 
         // This is should from the database
@@ -39,19 +30,16 @@ class MainWebsite extends Controller
             [
                 'id' => 5550,
                 'title' => 'PPPK',
-                'price' => 50000,
                 'is_popular' => false,
                 'features' => [
                     'Hasil Ujian',
                     'Grafik Hasil Ujian',
                     'Review Pembahasan Soal',
-                    // 'Akses Bagikan Referal'
                 ],
             ],
             [
                 'id' => 19571,
                 'title' => 'CPNS',
-                'price' => 50000,
                 'is_popular' => true,
                 'features' => [
                     'Hasil Ujian',
@@ -62,7 +50,6 @@ class MainWebsite extends Controller
             [
                 'id' => 86539,
                 'title' => 'Kedinasan',
-                'price' => 50000,
                 'is_popular' => false,
                 'features' => [
                     'Hasil Ujian',
@@ -74,7 +61,6 @@ class MainWebsite extends Controller
 
         $data = [
             'title' => $web->nama_bisnis . " " . $web->tagline,
-            'testimoni' => $testimoni,
             'web' => $web,
             'productCategories' => $productCategories,
         ];

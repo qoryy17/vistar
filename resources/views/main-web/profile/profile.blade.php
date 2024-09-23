@@ -433,7 +433,11 @@
      </section><!--end section-->
      <!-- Profile Setting End -->
  @endsection
+ @section('styles')
+     <link href="{{ asset('resources/web/dist/assets/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
+ @endsection
  @section('scripts')
+     <script src="{{ asset('resources/web/dist/assets/js/select2.min.js') }}"></script>
      <script src="{{ asset('resources/web/dist/assets/js/geolocation.js') }}"></script>
 
      <script>

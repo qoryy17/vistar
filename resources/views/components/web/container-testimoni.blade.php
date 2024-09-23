@@ -16,28 +16,27 @@
      <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
          <div class="col-lg-12 mt-4">
              <div class="tiny-three-item">
-                 @foreach ($testimoni->get() as $testimoniPeserta)
+                 @foreach ($testimoni as $row)
                      <div class="tiny-slide">
                          <div class="d-flex client-testi m-2">
-                             <img src="{{ asset('storage/user/' . $testimoniPeserta->foto) }}"
-                                 class="avatar avatar-small client-image rounded shadow"
-                                 alt="{{ $testimoniPeserta->nama_lengkap }}"
-                                 title="{{ $testimoniPeserta->nama_lengkap }}" loading="lazy" />
+                             <img src="{{ asset('storage/user/' . $row->user_photo) }}"
+                                 class="avatar avatar-small client-image rounded shadow" alt="{{ $row->user_name }}"
+                                 title="{{ $row->user_name }}" loading="lazy" />
                              <div class="card flex-1 content p-3 shadow rounded position-relative">
                                  <ul class="list-unstyled mb-0">
-                                     @for ($i = 0; $i < $testimoniPeserta->rating; $i++)
+                                     @for ($i = 0; $i < $row->rating; $i++)
                                          <li class="list-inline-item"><i class="mdi mdi-star text-warning"></i>
                                          </li>
                                      @endfor
                                  </ul>
                                  <div class="d-flex flex-column-reverse">
                                      <h3 class="text-primary fs-6">
-                                         {{ $testimoniPeserta->nama_lengkap }}
+                                         {{ $row->user_name }}
                                      </h3>
-                                     <h4 class="text-muted mt-2 fs-6">"{{ $testimoniPeserta->testimoni }}"</h4>
+                                     <h4 class="text-muted mt-2 fs-6">"{{ $row->testimoni }}"</h4>
                                  </div>
                                  <small class="text-muted">
-                                     {{ $testimoniPeserta->pendidikan }} - {{ $testimoniPeserta->jurusan }}
+                                     {{ $row->user_pendidikan }} - {{ $row->user_jurusan }}
                                  </small>
                              </div>
                          </div>

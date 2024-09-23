@@ -42,11 +42,6 @@
                         <img width="400" src="{{ url('resources/images/model1.png') }}"
                             class="rounded img-fluid mx-auto d-block" alt="Banner Model 1 {{ config('app.name') }}"
                             title="Model Banner {{ config('app.name') }}" loading="eager" />
-                        {{-- <div class="play-icon">
-                            <a href="#!" data-type="youtube" data-id="yba7hPeTSjk" class="play-btn lightbox border-0">
-                                <i class="mdi mdi-play text-primary rounded-circle shadow"></i>
-                            </a>
-                        </div> --}}
                     </div>
                 </div><!--end col-->
             </div><!--end row-->
@@ -143,4 +138,12 @@
         <!-- End Counter Customer -->
     </section><!--end section-->
     <!-- End feature -->
+@endsection
+@section('styles')
+    <!-- Tiny Slider -->
+    <link href="{{ asset('resources/web/dist/assets/libs/tiny-slider/tiny-slider.css') }}" rel="stylesheet">
+@endsection
+@section('scripts-top')
+    <!-- Tiny Slider -->
+    <script src="{{ asset('resources/web/dist/assets/libs/tiny-slider/min/tiny-slider.js') }}"></script>
 @endsection

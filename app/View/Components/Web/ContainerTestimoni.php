@@ -2,10 +2,11 @@
 
 namespace App\View\Components\web;
 
+use App\Models\Testimoni;
+use Cache;
 use Closure;
-use Illuminate\View\Component;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
+use Illuminate\View\Component;
 
 class ContainerTestimoni extends Component
 {
@@ -15,20 +16,32 @@ class ContainerTestimoni extends Component
      */
     public function __construct()
     {
-        $this->testimoni = DB::table('testimoni')->select(
-            'testimoni.*',
-            'customer.nama_lengkap',
-            'customer.pendidikan',
-            'customer.jurusan',
-            'customer.foto'
-        )->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')
-            ->where('publish', 'Y')->orderBy('updated_at', 'desc')->limit(10);
+        $testimoni = Cache::remember('testimoni_main_web', 7 * 24 * 60 * 60, function () {
+            return Testimoni::where('testimoni.publish', 'Y')
+                ->select(
+                    'testimoni.id',
+                    'testimoni.testimoni',
+                    'testimoni.rating',
+                    'testimoni.created_at',
+
+                    'customer.nama_lengkap as user_name',
+                    'customer.pendidikan as user_pendidikan',
+                    'customer.jurusan as user_jurusan',
+                    'customer.foto as user_photo'
+                )
+                ->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')
+                ->orderBy('testimoni.updated_at', 'desc')
+                ->limit(10)
+                ->get();
+        });
+
+        $this->testimoni = $testimoni;
     }
 
     /**
      * Get the view / contents that represent the component.
      */
-    public function render(): View|Closure|string
+    public function render(): View | Closure | string
     {
         return view('components..web.container-testimoni');
     }

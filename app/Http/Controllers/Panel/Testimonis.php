@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Models\Testimoni;
 use App\Helpers\Notifikasi;
 use App\Helpers\RecordLogs;
-use App\Models\LimitTryout;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\LimitTryout;
+use App\Models\Testimoni;
+use Cache;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
 class Testimonis extends Controller
@@ -32,18 +33,21 @@ class Testimonis extends Controller
             'breadcumb' => 'Manajemen Testimoni',
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
-            'testimoni' => $testimoni
+            'testimoni' => $testimoni,
         ];
         return view('main-panel.testimoni.data-testimoni', $data);
     }
 
     public function publishTestimoni(Request $request)
     {
-        // Cek testimoni 
+        // Cek testimoni
         $testimoni = Testimoni::findOrFail(Crypt::decrypt($request->id));
-        $testimoni->publish = Crypt::decrypt($request->publish);
 
-        if (Crypt::decrypt($request->publish) == 'Y') {
+        $publish = Crypt::decrypt($request->publish);
+
+        $testimoni->publish = $publish;
+
+        if ($publish == 'Y') {
             $logs = Auth::user()->name . ' telah mengaktifkan publish testimoni dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
             $messagePublish = 'Testimoni berhasil dipublish !';
             $errorPublish = 'Testimoni gagal dipublish !';
@@ -53,25 +57,33 @@ class Testimonis extends Controller
             $logs = Auth::user()->name . ' telah menonaktifkan publish testimoni dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
         }
 
-        if ($testimoni->save()) {
-            // Simpan logs aktivitas pengguna
-            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::route('testimoni.main')->with('message', $messagePublish);
-        } else {
-            return Redirect::route('testimoni.main')->with('error', $errorPublish);
+        $save = $testimoni->save();
+        if (!$save) {
+            return redirect()->back()->with('error', $errorPublish);
         }
+
+        Cache::forget('testimoni_main_web');
+
+        // Simpan logs aktivitas pengguna
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+        return redirect()->back()->with('message', $messagePublish);
     }
 
     public function hapusTestimoni(Request $request)
     {
         $testimoni = Testimoni::findOrFail(Crypt::decrypt($request->id));
-        if ($testimoni->delete()) {
-            // Simpan logs aktivitas pengguna
-            $logs = Auth::user()->name . ' telah menghapus testimoni perserta dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
-            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-            return Redirect::route('testimoni.main')->with('message', 'Testimoni berhasil dihapus !');
-        } else {
-            return Redirect::route('testimoni.main')->with('error', 'Testimoni gagal dihapus !');
+
+        $delete = $testimoni->delete();
+        if (!$delete) {
+            return redirect()->back()->with('error', 'Testimoni gagal dihapus !');
         }
+
+        Cache::forget('testimoni_main_web');
+
+        // Simpan logs aktivitas pengguna
+        $logs = Auth::user()->name . ' telah menghapus testimoni perserta dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+        return redirect()->back()->with('message', 'Testimoni berhasil dihapus !');
     }
 }
