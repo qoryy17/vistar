@@ -1,8 +1,8 @@
 @extends('errors.layout.index')
-@section('title', 'Status Server tidak mendukung')
+@section('title', 'Permintaan tidak dapat diproses')
 @section('content')
     @include('errors.layout.content', [
-        'title' => 'Status Server tidak mendukung',
+        'title' => 'Permintaan tidak dapat diproses',
         'defaultMessage' =>
             'Sepertinya ada kesalahan pada server kami. Mohon maaf atas ketidaknyamanannya silahkan kembali halaman utama',
     ])
