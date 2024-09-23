@@ -133,9 +133,11 @@
                                                                                 type="button"></button>
                                                                         </div>
                                                                         <div class="modal-body">
-                                                                            <img loading="lazy"
-                                                                                src="{{ asset('storage/ujian/' . $row->screenshot) }}"
-                                                                                alt="Screenshot" class="img-fluid">
+                                                                            <img src="{{ asset('storage/ujian/' . $row->screenshot) }}"
+                                                                                class="img-fluid"
+                                                                                alt="Screenshot Laporan ID: {{ $row->id }}"
+                                                                                title="Screenshot Laporan ID: {{ $row->id }}"
+                                                                                loading="lazy" />
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button class="btn btn-md btn-block btn-danger"

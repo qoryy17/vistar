@@ -47,7 +47,7 @@
                                                 <a href="{{ route('mainweb.index') }}">
                                                     <img id="img-logo" src="{{ asset('storage/' . $web->logo) }}"
                                                         alt="{{ config('app.name') }} Logo"
-                                                        title="{{ config('app.name') }} Logo" />
+                                                        title="{{ config('app.name') }} Logo" loading="eager" />
                                                 </a>
                                                 {{--  SEO Purpose  --}}
                                                 <h1 class="fs-4 hide my-3">Daftar</h1>

@@ -335,7 +335,8 @@
                     <div class="row">
                         <div class="col-md-4 d-none d-sm-block">
                             <img width="300px" class="img img-thubmnail" src="{{ asset('resources/images/model-5.png') }}"
-                                alt="">
+                                alt="Banner Model 5 {{ config('app.name') }}"
+                                title="Banner Model 5 {{ config('app.name') }}" loading="eager" />
                         </div>
                         <div class="col-md-8" style="vertical-align: middle;">
                             <div class="card custom-card">

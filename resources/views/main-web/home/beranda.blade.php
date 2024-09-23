@@ -5,7 +5,7 @@
     <section class="bg-half-100 d-table w-100">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-7 col-md-7 wow animate__animated animate__fadeInLeft" data-wow-delay=".1s">
+                <div class="col-lg-7 col-md-7">
                     <div class="title-heading mt-4 d-flex flex-column gap-3">
                         <div class="heading text d-flex flex-column">
                             <h1 class="d-flex flex-column">
@@ -37,11 +37,11 @@
                     </div>
                 </div><!--end col-->
 
-                <div class="col-lg-5 col-md-5 mt-4 pt-2 mt-sm-0 pt-sm-0 wow animate__animated animate__fadeInUp"
-                    data-wow-delay=".1s">
+                <div class="col-lg-5 col-md-5 mt-4 pt-2 mt-sm-0 pt-sm-0" data-wow-delay=".1s">
                     <div class="position-relative">
                         <img width="400" src="{{ url('resources/images/model1.png') }}"
-                            class="rounded img-fluid mx-auto d-block" alt="model" loading="lazy">
+                            class="rounded img-fluid mx-auto d-block" alt="Banner Model 1 {{ config('app.name') }}"
+                            title="Model Banner {{ config('app.name') }}" loading="eager" />
                         {{-- <div class="play-icon">
                             <a href="#!" data-type="youtube" data-id="yba7hPeTSjk" class="play-btn lightbox border-0">
                                 <i class="mdi mdi-play text-primary rounded-circle shadow"></i>

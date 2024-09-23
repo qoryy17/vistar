@@ -496,7 +496,8 @@
             let image = null
             if (question.gambar) {
                 image = `<img height="300px" width="img img-thumbnail" src="` + questionAssetPath + `/` + question.gambar +
-                    `" alt="Gambar Soal No ` + no + `" data-bs-target="#modalImg" data-bs-toggle="modal">`;
+                    `" alt="Gambar Soal No ` + no + `" title="Gambar Soal No ` + no +
+                    `" data-bs-target="#modalImg" data-bs-toggle="modal" loading="eager" />`;
                 image += `<div class="modal fade" id="modalImg"><div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content modal-content-demo">
                                 <div class="modal-header">
@@ -507,7 +508,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <img src="` + questionAssetPath + `/` + question.gambar + `"
-                                        alt="Gambar Soal No ` + no + `" />
+                                        alt="Gambar Soal No ` + no + `" title="Gambar Soal No ` + no + `" loading="eager" />
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-sm ripple btn-danger" data-bs-dismiss="modal" type="button">

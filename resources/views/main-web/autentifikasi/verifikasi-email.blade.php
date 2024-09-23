@@ -13,6 +13,8 @@
     <meta name="keywords" content="{{ $web->meta_keyword }}">
     <meta name="description" content="{{ $web->meta_description }}">
 
+    <title>Verifikasi Email :. {{ $web->nama_bisnis }}</title>
+
     <!-- Favicon -->
     <link rel="icon" href="{{ public_path('storage/' . $web->logo) }}" type="image/png" />
 
@@ -28,8 +30,9 @@
             <thead>
                 <tr
                     style="background-color: #2f55d4; padding: 3px 0; border: none; line-height: 68px; text-align: center; color: #fff; font-size: 24px; letter-spacing: 1px;">
-                    <th scope="col"><img src="{{ public_path('storage/' . $web->logo) }}" height="24"
-                            alt="">
+                    <th scope="col">
+                        <img src="{{ asset('storage/' . $web->logo) }}" height="24"
+                            alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo" loading="eager" />
                     </th>
                 </tr>
             </thead>
@@ -42,10 +45,8 @@
                 </tr>
                 <tr>
                     <td style="padding: 15px 24px 15px; color: #8492a6;">
-                        Terimakasih telah mendaftar pada Vi Star Indonesia. Untuk melanjutkan, mohon konfirmasi Email
-                        aktivasi
-                        akun kamu
-                        dengan mengklik tombol dibawah ini.
+                        Terimakasih telah mendaftar di {{ $web->nama_bisnis }}. Untuk mengaktivasi akun anda, klik
+                        tombol dibawah ini.
                     </td>
                 </tr>
 
@@ -66,16 +67,13 @@
 
                 <tr>
                     <td style="padding: 15px 24px 15px; color: #8492a6;">
-                        Vi Star Indonesia <br> Support Team
+                        {{ config('app.name') }} <br> Support Team
                     </td>
                 </tr>
 
                 <tr>
                     <td style="padding: 16px 8px; color: #8492a6; background-color: #f8f9fc; text-align: center;">
-                        ©
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script> Vi Star Indonesia.
+                        © {{ date('Y') }} {{ config('app.name') }}
                     </td>
                 </tr>
             </tbody>

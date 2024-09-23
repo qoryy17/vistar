@@ -83,10 +83,12 @@
                                             </p>
                                             @if (!empty($review->gambar))
                                                 <img height="300px" width="img img-thumbnail"
-                                                    src="{{ asset('storage/soal/' . $review->gambar) }}" alt="gambar"
-                                                    data-bs-target="#modalImg" data-bs-toggle="modal">
+                                                    src="{{ asset('storage/soal/' . $review->gambar) }}"
+                                                    data-bs-target="#modalImg-id-{{ $review->id }}" data-bs-toggle="modal"
+                                                    alt="Soal ID: {{ $review->id }}"
+                                                    title="Soal ID: {{ $review->id }}" loading="lazy" />
                                                 <!-- Preview modal -->
-                                                <div class="modal fade" id="modalImg">
+                                                <div class="modal fade" id="modalImg-id-{{ $review->id }}">
                                                     <div class="modal-dialog modal-lg">
                                                         <div class="modal-content modal-content-demo">
                                                             <div class="modal-header">
@@ -96,8 +98,9 @@
                                                                     data-bs-dismiss="modal" type="button"></button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <img src="{{ asset('soal/' . $review->gambar) }}"
-                                                                    alt="img">
+                                                                <img src="{{ asset('storage/soal/' . $review->gambar) }}"
+                                                                    alt="Soal ID: {{ $review->id }}"
+                                                                    title="Soal ID: {{ $review->id }}" loading="lazy" />
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button class="btn btn-sm ripple btn-danger"
@@ -192,11 +195,13 @@
                                                 </p>
                                                 @if (!empty($review->gambar))
                                                     <img height="300px" width="img img-thumbnail"
-                                                        src="{{ asset('storage/soal/' . $review->gambar) }}" alt="gambar"
-                                                        data-bs-target="#modalImg" data-bs-toggle="modal">
+                                                        src="{{ asset('storage/soal/' . $review->gambar) }}"
+                                                        data-bs-target="#modalImg-id-{{ $review->id }}"
+                                                        data-bs-toggle="modal" alt="Soal ID: {{ $review->id }}"
+                                                        title="Soal ID: {{ $review->id }}" loading="lazy" />
                                                     <!-- Preview modal -->
-                                                    <div class="modal fade" id="modalImg">
-                                                        <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal fade" id="modalImg-id-{{ $review->id }}">
+                                                        <div class="modal-dialog modal-lg">
                                                             <div class="modal-content modal-content-demo">
                                                                 <div class="modal-header">
                                                                     <h6 class="modal-title"><i class="fa fa-book"></i>
@@ -205,8 +210,10 @@
                                                                         data-bs-dismiss="modal" type="button"></button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    <img src="{{ asset('soal/' . $review->gambar) }}"
-                                                                        alt="img">
+                                                                    <img src="{{ asset('storage/soal/' . $review->gambar) }}"
+                                                                        alt="Soal ID: {{ $review->id }}"
+                                                                        title="Soal ID: {{ $review->id }}"
+                                                                        loading="lazy" />
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button class="btn btn-sm ripple btn-danger"

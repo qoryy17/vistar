@@ -4,9 +4,9 @@
         <!-- Logo container-->
         <a title="Beranda {{ config('app.name') }}" class="logo" href="{{ url('/') }}">
             <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}" height="40" class="logo-light-mode"
-                alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo">
+                alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo" loading="eager" />
             <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}" height="40" class="logo-dark-mode"
-                alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo">
+                alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo" loading="eager" />
         </a>
         <!-- Logo End -->
 

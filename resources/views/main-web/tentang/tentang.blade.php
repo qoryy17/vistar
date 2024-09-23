@@ -9,8 +9,7 @@
                      data-wow-delay=".1s">
                      <div class="position-relative">
                          <img src="{{ asset('storage/' . $web->logo) }}" class="rounded img-fluid mx-auto d-block"
-                             alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo" />
-
+                             alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo" loading="eager" />
                      </div>
                  </div><!--end col-->
 

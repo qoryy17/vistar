@@ -104,7 +104,8 @@
                                                 <tr>
                                                     <td>{{ $no }}</td>
                                                     <td>
-                                                        <h5 style="color: #0075B8; ">{{ $row['nama_lengkap'] }}
+                                                        <h5 style="color: #0075B8; ">
+                                                            {{ $row['nama_lengkap'] }}
                                                             ({{ $row['email'] }})
                                                         </h5>
                                                         {{ $row['pendidikan'] }} - {{ $row['jurusan'] }}<br>
@@ -144,9 +145,9 @@
                                                                             type: "info",
                                                                             showCancelButton: true,
                                                                             closeOnConfirm: false,
-                                                                            showLoaderOnConfirm: true }, function () 
-                                                                            { 
-                                                                            setTimeout(function(){  
+                                                                            showLoaderOnConfirm: true }, function ()
+                                                                            {
+                                                                            setTimeout(function(){
                                                                                 document.getElementById("delete-form{{ $no }}").submit();
                                                                         }, 2000); });'
                                                                     class="btn btn-sm btn-danger"><i
@@ -174,7 +175,9 @@
                                                     <td>
                                                         @if (!is_null($row['foto']))
                                                             <img src="{{ asset('storage/user/' . $row['foto']) }}"
-                                                                alt="user" class="img img-thumbnail">
+                                                                class="img img-thumbnail"
+                                                                alt="User {{ $row['nama_lengkap'] }}"
+                                                                title="User {{ $row['nama_lengkap'] }}" loading="lazy" />
                                                         @endif
 
                                                     </td>

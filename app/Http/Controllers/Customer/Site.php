@@ -22,7 +22,13 @@ class Site extends Controller
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
             'countPembelian' => QueryCollect::countPembelian(Auth::user()->customer_id),
             'tryoutTerbaru' => DB::table('produk_tryout')->select('produk_tryout.*', 'kategori_produk.status')->leftJoin('kategori_produk', 'produk_tryout.kategori_produk_id', '=', 'kategori_produk.id')->where('kategori_produk.status', 'Berbayar')->orderBy('produk_tryout.created_at', 'DESC')->first(),
-            'testimoni' => DB::table('testimoni')->select('testimoni.*', 'customer.nama_lengkap')->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')->where('publish', 'Y')->orderBy('updated_at', 'desc'),
+            'testimoni' => DB::table('testimoni')
+                ->select('testimoni.id', 'testimoni.testimoni', 'testimoni.rating', 'produk_tryout.nama_tryout')
+                ->leftJoin('produk_tryout', 'testimoni.produk_tryout_id', '=', 'produk_tryout.id')
+                ->where('testimoni.publish', 'Y')
+                ->orderBy('testimoni.updated_at', 'DESC')
+                ->limit(3)
+                ->get(),
         ];
         return view('customer-panel.home.beranda', $data);
     }

@@ -6,7 +6,7 @@
              <div class="row justify-content-center">
                  <div class="col-12 text-center">
                      <div class="section-title mb-4 pb-2">
-                         <h4 class="title mb-4">"Jajal Kemampuanmu Tanpa Biaya, Coba Tryout Gratis Sekarang!"</h4>
+                         <h1 class="fs-4 title mb-4">"Jajal Kemampuanmu Tanpa Biaya, Coba Tryout Gratis Sekarang!"</h1>
                          <p class="text-muted para-desc mb-0 mx-auto">Buktikan kemampuanmu dalam tryout gratis dan lihat
                              sejauh mana persiapanmu. Bersama <span class="text-primary fw-bold">Vi Star Indonesia</span>,
                              wujudkan mimpimu menuju kesuksesan lulus CPNS, PPPK, dan Kedinasan!
@@ -37,7 +37,8 @@
              <div class="row">
                  <div class="col-md-4">
                      <img src="{{ url('resources/images/model2.png') }}" class="rounded img-fluid mx-auto d-block"
-                         alt="model" loading="lazy">
+                         alt="Banner Model 2 {{ config('app.name') }}" title="Banner Model 2 {{ config('app.name') }}"
+                         loading="eager">
                  </div>
                  <div class="col-md-8">
                      <form action="{{ route('orders.simpan-gratis') }}" method="POST" enctype="multipart/form-data"
@@ -159,8 +160,9 @@
                  <div class="row align-items-end">
                      <div class="col-md-8">
                          <div class="section-title text-md-start text-center">
-                             <h4 class="title mb-3 text-white title-dark">Beli Paket Tryout Berbayar
-                             </h4>
+                             <p class="title mb-3 text-white title-dark">
+                                 Beli Paket Tryout Berbayar
+                             </p>
                              <p class="text-white-50 mb-0">
                                  Ayo tunggu apalagi, dapatkan fitur premium hanya dengan sekali beli untuk paket tryout
                                  CPNS, PPPK, Kedinasan.

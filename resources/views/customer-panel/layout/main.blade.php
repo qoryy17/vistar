@@ -15,24 +15,32 @@
                 <div class="hor-logo">
                     <a class="main-logo" href="{{ route('mainweb.index') }}">
                         <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="header-brand-img desktop-logo" alt="logo" style="max-width: 200px;">
+                            class="header-brand-img desktop-logo" style="max-width: 200px;"
+                            alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo" loading="eager" />
                         <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="header-brand-img desktop-logo-dark" alt="logo" style="max-width: 200px;">
+                            class="header-brand-img desktop-logo-dark" style="max-width: 200px;"
+                            alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo" loading="eager" />
                     </a>
                 </div>
                 <div class="mt-2 p-3">
-                    <h5 class="title-web text-primary">
+                    <p class="title-web text-primary fs-6 fw-bold mb-0">
                         {{ $web->tagline }}
-                    </h5>
+                    </p>
                     <span class="address-web">{{ $web->alamat }}</span>
                 </div>
             </div>
             <div class="main-header-center">
                 <div class="responsive-logo">
-                    <a href="{{ route('site.main') }}"><img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="mobile-logo" alt="logo" style="max-width: 120px;"></a>
-                    <a href="{{ route('site.main') }}"><img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="mobile-logo-dark" alt="logo" style="max-width: 120px;"></a>
+                    <a href="{{ route('site.main') }}">
+                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}" class="mobile-logo"
+                            style="max-width: 120px;" alt="{{ config('app.name') }} Logo"
+                            title="{{ config('app.name') }} Logo" loading="eager">
+                    </a>
+                    <a href="{{ route('site.main') }}">
+                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}" class="mobile-logo-dark"
+                            style="max-width: 120px;" alt="{{ config('app.name') }} Logo"
+                            title="{{ config('app.name') }} Logo" loading="eager">
+                    </a>
                 </div>
             </div>
             <div class="main-header-right">
@@ -67,12 +75,14 @@
                             <!-- Profile -->
                             <div class="dropdown main-profile-menu">
                                 <a class="d-flex" href="javascript:void(0)">
-                                    <span class="main-img-user"><img alt="avatar"
-                                            src="{{ $customer->foto ? asset('storage/user/' . $customer->foto) : asset('resources/images/user-default.png') }}"></span>
+                                    <span class="main-img-user">
+                                        <img src="{{ $customer->foto ? asset('storage/user/' . $customer->foto) : asset('resources/images/user-default.png') }}"
+                                            alt="Avatar Pengguna" title="Avatar Pengguna" loading="eager" />
+                                    </span>
                                 </a>
                                 <div class="dropdown-menu">
                                     <div class="header-navheading">
-                                        <h6 class="main-notification-title">{{ $customer->nama_lengkap }}</h6>
+                                        <p class="main-notification-title">{{ $customer->nama_lengkap }}</p>
                                         <p class="main-notification-text text-bold">{{ $customer->pendidikan }} -
                                             {{ $customer->jurusan }}</p>
                                     </div>
@@ -107,13 +117,19 @@
                     <div class="sidemenu-logo">
                         <a class="main-logo" href="{{ route('site.main') }}">
                             <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                                class="header-brand-img desktop-logo" alt="logo">
+                                class="header-brand-img desktop-logo" alt="{{ config('app.name') }} Desktop Logo"
+                                title="{{ config('app.name') }} Logo" loading="lazy" />
                             <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                                class="header-brand-img icon-logo" alt="logo">
+                                class="header-brand-img icon-logo" alt="{{ config('app.name') }} Icon Logo"
+                                title="{{ config('app.name') }} Logo" loading="lazy">
                             <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                                class="header-brand-img desktop-logo theme-logo" alt="logo">
+                                class="header-brand-img desktop-logo theme-logo"
+                                alt="{{ config('app.name') }} Theme Desktop Logo"
+                                title="{{ config('app.name') }} Logo" loading="lazy">
                             <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                                class="header-brand-img icon-logo theme-logo" alt="logo">
+                                class="header-brand-img icon-logo theme-logo"
+                                alt="{{ config('app.name') }} Theme Icon Logo" title="{{ config('app.name') }} Logo"
+                                loading="lazy">
                         </a>
                     </div>
                     <div class="main-sidebar-body main-body-1">

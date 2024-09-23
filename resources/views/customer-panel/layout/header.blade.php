@@ -65,6 +65,7 @@
 
     <!-- Loader -->
     <div id="global-loader">
-        <img src="{{ asset('resources/spruha/assets/img/loader.svg') }}" class="loader-img" alt="Loader">
+        <img src="{{ asset('resources/spruha/assets/img/loader.svg') }}" class="loader-img" alt="Loader"
+            title="Loader" loading="eager" />
     </div>
     <!-- End Loader -->

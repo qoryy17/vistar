@@ -20,7 +20,9 @@
                      <div class="tiny-slide">
                          <div class="d-flex client-testi m-2">
                              <img src="{{ asset('storage/user/' . $testimoniPeserta->foto) }}"
-                                 class="avatar avatar-small client-image rounded shadow" alt="">
+                                 class="avatar avatar-small client-image rounded shadow"
+                                 alt="{{ $testimoniPeserta->nama_lengkap }}"
+                                 title="{{ $testimoniPeserta->nama_lengkap }}" loading="lazy" />
                              <div class="card flex-1 content p-3 shadow rounded position-relative">
                                  <ul class="list-unstyled mb-0">
                                      @for ($i = 0; $i < $testimoniPeserta->rating; $i++)

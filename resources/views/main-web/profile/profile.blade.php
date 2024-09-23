@@ -43,15 +43,17 @@
                                  <div class="col-lg-2 col-md-3 text-md-start text-center">
                                      <img src="{{ $userData['photo'] }}"
                                          class="avatar avatar-large rounded-circle shadow d-block mx-auto"
-                                         alt="Profil {{ $userData['name'] }}" title="Profil {{ $userData['name'] }}" />
+                                         alt="Profil {{ $userData['name'] }}" title="Profil {{ $userData['name'] }}"
+                                         loading="eager" />
                                  </div>
 
                                  <div class="col-lg-10 col-md-9">
                                      <div class="row align-items-end">
                                          <div class="col-md-7 text-md-start text-center mt-4 mt-sm-0">
-                                             <h3 class="title mb-0">
+                                             <h1 class="title mb-0 fs-3 fw-bold">
+                                                 <span class="hide">Profil</span>
                                                  {{ $userData['name'] }}
-                                             </h3>
+                                             </h1>
 
                                              @if (Auth::user()->role === \App\Enums\UserRole::CUSTOMER->value)
                                                  <small class="text-muted h6 me-2">
@@ -60,15 +62,13 @@
                                              @endif
                                              @if (Auth::user()->role === \App\Enums\UserRole::CUSTOMER->value)
                                                  <form action="{{ route('profils.ubah-foto') }}" method="POST"
-                                                     enctype="multipart/form-data">
+                                                     enctype="multipart/form-data" class="mt-2">
                                                      @csrf
                                                      @method('POST')
-                                                     <div class="mt-2">
-                                                         <input type="file" required class="form-control"
-                                                             name="foto" />
-                                                     </div>
+
+                                                     <input type="file" required class="form-control" name="foto" />
                                                      <button type="submit"
-                                                         class="btn btn-sm btn-pills btn-soft-primary mt-2">
+                                                         class="btn btn-sm btn-pills btn-soft-primary mt-1">
                                                          Ubah Foto
                                                      </button>
                                                      @error('foto')
@@ -78,9 +78,10 @@
                                              @endif
                                              @if (Auth::user()->google_id == null)
                                                  <a href="{{ route('auth.google') }}"
-                                                     class="btn btn-pills btn-soft-primary btn-sm mt-2">
+                                                     class="btn btn-pills btn-soft-primary btn-sm mt-3">
                                                      <img src="{{ asset('resources/images/google-16px.png') }}"
-                                                         alt=""> Hubungkan Ke Google Account
+                                                         alt="Logo Google" title="Logo Google" loading="eager">
+                                                     Hubungkan Ke Google Account
                                                  </a>
                                              @endif
                                          </div><!--end col-->
@@ -102,7 +103,7 @@
                  <div class="col-lg-12 col-12">
                      <div class="card border-0 rounded shadow">
                          <div class="card-body">
-                             <h5 class="text-md-start text-center">Informasi Akun Pengguna</h5>
+                             <h2 class="fs-5 text-md-start text-center">Informasi Akun Pengguna</h2>
 
                              <form action="{{ route('profils.ubah-profil') }}" method="POST">
                                  @csrf
@@ -339,8 +340,8 @@
                              </form><!--end form-->
 
                              <div class="row">
-                                 <div class="col-md-12 mt-4 pt-2">
-                                     <h5>Ubah Password</h5>
+                                 <div class="col-md-12 mt-4 pt-2 border-top">
+                                     <h2 class="fs-5 text-md-start text-center">Ubah Password</h2>
                                      <form action="{{ route('profils.ubah-password') }}" method="POST">
                                          @csrf
                                          @method('POST')

@@ -72,8 +72,9 @@
 
              <div class="row">
                  <div class="col-lg-4">
-                     <img class="img-fluid mb-2" alt="Thumbnail {{ $product->nama_tryout }}"
-                         src={{ asset('storage/tryout/' . $product->thumbnail) }} loading="lazy" />
+                     <img class="img-fluid mb-2" src="{{ asset('storage/tryout/' . $product->thumbnail) }}"
+                         alt="Thumbnail {{ $product->nama_tryout }}" title="Thumbnail {{ $product->nama_tryout }}"
+                         loading="lazy" />
                  </div>
                  <div class="col-lg-8">
                      <h1 class="text-primary fs-2 fw-bold">
