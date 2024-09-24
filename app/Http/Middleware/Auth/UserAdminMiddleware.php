@@ -25,8 +25,6 @@ class UserAdminMiddleware
 
         if ($user->blokir == 'Y') {
             Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
 
             return redirect()->route('mainweb.index')->with('error', 'Akun snda sedang terblokir!');
         }

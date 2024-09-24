@@ -151,20 +151,23 @@
                             </div>
                         </div>
                         {{-- Notif Event --}}
-                        <div class="card custom-card">
-                            <div class="card-body">
-                                <div>
-                                    <h2 class="fs-6">Tryout Terbaru</h2>
-                                    <h3 style="padding: 0px; margin:0px;color: #F8AA3B;" class="mb-2 fs-20 me-2">
-                                        {{ $tryoutTerbaru->nama_tryout }}
-                                    </h3>
-                                    <span class="text-muted tx-14">{{ $tryoutTerbaru->keterangan }}</span>
-                                    <a href="{{ route('mainweb.product') }}"
-                                        class="btn btn-block btn-default mt-2 btn-web1"><i class="fa fa-shopping-cart"></i>
-                                        Beli Sekarang</a>
+                        @if ($tryoutTerbaru)
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <div>
+                                        <h2 class="fs-6">Tryout Terbaru</h2>
+                                        <h3 style="padding: 0px; margin:0px;color: #F8AA3B;" class="mb-2 fs-20 me-2">
+                                            {{ $tryoutTerbaru->nama_tryout }}
+                                        </h3>
+                                        <span class="text-muted tx-14">{{ $tryoutTerbaru->keterangan }}</span>
+                                        <a href="{{ route('mainweb.product') }}"
+                                            class="btn btn-block btn-default mt-2 btn-web1"><i
+                                                class="fa fa-shopping-cart"></i>
+                                            Beli Sekarang</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
                 <!-- End Row -->

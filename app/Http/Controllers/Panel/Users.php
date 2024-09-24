@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use App\Helpers\Notifikasi;
 use App\Helpers\RecordLogs;
@@ -84,9 +85,7 @@ class Users extends Controller
                 'password.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
             ]);
 
-
             $user = new User();
-            $user->id = rand(1, 999) . rand(1, 99);
             $user->name = ucwords(htmlspecialchars($request->input('namaLengkap')));
             $user->email = htmlspecialchars($request->input('email'));
             $user->email_verified_at = now();
@@ -167,47 +166,63 @@ class Users extends Controller
 
     public function hapusUsers(Request $request): RedirectResponse
     {
-        $user = User::findOrFail(Crypt::decrypt($request->id));
-        if ($user) {
-            $users = Auth::user();
-            if ($user->role == session('user')->role) {
-                return Redirect::route('user.main')->with('error', 'Tidak dapat menghapus akun sendiri !');
-            } else {
-                $user->delete();
-                // Simpan logs aktivitas pengguna
-                $logs = $users->name . ' telah menghapus pengguna dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
-                RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::route('user.main')->with('message', 'Pengguna berhasil dihapus !');
-            }
+        $deletedUser = User::findOrFail(Crypt::decrypt($request->id));
+        if (!$deletedUser) {
+            return redirect()->back()->with('error', 'Pengguna tidak ditemukan !');
         }
-        return Redirect::route('user.main')->with('error', 'Pengguna gagal dihapus !');
+
+        $user = Auth::user();
+        if ($deletedUser->role === UserRole::SUPER_ADMIN->value) {
+            return redirect()->back()->with('error', 'Tidak dapat menghapus jenis pengguna ini !');
+        }
+
+        $deleted = $deletedUser->delete();
+        if (!$deleted) {
+            return redirect()->back()->with('error', 'Pengguna gagal dihapus !');
+        }
+
+        /* TODO: Delete Thumbnail, related file, etc */
+
+        // Simpan logs aktivitas pengguna
+        $logs = $user->name . ' telah menghapus pengguna dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+        return redirect()->back()->with('message', 'Pengguna berhasil dihapus !');
     }
 
     public function blokirUser(Request $request): RedirectResponse
     {
-        $user = User::findOrFail(Crypt::decrypt($request->id));
-        if ($user) {
-            if ($user->role == session('user')->role) {
-                return Redirect::route('user.main')->with('error', 'Tidak dapat memblokir akun sendiri !');
-            } else {
-                $users = Auth::user();
-                if ($user->blokir == 'Y') {
-                    $user->blokir = 'T';
-                    $user->save();
-                    // Simpan logs aktivitas pengguna
-                    $logs = $users->name . ' telah meblokir pengguna dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
-                    RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                    return Redirect::route('user.main')->with('message', 'Pengguna berhasil diblokir !');
-                } else {
-                    $user->blokir = 'Y';
-                    $user->save();
-                    // Simpan logs aktivitas pengguna
-                    $logs = $users->name . ' telah membuka blokir pengguna dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
-                    RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                    return Redirect::route('user.main')->with('message', 'Pengguna berhasil diunblokir !');
-                }
-            }
+        $blockedUser = User::findOrFail(Crypt::decrypt($request->id));
+        if (!$blockedUser) {
+            return redirect()->back()->with('error', 'Pengguna tidak ditemukan !');
         }
-        return Redirect::route('user.main')->with('error', 'Pengguna gagal diubah !');
+
+        if ($blockedUser->role === UserRole::SUPER_ADMIN->value) {
+            return redirect()->back()->with('error', 'Tidak dapat memblokir jenis pengguna ini !');
+        }
+
+        $user = Auth::user();
+        $message = '';
+        if ($blockedUser->blokir == 'Y') {
+            $blockedUser->blokir = 'T';
+
+            $logs = $user->name . ' telah membuka blokir pengguna dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
+            $message = 'Pengguna berhasil diunblokir';
+        } else {
+            $blockedUser->blokir = 'Y';
+
+            $logs = $user->name . ' telah meblokir pengguna dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();
+            $message = 'Pengguna berhasil diblokir !';
+        }
+
+        $save = $blockedUser->save();
+        if (!$save) {
+            return redirect()->route('user.main')->with('error', 'Pengguna gagal diubah !');
+        }
+
+        // Simpan logs aktivitas pengguna
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+        return redirect()->route('user.main')->with('message', $message);
     }
 }

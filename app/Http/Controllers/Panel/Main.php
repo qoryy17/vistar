@@ -17,7 +17,7 @@ class Main extends Controller
     public function index()
     {
         $data = [
-            'page_title' => session('user')->name,
+            'page_title' => Auth::user()->name,
             'sesiWaktu' => Waktu::sesiWaktu(),
             'breadcumb' => 'Beranda Vistar Indonesia',
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),

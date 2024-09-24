@@ -69,7 +69,6 @@ class Kategoris extends Controller
 
         if (Crypt::decrypt($request->input('formParameter')) == 'add') {
             $kategori = new KategoriProduk();
-            $kategori->id = rand(1, 999) . rand(1, 99);
             $kategori->judul = ucwords(htmlspecialchars($request->input('judul')));
             $kategori->status = htmlspecialchars($request->input('status'));
             $kategori->aktif = htmlspecialchars($request->input('aktif'));

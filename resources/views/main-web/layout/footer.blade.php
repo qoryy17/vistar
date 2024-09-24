@@ -21,6 +21,17 @@
 <!-- Internal Sweet-Alert js-->
 <script src="{{ url('resources/spruha/assets/plugins/sweet-alert/sweetalert.min.js') }}"></script>
 
+@if (session()->has('success'))
+    <script>
+        window.onload = function() {
+            swal({
+                title: "Notifikasi",
+                text: " {{ session('success') }}",
+                type: "success"
+            });
+        }
+    </script>
+@endif
 @if (session()->has('message'))
     <script>
         window.onload = function() {

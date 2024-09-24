@@ -37,7 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'blokir',
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     /**
      * The attributes that should be hidden for serialization.

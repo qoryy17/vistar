@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Password as PasswordReset;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\DB;
 
 class Autentifikasi extends Controller
 {
@@ -35,26 +36,32 @@ class Autentifikasi extends Controller
 
     public function authSignIn(LoginRequest $request): RedirectResponse
     {
-        // Validasi inputan
         $request->validated();
         $credentials = [
             'email' => $request->input('email'),
             'password' => $request->input('password'),
         ];
 
-        if (!Auth::attempt($credentials)) {
-            return back()->with('error', 'Username/Password salah !')->withInput();
+        $user = User::where('email', $credentials['email'])
+            ->first();
+        if (!$user) {
+            return back()->with('error', 'Email tidak ditemukan!')->withInput();
         }
 
-        // Generate session ulang
-        $request->session()->regenerate();
-        $user = Auth::user();
+        if (!Hash::check($credentials['password'], $user->password)) {
+            return back()->with('error', 'Password yang anda masukkan salah!')->withInput();
+        }
+
+        return Autentifikasi::signInProcess($user, $request->ip(), $request->userAgent());
+    }
+
+    public static function signInProcess(User $user, string|null $ip, string|null $userAgent)
+    {
+        Auth::login($user, true);
 
         // Simpan log aktivitas pengguna
         $logs = $user->name . ' telah login aplikasi, waktu tercatat : ' . now();
-        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-
-        session(['user' => $user]);
+        RecordLogs::saveRecordLogs($ip, $userAgent, $logs);
 
         $redirectRoute = 'user.dashboard';
 
@@ -75,8 +82,6 @@ class Autentifikasi extends Controller
     public function authSignOut(Request $request): RedirectResponse
     {
         Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
 
         return redirect()->route('mainweb.index');
     }
@@ -106,34 +111,42 @@ class Autentifikasi extends Controller
             'password.confirmed' => 'Password konfirmasi tidak cocok',
         ]);
 
-        $customerID = rand(1, 999) . rand(1, 99);
-        $userID = rand(1, 999) . rand(1, 99);
+        try {
+            DB::beginTransaction();
 
-        $customer = new Customer();
-        $customer->id = $customerID;
-        $customer->nama_lengkap = htmlspecialchars($request->input('namaLengkap'));
+            $customer = Customer::create([
+                'nama_lengkap' => htmlspecialchars($request->input('namaLengkap'))
+            ]);
+            if (!$customer) {
+                throw new Exception('Registrasi akun gagal');
+            }
 
-        $user = new User();
-        $user->id = $userID;
-        $user->name = htmlspecialchars($request->input('namaLengkap'));
-        $user->email = htmlspecialchars($request->input('email'));
-        $user->password = Hash::make($request->input('password'));
-        $user->remember_token = Str::random(10);
-        $user->role = 'Customer';
-        $user->customer_id = $customerID;
-        $user->kode_referral = Str::random(5);
-        $user->blokir = 'Y';
+            $user = User::create([
+                'name' => htmlspecialchars($request->input('namaLengkap')),
+                'email' => htmlspecialchars($request->input('email')),
+                'password' => Hash::make($request->input('password')),
+                'remember_token' => Str::random(10),
+                'role' =>  'Customer',
+                'customer_id' => $customer->id,
+                'kode_referral' => Str::random(5),
+                'blokir' => 'Y'
+            ]);
 
-        if ($customer->save() && $user->save()) {
-            return back()->with('error', 'Registrasi akun gagal !')->withInput();
+            if (!$user) {
+                throw new Exception('Registrasi akun gagal');
+            }
 
+            // Send email registration to customer with email
+            $this->sendVerificationEmail($user);
+
+            DB::commit();
+
+            return redirect()->route('auth.signin')->with('message', 'Silahkan konfirmasi akun melalui email !');
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            return back()->with('error', $th->getMessage())->withInput();
         }
-
-        // event(new Registered($user));
-        // Send email registration to customer with email
-        $this->sendVerificationEmail($user);
-
-        return redirect()->route('auth.signup')->with('message', 'Silahkan konfirmasi akun melalui email !');
     }
 
     protected function sendVerificationEmail($user)
@@ -180,8 +193,8 @@ class Autentifikasi extends Controller
         );
 
         return $status === PasswordReset::RESET_LINK_SENT
-        ? back()->with(['status' => __($status), 'message' => 'Link berhasil dikirim ke email !'])
-        : back()->withErrors(['email' => __($status)]);
+            ? back()->with(['status' => __($status), 'message' => 'Link berhasil dikirim ke email !'])
+            : back()->withErrors(['email' => __($status)]);
     }
 
     public function formResetPassword(Request $request, $token = null)
@@ -226,7 +239,7 @@ class Autentifikasi extends Controller
         );
 
         return $status === PasswordReset::PASSWORD_RESET
-        ? redirect()->route('mainweb.index')->with('status', __($status))
-        : back()->with('error', 'Formulir tidak berlaku silahkan kirim ulang email !')->withErrors(['email' => [__($status)]]);
+            ? redirect()->route('mainweb.index')->with('status', __($status))
+            : back()->with('error', 'Formulir tidak berlaku silahkan kirim ulang email !')->withErrors(['email' => [__($status)]]);
     }
 }

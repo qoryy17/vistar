@@ -29,25 +29,31 @@ class Profils extends Controller
 
         $fileUpload = $fileFoto->storeAs('public\user', $fileHashname);
 
-        if ($fileUpload) {
-            $user = Customer::findOrFail(Auth::user()->customer_id);
-
-            $user->foto = $fileHashname;
-
-            // Hapus foto yang lama
-            Storage::disk('public')->delete('public/user' . $user->foto);
-
-            if ($user->save()) {
-                session(['customer' => $user]);
-                // // Simpan logs aktivitas pengguna
-                $logs = Auth::user()->name . ' telah melengkapi foto profil akun waktu tercatat :  ' . now();
-                RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return Redirect::route('mainweb.profile')->with('profilMessage', 'Foto berhasil disimpan !');
-            } else {
-                return Redirect::route('mainweb.profile')->with('errorMessage', 'Foto gagal disimpan !');
-            }
+        if (!$fileUpload) {
+            return back()->with('errorMessage', 'Unggah foto gagal !')->withInput();
         }
-        return back()->with('errorMessage', 'Unggah foto gagal !')->withInput();
+
+        $customer = Customer::findOrFail(Auth::user()->customer_id);
+
+        $oldPhoto = 'user/' . $customer->foto;
+        // Hapus foto yang lama
+        if (Storage::disk('public')->exists($oldPhoto)) {
+            Storage::disk('public')->delete($oldPhoto);
+        }
+
+        $save = $customer->update([
+            'foto' => $fileHashname
+        ]);
+
+        if (!$save) {
+            return Redirect::route('mainweb.profile')->with('errorMessage', 'Foto gagal disimpan !');
+        }
+
+        // Simpan logs aktivitas pengguna
+        $logs = Auth::user()->name . ' telah melengkapi foto profil akun waktu tercatat :  ' . now();
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+        return Redirect::route('mainweb.profile')->with('profilMessage', 'Foto berhasil disimpan !');
     }
 
     public function ubahProfil(ProfilRequest $request)
@@ -93,77 +99,65 @@ class Profils extends Controller
         return Redirect::route('mainweb.profile')->with('profilMessage', 'Profil berhasil disimpan !');
     }
 
-    public function ubahPassword(Request $request) //: RedirectResponse
+    public function ubahPassword(Request $request): RedirectResponse
     {
         // Autentifikasi user
         $user = Auth::user();
 
-        if ($user->google_id != null) {
-            if ($request->filled('passwordBaru')) {
-                $request->validate([
-                    'passwordBaru' => [
-                        'string',
-                        'min:8',
-                        'regex:/[A-Z]/', // must contain at least one uppercase letter
-                        'regex:/[a-z]/', // must contain at least one lowercase letter
-                        'regex:/[0-9]/', // must contain at least one digit
-                        'regex:/[@$!%*?&]/', // must contain a special character,
-                        'same:konfirmasiPassword', // mencocokkan dengan konfirmasi password
-                    ],
-                ], [
-                    'passwordBaru.min' => 'Password harus mengandung 8 karakter.',
-                    'passwordBaru.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
-                    'passwordBaru.same' => 'Password konfirmasi tidak cocok',
-                ]);
+        $rules = [
+            'passwordBaru' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/[A-Z]/', // must contain at least one uppercase letter
+                'regex:/[a-z]/', // must contain at least one lowercase letter
+                'regex:/[0-9]/', // must contain at least one digit
+                'regex:/[@$!%*?&]/', // must contain a special character,
+                'same:konfirmasiPassword', // mencocokkan dengan konfirmasi password
+            ],
+        ];
+        $validationMessage = [
+            'passwordLama.required' => 'Password lama diperlukan.',
+            'passwordLama.string' => 'Password lama harus berupa karakter.',
+            'passwordBaru.required' => 'Password baru diperlukan.',
+            'passwordBaru.string' => 'Password baru harus berupa karakter.',
+            'passwordBaru.min' => 'Password baru harus mengandung 8 karakter.',
+            'passwordBaru.regex' => 'Password baru harus mengandung huruf kapital, angka dan karakter',
+            'passwordBaru.same' => 'Konfirmasi Password baru tidak cocok',
+        ];
 
-                $passwordUser = User::findOrFail($user->id);
-                $passwordUser->password = Hash::make($request->input('passwordBaru'));
+        $requiredOldPassword = ($user->google_id == null && $user->password != null) ||
+            ($user->google_id != null && $user->password != null);
 
-                $passwordUser->save();
-                // // Simpan logs aktivitas pengguna
-                $logs = Auth::user()->name . ' telah memperbarui password waktu tercatat :  ' . now();
-                RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                return redirect()->route('mainweb.profile')->with('profilMessage', 'Password berhasil disimpan !');
-            }
-        } else {
-            if ($request->filled('passwordBaru')) {
-                if ($request->filled('passwordLama')) {
-                    $request->validate([
-                        'passwordLama' => [
-                            'string',
-                        ],
-                        'passwordBaru' => [
-                            'string',
-                            'min:8',
-                            'regex:/[A-Z]/', // must contain at least one uppercase letter
-                            'regex:/[a-z]/', // must contain at least one lowercase letter
-                            'regex:/[0-9]/', // must contain at least one digit
-                            'regex:/[@$!%*?&]/', // must contain a special character,
-                            'same:konfirmasiPassword', // mencocokkan dengan konfirmasi password
-                        ],
-                    ], [
-                        'passwordBaru.min' => 'Password harus mengandung 8 karakter.',
-                        'passwordBaru.regex' => 'Password harus mengandung huruf kapital, angka dan karakter',
-                        'passwordBaru.same' => 'Password konfirmasi tidak cocok',
-                    ]);
-
-                    if (!Hash::check($request->passwordLama, $user->password)) {
-                        throw ValidationException::withMessages([
-                            'passwordLama' => 'Password lama tidak cocok.',
-                        ]);
-                    }
-
-                    $passwordUser = User::findOrFail($user->id);
-                    $passwordUser->password = Hash::make($request->input('passwordBaru'));
-
-                    $passwordUser->save();
-                    // // Simpan logs aktivitas pengguna
-                    $logs = Auth::user()->name . ' telah memperbarui password waktu tercatat :  ' . now();
-                    RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-                    return redirect()->route('mainweb.profile')->with('profilMessage', 'Password berhasil disimpan !');
-                }
-            }
+        if ($requiredOldPassword) {
+            $rules['passwordLama'] = ['required', 'string'];
         }
-        return redirect()->route('mainweb.profile')->with('profilMessage', 'Password tidak diubah !');
+
+        $request->validate($rules, $validationMessage);
+
+        if ($requiredOldPassword && !Hash::check($request->passwordLama, $user->password)) {
+            throw ValidationException::withMessages([
+                'passwordLama' => 'Password lama tidak cocok.',
+            ]);
+        }
+
+        // check if there is no changes
+        if (Hash::check($request->passwordBaru, $user->password)) {
+            return redirect()->back()->with('profilMessage', 'Password tidak ada perubahan !');
+        }
+
+        $passwordUser = User::findOrFail($user->id);
+        $passwordUser->password = Hash::make($request->input('passwordBaru'));
+
+        $save = $passwordUser->save();
+        if (!$save) {
+            return redirect()->back()->with('profilMessage', 'Password gagal disimpan !');
+        }
+
+        // Simpan logs aktivitas pengguna
+        $logs = Auth::user()->name . ' telah memperbarui password waktu tercatat :  ' . now();
+        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+        return redirect()->route('mainweb.profile')->with('profilMessage', 'Password berhasil disimpan !');
     }
 }

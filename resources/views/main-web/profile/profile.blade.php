@@ -81,7 +81,7 @@
                                                      class="btn btn-pills btn-soft-primary btn-sm mt-3">
                                                      <img src="{{ asset('resources/images/google-16px.png') }}"
                                                          alt="Logo Google" title="Logo Google" loading="eager">
-                                                     Hubungkan Ke Google Account
+                                                     Hubungkan Ke Akun Google
                                                  </a>
                                              @endif
                                          </div><!--end col-->
@@ -346,25 +346,9 @@
                                          @csrf
                                          @method('POST')
                                          <div class="row mt-4">
-                                             @if (Auth::user()->google_id == null and Auth::user()->password != null)
-                                                 <div class="col-lg-12">
-                                                     <div class="mb-3">
-                                                         <label class="form-label" for="passwordLama">Password Lama <small
-                                                                 class="text-danger">*
-                                                                 Kosongkan jika tidak ingin
-                                                                 mengganti</small></label>
-                                                         <div class="form-icon position-relative">
-                                                             <i data-feather="key" class="fea icon-sm icons"></i>
-                                                             <input type="password" class="form-control ps-5"
-                                                                 placeholder="Password Lama" id="passwordLama"
-                                                                 autocomplete="off" name="passwordLama">
-                                                         </div>
-                                                         @error('passwordLama')
-                                                             <small class="text-danger">* {{ $message }}</small>
-                                                         @enderror
-                                                     </div>
-                                                 </div><!--end col-->
-                                             @elseif(Auth::user()->google_id != null and Auth::user()->password != null)
+                                             @if (
+                                                 (Auth::user()->google_id == null && Auth::user()->password != null) ||
+                                                     (Auth::user()->google_id != null && Auth::user()->password != null))
                                                  <div class="col-lg-12">
                                                      <div class="mb-3">
                                                          <label class="form-label" for="passwordLama">Password Lama <small
@@ -404,7 +388,8 @@
                                              <div class="col-lg-12">
                                                  <div class="mb-3">
                                                      <label class="form-label" for="konfirmasiPassword">Konfirmasi
-                                                         Password <small class="text-danger">* Kosongkan jika tidak ingin
+                                                         Password <small class="text-danger">* Kosongkan jika tidak
+                                                             ingin
                                                              mengganti</small></label>
                                                      <div class="form-icon position-relative">
                                                          <i data-feather="key" class="fea icon-sm icons"></i>

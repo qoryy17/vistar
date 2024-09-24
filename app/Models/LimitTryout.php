@@ -26,7 +26,7 @@ class LimitTryout extends Model
         'validasi_oleh',
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 

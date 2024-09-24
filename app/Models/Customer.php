@@ -29,7 +29,7 @@ class Customer extends Model
         'foto',
     ];
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 

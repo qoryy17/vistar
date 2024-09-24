@@ -167,7 +167,7 @@ class Orders extends Controller
                 'status_transaksi' => $status,
             ]);
             if (!$savePayment) {
-                throw new Exception('Pemabayaran gagal disimpan');
+                throw new Exception('Pembayaran gagal disimpan');
             }
 
             // Hapus Keranjang
@@ -234,7 +234,6 @@ class Orders extends Controller
         }
 
         $limitTryout = new LimitTryout();
-        $limitTryout->id = rand(1, 999) . rand(1, 99);
         $limitTryout->customer_id = Auth::user()->customer_id;
         $limitTryout->bukti_share = $hasnameBuktiShare;
         $limitTryout->bukti_follow = $hasnameBuktiFollow;

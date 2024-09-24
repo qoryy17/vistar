@@ -6,9 +6,11 @@ use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\DB;
+
 
 class GoogleOauth extends Controller
 {
@@ -17,62 +19,93 @@ class GoogleOauth extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(Request $request)
     {
-        $user = Socialite::driver('google')->user();
-        try {
+        $socialiteUser = Socialite::driver('google')->user();
 
-            $finduser = User::where('google_id', $user->id)->first();
-            if ($finduser) {
-                Auth::login($finduser);
-                $user = Auth::user();
-                if ($user->role != 'Customer') {
-                    return redirect()->intended('/');
-                }
-                // Jika customer alihkan kehalaman produk berbayar
-                return redirect()->route('mainweb.product');
-            }
+        $currentLogin = Auth::user();
+        if ($currentLogin) {
+            return $this->handleLinkedAccount($socialiteUser, $currentLogin, $request);
+        } else {
+            return $this->handleSignInCallback($socialiteUser, $request);
+        }
+    }
+
+    public function handleLinkedAccount(\Laravel\Socialite\Contracts\User $socialiteUser, User $currentLogin, Request $request)
+    {
+        if (!is_null($currentLogin->google_id)) {
+            return redirect()->route('mainweb.profile')->with('error', 'Akun anda sudah terkoneksi ke Akun Google');
+        }
+
+        // Check if email not the same as current login
+        if ($currentLogin->email !== $socialiteUser->email) {
+            return redirect()->route('mainweb.profile')->with('error', 'Email Google anda tidak sesuai dengan akun ini');
+        }
+
+        $save = $currentLogin->update([
+            'google_id' => $socialiteUser->id
+        ]);
+        if (!$save) {
+            return redirect()->route('mainweb.profile')->with('error', 'Gagal menghubungkan Akun Google');
+        }
+
+        return redirect()->route('mainweb.profile')->with('success', 'Anda berhasil menghubungkan Akun Google, sekarang anda dapat login menggunakan Akun Google');
+    }
+
+
+    public function handleSignInCallback(\Laravel\Socialite\Contracts\User $socialiteUser, Request $request)
+    {
+        $user = User::where('google_id', $socialiteUser->id)->first();
+        if ($user) {
+            return Autentifikasi::signInProcess($user, $request->ip(), $request->userAgent());
+        }
+
+        try {
+            DB::beginTransaction();
 
             // check apakah sebelumnya sudah pernah mendaftar
-            $emailRegister = User::where('email', htmlspecialchars($user->email))->first();
-            if ($emailRegister) {
-                if ($emailRegister->email == $user->email) {
-                    // Tautkan ke google account
-                    $emailRegister->google_id = $user->id;
-                    $emailRegister->save();
-                    return redirect()->route('mainweb.profile')->with('profilMessage', 'Akun anda berhasil ditautkan ke Google !');
-                } else {
-                    return redirect()->route('mainweb.profile')->with('errorMessage', 'Email Google tidak cocok dengan akun yang terdaftar !');
+            $user = User::where('email', htmlspecialchars($socialiteUser->email))->first();
+            if ($user) {
+                // Tautkan ke google account
+                $save = $user->update([
+                    'google_id' => $socialiteUser->id
+                ]);
+
+                if (!$save) {
+                    throw new Exception('Registrasi dengan Google gagal');
                 }
+            } else {
+                $customer = Customer::create([
+                    'nama_lengkap' => $socialiteUser->name,
+                ]);
+                if (!$customer) {
+                    throw new Exception('Registrasi akun gagal');
+                }
+
+                $user = User::create([
+                    'name' => $socialiteUser->name,
+                    'email' => $socialiteUser->email,
+                    'email_verified_at' => now(),
+                    'remember_token' => Str::random(10),
+                    'role' => 'Customer',
+                    'google_id' => $socialiteUser->id,
+                    'customer_id' => $customer->id,
+                    'kode_referral' => Str::random(5),
+                    'blokir' => 'T'
+                ]);
             }
 
-            // Generate id  otomatis
-            $customerID = rand(1, 999) . rand(1, 99);
-            $userID = rand(1, 999) . rand(1, 99);
+            if (!$user) {
+                throw new Exception('Registrasi dengan Google gagal');
+            }
 
-            // Simpan data customer
-            Customer::create([
-                'id' => $customerID,
-                'nama_lengkap' => $user->name,
-            ]);
+            DB::commit();
 
-            $newUser = User::create([
-                'id' => $userID,
-                'name' => $user->name,
-                'email' => $user->email,
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-                'role' => 'Customer',
-                'google_id' => $user->id,
-                'customer_id' => $customerID,
-                'kode_referral' => Str::random(5),
-                'blokir' => 'T'
-            ]);
-
-            Auth::login($newUser);
-            return redirect()->intended('/');
+            return Autentifikasi::signInProcess($user, $request->ip(), $request->userAgent());
         } catch (\Throwable $th) {
-            return Redirect::route('auth.signin')->with('info', 'Email akun anda tidak tertaut Google !');
+            DB::rollback();
+
+            return redirect()->route('auth.signin')->with('error', $th->getMessage());
         }
     }
 }
