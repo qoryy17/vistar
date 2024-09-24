@@ -18,14 +18,14 @@ class ProfileCompletion
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            return redirect()->to('signin')->with('error', 'Silahkan Masuk terlebih dahulu!');
+            return redirect()->route('auth.signin', ['next-url' => $request->fullUrl()])->with('error', 'Silahkan Masuk terlebih dahulu!');
         }
 
         $user = Auth::user();
         if ($user->blokir == 'Y') {
             Auth::logout();
 
-            return redirect()->route('mainweb.index')->with('error', 'Akun snda sedang terblokir!');
+            return redirect()->route('mainweb.index')->with('error', 'Akun Anda sedang terblokir!');
         }
 
         $customer = Customer::findOrFail($user->customer_id);
@@ -38,10 +38,12 @@ class ProfileCompletion
             is_null($customer->kabupaten) ||
             is_null($customer->kecamatan) ||
             is_null($customer->pendidikan) ||
-            is_null($customer->jurusan) ||
-            is_null($customer->foto)
+            is_null($customer->jurusan)
         ) {
-            return redirect()->route('mainweb.profile')->with('profilMessage', 'Harap lengkapi profil terlebih dahulu !!!');
+            return redirect()->route('mainweb.profile', ['next-url' => $request->fullUrl()])->with('profilMessage', 'Harap lengkapi informasi profil terlebih dahulu !!!');
+        }
+        if (is_null($customer->foto)) {
+            return redirect()->route('mainweb.profile', ['next-url' => $request->fullUrl()])->with('profilMessage', 'Harap lengkapi photo profil terlebih dahulu !!!');
         }
 
         return $next($request);

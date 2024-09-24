@@ -18,7 +18,7 @@ class UserAdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            return redirect()->to('signin')->with('error', 'Silahkan Masuk terlebih dahulu!');
+            return redirect()->route('auth.signin', ['next-url' => $request->fullUrl()])->with('error', 'Silahkan Masuk terlebih dahulu!');
         }
 
         $user = Auth::user();
@@ -26,10 +26,10 @@ class UserAdminMiddleware
         if ($user->blokir == 'Y') {
             Auth::logout();
 
-            return redirect()->route('mainweb.index')->with('error', 'Akun snda sedang terblokir!');
+            return redirect()->route('mainweb.index')->with('error', 'Akun Anda sedang terblokir!');
         }
 
-        $allowedRoles = [UserRole::SUPER_ADMIN->value];
+        $allowedRoles = [UserRole::FINANCE->value, UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value];
         if (!in_array($user->role, $allowedRoles)) {
             return redirect()->back()->with('error', 'Anda tidak dapat mengakses Halaman ini!');
         }

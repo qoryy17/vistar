@@ -45,14 +45,24 @@ class Profils extends Controller
         ]);
 
         if (!$save) {
-            return Redirect::route('mainweb.profile')->with('errorMessage', 'Foto gagal disimpan !');
+            return back()->with('errorMessage', 'Foto gagal disimpan !');
         }
 
         // Simpan logs aktivitas pengguna
         $logs = Auth::user()->name . ' telah melengkapi foto profil akun waktu tercatat :  ' . now();
         RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
 
-        return Redirect::route('mainweb.profile')->with('profilMessage', 'Foto berhasil disimpan !');
+        $nextUrl = request()->get('next-url');
+        if ($nextUrl) {
+            if (filter_var($nextUrl, FILTER_VALIDATE_URL)) {
+                // Check if next url not outside of the domain
+                if (\App\Helpers\Common::isSameDomainFromURL(request()->getHttpHost(), $nextUrl)) {
+                    return redirect()->to($nextUrl);
+                }
+            }
+        }
+
+        return redirect()->route('mainweb.profile', ['next-url' => request()->get('next-url')])->with('profilMessage', 'Foto berhasil disimpan !');
     }
 
     public function ubahProfil(ProfilRequest $request)
@@ -80,7 +90,7 @@ class Profils extends Controller
                 'jurusan' => htmlspecialchars($request->input('jurusan')),
             ]);
             if (!$updateCustomer) {
-                return redirect()->route('mainweb.profile')->with('errorMessage', 'Profil gagal disimpan !');
+                return back()->with('errorMessage', 'Profil gagal disimpan !')->withInput();
             }
         }
 
@@ -89,13 +99,24 @@ class Profils extends Controller
                 'name' => htmlspecialchars($request->input('namaLengkap')),
             ]);
         if (!$updateUser) {
-            return redirect()->route('mainweb.profile')->with('errorMessage', 'Profil gagal disimpan !');
+            return back()->with('errorMessage', 'Profil gagal disimpan !')->withInput();
         }
 
         // Simpan logs aktivitas pengguna
         $logs = htmlspecialchars($request->input('namaLengkap')) . ' telah melengkapi data profil akun waktu tercatat :  ' . now();
         RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-        return Redirect::route('mainweb.profile')->with('profilMessage', 'Profil berhasil disimpan !');
+
+        $nextUrl = request()->get('next-url');
+        if ($nextUrl) {
+            if (filter_var($nextUrl, FILTER_VALIDATE_URL)) {
+                // Check if next url not outside of the domain
+                if (\App\Helpers\Common::isSameDomainFromURL(request()->getHttpHost(), $nextUrl)) {
+                    return redirect()->to($nextUrl);
+                }
+            }
+        }
+
+        return redirect()->route('mainweb.profile', ['next-url' => request()->get('next-url')])->with('profilMessage', 'Profil berhasil disimpan !');
     }
 
     public function ubahPassword(Request $request): RedirectResponse

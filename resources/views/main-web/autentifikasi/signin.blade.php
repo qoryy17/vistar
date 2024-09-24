@@ -66,6 +66,8 @@
                                                 class="login-form mt-4" method="POST">
                                                 @csrf
                                                 @method('POST')
+                                                <input type="hidden" name="next-url"
+                                                    value="{{ request()->get('next-url') }}" />
                                                 <div class="row">
                                                     <div class="col-lg-12">
                                                         <div class="mb-3">
@@ -125,7 +127,7 @@
                                                             <div class="col-12 mt-3">
                                                                 <div class="d-grid">
                                                                     <a title="Masuk dengan Google"
-                                                                        href="{{ route('auth.google') }}"
+                                                                        href="{{ route('auth.google', ['next-url' => request()->get('next-url')]) }}"
                                                                         class="btn btn-light">
                                                                         <i class="mdi mdi-google text-danger"></i>
                                                                         Google
@@ -136,10 +138,15 @@
                                                     </div><!--end col-->
 
                                                     <div class="col-12 text-center">
-                                                        <p class="mb-0 mt-3"><small class="text-dark me-2">Belum punya
-                                                                akun
-                                                                ?</small> <a href="{{ route('auth.signup') }}"
-                                                                class="text-dark fw-bold">Klik disini</a></p>
+                                                        <p class="mb-0 mt-3">
+                                                            <small class="text-dark me-2">
+                                                                Belum punya akun ?
+                                                            </small>
+                                                            <a href="{{ route('auth.signup', ['next-url' => request()->get('next-url')]) }}"
+                                                                class="text-dark fw-bold">
+                                                                Klik disini
+                                                            </a>
+                                                        </p>
                                                     </div><!--end col-->
                                                 </div><!--end row-->
                                             </form>

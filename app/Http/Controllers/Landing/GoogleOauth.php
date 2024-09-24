@@ -31,7 +31,7 @@ class GoogleOauth extends Controller
         }
     }
 
-    public function handleLinkedAccount(\Laravel\Socialite\Contracts\User $socialiteUser, User $currentLogin, Request $request)
+    public function handleLinkedAccount(\Laravel\Socialite\Contracts\User $socialiteUser, User $currentLogin)
     {
         if (!is_null($currentLogin->google_id)) {
             return redirect()->route('mainweb.profile')->with('error', 'Akun anda sudah terkoneksi ke Akun Google');
@@ -53,11 +53,11 @@ class GoogleOauth extends Controller
     }
 
 
-    public function handleSignInCallback(\Laravel\Socialite\Contracts\User $socialiteUser, Request $request)
+    public function handleSignInCallback(\Laravel\Socialite\Contracts\User $socialiteUser)
     {
         $user = User::where('google_id', $socialiteUser->id)->first();
         if ($user) {
-            return Autentifikasi::signInProcess($user, $request->ip(), $request->userAgent());
+            return Autentifikasi::signInProcess($user);
         }
 
         try {
@@ -101,7 +101,7 @@ class GoogleOauth extends Controller
 
             DB::commit();
 
-            return Autentifikasi::signInProcess($user, $request->ip(), $request->userAgent());
+            return Autentifikasi::signInProcess($user);
         } catch (\Throwable $th) {
             DB::rollback();
 

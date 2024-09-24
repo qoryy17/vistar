@@ -56,6 +56,8 @@
                                                 class="login-form mt-4" method="POST">
                                                 @csrf
                                                 @method('POST')
+                                                <input type="hidden" name="next-url"
+                                                    value="{{ request()->get('next-url') }}" />
                                                 <div class="row">
                                                     <div class="col-lg-12">
                                                         <div class="mb-3">
@@ -142,7 +144,7 @@
                                                             <div class="col-12 mt-3">
                                                                 <div class="d-grid">
                                                                     <a title="Daftar dengan Google"
-                                                                        href="{{ route('auth.google') }}"
+                                                                        href="{{ route('auth.google', ['next-url' => request()->get('next-url')]) }}"
                                                                         class="btn btn-light">
                                                                         <i class="mdi mdi-google text-danger"></i>
                                                                         Google
@@ -157,7 +159,7 @@
                                                             <small class="text-dark me-2">
                                                                 Sudah punya akun ?
                                                             </small>
-                                                            <a href="{{ route('auth.signin') }}"
+                                                            <a href="{{ route('auth.signin', ['next-url' => request()->get('next-url')]) }}"
                                                                 class="text-dark fw-bold">
                                                                 Klik disini
                                                             </a>

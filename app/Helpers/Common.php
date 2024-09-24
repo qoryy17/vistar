@@ -29,4 +29,24 @@ class Common
         return implode("@", $mail_parts);
     }
 
+    public static function getHostFromUrl(string $url): string
+    {
+        // Add Http Scheme if there is not exist
+        if (substr($url, 0, 4) !== 'http') {
+            $url = 'http://' . $url;
+        }
+
+        $urlParse = parse_url($url);
+        $urlHttpHost = @$urlParse['host'] . (@$urlParse['port'] ? ':' . @$urlParse['port'] : '');
+
+        return str_ireplace('www.', '', $urlHttpHost);
+    }
+
+    public static function isSameDomainFromURL(string $firstUrl, string $secondUrl): bool
+    {
+        $firstUrlHttpHost = Common::getHostFromUrl($firstUrl);
+        $secondUrlHttpHost = Common::getHostFromUrl($secondUrl);
+
+        return $firstUrlHttpHost === $secondUrlHttpHost;
+    }
 }

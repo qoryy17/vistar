@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password as PasswordReset;
@@ -52,19 +53,28 @@ class Autentifikasi extends Controller
             return back()->with('error', 'Password yang anda masukkan salah!')->withInput();
         }
 
-        return Autentifikasi::signInProcess($user, $request->ip(), $request->userAgent());
+        return Autentifikasi::signInProcess($user);
     }
 
-    public static function signInProcess(User $user, string|null $ip, string|null $userAgent)
+    public static function signInProcess(User $user)
     {
         Auth::login($user, true);
 
         // Simpan log aktivitas pengguna
         $logs = $user->name . ' telah login aplikasi, waktu tercatat : ' . now();
-        RecordLogs::saveRecordLogs($ip, $userAgent, $logs);
+        RecordLogs::saveRecordLogs(request()->ip(), request()->userAgent(), $logs);
+
+        $nextUrl = request()->get('next-url');
+        if ($nextUrl) {
+            if (filter_var($nextUrl, FILTER_VALIDATE_URL)) {
+                // Check if next url not outside of the domain
+                if (\App\Helpers\Common::isSameDomainFromURL(request()->getHttpHost(), $nextUrl)) {
+                    return redirect()->to($nextUrl);
+                }
+            }
+        }
 
         $redirectRoute = 'user.dashboard';
-
         // redirect user to product page if user never purchase product
         if ($user->role === UserRole::CUSTOMER->value) {
             $orderExists = OrderTryout::select('id')
@@ -141,7 +151,7 @@ class Autentifikasi extends Controller
 
             DB::commit();
 
-            return redirect()->route('auth.signin')->with('message', 'Silahkan konfirmasi akun melalui email !');
+            return redirect()->route('auth.signin', ['next-url' => request()->get('next-url')])->with('message', 'Silahkan konfirmasi akun melalui email !');
         } catch (\Throwable $th) {
             DB::rollback();
 

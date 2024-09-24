@@ -65,6 +65,8 @@
                                                      enctype="multipart/form-data" class="mt-2">
                                                      @csrf
                                                      @method('POST')
+                                                     <input type="hidden" name="next-url"
+                                                         value="{{ request()->get('next-url') }}" />
 
                                                      <input type="file" required class="form-control" name="foto"
                                                          accept=".jpg,.jpeg,.png" />
@@ -102,13 +104,13 @@
          <div class="container mt-lg-3">
              <div class="row">
                  <div class="col-lg-12 col-12">
-                     <div class="card border-0 rounded shadow">
+                     <div class="card border-0 rounded shadow" id="section-profile-info">
                          <div class="card-body">
                              <h2 class="fs-5 text-md-start text-center">Informasi Akun Pengguna</h2>
-
                              <form action="{{ route('profils.ubah-profil') }}" method="POST">
                                  @csrf
                                  @method('POST')
+                                 <input type="hidden" name="next-url" value="{{ request()->get('next-url') }}" />
                                  <div class="row mt-4">
                                      <div class="col-md-6">
                                          <div class="mb-3">
@@ -149,7 +151,8 @@
                                                  <div class="form-icon position-relative">
                                                      <i data-feather="calendar" class="fea icon-sm icons"></i>
                                                      <input name="tanggalLahir" id="tanggalLahir" type="text" required
-                                                         class="form-control ps-5" placeholder="DD/MM/YYYY" maxlength="10"
+                                                         class="form-control ps-5" placeholder="DD/MM/YYYY"
+                                                         maxlength="10"
                                                          value="{{ $customer?->tanggal_lahir ? \Carbon\Carbon::createFromFormat('Y-m-d', $customer->tanggal_lahir)->format('d/m/Y') : old('tanggalLahir') }}">
                                                  </div>
                                                  @error('tanggalLahir')
@@ -339,9 +342,13 @@
                                      </div><!--end col-->
                                  </div><!--end row-->
                              </form><!--end form-->
+                         </div>
+                     </div>
 
+                     <div class="card border-0 rounded shadow mt-4" id="section-change-password">
+                         <div class="card-body">
                              <div class="row">
-                                 <div class="col-md-12 mt-4 pt-2 border-top">
+                                 <div class="col-md-12 mt-4 pt-2">
                                      <h2 class="fs-5 text-md-start text-center">Ubah Password</h2>
                                      <form action="{{ route('profils.ubah-password') }}" method="POST">
                                          @csrf
