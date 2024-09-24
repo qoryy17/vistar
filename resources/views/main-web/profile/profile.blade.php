@@ -66,7 +66,8 @@
                                                      @csrf
                                                      @method('POST')
 
-                                                     <input type="file" required class="form-control" name="foto" />
+                                                     <input type="file" required class="form-control" name="foto"
+                                                         accept=".jpg,.jpeg,.png" />
                                                      <button type="submit"
                                                          class="btn btn-sm btn-pills btn-soft-primary mt-1">
                                                          Ubah Foto

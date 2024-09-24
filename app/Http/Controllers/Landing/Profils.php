@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
 class Profils extends Controller
@@ -27,7 +26,7 @@ class Profils extends Controller
         $fileFoto = $request->file('foto');
         $fileHashname = $fileFoto->hashName();
 
-        $fileUpload = $fileFoto->storeAs('public\user', $fileHashname);
+        $fileUpload = $fileFoto->storeAs('public/user', $fileHashname);
 
         if (!$fileUpload) {
             return back()->with('errorMessage', 'Unggah foto gagal !')->withInput();

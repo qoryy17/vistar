@@ -30,6 +30,7 @@ class FotoRequest extends FormRequest
     {
         return [
             'foto.required' => 'Foto tidak boleh kosong',
+            'foto.image' => 'Foto hanya boleh bertipe png/jpg/jpeg',
             'foto.mimes' => 'Foto hanya boleh bertipe png/jpg/jpeg',
             'foto.max' => 'Ukuran file hanya boleh maksimal 2MB'
         ];
