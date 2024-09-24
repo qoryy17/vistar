@@ -16,7 +16,7 @@
     <title>Reset Password :. {{ $web->nama_bisnis }}</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ public_path('storage/' . $web->logo) }}" type="image/png" />
+    <link rel="icon" type="image shortcut" href="{{ asset('favicon.ico') }}" />
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700&display=swap" rel="stylesheet">
@@ -32,7 +32,7 @@
                     style="background-color: #2f55d4; padding: 3px 0; border: none; line-height: 68px; text-align: center; color: #fff; font-size: 24px; letter-spacing: 1px;">
                     <th scope="col">
                         <img src="{{ asset('storage/' . $web->logo) }}" height="24"
-                            alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo" loading="eager" />
+                            alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo" />
                     </th>
                 </tr>
             </thead>

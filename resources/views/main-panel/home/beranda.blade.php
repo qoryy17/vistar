@@ -32,14 +32,18 @@
                                 <div class="card custom-card">
                                     <div class="card-body">
                                         <div class="card-order">
-                                            <label class="main-content-label mb-3 pt-1">Total Profit Pending</label>
+                                            <p class="main-content-label mb-3 pt-1">Total Profit Pending</p>
                                             <h2 class="text-end"><i style="color: #0075B8;"
                                                     class="icon-size mdi mdi-poll-box float-start"></i>
-                                                <span
-                                                    class="font-weight-bold">{{ Number::currency($sumTryoutPending, in: 'IDR') }}</span>
+                                                <span class="font-weight-bold">
+                                                    {{ is_numeric($sumTryoutPending) ? Number::currency($sumTryoutPending, in: 'IDR') : '-' }}
+                                                </span>
                                             </h2>
-                                            <p class="mb-0 mt-4 text-muted">Profit Pending Hari Ini<span
-                                                    class="float-end">{{ Number::currency($sumTryoutPerhariPending, in: 'IDR') }}</span>
+                                            <p class="mb-0 mt-4 text-muted">
+                                                Profit Pending Hari Ini
+                                                <span class="float-end">
+                                                    {{ is_numeric($sumTryoutPerhariPending) ? Number::currency($sumTryoutPerhariPending, in: 'IDR') : '-' }}
+                                                </span>
                                             </p>
                                         </div>
                                     </div>
@@ -49,7 +53,7 @@
                                 <div class="card custom-card">
                                     <div class="card-body">
                                         <div class="card-order ">
-                                            <label class="main-content-label mb-3 pt-1">Customer Terdaftar</label>
+                                            <p class="main-content-label mb-3 pt-1">Customer Terdaftar</p>
                                             <h2 class="text-end card-item-icon card-icon">
                                                 <i style="color: #0075B8;"
                                                     class="mdi mdi-account-multiple icon-size float-start"></i>
@@ -67,14 +71,18 @@
                                 <div class="card custom-card">
                                     <div class="card-body">
                                         <div class="card-order">
-                                            <label class="main-content-label mb-3 pt-1">Total Profit Masuk</label>
+                                            <p class="main-content-label mb-3 pt-1">Total Profit Masuk</p>
                                             <h2 class="text-end"><i style="color: #0075B8;"
                                                     class="icon-size mdi mdi-poll-box float-start"></i>
-                                                <span
-                                                    class="font-weight-bold">{{ Number::currency($sumTryoutPaid, in: 'IDR') }}</span>
+                                                <span class="font-weight-bold">
+                                                    {{ is_numeric($sumTryoutPaid) ? Number::currency($sumTryoutPaid, in: 'IDR') : '-' }}
+                                                </span>
                                             </h2>
-                                            <p class="mb-0 mt-4 text-muted">Profit Masuk Hari Ini<span
-                                                    class="float-end">{{ Number::currency($sumTryoutPerhariPaid, in: 'IDR') }}</span>
+                                            <p class="mb-0 mt-4 text-muted">
+                                                Profit Masuk Hari Ini
+                                                <span class="float-end">
+                                                    {{ is_numeric($sumTryoutPerhariPaid) ? Number::currency($sumTryoutPerhariPaid, in: 'IDR') : '-' }}
+                                                </span>
                                             </p>
                                         </div>
                                     </div>
@@ -84,7 +92,7 @@
                                 <div class="card custom-card">
                                     <div class="card-body">
                                         <div class="card-order">
-                                            <label class="main-content-label mb-3 pt-1">Total Tryout Terjual</label>
+                                            <p class="main-content-label mb-3 pt-1">Total Tryout Terjual</p>
                                             <h2 class="text-end"><i style="color: #0075B8;"
                                                     class="icon-size mdi mdi-airplay float-start"></i>
                                                 <span class="font-weight-bold">{{ $countTryout }}</span>

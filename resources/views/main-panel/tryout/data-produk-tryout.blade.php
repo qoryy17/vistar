@@ -67,10 +67,10 @@
                                                         {{ $row->judul }}
                                                     </td>
                                                     <td>
-                                                        {{ Number::currency($row->harga, in: 'IDR') }}
+                                                        {{ is_numeric($row->harga) ? Number::currency($row->harga, in: 'IDR') : '-' }}
                                                         <br>
                                                         Promo :
-                                                        {{ $row->harga_promo != null ? Number::currency($row->harga_promo, in: 'IDR') : 'IDR ' . 0 }}
+                                                        {{ is_numeric($row->harga_promo) ? Number::currency($row->harga_promo, in: 'IDR') : '-' }}
                                                     </td>
                                                     <td>
                                                         {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i') : '-' }}

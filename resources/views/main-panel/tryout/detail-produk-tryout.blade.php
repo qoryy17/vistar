@@ -73,8 +73,9 @@
                                                     Harga / Harga Promo
                                                 </td>
                                                 <td>
-                                                    {{ Number::currency($pengaturan->harga, in: 'IDR') }} / Promo :
-                                                    {{ $pengaturan->harga_promo != null ? Number::currency($pengaturan->harga_promo, in: 'IDR') : 'IDR ' . 0 }}
+                                                    {{ is_numeric($pengaturan->harga) ? Number::currency($pengaturan->harga, in: 'IDR') : '-' }}
+                                                    / Promo :
+                                                    {{ is_numeric($pengaturan->harga_promo) ? Number::currency($pengaturan->harga_promo, in: 'IDR') : '-' }}
                                                 </td>
                                             </tr>
                                             <tr>

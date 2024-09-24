@@ -58,7 +58,7 @@
                                             {{ \App\Helpers\Common::obfuscateEmail($row->buyer_email) }}
                                         </td>
                                         <td>
-                                            {{ Number::currency($row->total_income, in: 'IDR') }}
+                                            {{ is_numeric($row->total_income) ? Number::currency($row->total_income, in: 'IDR') : '-' }}
                                         </td>
                                         <td>
                                             {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i') : '-' }}

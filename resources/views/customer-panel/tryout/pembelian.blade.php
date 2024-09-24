@@ -78,7 +78,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{ $row->transaction_id }}
+                                            {{ $row->transaction_id ?? '-' }}
                                         </td>
                                         <td>
                                             {{ $row->nama_tryout }}
@@ -90,7 +90,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            {{ Number::currency($row->total, in: 'IDR') }}
+                                            {{ is_numeric($row->total) ? Number::currency($row->total, in: 'IDR') : '-' }}
                                         </td>
                                         <td>
                                             {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i') : '-' }}

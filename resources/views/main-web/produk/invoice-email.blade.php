@@ -3,6 +3,7 @@
 @endphp
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,7 @@
     <meta name="description" content="{{ $web->meta_description }}">
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ public_path('storage/' . $web->logo) }}" type="image/png" />
+    <link rel="icon" type="image shortcut" href="{{ asset('favicon.ico') }}" />
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700&display=swap" rel="stylesheet">
@@ -88,7 +89,7 @@
                                             {{ $orderDetail->nama_tryout }}
                                         </td>
                                         <td style="text-align: end; padding: 12px; border-top: 1px solid #dee2e6;">
-                                            {{ Number::currency($orderDetail->nominal, in: 'IDR') }}
+                                            {{ is_numeric($orderDetail->nominal) ? Number::currency($orderDetail->nominal, in: 'IDR') : '-' }}
                                         </td>
                                     </tr>
                                     <tr>
