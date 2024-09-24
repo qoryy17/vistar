@@ -99,7 +99,7 @@
     <meta property="twitter:url" content="{{ url()->full() }}">
     <meta name="twitter:title" content="@yield('title')">
     <meta name="twitter:description" content="{{ $metaDescription }}">
-    <meta name="twitter:image" content="@yield('image', asset($logo))">
+    <meta name="twitter:image" content="@yield('image', asset($metaImage))">
 
     {{--  Note: Create App Config APP ID after vistar using social account login with facebook --}}
     <meta property="fb:app_id" content="1235512704325801" />
