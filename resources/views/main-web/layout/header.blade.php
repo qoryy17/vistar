@@ -34,7 +34,7 @@
         if (strlen($metaDescriptionSection) < 170) {
             $metaDescription = $metaDescriptionSection . ' :. ' . $metaDescription;
         }
-    } else {
+    } elseif (strlen($metaDescription) < 100) {
         $metaDescription = View::getSection('title') . ' :. ' . $metaDescription;
     }
     if (strlen($metaDescription) > 170) {
@@ -92,6 +92,14 @@
     <meta property="og:image" content="@yield('image', asset($logo))" />
     <meta property="og:description" content="{{ $metaDescription }}" />
 
+    {{--  Twitter Meta Tags  --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="{{ request()->getHost() }}">
+    <meta property="twitter:url" content="{{ url()->full() }}">
+    <meta name="twitter:title" content="@yield('title')">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="@yield('image', asset($logo))">
+
     {{--  Note: Create App Config APP ID after vistar using social account login with facebook --}}
     <meta property="fb:app_id" content="1235512704325801" />
 
@@ -100,8 +108,8 @@
     <title>@yield('title')</title>
 
     <!-- Bootstrap Css -->
-    <link href="{{ asset('resources/web/dist/assets/css/bootstrap.min.css') }}" id="bootstrap-style" class="theme-opt"
-        rel="stylesheet" type="text/css">
+    <link href="{{ asset('resources/web/dist/assets/css/bootstrap.min.css') }}" id="bootstrap-style"
+        class="theme-opt" rel="stylesheet" type="text/css">
 
     @yield('styles-top')
 

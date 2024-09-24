@@ -35,7 +35,7 @@
         if (strlen($metaDescriptionSection) < 170) {
             $metaDescription = $metaDescriptionSection . ' :. ' . $metaDescription;
         }
-    } else {
+    } elseif (strlen($metaDescription) < 100) {
         $metaDescription = $title . ' :. ' . $metaDescription;
     }
     if (strlen($metaDescription) > 170) {
@@ -93,6 +93,14 @@
     <meta property="og:image" content="{{ asset($metaImage) }}" />
     <meta property="og:description" content="{{ $metaDescription }}" />
 
+    {{--  Twitter Meta Tags  --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="{{ request()->getHost() }}">
+    <meta property="twitter:url" content="{{ url()->full() }}">
+    <meta name="twitter:title" content="@yield('title')">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="@yield('image', asset($logo))">
+
     {{--  Note: Create App Config APP ID after vistar using social account login with facebook --}}
     <meta property="fb:app_id" content="1235512704325801" />
 
@@ -106,8 +114,8 @@
     <link href="{{ url('resources/web/dist/assets/css/bootstrap.min.css') }}" id="bootstrap-style" class="theme-opt"
         rel="stylesheet" type="text/css">
     <!-- Icons Css -->
-    <link href="{{ url('resources/web/dist/assets/libs/@mdi/font/css/materialdesignicons.min.css') }}" rel="stylesheet"
-        type="text/css">
+    <link href="{{ url('resources/web/dist/assets/libs/@mdi/font/css/materialdesignicons.min.css') }}"
+        rel="stylesheet" type="text/css">
     <link href="{{ url('resources/web/dist/assets/libs/@iconscout/unicons/css/line.css') }}" type="text/css"
         rel="stylesheet">
     <!-- Internal Sweet-Alert css-->
