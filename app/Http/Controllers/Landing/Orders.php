@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Orders extends Controller
@@ -218,33 +219,57 @@ class Orders extends Controller
             return redirect()->route('mainweb.daftar-tryout-gratis')->with('errorMessage', 'Pendaftaran tryout gratis anda sedang diproses, silahkan tunggu informasi selanjutnya!');
         }
 
-        // Bukti share produk
-        $fileBuktiShare = $request->file('buktiShare');
-        $hasnameBuktiShare = $fileBuktiShare->hashName();
+        $uploadedFiles = [];
+        try {
+            DB::beginTransaction();
 
-        // Bukti share follow
-        $fileBuktiFollow = $request->file('buktiFollow');
-        $hasnameBuktiFollow = $fileBuktiFollow->hashName();
+            // Bukti share produk
+            $fileBuktiShare = $request->file('buktiShare');
+            $hasnameBuktiShare = $fileBuktiShare->hashName();
 
-        $fileUploadBuktiShare = $fileBuktiShare->storeAs('public\share-follow', $hasnameBuktiShare);
-        $fileUploadBuktiFollow = $fileBuktiFollow->storeAs('public\share-follow', $hasnameBuktiFollow);
+            $fileUploadBuktiShare = $fileBuktiShare->storeAs('public/share-follow', $hasnameBuktiShare);
+            if (!$fileUploadBuktiShare) {
+                throw new Exception('Unggah bukti share gagal !');
+            }
+            array_push($uploadedFiles, 'share-follow/' . $hasnameBuktiShare);
 
-        if (!$fileUploadBuktiShare && $fileUploadBuktiFollow) {
-            return redirect()->back()->with('errorMessage', 'Unggah bukti share dan follow gagal !')->withInput();
-        }
+            // Bukti share follow
+            $fileBuktiFollow = $request->file('buktiFollow');
+            $hasnameBuktiFollow = $fileBuktiFollow->hashName();
 
-        $limitTryout = new LimitTryout();
-        $limitTryout->customer_id = Auth::user()->customer_id;
-        $limitTryout->bukti_share = $hasnameBuktiShare;
-        $limitTryout->bukti_follow = $hasnameBuktiFollow;
-        $limitTryout->informasi = htmlspecialchars($request->input('informasi'));
-        $limitTryout->alasan = htmlspecialchars($request->input('alasan'));
-        $limitTryout->status_validasi = 'Menunggu';
+            $fileUploadBuktiFollow = $fileBuktiFollow->storeAs('public/share-follow', $hasnameBuktiFollow);
+            if (!$fileUploadBuktiShare && $fileUploadBuktiFollow) {
+                throw new Exception('Unggah bukti follow gagal !');
+            }
+            array_push($uploadedFiles, 'share-follow/' . $hasnameBuktiFollow);
 
-        if ($limitTryout->save()) {
+            $limitTryout = LimitTryout::create([
+                'customer_id' => Auth::user()->customer_id,
+                'bukti_share' => $hasnameBuktiShare,
+                'bukti_follow' => $hasnameBuktiFollow,
+                'informasi' => htmlspecialchars($request->input('informasi')),
+                'alasan' => htmlspecialchars($request->input('alasan')),
+                'status_validasi' => 'Menunggu',
+            ]);
+
+            if (!$limitTryout) {
+                return redirect()->back()->with('errorMessage', 'Pendaftaran gagal, silahkan coba lagi !')->withInput();
+            }
+
+            DB::commit();
+
             return redirect()->route('mainweb.daftar-tryout-gratis')->with('successMessage', 'Pendaftaran berhasil silahkan cek email secara berkala untuk informasi persetujuan dari kami. Maksimal verifikasi 1x24 jam oleh Admin !');
-        } else {
-            return redirect()->back()->with('errorMessage', 'Pendaftaran gagal, silahkan coba lagi !')->withInput();
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            // delete uploaded files
+            foreach ($uploadedFiles as $file) {
+                if (Storage::disk('public')->exists($file)) {
+                    Storage::disk('public')->delete($file);
+                }
+            }
+
+            return redirect()->back()->with('errorMessage', $th->getMessage())->withInput();
         }
     }
 

@@ -53,7 +53,7 @@
                                  <i data-feather="user" class="fea icon-sm icons"></i>
                                  <input name="namaLengkap" id="namaLengkap" type="text" class="form-control ps-5"
                                      autocomplete="off" placeholder="Nama Lengkap Anda..." required
-                                     value="{{ $customer->nama_lengkap }}" readonly>
+                                     value="{{ $customer->nama_lengkap }}" disabled>
                              </div>
                              @error('namaLengkap')
                                  <small class="text-danger mt-3">* {{ $message }}</small>
@@ -67,7 +67,7 @@
                                  <i data-feather="mail" class="fea icon-sm icons"></i>
                                  <input name="email" id="email" type="email" class="form-control ps-5"
                                      autocomplete="off" placeholder="Email Anda..." required
-                                     value="{{ Auth::user()->email }}" readonly>
+                                     value="{{ Auth::user()->email }}" disabled>
                              </div>
                              @error('namaLengkap')
                                  <small class="text-danger mt-3">* {{ $message }}</small>
@@ -81,7 +81,7 @@
                                  <i data-feather="phone" class="fea icon-sm icons"></i>
                                  <input name="kontak" id="kontak" type="number" class="form-control ps-5"
                                      autocomplete="off" placeholder="No. Kontak Anda..." required
-                                     value="{{ $customer->kontak }}" readonly>
+                                     value="{{ $customer->kontak }}" disabled>
                              </div>
                              @error('namaLengkap')
                                  <small class="text-danger mt-3">* {{ $message }}</small>
@@ -91,7 +91,8 @@
                              <label for="buktiShare" class="form-label">
                                  Unggah Bukti Share Produk Kami <span class="text-danger">*</span>
                              </label>
-                             <input type="file" name="buktiShare" required class="form-control" />
+                             <input type="file" name="buktiShare" required class="form-control"
+                                 accept=".jpg,.jpeg,.png" />
                              @error('buktiShare')
                                  <small class="text-danger mt-3">* {{ $message }}</small>
                              @enderror
@@ -100,7 +101,8 @@
                              <label for="buktiFollow" class="form-label">
                                  Unggah Bukti Follow Akun Instagram Kami <span class="text-danger">*</span>
                              </label>
-                             <input type="file" name="buktiFollow" required class="form-control" />
+                             <input type="file" name="buktiFollow" required class="form-control"
+                                 accept=".jpg,.jpeg,.png" />
                              @error('buktiFollow')
                                  <small class="text-danger mt-3">* {{ $message }}</small>
                              @enderror
@@ -111,11 +113,12 @@
                              </label>
                              <select name="informasi" id="informasi" class="form-control" required>
                                  <option value="">Pilih</option>
-                                 <option value="Website">Website</option>
-                                 <option value="Facebook">Facebook</option>
-                                 <option value="Instagram">Instagram</option>
-                                 <option value="Keluarga/Teman/Kerabat">Keluarga/Teman/Kerabat</option>
-                                 <option value="Lainnya">Lainnya</option>
+                                 <option value="Website" {{ old('informasi') === 'Website' ? 'selected' : '' }}>Website
+                                 </option>
+                                 <option value="Facebook" {{ old('informasi') === 'Facebook' ? 'selected' : '' }}>Facebook</option>
+                                 <option value="Instagram" {{ old('informasi') === 'Instagram' ? 'selected' : '' }}>Instagram</option>
+                                 <option value="Keluarga/Teman/Kerabat" {{ old('informasi') === 'Keluarga/Teman/Kerabat' ? 'selected' : '' }}>Keluarga/Teman/Kerabat</option>
+                                 <option value="Lainnya" {{ old('informasi') === 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                              </select>
                              @error('informasi')
                                  <small class="text-danger mt-3">* {{ $message }}</small>
@@ -126,7 +129,7 @@
                                  Alasan Anda Ikut Tryout Gratis ? <span class="text-danger">*</span>
                              </label>
                              <textarea name="alasan" id="alasan" class="form-control"
-                                 placeholder="Alasan Anda Ikut Tryout Gratis Dari Kami..." required></textarea>
+                                 placeholder="Alasan Anda Ikut Tryout Gratis Dari Kami..." required>{{ old('alasan') }}</textarea>
                              @error('informasi')
                                  <small class="text-danger mt-3">* {{ $message }}</small>
                              @enderror

@@ -63,7 +63,10 @@ class Pengaturan extends Controller
 
         // Cek apakah sudah terdapat pengaturan
         $checkPengaturan = PengaturanWeb::first();
+
+        $oldLogo = null;
         if ($checkPengaturan) {
+            $oldLogo = $checkPengaturan->logo;
             $checkPengaturan->delete();
         }
 
@@ -78,7 +81,10 @@ class Pengaturan extends Controller
         $pengaturanWeb->kontak = htmlspecialchars($request->input('kontak'));
         if ($request->hasFile('logo')) {
             // Hapus logo lama
-            Storage::disk('public')->delete($request->input('oldLogo'));
+            if (!is_null($oldLogo) && $oldLogo !== '' && Storage::disk('public')->exists($oldLogo)) {
+                Storage::disk('public')->delete($oldLogo);
+            }
+
             // Upload logo baru
             $fileLogo = $request->file('logo');
             $fileHashname = $fileLogo->hashName();

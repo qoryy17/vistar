@@ -108,7 +108,8 @@ Route::middleware([AuthMiddleware::class, UserCustomerMiddleware::class])->group
     Route::controller(Orders::class)->group(function () {
         Route::get('/order-tryout/{params}', 'orderTryout')->name('orders.detail-pesanan');
         Route::post('/pay-order-tryout', 'payOrder')->name('orders.pay-order');
-        Route::post('/simpan-daftar-tryout', 'daftarGratis')->name('orders.simpan-gratis');
+        Route::post('/simpan-daftar-tryout', 'daftarGratis')->name('orders.simpan-gratis')
+            ->middleware(['optimizeImages']);
         Route::post('/pesan-tryout-gratis', 'pesanTryoutGratis')->name('mainweb.pesan-tryout-gratis');
 
         Route::post('/check-referral', 'checkReferral')->name('orders.check-referral');
@@ -118,7 +119,11 @@ Route::middleware([AuthMiddleware::class, UserCustomerMiddleware::class])->group
 // Routing untuk melengkapi informasi profil user customer
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(Profils::class)->group(function () {
-        Route::post('/update-foto', 'ubahFoto')->name('profils.ubah-foto')->middleware(UserCustomerMiddleware::class);
+        Route::post('/update-foto', 'ubahFoto')->name('profils.ubah-foto')
+            ->middleware([
+                UserCustomerMiddleware::class,
+                'optimizeImages'
+            ]);
         Route::post('/update-profil-pengguna', 'ubahProfil')->name('profils.ubah-profil');
         Route::post('/update-password', 'ubahPassword')->name('profils.ubah-password');
     });
@@ -143,7 +148,8 @@ Route::middleware([AuthMiddleware::class, UserAdminMiddleware::class])->group(fu
     Route::controller(Pengaturan::class)->group(function () {
         Route::get('/form-banner/{param}/{id}', 'formBanner')->name('pengaturan.form-banner');
         Route::get('/form-faq/{param}/{id}', 'formFaq')->name('pengaturan.form-faq');
-        Route::post('/simpan-pengaturan', 'simpanPengaturanWeb')->name('pengaturan.simpan-web');
+        Route::post('/simpan-pengaturan', 'simpanPengaturanWeb')->name('pengaturan.simpan-web')
+            ->middleware(['optimizeImages']);
         Route::delete('/hapus-logs', 'hapusLogs')->name('pengaturan.hapus-logs');
         Route::post('/update-profil', 'updateProfil')->name('pengaturan.update-profil');
     });
@@ -177,7 +183,8 @@ Route::middleware([AuthMiddleware::class, UserAdminMiddleware::class])->group(fu
         Route::get('/detail-produk/{id}', 'detailProduk')->name('tryouts.detail-produk');
         Route::get('/form-produk-tryout/{param}/{id}', 'formProdukTryout')->name('tryouts.form');
 
-        Route::post('/simpan-produk-tryout', 'simpanProdukTryout')->name('tryouts.simpan');
+        Route::post('/simpan-produk-tryout', 'simpanProdukTryout')->name('tryouts.simpan')
+            ->middleware(['optimizeImages']);
         Route::delete('/hapus-produk-tryout', 'hapusProdukTryout')->name('tryouts.hapus');
         Route::post('/duplikat-produk-tryout', 'duplikatProdukTryout')->name('tryouts.duplikat');
 
@@ -294,7 +301,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         });
 
         Route::middleware([AuthMiddleware::class, UserCustomerMiddleware::class])->group(function () {
-            Route::post('/report/exam', 'sendReportExam')->name('report.send-exam');
+            Route::post('/report/exam', 'sendReportExam')->name('report.send-exam')
+                ->middleware(['optimizeImages']);
         });
     });
 });

@@ -208,7 +208,7 @@
                     <div class="form-group">
                         <label for="screenshot">Screenshot Soal Ujian <span class="text-danger">*</span></label>
                         <input type="file" required name="screenshot" id="screenshot" class="dropify"
-                            data-height="100" />
+                            data-height="100" accept=".jpg,.jpeg,.png" />
                         <small class="text-danger">Hanya boleh bertipe png/jpg/png. Maksimal 2MB</small>
                     </div>
 
