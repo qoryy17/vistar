@@ -2,15 +2,15 @@
 
 namespace App\View\Components\Web;
 
-use Closure;
 use App\Helpers\BerandaUI;
-use Illuminate\View\Component;
+use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\View\Component;
 
 class LandingNavbar extends Component
 {
-
     public $web;
+
     /**
      * Create a new component instance.
      */
@@ -22,8 +22,8 @@ class LandingNavbar extends Component
     /**
      * Get the view / contents that represent the component.
      */
-    public function render(): View|Closure|string
+    public function render(): View | Closure | string
     {
-        return view('components..web.landing-navbar');
+        return view('components.web.landing-navbar');
     }
 }

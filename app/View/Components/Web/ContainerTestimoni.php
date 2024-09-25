@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components\web;
+namespace App\View\Components\Web;
 
 use App\Models\Testimoni;
 use Cache;
@@ -11,6 +11,7 @@ use Illuminate\View\Component;
 class ContainerTestimoni extends Component
 {
     public $testimoni;
+
     /**
      * Create a new component instance.
      */
@@ -43,6 +44,6 @@ class ContainerTestimoni extends Component
      */
     public function render(): View | Closure | string
     {
-        return view('components..web.container-testimoni');
+        return view('components.web.container-testimoni');
     }
 }

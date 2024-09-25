@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components\web;
+namespace App\View\Components\Web;
 
 use App\Helpers\BerandaUI;
 use Closure;
@@ -10,6 +10,7 @@ use Illuminate\View\Component;
 class ContainerCobaGratis extends Component
 {
     public $web;
+
     /**
      * Create a new component instance.
      */
@@ -21,8 +22,8 @@ class ContainerCobaGratis extends Component
     /**
      * Get the view / contents that represent the component.
      */
-    public function render(): View|Closure|string
+    public function render(): View | Closure | string
     {
-        return view('components..web.container-coba-gratis');
+        return view('components.web.container-coba-gratis');
     }
 }

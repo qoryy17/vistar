@@ -28,6 +28,6 @@ class HeaderAuth extends Component
      */
     public function render(): View | Closure | string
     {
-        return view('components..web.header-auth');
+        return view('components.web.header-auth');
     }
 }

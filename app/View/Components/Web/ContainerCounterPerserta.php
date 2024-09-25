@@ -1,15 +1,16 @@
 <?php
 
-namespace App\View\Components\web;
+namespace App\View\Components\Web;
 
-use Closure;
 use App\Helpers\BerandaUI;
-use Illuminate\View\Component;
+use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\View\Component;
 
 class ContainerCounterPerserta extends Component
 {
     public $web;
+
     /**
      * Create a new component instance.
      */
@@ -21,8 +22,8 @@ class ContainerCounterPerserta extends Component
     /**
      * Get the view / contents that represent the component.
      */
-    public function render(): View|Closure|string
+    public function render(): View | Closure | string
     {
-        return view('components..web.container-counter-perserta');
+        return view('components.web.container-counter-perserta');
     }
 }
