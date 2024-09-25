@@ -8,7 +8,7 @@
         $themeColor = '#000000';
     }
 
-    $logo = 'resources/images/vistar-indonesia.png';
+    $logo = 'resources/images/logo.png';
     $uploadedLogo = 'storage/' . $web->logo;
     if (is_file($uploadedLogo)) {
         $logo = $uploadedLogo;

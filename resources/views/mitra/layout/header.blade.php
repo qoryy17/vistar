@@ -13,6 +13,12 @@
             'icon-class' => 'ti-shopping-cart',
         ],
     ];
+
+    $logo = asset(is_file('storage/' . $web->logo) ? 'storage/' . $web->logo : 'resources/images/logo.png');
+    $logoDark = asset(is_file('storage/' . $web->logo) ? 'storage/' . $web->logo : 'resources/images/logo-white.png');
+
+    $logoMobile = $logo;
+    $logoMobileDark = $logoDark;
 @endphp
 <!-- Main Header-->
 <div class="main-header side-header hor-header">
@@ -23,12 +29,12 @@
             @endif
             <div class="hor-logo">
                 <a class="main-logo" href="{{ route('mainweb.index') }}">
-                    <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                        class="header-brand-img desktop-logo" alt="Logo {{ config('app.name') }}"
-                        title="Logo {{ config('app.name') }}" style="max-width: 200px;" />
-                    <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                        class="header-brand-img desktop-logo-dark" alt="Logo {{ config('app.name') }}"
-                        title="Logo {{ config('app.name') }}" style="max-width: 200px;" />
+                    <img src="{{ $logo }}" class="header-brand-img desktop-logo"
+                        style="max-width: 200px; max-height: 50px;" alt="{{ config('app.name') }} Logo"
+                        title="{{ config('app.name') }} Logo" loading="eager" />
+                    <img src="{{ $logoDark }}" class="header-brand-img desktop-logo-dark"
+                        style="max-width: 200px; max-height: 50px;" alt="{{ config('app.name') }} Logo Dark"
+                        title="{{ config('app.name') }} Logo Dark" loading="eager" />
                 </a>
             </div>
             <div class="mt-2 p-3">
@@ -40,10 +46,15 @@
         </div>
         <div class="main-header-center">
             <div class="responsive-logo">
-                <a href="{{ route('site.main') }}"><img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                        class="mobile-logo" alt="logo" style="max-width: 120px;"></a>
-                <a href="{{ route('site.main') }}"><img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                        class="mobile-logo-dark" alt="logo" style="max-width: 120px;"></a>
+                <a href="{{ route('mainweb.index') }}">
+                    <img src="{{ $logoMobile }}" class="mobile-logo" style="max-width: 120px; max-height: 40px;"
+                        alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo" loading="eager" />
+                </a>
+                <a href="{{ route('mainweb.index') }}">
+                    <img src="{{ $logoMobileDark }}" class="mobile-logo-dark"
+                        style="max-width: 120px; max-height: 40px;" alt="{{ config('app.name') }} Logo Dark"
+                        title="{{ config('app.name') }} Logo Dark" loading="eager" />
+                </a>
             </div>
         </div>
         <div class="main-header-right">
@@ -113,26 +124,13 @@
     <div class="sticky">
         <div class="main-menu main-sidebar main-sidebar-sticky side-menu">
             <div class="main-sidebar-header main-container-1 active">
-                <div class="sidemenu-logo">
-                    <a class="main-logo" href="{{ route('site.main') }}">
-                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="header-brand-img desktop-logo" alt="logo">
-                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="header-brand-img icon-logo" alt="logo">
-                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="header-brand-img desktop-logo theme-logo" alt="logo">
-                        <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}"
-                            class="header-brand-img icon-logo theme-logo" alt="logo">
-                    </a>
-                </div>
                 <div class="main-sidebar-body main-body-1">
                     <div class="slide-left disabled" id="slide-left"><i class="fe fe-chevron-left"></i></div>
                     <ul class="menu-nav nav">
                         <li class="nav-header"><span class="nav-label">Dashboard</span></li>
                         @foreach ($navigations as $navigation)
                             <li class="nav-item">
-                                <a title={{ $navigation['title'] }} class="nav-link"
-                                    href="{{ $navigation['url'] }}">
+                                <a title={{ $navigation['title'] }} class="nav-link" href="{{ $navigation['url'] }}">
                                     <span class="shape1"></span>
                                     <span class="shape2"></span>
                                     <i class="sidemenu-icon menu-icon {{ $navigation['icon-class'] }}"></i>

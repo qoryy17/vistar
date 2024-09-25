@@ -27,13 +27,13 @@ class PengaturanRequest extends FormRequest
             'perusahaan' => ['required', 'string', 'max:255'],
             'alamat' => ['required', 'string'],
             'email' => ['required', 'email', 'string'],
-            'facebook' => ['required', 'string'],
-            'instagram' => ['required', 'string'],
+            'facebook' => ['required', 'string', 'url:http,https'],
+            'instagram' => ['required', 'string', 'url:http,https'],
             'kontak' => ['required', 'numeric'],
             'logo' => ['image', 'mimes:png,jpg', 'max:2048'],
             'metaAuthor' => ['required', 'string', 'max:255'],
             'metaKeyword' => ['required', 'string'],
-            'metaDescription' => ['required', 'string']
+            'metaDescription' => ['required', 'string'],
         ];
     }
 }

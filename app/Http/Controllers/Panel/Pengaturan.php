@@ -10,10 +10,12 @@ use App\Models\LimitTryout;
 use App\Models\Logs;
 use App\Models\PengaturanWeb;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 
@@ -62,57 +64,86 @@ class Pengaturan extends Controller
         $request->validated();
 
         // Cek apakah sudah terdapat pengaturan
-        $checkPengaturan = PengaturanWeb::first();
+        $checkPengaturanWeb = PengaturanWeb::first();
+
+        $savedData = [
+            'nama_bisnis' => htmlspecialchars($request->input('namaBisnis')),
+            'tagline' => htmlspecialchars($request->input('tagline')),
+            'perusahaan' => htmlspecialchars($request->input('perusahaan')),
+            'alamat' => htmlspecialchars($request->input('alamat')),
+            'email' => htmlspecialchars($request->input('email')),
+            'facebook' => htmlspecialchars($request->input('facebook')),
+            'instagram' => htmlspecialchars($request->input('instagram')),
+            'kontak' => htmlspecialchars($request->input('kontak')),
+            'meta_author' => htmlspecialchars($request->input('metaAuthor')),
+            'meta_keyword' => htmlspecialchars($request->input('metaKeyword')),
+            'meta_description' => htmlspecialchars($request->input('metaDescription')),
+        ];
 
         $oldLogo = null;
-        if ($checkPengaturan) {
-            $oldLogo = $checkPengaturan->logo;
-            $checkPengaturan->delete();
+        $uploadedNewLogo = false;
+        if ($checkPengaturanWeb) {
+            $oldLogo = $checkPengaturanWeb->logo;
         }
 
-        $pengaturanWeb = new PengaturanWeb();
-        $pengaturanWeb->nama_bisnis = htmlspecialchars($request->input('namaBisnis'));
-        $pengaturanWeb->tagline = htmlspecialchars($request->input('tagline'));
-        $pengaturanWeb->perusahaan = htmlspecialchars($request->input('perusahaan'));
-        $pengaturanWeb->alamat = htmlspecialchars($request->input('alamat'));
-        $pengaturanWeb->email = htmlspecialchars($request->input('email'));
-        $pengaturanWeb->facebook = htmlspecialchars($request->input('facebook'));
-        $pengaturanWeb->instagram = htmlspecialchars($request->input('instagram'));
-        $pengaturanWeb->kontak = htmlspecialchars($request->input('kontak'));
-        if ($request->hasFile('logo')) {
-            // Hapus logo lama
-            if (!is_null($oldLogo) && $oldLogo !== '' && Storage::disk('public')->exists($oldLogo)) {
+        $uploadedFiles = [];
+
+        try {
+            DB::beginTransaction();
+
+            if ($request->hasFile('logo')) {
+                // Upload new logo
+                $fileLogo = $request->file('logo');
+
+                $uploadedFile = 'images/config/logo-' . $fileLogo->hashName();
+
+                $fileUpload = $fileLogo->storeAs('public', $uploadedFile);
+                if (!$fileUpload) {
+                    throw new Exception('Unggah logo gagal !');
+                }
+
+                array_push($uploadedFiles, $uploadedFile);
+                $uploadedNewLogo = true;
+
+                $savedData['logo'] = $uploadedFile;
+            }
+
+            $save = null;
+            if ($checkPengaturanWeb) {
+                $save = $checkPengaturanWeb->update($savedData);
+            } else {
+                $save = $checkPengaturanWeb->create($savedData);
+            }
+
+            if (!$save) {
+                throw new Exception('Pengaturan gagal diperbarui.');
+            }
+
+            Cache::forget('app:web_setting');
+
+            // Simpan logs aktivitas pengguna
+            $logs = Auth::user()->name . ' telah memperbarui pengaturan web waktu tercatat :  ' . now();
+            RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
+
+            DB::commit();
+
+            // Delete old logo
+            if ($uploadedNewLogo && !is_null($oldLogo) && $oldLogo !== '' && Storage::disk('public')->exists($oldLogo)) {
                 Storage::disk('public')->delete($oldLogo);
             }
 
-            // Upload logo baru
-            $fileLogo = $request->file('logo');
-            $fileHashname = $fileLogo->hashName();
+            return redirect()->route('main.pengaturan')->with('message', 'Pengaturan berhasil diperbarui !');
+        } catch (\Throwable $th) {
+            DB::rollback();
 
-            $fileUpload = $fileLogo->storeAs('public', $fileHashname);
-            if (!$fileUpload) {
-                return redirect()->route('main.pengaturan')->with('error', 'Unggah logo gagal !');
+            foreach ($uploadedFiles as $file) {
+                if (Storage::disk('public')->exists($file)) {
+                    Storage::disk('public')->delete($file);
+                }
             }
-            $pengaturanWeb->logo = $fileHashname;
-        } else {
-            $pengaturanWeb->logo = $request->input('oldLogo');
+
+            return redirect()->back()->with('error', $th->getMessage())->withInput();
         }
-
-        $pengaturanWeb->meta_author = htmlspecialchars($request->input('metaAuthor'));
-        $pengaturanWeb->meta_keyword = htmlspecialchars($request->input('metaKeyword'));
-        $pengaturanWeb->meta_description = htmlspecialchars($request->input('metaDescription'));
-
-        if (!$pengaturanWeb->save()) {
-            return redirect()->route('main.pengaturan')->with('error', 'Pengaturan gagal dihapus !');
-        }
-
-        Cache::forget('app:web_setting');
-
-        // Simpan logs aktivitas pengguna
-        $logs = Auth::user()->name . ' telah memperbarui pengaturan web waktu tercatat :  ' . now();
-        RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
-
-        return redirect()->route('main.pengaturan')->with('message', 'Pengaturan berhasil dihapus !');
     }
 
     public function hapusLogs(Request $request)

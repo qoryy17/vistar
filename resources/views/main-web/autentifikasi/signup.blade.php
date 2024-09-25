@@ -42,7 +42,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card login-page border-0" style="z-index: 1">
-                                        <div class="card-body p-0">
+                                        <div class="card-body p-0 py-4">
                                             <div class="card-title text-center">
                                                 <a href="{{ route('mainweb.index') }}">
                                                     <img id="img-logo" src="{{ asset('storage/' . $web->logo) }}"

@@ -46,7 +46,7 @@
                                                 </label>
                                                 <input type="text" class="form-control" placeholder="Nama Bisnis..."
                                                     autocomplete="off" required
-                                                    value="{{ $pengaturan->nama_bisnis ?? old('namaBisnis') }}"
+                                                    value="{{ old('namaBisnis', $pengaturan->nama_bisnis) }}"
                                                     id="namaBisnis" name="namaBisnis">
                                                 @error('namaBisnis')
                                                     <small class="text-danger"> {{ $message }}</small>
@@ -57,7 +57,7 @@
                                                 </label>
                                                 <input type="text" class="form-control" placeholder="Tagline Bisnis..."
                                                     autocomplete="off" required
-                                                    value="{{ $pengaturan->tagline ?? old('tagline') }}" id="tagline"
+                                                    value="{{ old('tagline', $pengaturan->tagline) }}" id="tagline"
                                                     name="tagline">
                                                 @error('tagline')
                                                     <small class="text-danger"> {{ $message }}</small>
@@ -68,8 +68,8 @@
                                                 </label>
                                                 <input type="text" class="form-control" placeholder="Perusahaan..."
                                                     autocomplete="off" required
-                                                    value="{{ $pengaturan->perusahaan ?? old('perusahaan') }}"
-                                                    id="perusahaan" name="perusahaan">
+                                                    value="{{ old('perusahaan', $pengaturan->perusahaan) }}" id="perusahaan"
+                                                    name="perusahaan">
                                                 @error('perusahaan')
                                                     <small class="text-danger"> {{ $message }}</small>
                                                 @enderror
@@ -78,7 +78,7 @@
                                                 <label for="alamat">Alamat <span class="text-danger">*</span>
                                                 </label>
                                                 <textarea name="alamat" id="alamat" cols="30" rows="4" class="form-control" id="Nama" required
-                                                    placeholder="Alamat..." autocomplete="off">{{ $pengaturan->alamat ?? old('alamat') }}</textarea>
+                                                    placeholder="Alamat..." autocomplete="off">{{ old('alamat', $pengaturan->alamat) }}</textarea>
                                                 @error('alamat')
                                                     <small class="text-danger"> {{ $message }}</small>
                                                 @enderror
@@ -89,7 +89,7 @@
                                                 <label for="email">Email <span class="text-danger">*</span>
                                                 </label>
                                                 <input type="email" class="form-control" placeholder="Email..."
-                                                    autocomplete="off" value="{{ $pengaturan->email ?? old('email') }}"
+                                                    autocomplete="off" value="{{ old('email', $pengaturan->email) }}"
                                                     id="email" name="email">
                                                 @error('email')
                                                     <small class="text-danger"> {{ $message }}</small>
@@ -98,10 +98,9 @@
                                             <div class="form-group">
                                                 <label for="facebook">Facebook <span class="text-danger">*</span>
                                                 </label>
-                                                <input type="text" class="form-control" placeholder="Facebook..."
-                                                    autocomplete="off"
-                                                    value="{{ $pengaturan->facebook ?? old('facebook') }}" id="facebook"
-                                                    name="facebook">
+                                                <input type="url" class="form-control" placeholder="Facebook..."
+                                                    autocomplete="off" value="{{ old('facebook', $pengaturan->facebook) }}"
+                                                    id="facebook" name="facebook">
                                                 @error('facebook')
                                                     <small class="text-danger"> {{ $message }}</small>
                                                 @enderror
@@ -109,10 +108,10 @@
                                             <div class="form-group">
                                                 <label for="instagram">Instagram <span class="text-danger">*</span>
                                                 </label>
-                                                <input type="text" class="form-control" placeholder="Instagram..."
+                                                <input type="url" class="form-control" placeholder="Instagram..."
                                                     autocomplete="off"
-                                                    value="{{ $pengaturan->instagram ?? old('instagram') }}"
-                                                    id="instagram" name="instagram">
+                                                    value="{{ old('instagram', $pengaturan->instagram) }}" id="instagram"
+                                                    name="instagram">
                                                 @error('instagram')
                                                     <small class="text-danger"> {{ $message }}</small>
                                                 @enderror
@@ -121,7 +120,7 @@
                                                 <label for="kontak">Kontak <span class="text-danger">*</span>
                                                 </label>
                                                 <input type="number" class="form-control" placeholder="Kontak..."
-                                                    autocomplete="off" value="{{ $pengaturan->kontak ?? old('kontak') }}"
+                                                    autocomplete="off" value="{{ old('kontak', $pengaturan->kontak) }}"
                                                     id="kontak" name="kontak">
                                                 @error('kontak')
                                                     <small class="text-danger"> {{ $message }}</small>
@@ -152,7 +151,7 @@
                                                 </label>
                                                 <input type="text" class="form-control" placeholder="Meta Author..."
                                                     autocomplete="off"
-                                                    value="{{ $pengaturan->meta_author ?? old('metaAuthor') }}"
+                                                    value="{{ old('metaAuthor', $pengaturan->meta_author) }}"
                                                     id="metaAuthor" name="metaAuthor">
                                                 @error('metaAuthor')
                                                     <small class="text-danger"> {{ $message }}</small>
@@ -165,7 +164,7 @@
                                                 </label>
                                                 <input type="text" class="form-control" placeholder="Meta Keyword..."
                                                     autocomplete="off"
-                                                    value="{{ $pengaturan->meta_keyword ?? old('metaKeyword') }}"
+                                                    value="{{ old('metaKeyword', $pengaturan->meta_keyword) }}"
                                                     id="metaKeyword" name="metaKeyword">
                                                 @error('metaKeyword')
                                                     <small class="text-danger"> {{ $message }}</small>
@@ -179,7 +178,7 @@
                                                 </label>
                                                 <input type="text" class="form-control"
                                                     placeholder="Meta Description..." autocomplete="off"
-                                                    value="{{ $pengaturan->meta_description ?? old('metaDescription') }}"
+                                                    value="{{ old('metaDescription', $pengaturan->meta_description) }}"
                                                     id="metaDescription" name="metaDescription">
                                                 @error('metaDescription')
                                                     <small class="text-danger"> {{ $message }}</small>
