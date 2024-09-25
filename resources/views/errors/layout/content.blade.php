@@ -12,9 +12,9 @@
                 @php
                     $buttonUrl = route('mainweb.index');
                     $buttonText = 'Halaman Depan';
-                    if (url()->previous() !== url()->previous()) {
+                    if (url()->current() !== url()->previous()) {
                         $buttonUrl = url()->previous();
-                        $buttonText = $buttonText;
+                        $buttonText = 'Kembali';
                     }
                 @endphp
                 @if (url()->current() !== $buttonUrl)
