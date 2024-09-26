@@ -30,6 +30,7 @@ use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\Auth\UserAdminMiddleware;
 use App\Http\Middleware\Auth\UserCustomerMiddleware;
 use App\Http\Middleware\Auth\UserMitraMiddleware;
+use App\Http\Middleware\NoAuthMiddleware;
 use App\Http\Middleware\ProfileCompletion;
 use Illuminate\Support\Facades\Route;
 
@@ -56,8 +57,8 @@ Route::controller(TransactionController::class)->group(function () {
 
 // Routing untuk autentifikasi manual melalui form
 Route::controller(Autentifikasi::class)->group(function () {
-    Route::get('/signin', 'signIn')->name('auth.signin');
-    Route::get('/signup', 'signUp')->name('auth.signup');
+    Route::get('/signin', 'signIn')->name('auth.signin')->middleware(NoAuthMiddleware::class);
+    Route::get('/signup', 'signUp')->name('auth.signup')->middleware(NoAuthMiddleware::class);
     Route::post('/register-user', 'registerUser')->name('auth.register');
     Route::get('/reset-password', 'resetPassword')->name('auth.reset-password');
     Route::post('/send-email', 'sendLinkEmail')->name('auth.send-link-email');
@@ -122,7 +123,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::post('/update-foto', 'ubahFoto')->name('profils.ubah-foto')
             ->middleware([
                 UserCustomerMiddleware::class,
-                'optimizeImages'
+                'optimizeImages',
             ]);
         Route::post('/update-profil-pengguna', 'ubahProfil')->name('profils.ubah-profil');
         Route::post('/update-password', 'ubahPassword')->name('profils.ubah-password');
