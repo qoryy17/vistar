@@ -115,7 +115,7 @@
                          @endif
                          @if ($price !== null)
                              <div class="my-3" itemscope itemprop="offers" itemtype="https://schema.org/Offer">
-                                 <meta itemprop="availability" href="https://schema.org/OnlineOnly" />
+                                 <meta itemprop="availability" content="https://schema.org/OnlineOnly" />
                                  <p class="fs-2 fw-bold mb-0 mt-3 d-flex gap-2 lh-1">
                                      <span itemprop="priceCurrency" content="IDR">Rp.</span>
                                      <span itemprop="price" content="{{ $price }}">
@@ -296,7 +296,7 @@
                                      </div>
 
                                      <div class="my-3" itemscope itemprop="offers" itemtype="https://schema.org/Offer">
-                                         <meta itemprop="availability" href="https://schema.org/OnlineOnly" />
+                                         <meta itemprop="availability" content="https://schema.org/OnlineOnly" />
                                          <p class="fs-4 fw-bold m-0">
                                              <span itemprop="priceCurrency" content="IDR">Rp.</span>
                                              <span itemprop="price" content="{{ $price }}">
