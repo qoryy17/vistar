@@ -91,6 +91,10 @@ class MainWebsite extends Controller
         $title = 'Produk ' . config('app.name');
         $searchCategoryId = $request->category_id ? htmlentities($request->category_id) : null;
         $searchName = $request->search_name ? htmlentities($request->search_name) : null;
+        $page = intval(request()->get('page', 1));
+        if (!is_numeric($page) || $page < 1) {
+            $page = 1;
+        }
 
         $productStatus = 'Berbayar';
 
@@ -107,7 +111,7 @@ class MainWebsite extends Controller
             $title = 'Cari ' . implode(' ', $additionalTitle) . ' Produk ' . config('app.name');
         }
 
-        $products = Cache::tags(['products_main_web'])->remember('products_main_web:category_id:' . $searchCategoryId . ',status:' . $productStatus . ',search:' . $searchName, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
+        $products = Cache::tags(['products_main_web'])->remember('products_main_web:category_id:' . $searchCategoryId . ',status:' . $productStatus . ',search:' . $searchName . ',page:' . $page, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
             $data = DB::table('produk_tryout')
                 ->select(
                     'produk_tryout.*',
@@ -146,7 +150,6 @@ class MainWebsite extends Controller
         });
 
         // Check Page
-        $page = $products->currentPage();
         if ($page > 1) {
             $title .= " - Halaman $page";
         }
@@ -235,6 +238,10 @@ class MainWebsite extends Controller
         $title = 'Produk Paket Tryout Gratis';
         $searchCategoryId = $request->category_id ? htmlentities($request->category_id) : null;
         $searchName = $request->search_name ? htmlentities($request->search_name) : null;
+        $page = intval(request()->get('page', 1));
+        if (!is_numeric($page) || $page < 1) {
+            $page = 1;
+        }
 
         // Cek apakah sudah pilih produk tryout gratis
         $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Disetujui')->orderBy('created_at', 'ASC')->get();
@@ -268,7 +275,7 @@ class MainWebsite extends Controller
             $title = 'Cari ' . implode(' ', $additionalTitle) . ' Produk Gratis ' . config('app.name');
         }
 
-        $products = Cache::tags(['products_main_web'])->remember('products_main_web:category_id:' . $searchCategoryId . ',status:' . $productStatus . ',search:' . $searchName, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
+        $products = Cache::tags(['products_main_web'])->remember('products_main_web:category_id:' . $searchCategoryId . ',status:' . $productStatus . ',search:' . $searchName . ',page:' . $page, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus, $searchName) {
             $data = DB::table('produk_tryout')
                 ->select(
                     'produk_tryout.*',
@@ -307,7 +314,6 @@ class MainWebsite extends Controller
         });
 
         // Check Page
-        $page = $products->currentPage();
         if ($page > 1) {
             $title .= " - Halaman $page";
         }
