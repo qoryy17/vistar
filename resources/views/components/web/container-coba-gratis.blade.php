@@ -1,5 +1,4 @@
-<!-- Coba Gratis End -->
-<div class="container mt-100 mt-60" id="coba-gratis">
+<div class="container mt-100" id="coba-gratis">
     <div class="row align-items-center">
         <div class="col-lg-6 wow animate__animated animate__fadeInLeft" data-wow-delay=".1s">
             <div class="section-title">

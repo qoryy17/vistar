@@ -49,10 +49,12 @@
     </section><!--end section-->
     <!-- Hero End -->
 
-    <!-- Product Start -->
-    @if (count($productCategories) > 0)
-        <section class="section" id="produk">
-            <div class="container">
+    <!-- Feature Start -->
+    <section class="section">
+
+        <!-- Product Start -->
+        @if (count($productCategories) > 0)
+            <div class="container pb-5" id="produk">
                 <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
                     <div class="col-12 text-center">
                         <div class="section-title mb-4 pb-2">
@@ -114,28 +116,15 @@
                     @endforeach
                 </div><!--end row-->
             </div><!--end container-->
-            <!-- Price End -->
+        @endif
 
-            <!-- Coba Gratis -->
-            <x-web.container-coba-gratis />
+        <x-web.container-coba-gratis />
 
-            <!-- Keunggulan -->
-            <x-web.container-produk-unggulan />
+        <x-web.container-produk-unggulan />
 
-        </section><!--end section-->
-    @endif
-
-    <!-- Counter End -->
-
-    <!-- Feature Start -->
-    <section class="section">
-
-        <!-- Testimoni Peserta -->
         <x-web.container-testimoni />
 
-        <!-- Counter Peserta -->
         <x-web.container-counter-perserta />
-        <!-- End Counter Customer -->
     </section><!--end section-->
     <!-- End feature -->
 @endsection

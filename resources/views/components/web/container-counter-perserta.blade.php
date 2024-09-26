@@ -1,5 +1,4 @@
-<!-- Counter Customer -->
-<div class="container mt-100 mt-60">
+<div class="container mt-100">
     <div class="row">
         <div class="col-lg-6">
             <div class="section-title text-center text-lg-start">
