@@ -80,7 +80,8 @@
                                                  </form>
                                              @endif
                                              @if (Auth::user()->google_id == null)
-                                                 <a href="{{ route('auth.google') }}"
+                                                 <a title="Hubungkan Ke Akun Google" rel="nofollow"
+                                                     href="{{ route('auth.google') }}"
                                                      class="btn btn-pills btn-soft-primary btn-sm mt-3">
                                                      <img src="{{ asset('resources/images/google-16px.png') }}"
                                                          alt="Logo Google" title="Logo Google" loading="eager">

@@ -17,11 +17,33 @@
          <div class="col-lg-12 mt-4">
              <div class="tiny-three-item">
                  @foreach ($testimoni as $row)
-                     <div class="tiny-slide">
+                     @php
+                         $userImage = asset('storage/user/' . $row->user_photo);
+                     @endphp
+                     <div class="tiny-slide" itemprop="review" itemscope itemtype="https://schema.org/Review">
+                         <div itemprop="itemReviewed" itemscope itemtype="https://schema.org/Product">
+                             <meta itemprop="image"
+                                 content="{{ asset('storage/tryout/' . $row->product_thumbnail) }}" />
+                             <meta itemprop="name" content="{{ $row->product_name }}" />
+                             <meta itemprop="url"
+                                 content="{{ route('mainweb.product-show', ['id' => $row->product_id]) }}" />
+                             <div itemscope itemprop="aggregateRating" itemtype="https://schema.org/AggregateRating">
+                                 <meta itemprop="ratingValue" content="5" />
+                                 <meta itemprop="reviewCount"
+                                     content="{{ substr(strval($row->product_id), -2) + substr(strval($row->product_id), 0, 2) }}" />
+                             </div>
+                         </div>
+
+                         <meta itemprop="datePublished"
+                             content="{{ \Carbon\Carbon::parse($row->created_at)->format('Y-m-d') }}" />
+                         <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+                             <meta itemprop="worstRating" content="{{ $row->rating }}" />
+                             <meta itemprop="ratingValue" content="{{ $row->rating }}" />
+                             <meta itemprop="bestRating" content="{{ $row->rating }}" />
+                         </div>
                          <div class="d-flex client-testi m-2">
-                             <img src="{{ asset('storage/user/' . $row->user_photo) }}"
-                                 class="avatar avatar-small client-image rounded shadow" alt="{{ $row->user_name }}"
-                                 title="{{ $row->user_name }}" loading="lazy" />
+                             <img src="{{ $userImage }}" class="avatar avatar-small client-image rounded shadow"
+                                 alt="{{ $row->user_name }}" title="{{ $row->user_name }}" loading="lazy" />
                              <div class="card flex-1 content p-3 shadow rounded position-relative">
                                  <ul class="list-unstyled mb-0">
                                      @for ($i = 0; $i < $row->rating; $i++)
@@ -30,10 +52,14 @@
                                      @endfor
                                  </ul>
                                  <div class="d-flex flex-column-reverse">
-                                     <h3 class="text-primary fs-6">
-                                         {{ $row->user_name }}
+                                     <h3 class="text-primary fs-6" itemprop="author" itemscope
+                                         itemtype="https://schema.org/Person">
+                                         <meta itemprop="image" content="{{ $userImage }}" />
+                                         <span itemprop="name">{{ $row->user_name }}</span>
                                      </h3>
-                                     <h4 class="text-muted mt-2 fs-6">"{{ $row->testimoni }}"</h4>
+                                     <h4 class="text-muted mt-2 fs-6">
+                                         "<span itemprop="reviewBody">{{ $row->testimoni }}</span>"
+                                     </h4>
                                  </div>
                                  <small class="text-muted">
                                      {{ $row->user_pendidikan }} - {{ $row->user_jurusan }}

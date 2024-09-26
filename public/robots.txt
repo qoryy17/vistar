@@ -7,3 +7,4 @@ Disallow: /*_buildManifest.js$
 Disallow: /*_middlewareManifest.js$
 Disallow: /*_ssgManifest.js$
 Disallow: /*.js$
+Disallow: /cdn-cgi/*

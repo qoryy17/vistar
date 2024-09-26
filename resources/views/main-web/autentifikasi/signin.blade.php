@@ -126,7 +126,7 @@
                                                         <div class="row">
                                                             <div class="col-12 mt-3">
                                                                 <div class="d-grid">
-                                                                    <a title="Masuk dengan Google"
+                                                                    <a title="Masuk dengan Google" rel="nofollow"
                                                                         href="{{ route('auth.google', ['next-url' => request()->get('next-url')]) }}"
                                                                         class="btn btn-light">
                                                                         <i class="mdi mdi-google text-danger"></i>

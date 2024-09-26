@@ -7,12 +7,15 @@
         $themeColor = '#000000';
     }
 
-    $metaImage = 'resources/images/logo.png';
+    $logo = asset('resources/images/logo.png');
+    $metaImage = asset('resources/images/logo.png');
     $uploadedLogo = 'storage/' . $web->logo;
+    if (is_file($uploadedLogo)) {
+        $metaImage = asset($uploadedLogo);
+        $logo = asset($uploadedLogo);
+    }
     if ($image) {
         $metaImage = $image;
-    } elseif (is_file($uploadedLogo)) {
-        $metaImage = $uploadedLogo;
     }
 
     $keywords = implode(
@@ -35,7 +38,7 @@
         if (strlen($metaDescriptionSection) < 170) {
             $metaDescription = $metaDescriptionSection . ' :. ' . $metaDescription;
         }
-    } elseif (strlen($metaDescription) < 100) {
+    } else {
         $metaDescription = $title . ' :. ' . $metaDescription;
     }
     if (strlen($metaDescription) > 170) {
@@ -87,19 +90,19 @@
 
     <link rel="manifest" href="{{ asset('site.webmanifest') }}" />
 
-    <meta property="og:title" content="{{ $title }}" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ url()->full() }}" />
-    <meta property="og:image" content="{{ asset($metaImage) }}" />
+    <meta property="og:title" content="{{ $title }}" />
+    <meta property="og:image" content="{{ $metaImage }}" />
     <meta property="og:description" content="{{ $metaDescription }}" />
 
     {{--  Twitter Meta Tags  --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta property="twitter:domain" content="{{ request()->getHost() }}">
     <meta property="twitter:url" content="{{ url()->full() }}">
-    <meta name="twitter:title" content="@yield('title')">
+    <meta name="twitter:title" content="{{ $title }}">
+    <meta name="twitter:image" content="{{ $metaImage }}">
     <meta name="twitter:description" content="{{ $metaDescription }}">
-    <meta name="twitter:image" content="@yield('image', asset($metaImage))">
 
     {{--  Note: Create App Config APP ID after vistar using social account login with facebook --}}
     <meta property="fb:app_id" content="1235512704325801" />
@@ -136,4 +139,34 @@
             max-width: 10rem;
         }
     </style>
+
+    {{--  Rich Text Organization  --}}
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "image": "{{ $logo }}",
+          "url": "{{ url()->route('mainweb.index') }}",
+          "sameAs": ["{{ $web->facebook }}", "{{ $web->instagram }}"],
+          "logo": "{{ $logo }}",
+          "name": "{{ $web->nama_bisnis }}",
+          "legalName": "{{ $web->perusahaan }}",
+          "description": "{{ $web->meta_description }}",
+          "email": "{{ $web->email }}",
+          "telephone": "{{ $web->kontak }}",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "{{ $web->alamat }}",
+            "addressRegion": "Sumatera Utara",
+            "addressLocality": "Kota Medan",
+            "postalCode": "20219",
+            "addressCountry": "ID"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "{{ $web->kontak }}",
+            "email": "{{ $web->email }}"
+          }
+        }
+    </script>
 </head>

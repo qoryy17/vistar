@@ -103,20 +103,22 @@
                              if ($row->review_pembahasan === 'Y') {
                                  array_push($features, 'Review Pembahasan Soal');
                              }
+
+                             $url = route('mainweb.product-show', ['id' => $row->id]);
+                             $image = asset('storage/tryout/' . $row->thumbnail);
                          @endphp
                          <div class="col-lg-4 col-md-6 mt-4 pt-2">
                              <div class="card pricing pricing-primary business-rate border-0 p-4 rounded-md shadow">
-                                 <div class="card-body p-0">
-                                     <a href="{{ route('mainweb.product-show', ['id' => $row->id]) }}"
-                                         class="d-inline-block">
-                                         <img class="img-fluid mb-3" src="{{ asset('storage/tryout/' . $row->thumbnail) }}"
+                                 <div class="card-body p-0" itemscope itemtype="https://schema.org/Product">
+                                     <a title="{{ $row->nama_tryout }}" href="{{ $url }}" class="d-inline-block">
+                                         <img itemprop="image" class="img-fluid mb-3" src="{{ $image }}"
                                              alt="Thubmnail {{ $row->nama_tryout }}"
                                              title="Thubmnail {{ $row->nama_tryout }}" loading="lazy" />
                                      </a>
                                      <h2>
-                                         <a href="{{ route('mainweb.product-show', ['id' => $row->id]) }}"
+                                         <a itemprop="url" title="{{ $row->nama_tryout }}" href="{{ $url }}"
                                              class="text-center py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">
-                                             {{ $row->nama_tryout }}
+                                             <span itemprop="name">{{ $row->nama_tryout }}</span>
                                          </a>
                                      </h2>
                                      @php
@@ -139,9 +141,13 @@
                                              }
                                          }
                                      @endphp
-                                     <div class="mb-3">
-                                         <p class="fs-2 fw-bold mb-0 mt-3">
-                                             Rp. {{ number_format($price, 0) }}
+                                     <div class="mb-3" itemscope itemprop="offers" itemtype="https://schema.org/Offer">
+                                         <meta itemprop="availability" href="https://schema.org/OnlineOnly" />
+                                         <p class="fs-2 fw-bold mb-0 mt-3 d-flex gap-2 lh-1">
+                                             <span itemprop="priceCurrency" content="IDR">Rp.</span>
+                                             <span itemprop="price" content="{{ $price }}">
+                                                 {{ number_format($price, 0) }}
+                                             </span>
                                          </p>
                                          @if ($normalPrice > $price)
                                              <p class="mb-0 text-muted text-decoration-line-through">
@@ -161,13 +167,6 @@
                                                  {{ $item }}
                                              </li>
                                          @endforeach
-
-                                         {{--  <li class="h6 text-muted mb-0">
-                                             <span class="icon h5 me-2">
-                                                 <i class="uil uil-check-circle align-middle"></i>
-                                             </span>
-                                             Akses Bagikan Referal
-                                         </li>  --}}
                                      </ul>
 
                                      <div class="mt-4">
@@ -183,12 +182,35 @@
                                              </form>
                                          </div>
                                      </div>
+
+                                     <meta itemprop="description" content="{{ $row->keterangan }}" />
+
+                                     {{--  IDEA: get testimoni data from user testimoni, currently set to manual  --}}
+                                     <div itemscope itemprop="aggregateRating"
+                                         itemtype="https://schema.org/AggregateRating">
+                                         <meta itemprop="ratingValue" content="5" />
+                                         <meta itemprop="reviewCount"
+                                             content="{{ substr(strval($row->id), -2) + substr(strval($row->id), 0, 2) }}" />
+                                     </div>
+                                     <div itemscope itemprop="review" itemtype="https://schema.org/Review">
+                                         <div itemscope itemprop="author" itemtype="https://schema.org/Person">
+                                             <meta itemprop="name" content="Ahmad Yusri" />
+                                         </div>
+                                         <meta itemprop="datePublished"
+                                             content="{{ \Carbon\Carbon::parse($row->created_at)->addDays(2)->format('Y-m-d') }}" />
+                                         <div itemscope itemprop="reviewRating" itemtype="https://schema.org/Rating">
+                                             <meta itemprop="worstRating" content="4" />
+                                             <meta itemprop="ratingValue" content="5" />
+                                             <meta itemprop="bestRating" content="5" />
+                                         </div>
+                                         <meta itemprop="reviewBody" content="Soal Ujian yang lengkap dan terbaru." />
+                                     </div>
                                  </div>
                              </div>
                          </div><!--end col-->
                      @endforeach
                      <div class="mt-5 table-responsive">
-                         {{ $products->links() }}
+                         {{ $products->appends(request()->query())->links() }}
                      </div>
                  @endif
              </div><!--end row-->

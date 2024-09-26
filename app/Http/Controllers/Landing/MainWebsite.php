@@ -68,33 +68,33 @@ class MainWebsite extends Controller
         return view('main-web.home.beranda', $data);
     }
 
+    protected function getProductCategory(string $status, null | string $categoryId = null)
+    {
+        if (!$categoryId) {
+            return null;
+        }
+
+        return Cache::tags(['product_category_main_web:' . $categoryId])->remember('product_category_main_web:' . $categoryId . ',status:' . $status, 7 * 24 * 60 * 60, function () use ($categoryId, $status) {
+            return DB::table('kategori_produk')
+                ->select(
+                    'kategori_produk.id',
+                    'kategori_produk.judul'
+                )
+                ->where('kategori_produk.status', $status)
+                ->where('kategori_produk.id', $categoryId)
+                ->first();
+        });
+    }
+
     public function products(Request $request)
     {
         $title = 'Produk ' . config('app.name');
-        $searchCategoryId = $request->category_id;
-        if ($searchCategoryId) {
-            $searchCategoryId = htmlentities($searchCategoryId);
-        }
-        $searchName = $request->search_name;
-        if ($searchName) {
-            $searchName = htmlentities($searchName);
-        }
+        $searchCategoryId = $request->category_id ? htmlentities($request->category_id) : null;
+        $searchName = $request->search_name ? htmlentities($request->search_name) : null;
 
         $productStatus = 'Berbayar';
 
-        $productCategory = null;
-        if ($searchCategoryId) {
-            $productCategory = Cache::tags(['product_category_main_web:' . $searchCategoryId])->remember('product_category_main_web:' . $searchCategoryId . ',status:' . $productStatus, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus) {
-                return DB::table('kategori_produk')
-                    ->select(
-                        'kategori_produk.id',
-                        'kategori_produk.judul'
-                    )
-                    ->where('kategori_produk.status', $productStatus)
-                    ->where('kategori_produk.id', $searchCategoryId)
-                    ->first();
-            });
-        }
+        $productCategory = $this->getProductCategory($productStatus, $searchCategoryId);
 
         if ($productCategory || $searchName) {
             $additionalTitle = [];
@@ -133,7 +133,7 @@ class MainWebsite extends Controller
                 $data = $data->whereLike('produk_tryout.nama_tryout', "%{$searchName}%");
             }
 
-            return $data->get();
+            return $data->paginate(9);
         });
 
         $categoryStatus = 'Berbayar';
@@ -145,26 +145,20 @@ class MainWebsite extends Controller
                 ->get();
         });
 
-        $perPage = 6; // Number of items per page
-        $page = request()->input('page', 1); // Get the current page number from the request
-        $offset = ($page * $perPage) - $perPage; // Calculate the offset
-
-        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
-            array_slice($products->toArray(), $offset, $perPage), // Slice the data to show only the items for the current page
-            count($products), // Total count of items
-            $perPage, // Items per page
-            $page, // Current page number
-            ['path' => request()->url(), 'query' => request()->query()]// URL and query parameters
-        );
+        // Check Page
+        $page = $products->currentPage();
+        if ($page > 1) {
+            $title .= " - Halaman $page";
+        }
 
         $data = [
             'title' => $title,
             'categories' => $categories,
-            'products' => $paginator,
             'searchCategoryId' => $searchCategoryId,
             'searchName' => $searchName,
+            'products' => $products,
         ];
-        return view('main-web.produk.tryout-berbayar', $data);
+        return view('main-web.produk.product', $data);
     }
 
     public function productShow(int $id)
@@ -233,36 +227,14 @@ class MainWebsite extends Controller
             'order' => $order,
             'recommendProducts' => $recommendProducts,
         ];
-        return view('main-web.produk.tryout-show', $data);
+        return view('main-web.produk.product-show', $data);
     }
 
     public function freeProducts(Request $request)
     {
         $title = 'Produk Paket Tryout Gratis';
-        $searchCategoryId = $request->category_id;
-        if ($searchCategoryId) {
-            $searchCategoryId = htmlentities($searchCategoryId);
-        }
-        $searchName = htmlentities($request->search_name);
-        if ($searchName) {
-            $searchName = htmlentities($searchName);
-        }
-
-        $productStatus = 'Gratis';
-
-        $productCategory = null;
-        if ($searchCategoryId) {
-            $productCategory = Cache::tags(['product_category_main_web:' . $searchCategoryId])->remember('product_category_main_web:' . $searchCategoryId . ',status:' . $productStatus, 7 * 24 * 60 * 60, function () use ($searchCategoryId, $productStatus) {
-                return DB::table('kategori_produk')
-                    ->select(
-                        'kategori_produk.id',
-                        'kategori_produk.judul'
-                    )
-                    ->where('kategori_produk.status', $productStatus)
-                    ->where('kategori_produk.id', $searchCategoryId)
-                    ->first();
-            });
-        }
+        $searchCategoryId = $request->category_id ? htmlentities($request->category_id) : null;
+        $searchName = $request->search_name ? htmlentities($request->search_name) : null;
 
         // Cek apakah sudah pilih produk tryout gratis
         $cekGratisan = LimitTryout::where('customer_id', Auth::user()->customer_id)->where('status_validasi', 'Disetujui')->orderBy('created_at', 'ASC')->get();
@@ -281,6 +253,9 @@ class MainWebsite extends Controller
         } else {
             return redirect()->route('mainweb.index', '#coba-gratis');
         }
+
+        $productStatus = 'Gratis';
+        $productCategory = $this->getProductCategory($productStatus, $searchCategoryId);
 
         if ($productCategory || $searchName) {
             $additionalTitle = [];
@@ -319,7 +294,7 @@ class MainWebsite extends Controller
                 $data = $data->whereLike('produk_tryout.nama_tryout', "%{$searchName}%");
             }
 
-            return $data->get();
+            return $data->paginate(9);
         });
 
         $categoryStatus = 'Gratis';
@@ -331,24 +306,18 @@ class MainWebsite extends Controller
                 ->get();
         });
 
-        $perPage = 6; // Number of items per page
-        $page = request()->input('page', 1); // Get the current page number from the request
-        $offset = ($page * $perPage) - $perPage; // Calculate the offset
-
-        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
-            array_slice($products->toArray(), $offset, $perPage), // Slice the data to show only the items for the current page
-            count($products), // Total count of items
-            $perPage, // Items per page
-            $page, // Current page number
-            ['path' => request()->url(), 'query' => request()->query()]// URL and query parameters
-        );
+        // Check Page
+        $page = $products->currentPage();
+        if ($page > 1) {
+            $title .= " - Halaman $page";
+        }
 
         $data = [
             'title' => $title,
             'categories' => $categories,
             'searchCategoryId' => $searchCategoryId,
             'searchName' => $searchName,
-            'products' => $paginator,
+            'products' => $products,
         ];
         return view('main-web.produk.tryout-gratis', $data);
     }
@@ -521,62 +490,70 @@ class MainWebsite extends Controller
 
     public function sitemap()
     {
+        $web = BerandaUI::web();
+
+        $defaultImage = asset('resources/images/logo.png');
+        $uploadedLogo = 'storage/' . $web->logo;
+        if (is_file($uploadedLogo)) {
+            $defaultImage = asset($uploadedLogo);
+        }
+
         $urls = [
             [
-                'changefreq' => 'yearly',
-                'lastmod' => '2021-03-01',
+                'changefreq' => 'weekly',
+                'lastmod' => '2024-09-25',
                 'priority' => 0.8,
                 'title' => 'HomePage',
                 'loc' => route('mainweb.index'),
+                'images' => [$defaultImage],
             ],
             [
-                'changefreq' => 'yearly',
-                'lastmod' => '2021-03-01',
-                'priority' => 0.8,
-                'title' => 'Produk ' . config('app.name'),
-                'loc' => route('mainweb.product'),
-            ],
-            [
-                'changefreq' => 'yearly',
-                'lastmod' => '2021-03-01',
-                'priority' => 0.6,
+                'changefreq' => 'monthly',
+                'lastmod' => '2024-09-25',
+                'priority' => 0.5,
                 'title' => 'Tentang',
                 'loc' => route('mainweb.tentang'),
+                'images' => [$defaultImage],
             ],
             [
-                'changefreq' => 'yearly',
-                'lastmod' => '2021-03-01',
-                'priority' => 0.6,
+                'changefreq' => 'monthly',
+                'lastmod' => '2024-09-25',
+                'priority' => 0.5,
                 'title' => 'Hubungi ' . config('app.name'),
                 'loc' => route('mainweb.kontak'),
+                'images' => [$defaultImage],
             ],
             [
-                'changefreq' => 'yearly',
-                'lastmod' => '2021-03-01',
+                'changefreq' => 'monthly',
+                'lastmod' => '2024-09-25',
                 'priority' => 0.5,
                 'title' => 'Kebijakan Privasi' . config('app.name'),
                 'loc' => route('mainweb.kebijakan-privasi'),
+                'images' => [$defaultImage],
             ],
             [
-                'changefreq' => 'yearly',
-                'lastmod' => '2021-03-01',
+                'changefreq' => 'monthly',
+                'lastmod' => '2024-09-25',
                 'priority' => 0.5,
                 'title' => 'Masuk - ' . config('app.name'),
                 'loc' => route('auth.signin'),
+                'images' => [$defaultImage],
             ],
             [
-                'changefreq' => 'yearly',
-                'lastmod' => '2021-03-01',
+                'changefreq' => 'monthly',
+                'lastmod' => '2024-09-25',
                 'priority' => 0.5,
                 'title' => 'Daftar - ' . config('app.name'),
                 'loc' => route('auth.signup'),
+                'images' => [$defaultImage],
             ],
             [
-                'changefreq' => 'yearly',
-                'lastmod' => '2021-03-01',
+                'changefreq' => 'monthly',
+                'lastmod' => '2024-09-25',
                 'priority' => 0.5,
                 'title' => 'Reset Password - ' . config('app.name'),
                 'loc' => route('auth.reset-password'),
+                'images' => [$defaultImage],
             ],
         ];
 
@@ -585,21 +562,44 @@ class MainWebsite extends Controller
             return \App\Models\ProdukTryout::select(
                 'id',
                 'nama_tryout',
+                'thumbnail',
                 'updated_at'
             )
                 ->where('status', 'Tersedia')
                 ->orderBy('created_at', 'DESC')
                 ->get();
         });
+        $lastModProduct = '2024-09-25';
         foreach ($products as $item) {
+            $itemUpdatedAt = date('Y-m-d', strtotime($item->updated_at));
+            if (strtotime($lastModProduct) < strtotime($itemUpdatedAt)) {
+                $lastModProduct = $itemUpdatedAt;
+
+            }
+            $images = [];
+            $thumbnail = 'storage/tryout/' . $item->thumbnail;
+            if (is_file($thumbnail)) {
+                array_push($images, asset($thumbnail));
+            } else {
+                array_push($images, $defaultImage);
+            }
             array_push($urls, [
-                'changefreq' => 'monthly',
-                'lastmod' => date('Y-m-d', strtotime($item->updated_at)),
+                'changefreq' => 'weekly',
+                'lastmod' => $itemUpdatedAt,
                 'priority' => 0.8,
                 'title' => $item->nama_tryout . ' - Produk ' . config('app.name'),
                 'loc' => route('mainweb.product-show', ['id' => $item->id]),
+                'images' => $images,
             ]);
         }
+        array_push($urls, [
+            'changefreq' => 'weekly',
+            'lastmod' => date('Y-m-d', strtotime($lastModProduct)),
+            'priority' => 0.8,
+            'title' => 'Produk ' . config('app.name'),
+            'loc' => route('mainweb.product'),
+            'images' => [$defaultImage],
+        ]);
 
         return response()->view('main-web.home.sitemap', ['urls' => $urls])
             ->header(

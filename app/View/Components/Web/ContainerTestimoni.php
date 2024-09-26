@@ -25,12 +25,17 @@ class ContainerTestimoni extends Component
                     'testimoni.rating',
                     'testimoni.created_at',
 
+                    'produk_tryout.id as product_id',
+                    'produk_tryout.nama_tryout as product_name',
+                    'produk_tryout.thumbnail as product_thumbnail',
+
                     'customer.nama_lengkap as user_name',
                     'customer.pendidikan as user_pendidikan',
                     'customer.jurusan as user_jurusan',
                     'customer.foto as user_photo'
                 )
                 ->leftJoin('customer', 'testimoni.customer_id', '=', 'customer.id')
+                ->leftJoin('produk_tryout', 'testimoni.produk_tryout_id', '=', 'produk_tryout.id')
                 ->orderBy('testimoni.updated_at', 'desc')
                 ->limit(10)
                 ->get();

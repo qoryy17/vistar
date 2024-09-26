@@ -133,7 +133,7 @@
                      @endphp
                  @endforeach
                  <div class="mt-5 table-responsive">
-                     {{ $products->links() }}
+                     {{ $products->appends(request()->query())->links() }}
                  </div>
              </div><!--end row-->
          </div><!--end container-->

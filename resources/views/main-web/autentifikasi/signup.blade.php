@@ -143,7 +143,7 @@
                                                         <div class="row">
                                                             <div class="col-12 mt-3">
                                                                 <div class="d-grid">
-                                                                    <a title="Daftar dengan Google"
+                                                                    <a title="Daftar dengan Google" rel="nofollow"
                                                                         href="{{ route('auth.google', ['next-url' => request()->get('next-url')]) }}"
                                                                         class="btn btn-light">
                                                                         <i class="mdi mdi-google text-danger"></i>

@@ -13,8 +13,10 @@
         </script>
     @endif
     <div class="back-to-home">
-        <button title="Kembali" class="back-button btn btn-icon btn-primary"><i data-feather="arrow-left"
-                class="icons"></i></button>
+        <a href="{{ url()->previous() !== url()->current() ? url()->previous() : url()->route('auth.signin') }}"
+            title="{{ url()->previous() !== url()->current() ? 'Kembali' : 'Login' }}" class="btn btn-icon btn-primary">
+            <i data-feather="arrow-left" class="icons"></i>
+        </a>
     </div>
 
     <!-- Hero Start -->
