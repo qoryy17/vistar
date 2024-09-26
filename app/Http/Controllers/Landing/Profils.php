@@ -52,13 +52,9 @@ class Profils extends Controller
         RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
 
         $nextUrl = request()->get('next-url');
-        if ($nextUrl) {
-            if (filter_var($nextUrl, FILTER_VALIDATE_URL)) {
                 // Check if next url not outside of the domain
-                if (\App\Helpers\Common::isSameDomainFromURL(request()->getHttpHost(), $nextUrl)) {
+        if ($nextUrl && filter_var($nextUrl, FILTER_VALIDATE_URL) && \App\Helpers\Common::isSameDomainFromURL(request()->getHttpHost(), $nextUrl)) {
                     return redirect()->to($nextUrl);
-                }
-            }
         }
 
         return redirect()->route('mainweb.profile', ['next-url' => request()->get('next-url')])->with('profilMessage', 'Foto berhasil disimpan !');
@@ -106,13 +102,8 @@ class Profils extends Controller
         RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
 
         $nextUrl = request()->get('next-url');
-        if ($nextUrl) {
-            if (filter_var($nextUrl, FILTER_VALIDATE_URL)) {
-                // Check if next url not outside of the domain
-                if (\App\Helpers\Common::isSameDomainFromURL(request()->getHttpHost(), $nextUrl)) {
+        if ($nextUrl && filter_var($nextUrl, FILTER_VALIDATE_URL) && \App\Helpers\Common::isSameDomainFromURL(request()->getHttpHost(), $nextUrl)) {
                     return redirect()->to($nextUrl);
-                }
-            }
         }
 
         return redirect()->route('mainweb.profile', ['next-url' => request()->get('next-url')])->with('profilMessage', 'Profil berhasil disimpan !');
