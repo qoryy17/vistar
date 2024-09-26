@@ -41,7 +41,7 @@ function Dropify(element, options) {
         showErrors: true,
         errorTimeout: 3000,
         errorsPosition: 'overlay',
-        imgFileExtensions: ['png', 'jpg', 'jpeg', 'gif', 'bmp'],
+        imgFileExtensions: ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'],
         maxFileSizePreview: "5M",
         allowedFormats: ['portrait', 'square', 'landscape'],
         allowedFileExtensions: ['*'],
