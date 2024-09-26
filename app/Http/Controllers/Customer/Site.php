@@ -39,7 +39,7 @@ class Site extends Controller
             'page_title' => 'Tryout Berbayar',
             'breadcumb' => 'Tryout Berbayar',
             'customer' => Customer::findOrFail(Auth::user()->customer_id),
-            'pembelian' => QueryCollect::pembelian(Auth::user()->customer_id),
+            'pembelian' => QueryCollect::pembelian(Auth::user()->customer_id)->get(),
             'hasilUjian' => QueryCollect::hasilUjianBerbayar(Auth::user()->customer_id)->orderBy('waktu_berakhir', 'DESC')->paginate(10),
         ];
         return view('customer-panel.tryout.tryout-berbayar', $data);

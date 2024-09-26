@@ -32,8 +32,8 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <img src="{{ asset('storage/tryout/' . $tryout->thumbnail) }}" class="img-fluid"
-                                            alt="Thubmnail {{ $tryout->nama_tryout }}"
-                                            title="Thubmnail {{ $tryout->nama_tryout }}" loading="lazy" />
+                                            alt="Thumbnail {{ $tryout->nama_tryout }}"
+                                            title="Thumbnail {{ $tryout->nama_tryout }}" loading="lazy" />
                                     </div>
                                     <div class="col-md-8">
                                         <table class="table">

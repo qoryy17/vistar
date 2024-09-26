@@ -39,7 +39,7 @@
 
                 <div class="col-lg-5 col-md-5 mt-4 pt-2 mt-sm-0 pt-sm-0" data-wow-delay=".1s">
                     <div class="position-relative">
-                        <img width="400" src="{{ url('resources/images/model1.png') }}"
+                        <img width="400" src="{{ url('resources/images/model-1.png') }}"
                             class="rounded img-fluid mx-auto d-block" alt="Banner Model 1 {{ config('app.name') }}"
                             title="Model Banner {{ config('app.name') }}" loading="eager" />
                     </div>

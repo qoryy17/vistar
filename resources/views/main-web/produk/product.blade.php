@@ -112,8 +112,8 @@
                                  <div class="card-body p-0" itemscope itemtype="https://schema.org/Product">
                                      <a title="{{ $row->nama_tryout }}" href="{{ $url }}" class="d-inline-block">
                                          <img itemprop="image" class="img-fluid mb-3" src="{{ $image }}"
-                                             alt="Thubmnail {{ $row->nama_tryout }}"
-                                             title="Thubmnail {{ $row->nama_tryout }}" loading="lazy" />
+                                             alt="Thumbnail {{ $row->nama_tryout }}"
+                                             title="Thumbnail {{ $row->nama_tryout }}" loading="lazy" />
                                      </a>
                                      <h2>
                                          <a itemprop="url" title="{{ $row->nama_tryout }}" href="{{ $url }}"

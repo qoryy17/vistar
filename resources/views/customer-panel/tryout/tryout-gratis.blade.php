@@ -315,17 +315,17 @@
                     <!-- End Row -->
                 @else
                     <div class="row">
-                        <div class="col-md-4 d-none d-sm-block">
-                            <img width="300px" class="img img-thubmnail" src="{{ asset('resources/images/model-4.png') }}"
+                        <div class="col-md-4 d-none d-md-flex justify-content-center">
+                            <img height="300px" style="max-width: 100%; object-fit: contain;" class="img"
+                                src="{{ asset('resources/images/model-4.png') }}"
                                 alt="Banner Model 4 {{ config('app.name') }}"
-                                title="Banner Model 4 {{ config('app.name') }}" loading="eager">
+                                title="Banner Model 4 {{ config('app.name') }}" loading="eager" />
                         </div>
                         <div class="col-md-8" style="vertical-align: middle;">
                             <div class="card custom-card">
                                 <div class="card-header p-3 tx-medium my-auto">
                                     Daftar Pengajuan Tryout Gratis Untuk Coba 1 Kali Ujian, Bebas Pilih 1 Kategori (CPNS,
-                                    PPK,
-                                    Kedinasan)
+                                    PPPK, Kedinasan)
                                 </div>
                                 <div class="card-body">
                                     <p style="text-align: justify">

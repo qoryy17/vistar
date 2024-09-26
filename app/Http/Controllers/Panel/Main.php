@@ -23,7 +23,7 @@ class Main extends Controller
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
             'countStatistikCPNS' => BerandaUI::statistikTryout('CPNS'),
-            'countStatistikPPPK' => BerandaUI::statistikTryout('PPK'),
+            'countStatistikPPPK' => BerandaUI::statistikTryout('PPPK'),
             'countStatistikKedinasan' => BerandaUI::statistikTryout('Kedinasan'),
             'countCustomer' => BerandaUI::customerTerdaftar(),
             'countCustomerPerhari' => BerandaUI::customerTerdaftarPerhari(),

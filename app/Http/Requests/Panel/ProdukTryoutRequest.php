@@ -52,7 +52,7 @@ class ProdukTryoutRequest extends FormRequest
             'durasiUjian.numeric' => 'Durasi ujian harus berupa angka',
             'masaAktif.required' => 'Masa aktif wajib di isi',
             'masaAktif.numeric' => 'Masa aktif harus berupa angka',
-            'thumbnail.image' => 'Thubmnail harus berupa gambar',
+            'thumbnail.image' => 'Thumbnail harus berupa gambar',
             'thumbnail.mimes' => 'Thumbnail harus bertipe png/jpg',
             'thumbnail.max' => 'Thumbnail maksimal 2048 MB',
             'passingGrade.required' => 'Passing grade wajib di isi',

@@ -39,7 +39,7 @@
                                                 <select name="kategori" class="form-control" id="Kategori">
                                                     <option value="">-- Pilih Kategori --</option>
                                                     <option value="CPNS">CPNS</option>
-                                                    <option value="PPK">PPPK</option>
+                                                    <option value="PPPK">PPPK</option>
                                                     <option value="Kedinasan">Kedinasan</option>
                                                 </select>
                                             </div>

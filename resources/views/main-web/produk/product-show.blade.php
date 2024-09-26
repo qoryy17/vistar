@@ -267,8 +267,8 @@
                                  <div class="card-body p-0">
                                      <div class="d-inline-block">
                                          <img itemprop="image" class="img-fluid mb-3" src="{{ $image }}"
-                                             alt="Thubmnail {{ $row->nama_tryout }}"
-                                             title="Thubmnail {{ $row->nama_tryout }}" loading="lazy" />
+                                             alt="Thumbnail {{ $row->nama_tryout }}"
+                                             title="Thumbnail {{ $row->nama_tryout }}" loading="lazy" />
                                      </div>
                                      <h3 itemprop="name"
                                          class="text-center py-2 px-2 d-inline-block bg-soft-primary fs-6 mb-0 text-primary rounded-md">

@@ -21,15 +21,12 @@
                     </div>
                 </div>
                 <!-- End Page Header -->
-                @php
-                    $pembelianData = $pembelian->get();
-                @endphp
-                @if ($pembelianData->isNotEmpty())
+                @if ($pembelian->isNotEmpty())
                     <div class="card-scroll" id="scrollContainer">
                         @php
                             $no = 1;
                         @endphp
-                        @foreach ($pembelianData as $tryout)
+                        @foreach ($pembelian as $tryout)
                             @php
                                 $cekWaitingExam = App\Models\Ujian::select('id', 'status_ujian')
                                     ->where('order_tryout_id', $tryout->id)
@@ -333,15 +330,16 @@
                     <!-- End Row -->
                 @else
                     <div class="row">
-                        <div class="col-md-4 d-none d-sm-block">
-                            <img width="300px" class="img img-thubmnail" src="{{ asset('resources/images/model-5.png') }}"
+                        <div class="col-md-4 d-none d-md-flex justify-content-center">
+                            <img height="400px" style="max-width: 100%; object-fit: contain;" class="img"
+                                src="{{ asset('resources/images/model-5.png') }}"
                                 alt="Banner Model 5 {{ config('app.name') }}"
                                 title="Banner Model 5 {{ config('app.name') }}" loading="eager" />
                         </div>
                         <div class="col-md-8" style="vertical-align: middle;">
                             <div class="card custom-card">
                                 <div class="card-header p-3 tx-medium my-auto ">
-                                    Uppss...Ujian Berbayar Belum Tersedia !
+                                    Uppss... Belum ada Ujian Berbayar nih !
                                 </div>
                                 <div class="card-body">
                                     <p style="text-align: justify">
@@ -364,7 +362,6 @@
                                     </a>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 @endif

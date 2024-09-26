@@ -167,8 +167,8 @@
                                 <div class="card-body p-0">
                                     <div class="d-inline-block">
                                         <img class="img-fluid mb-3" src="{{ asset('storage/tryout/' . $row->thumbnail) }}"
-                                            alt="Thubmnail {{ $row->nama_tryout }}"
-                                            title="Thubmnail {{ $row->nama_tryout }}" loading="lazy" />
+                                            alt="Thumbnail {{ $row->nama_tryout }}"
+                                            title="Thumbnail {{ $row->nama_tryout }}" loading="lazy" />
                                     </div>
                                     <h3
                                         class="text-center py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-md">

@@ -36,7 +36,7 @@
              @endif
              <div class="row">
                  <div class="col-md-4">
-                     <img src="{{ url('resources/images/model2.png') }}" class="rounded img-fluid mx-auto d-block"
+                     <img src="{{ url('resources/images/model-2.png') }}" class="rounded img-fluid mx-auto d-block"
                          alt="Banner Model 2 {{ config('app.name') }}" title="Banner Model 2 {{ config('app.name') }}"
                          loading="eager">
                  </div>
