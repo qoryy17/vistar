@@ -25,7 +25,9 @@ class Profils extends Controller
         $fileFoto = $request->file('foto');
         $fileHashname = $fileFoto->hashName();
 
-        $fileUpload = $fileFoto->storeAs('public/user', $fileHashname);
+        $uploadedFile = 'images/user/user-' . $fileHashname;
+
+        $fileUpload = $fileFoto->storeAs('public', $uploadedFile);
 
         if (!$fileUpload) {
             return back()->with('errorMessage', 'Unggah foto gagal !')->withInput();
@@ -33,18 +35,19 @@ class Profils extends Controller
 
         $customer = Customer::findOrFail(Auth::user()->customer_id);
 
-        $oldPhoto = 'user/' . $customer->foto;
-        // Hapus foto yang lama
-        if (Storage::disk('public')->exists($oldPhoto)) {
-            Storage::disk('public')->delete($oldPhoto);
-        }
+        $oldPhoto = $customer->foto;
 
         $save = $customer->update([
-            'foto' => $fileHashname
+            'foto' => $uploadedFile,
         ]);
 
         if (!$save) {
             return back()->with('errorMessage', 'Foto gagal disimpan !');
+        }
+
+        // Hapus foto yang lama
+        if (Storage::disk('public')->exists($oldPhoto)) {
+            Storage::disk('public')->delete($oldPhoto);
         }
 
         // Simpan logs aktivitas pengguna
@@ -52,9 +55,9 @@ class Profils extends Controller
         RecordLogs::saveRecordLogs($request->ip(), $request->userAgent(), $logs);
 
         $nextUrl = request()->get('next-url');
-                // Check if next url not outside of the domain
+        // Check if next url not outside of the domain
         if ($nextUrl && filter_var($nextUrl, FILTER_VALIDATE_URL) && \App\Helpers\Common::isSameDomainFromURL(request()->getHttpHost(), $nextUrl)) {
-                    return redirect()->to($nextUrl);
+            return redirect()->to($nextUrl);
         }
 
         return redirect()->route('mainweb.profile', ['next-url' => request()->get('next-url')])->with('profilMessage', 'Foto berhasil disimpan !');
@@ -103,7 +106,7 @@ class Profils extends Controller
 
         $nextUrl = request()->get('next-url');
         if ($nextUrl && filter_var($nextUrl, FILTER_VALIDATE_URL) && \App\Helpers\Common::isSameDomainFromURL(request()->getHttpHost(), $nextUrl)) {
-                    return redirect()->to($nextUrl);
+            return redirect()->to($nextUrl);
         }
 
         return redirect()->route('mainweb.profile', ['next-url' => request()->get('next-url')])->with('profilMessage', 'Profil berhasil disimpan !');

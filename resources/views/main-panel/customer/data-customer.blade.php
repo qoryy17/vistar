@@ -174,7 +174,7 @@
                                                     </td>
                                                     <td>
                                                         @if (!is_null($row['foto']))
-                                                            <img src="{{ asset('storage/user/' . $row['foto']) }}"
+                                                            <img src="{{ is_file('storage/' . $row['foto']) ? asset('storage/' . $row['foto']) : asset('resources/images/user-default.png') }}"
                                                                 class="img img-thumbnail"
                                                                 alt="User {{ $row['nama_lengkap'] }}"
                                                                 title="User {{ $row['nama_lengkap'] }}" loading="lazy" />

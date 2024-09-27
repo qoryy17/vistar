@@ -2,7 +2,7 @@
      $photo = asset('resources/images/user-default.png');
      if (Auth::user()->role === \App\Enums\UserRole::CUSTOMER->value) {
          if ($customer && $customer->foto) {
-             $userPhoto = "storage/user/$customer->foto";
+             $userPhoto = 'storage/' . $customer->foto;
              if (is_file($userPhoto)) {
                  $photo = asset($userPhoto);
              }
@@ -42,7 +42,7 @@
                              <div class="row align-items-center">
                                  <div class="col-lg-2 col-md-3 text-md-start text-center">
                                      <img src="{{ $userData['photo'] }}"
-                                         class="avatar avatar-large rounded-circle shadow d-block mx-auto"
+                                         class="avatar avatar-large rounded-circle shadow d-block mx-auto object-fit-cover"
                                          alt="Profil {{ $userData['name'] }}" title="Profil {{ $userData['name'] }}"
                                          loading="eager" />
                                  </div>

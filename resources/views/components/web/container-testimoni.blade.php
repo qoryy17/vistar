@@ -18,7 +18,9 @@
                  <div class="tiny-three-item">
                      @foreach ($testimoni as $row)
                          @php
-                             $userImage = asset('storage/user/' . $row->user_photo);
+                             $userImage = is_file('storage/' . $row->user_photo)
+                                 ? asset('storage/' . $row->user_photo)
+                                 : asset('resources/images/user-default.png');
                          @endphp
                          <div class="tiny-slide" itemprop="review" itemscope itemtype="https://schema.org/Review">
                              <div itemprop="itemReviewed" itemscope itemtype="https://schema.org/Product">
@@ -43,7 +45,8 @@
                                  <meta itemprop="bestRating" content="{{ $row->rating }}" />
                              </div>
                              <div class="d-flex client-testi m-2">
-                                 <img src="{{ $userImage }}" class="avatar avatar-small client-image rounded shadow"
+                                 <img src="{{ $userImage }}"
+                                     class="avatar avatar-small client-image rounded shadow object-fit-cover"
                                      alt="{{ $row->user_name }}" title="{{ $row->user_name }}" loading="lazy" />
                                  <div class="card flex-1 content p-3 shadow rounded position-relative">
                                      <ul class="list-unstyled mb-0">
