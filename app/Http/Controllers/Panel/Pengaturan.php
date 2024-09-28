@@ -95,17 +95,19 @@ class Pengaturan extends Controller
                 // Upload new logo
                 $fileLogo = $request->file('logo');
 
-                $uploadedFile = 'images/config/logo-' . $fileLogo->hashName();
+                $uploadedDir = 'images/config/';
+                $uploadedFileName = 'logo-' . $fileLogo->hashName();
+                $uploadedPath = $uploadedDir . $uploadedFileName;
 
-                $fileUpload = $fileLogo->storeAs('public', $uploadedFile);
+                $fileUpload = $fileLogo->storeAs($uploadedDir, $uploadedFileName, 'public');
                 if (!$fileUpload) {
                     throw new Exception('Unggah logo gagal !');
                 }
 
-                array_push($uploadedFiles, $uploadedFile);
+                array_push($uploadedFiles, $uploadedPath);
                 $uploadedNewLogo = true;
 
-                $savedData['logo'] = $uploadedFile;
+                $savedData['logo'] = $uploadedPath;
             }
 
             $save = null;
