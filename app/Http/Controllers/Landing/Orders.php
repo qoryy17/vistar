@@ -81,6 +81,12 @@ class Orders extends Controller
             ->where('keranjang_order.id', '=', $cartId)
             ->whereNot('kategori_produk.status', 'Gratis')
             ->first();
+        if (!$tryout) {
+            return response()->json([
+                'result' => 'error',
+                'title' => "Keranjang tidak ditemukan, Silahkan muat ulang halaman.",
+            ]);
+        }
 
         $referensiOrderID = $tryout->idProduk;
         $orderID = Str::uuid();

@@ -17,7 +17,7 @@ class PaymentService
     {
         // Get Transaction with Pending status
         $pendingTransactions = Payment::where('status_transaksi', 'pending')
-            ->select('id', 'ref_order_id')
+            ->select('id', 'ref_order_id', 'transaksi_id')
             ->where('customer_id', $customerId)
             ->get();
 
@@ -25,7 +25,7 @@ class PaymentService
             $checkStatus = $this->checkStatus($transaction->ref_order_id);
             if ($checkStatus['result'] === 'success') {
                 $status = $checkStatus['data']['status'];
-                if ($status !== 'pending') {
+                if (is_null($transaction->transaksi_id) || $status !== 'pending') {
                     $transactionData = $checkStatus['data']['transaction'];
                     $this->updateStatus($transaction->id, $status, [
                         'transaction_id' => $transactionData->transaction_id,
@@ -34,6 +34,8 @@ class PaymentService
                         'settlement_time' => @$transactionData->settlement_time,
                     ]);
                 }
+            } elseif (array_key_exists('data', $checkStatus) && array_key_exists('status', $checkStatus['data'])) {
+                $this->updateStatus($transaction->id, $checkStatus['data']['status']);
             }
         }
     }
@@ -43,7 +45,6 @@ class PaymentService
         $midtransService = new MidtransService();
 
         $checkStatus = $midtransService->checkStatus($orderId);
-
         if (!$checkStatus) {
             return [
                 'result' => 'error',
@@ -69,7 +70,7 @@ class PaymentService
         ];
     }
 
-    public function updateStatus(string $id, string $status, array $transaction)
+    public function updateStatus(string $id, string $status, array | null $transaction = null)
     {
         $payment = Payment::where('id', $id)
             ->select('id', 'ref_order_id', 'customer_id', 'subtotal', 'promo_type', 'promo_code', 'promo_data', 'nominal')
@@ -86,13 +87,15 @@ class PaymentService
             ->whereNotNull('customer_id')
             ->first();
 
-        $payment->transaksi_id = $transaction['transaction_id'];
-        $payment->status_fraud = $transaction['fraud_status'];
-        $payment->metode = $transaction['payment_type'];
-        $payment->status_transaksi = $status;
-        if ($status === 'paid' && $transaction['settlement_time']) {
-            $payment->waktu_transaksi = $transaction['settlement_time'];
+        if ($transaction) {
+            $payment->transaksi_id = $transaction['transaction_id'];
+            $payment->status_fraud = $transaction['fraud_status'];
+            $payment->metode = $transaction['payment_type'];
+            if ($status === 'paid' && $transaction['settlement_time']) {
+                $payment->waktu_transaksi = $transaction['settlement_time'];
+            }
         }
+        $payment->status_transaksi = $status;
         $payment->save();
 
         $orderTryout = OrderTryout::find($payment->ref_order_id);
