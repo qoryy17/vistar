@@ -105,7 +105,7 @@
                              }
 
                              $url = route('mainweb.product-show', ['id' => $row->id]);
-                             $image = asset('storage/tryout/' . $row->thumbnail);
+                             $image = asset('storage/' . $row->thumbnail);
                          @endphp
                          <div class="col-lg-4 col-md-6 mt-4 pt-2">
                              <div class="card pricing pricing-primary business-rate border-0 p-4 rounded-md shadow">

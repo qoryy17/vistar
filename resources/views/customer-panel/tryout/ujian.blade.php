@@ -229,7 +229,7 @@
     <script src="{{ url('resources/spruha/assets/plugins/jquery/jquery.min.js') }}"></script>
     <script>
         const examId = '{{ $exam->id }}';
-        const questionAssetPath = "{{ asset('storage/soal/') }}";
+        const questionAssetPath = "{{ asset('storage/') }}";
         let timeoutFlashInfo = null;
         let currentQuestion = null;
         let countdown = null
@@ -902,11 +902,9 @@
                 processData: false,
                 success: function(response) {
                     if (response.result === 'success') {
-
-
                         swal({
                             title: "Notifikasi",
-                            text: "Terimakasih. Laporan kendala berhasil dikirim !",
+                            text: response.title,
                             type: "success"
                         });
 

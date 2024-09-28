@@ -166,7 +166,7 @@
                                                                 </label>
                                                                 <input type="file" id="SoalGambar" class="dropify"
                                                                     data-height="200"
-                                                                    data-default-file= "{{ $soal ? asset('storage/soal/' . $soal->gambar) : '' }}"
+                                                                    data-default-file= "{{ $soal ? asset('storage/' . $soal->gambar) : '' }}"
                                                                     name="gambar" />
                                                                 @error('gambar')
                                                                     <small class="text-danger">*

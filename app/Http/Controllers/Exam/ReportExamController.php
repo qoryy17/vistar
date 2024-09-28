@@ -13,7 +13,6 @@ use App\Models\ReportExamModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 
 class ReportExamController extends Controller
@@ -56,19 +55,20 @@ class ReportExamController extends Controller
         }
 
         $fileScreenshot = $request->file('screenshot');
-        $fileHashname = $fileScreenshot->hashName();
-
         // Upload screenshot report ujian
         if (!$fileScreenshot) {
             return response()->json(['result' => 'error', 'title' => 'Silahkan masukkan Screenshot!']);
         }
 
-        $folder = 'public/ujian';
-        if (!Storage::exists($folder)) {
-            Storage::makeDirectory($folder);
+        $uploadedDir = 'images/exam-report/';
+        if (!Storage::disk('public')->exists($uploadedDir)) {
+            Storage::disk('public')->makeDirectory($uploadedDir);
         }
 
-        $fileUpload = $fileScreenshot->storeAs($folder, $fileHashname);
+        $uploadedFileName = time() . '-' . $fileScreenshot->hashName();
+        $uploadedPath = $uploadedDir . $uploadedFileName;
+
+        $fileUpload = $fileScreenshot->storeAs($uploadedDir, $uploadedFileName, 'public');
         if (!$fileUpload) {
             return response()->json(['result' => 'error', 'title' => 'Unggah screenshot gagal !']);
         }
@@ -78,7 +78,7 @@ class ReportExamController extends Controller
             'produk_tryout_id' => $request->input('idProduk'),
             'soal_id' => $request->input('idSoal'),
             'deskripsi' => htmlspecialchars($request->input('deskripsi')),
-            'screenshot' => $fileHashname,
+            'screenshot' => $uploadedPath,
             'status' => ReportExamStatus::WAITING->value,
         ]);
 
@@ -86,7 +86,7 @@ class ReportExamController extends Controller
             return response()->json(['result' => 'error', 'title' => 'Laporan gagal dikirim !']);
         }
 
-        return response()->json(['result' => 'success', 'title' => 'Laporan berhasil dikirim !']);
+        return response()->json(['result' => 'success', 'title' => 'Terima Kasih atas Laporan yang Anda kirim, Kami akan segera memproses laporan Anda !']);
     }
 
     public function validatedReportExam(Request $request)
@@ -130,7 +130,9 @@ class ReportExamController extends Controller
         }
 
         // Delete screenshot file
-        Storage::disk('public')->delete('ujian/' . $screenshot);
+        if ($screenshot && Storage::disk('public')->exists($screenshot)) {
+            Storage::disk('public')->delete($screenshot);
+        }
 
         // Simpan logs aktivitas pengguna
         $logs = Auth::user()->name . ' telah menghapus laporan ujian dengan ID ' . Crypt::decrypt($request->id) . ' waktu tercatat :  ' . now();

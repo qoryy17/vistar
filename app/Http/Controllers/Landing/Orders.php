@@ -229,30 +229,39 @@ class Orders extends Controller
         try {
             DB::beginTransaction();
 
+            $uploadedDir = 'images/share-follow/';
+            if (!Storage::disk('public')->exists($uploadedDir)) {
+                Storage::disk('public')->makeDirectory($uploadedDir);
+            }
+
             // Bukti share produk
             $fileBuktiShare = $request->file('buktiShare');
-            $hasnameBuktiShare = $fileBuktiShare->hashName();
 
-            $fileUploadBuktiShare = $fileBuktiShare->storeAs('public/share-follow', $hasnameBuktiShare);
+            $uploadedFileNameBuktiShare = time() . '-' . $fileBuktiShare->hashName();
+            $uploadedPathBuktiShare = $uploadedDir . $uploadedFileNameBuktiShare;
+
+            $fileUploadBuktiShare = $fileBuktiShare->storeAs($uploadedDir, $uploadedFileNameBuktiShare, 'public');
             if (!$fileUploadBuktiShare) {
                 throw new Exception('Unggah bukti share gagal !');
             }
-            array_push($uploadedFiles, 'share-follow/' . $hasnameBuktiShare);
+            array_push($uploadedFiles, $uploadedPathBuktiShare);
 
             // Bukti share follow
             $fileBuktiFollow = $request->file('buktiFollow');
-            $hasnameBuktiFollow = $fileBuktiFollow->hashName();
 
-            $fileUploadBuktiFollow = $fileBuktiFollow->storeAs('public/share-follow', $hasnameBuktiFollow);
-            if (!$fileUploadBuktiShare && $fileUploadBuktiFollow) {
+            $uploadedFileNameBuktiFollow = time() . '-' . $fileBuktiFollow->hashName();
+            $uploadedPathBuktiFollow = $uploadedDir . $uploadedFileNameBuktiFollow;
+
+            $fileUploadBuktiFollow = $fileBuktiFollow->storeAs($uploadedDir, $uploadedFileNameBuktiFollow, 'public');
+            if (!$fileUploadBuktiFollow) {
                 throw new Exception('Unggah bukti follow gagal !');
             }
-            array_push($uploadedFiles, 'share-follow/' . $hasnameBuktiFollow);
+            array_push($uploadedFiles, $uploadedPathBuktiFollow);
 
             $limitTryout = LimitTryout::create([
                 'customer_id' => Auth::user()->customer_id,
-                'bukti_share' => $hasnameBuktiShare,
-                'bukti_follow' => $hasnameBuktiFollow,
+                'bukti_share' => $uploadedPathBuktiShare,
+                'bukti_follow' => $uploadedPathBuktiFollow,
                 'informasi' => htmlspecialchars($request->input('informasi')),
                 'alasan' => htmlspecialchars($request->input('alasan')),
                 'status_validasi' => 'Menunggu',

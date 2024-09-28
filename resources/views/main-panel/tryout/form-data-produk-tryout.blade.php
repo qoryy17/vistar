@@ -76,35 +76,18 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="Status">Status <span
-                                                                class="text-danger">*</span></label>
+                                                        <label for="Status">
+                                                            Status <span class="text-danger">*</span>
+                                                        </label>
                                                         <select class="form-control" name="status" id="Status" required>
                                                             <option value="">-- Pilih Status --</option>
-                                                            @if ($tryout)
-                                                                @if ($tryout->status == 'Tersedia')
-                                                                    <option value="Tersedia" selected>Tersedia</option>
-                                                                    <option value="Tidak Tersedia">Tidak Tersedia</option>
-                                                                @elseif ($tryout->status == 'Tidak Tersedia')
-                                                                    <option value="Tersedia">Tersedia</option>
-                                                                    <option value="Tidak Tersedia" selected>Tidak Tersedia
-                                                                    </option>
-                                                                @else
-                                                                    <option value="Tersedia">Tersedia</option>
-                                                                    <option value="Tidak Tersedia">Tidak Tersedia</option>
-                                                                @endif
-                                                            @else
-                                                                @if (old('status') == 'Tersedia')
-                                                                    <option value="Tersedia" selected>Tersedia</option>
-                                                                    <option value="Tidak Tersedia">Tidak Tersedia</option>
-                                                                @elseif (old('status') == 'Tidak Tersedia')
-                                                                    <option value="Tersedia">Tersedia</option>
-                                                                    <option value="Tidak Tersedia" selected>Tidak Tersedia
-                                                                    </option>
-                                                                @else
-                                                                    <option value="Tersedia">Tersedia</option>
-                                                                    <option value="Tidak Tersedia">Tidak Tersedia</option>
-                                                                @endif
-                                                            @endif
+                                                            <option value="Tersedia"
+                                                                {{ old('status', @$tryout?->status) === 'Tersedia' ? 'selected' : '' }}>
+                                                                Tersedia
+                                                            </option>
+                                                            <option value="Tidak Tersedia"
+                                                                {{ old('status', @$tryout?->status) === 'Tidak Tersedia' ? 'selected' : '' }}>
+                                                                Tidak Tersedia</option>
                                                         </select>
                                                         @error('status')
                                                             <small class="text-danger">* {{ $message }}</small>
@@ -119,31 +102,11 @@
                                                             required>
                                                             <option value="">-- Pilih Kategori --</option>
                                                             @foreach ($kategori->get() as $kategoriProduk)
-                                                                @if ($tryout)
-                                                                    @if ($tryout->kategori_produk_id == $kategoriProduk->id)
-                                                                        <option selected value="{{ $kategoriProduk->id }}">
-                                                                            {{ $kategoriProduk->judul }}
-                                                                            ({{ $kategoriProduk->status }})
-                                                                        </option>
-                                                                    @else
-                                                                        <option value="{{ $kategoriProduk->id }}">
-                                                                            {{ $kategoriProduk->judul }}
-                                                                            ({{ $kategoriProduk->status }})
-                                                                        </option>
-                                                                    @endif
-                                                                @else
-                                                                    @if (old('kategori') == $kategoriProduk->id)
-                                                                        <option selected value="{{ $kategoriProduk->id }}">
-                                                                            {{ $kategoriProduk->judul }}
-                                                                            ({{ $kategoriProduk->status }})
-                                                                        </option>
-                                                                    @else
-                                                                        <option value="{{ $kategoriProduk->id }}">
-                                                                            {{ $kategoriProduk->judul }}
-                                                                            ({{ $kategoriProduk->status }})
-                                                                        </option>
-                                                                    @endif
-                                                                @endif
+                                                                <option value="{{ $kategoriProduk->id }}"
+                                                                    {{ strval(old('kategori', @$tryout?->kategori_produk_id)) === strval($kategoriProduk->id) ? 'selected' : '' }}>
+                                                                    {{ $kategoriProduk->judul }}
+                                                                    ({{ $kategoriProduk->status }})
+                                                                </option>
                                                             @endforeach
                                                         </select>
                                                         @error('kategori')
@@ -211,61 +174,44 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-
                                             <div class="mb-3">
-                                                <label for="Pengaturan">Pengaturan Tambahan <span
-                                                        class="text-danger">*</span></label>
-                                                <div class="d-flex" style="overflow-x: auto;">
-                                                    <div class="p-1">
+                                                <label for="Pengaturan">
+                                                    Pengaturan Tambahan
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                @php
+                                                    $additionalConfig = [
+                                                        'nilaiKeluar' => [
+                                                            'db_key' => 'nilai_keluar',
+                                                            'title' => 'Nilai Keluar',
+                                                        ],
+                                                        'grafikEvaluasi' => [
+                                                            'db_key' => 'grafik_evaluasi',
+                                                            'title' => 'Grafik Evaluasi',
+                                                        ],
+                                                        'reviewPembahasan' => [
+                                                            'db_key' => 'review_pembahasan',
+                                                            'title' => 'Review Pembahasan',
+                                                        ],
+                                                        'ulangUjian' => [
+                                                            'db_key' => 'ulang_ujian',
+                                                            'title' => 'Ulang Ujian',
+                                                        ],
+                                                    ];
+                                                @endphp
+                                                <div class="d-flex gap-2" style="overflow-x: auto;">
+                                                    @foreach ($additionalConfig as $configKey => $configValue)
                                                         <div class="form-group">
-                                                            <label class="ckbox" style="white-space: nowrap;">
-                                                                <input type="checkbox" name="nilaiKeluar" value="Y"
-                                                                    @if ($pengaturan) @if ($pengaturan->nilai_keluar == 'Y')
-                                                                        checked @endif
-                                                                @else @if (old('nilaiKeluar')) checked @endif
-                                                                    @endif><span>Nilai
-                                                                    Keluar</span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="p-1">
-                                                        <div class="form-group">
-                                                            <label class="ckbox" style="white-space: nowrap;">
-                                                                <input type="checkbox" name="grafikEvaluasi"
+                                                            <label for="additional-config-{{ $configKey }}"
+                                                                class="ckbox" style="white-space: nowrap;">
+                                                                <input id="additional-config-{{ $configKey }}"
+                                                                    type="checkbox" name="{{ $configKey }}"
                                                                     value="Y"
-                                                                    @if ($pengaturan) @if ($pengaturan->grafik_evaluasi == 'Y')
-                                                                        checked @endif
-                                                                @else @if (old('grafikEvaluasi')) checked @endif
-                                                                    @endif><span>Grafik
-                                                                    Evaluasi</span>
+                                                                    {{ old($configKey, $pengaturan ? $pengaturan[$configValue['db_key']] : null) === 'Y' ? 'checked' : '' }} />
+                                                                <span class="ps-1">{{ $configValue['title'] }}</span>
                                                             </label>
                                                         </div>
-                                                    </div>
-                                                    <div class="p-1">
-                                                        <div class="form-group">
-                                                            <label class="ckbox" style="white-space: nowrap;">
-                                                                <input type="checkbox" name="reviewPembahasan"
-                                                                    value="Y"
-                                                                    @if ($pengaturan) @if ($pengaturan->review_pembahasan == 'Y')
-                                                                        checked @endif
-                                                                @else @if (old('reviewPembahasan')) checked @endif
-                                                                    @endif><span>Review
-                                                                    Pembahasan</span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="p-1">
-                                                        <div class="form-group">
-                                                            <label class="ckbox" style="white-space: nowrap;">
-                                                                <input type="checkbox" name="ulangUjian" value="Y"
-                                                                    @if ($pengaturan) @if ($pengaturan->ulang_ujian == 'Y')
-                                                                        checked @endif
-                                                                @else @if (old('ulangUjian')) checked @endif
-                                                                    @endif><span>Ulang
-                                                                    Ujian</span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
+                                                    @endforeach
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -275,7 +221,7 @@
                                                     @endif <span class="text-danger">*</span></label>
                                                 <input type="file" id="Thumbnail" class="dropify" data-height="190"
                                                     name="thumbnail"
-                                                    data-default-file= "{{ $tryout ? asset('storage/tryout/' . $tryout->thumbnail) : '' }}" />
+                                                    data-default-file= "{{ $tryout ? asset('storage/' . $tryout->thumbnail) : '' }}" />
                                                 @error('thumbnail')
                                                     <small class="text-danger">* {{ $message }}</small>
                                                 @enderror

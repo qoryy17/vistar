@@ -24,8 +24,7 @@
                          @endphp
                          <div class="tiny-slide" itemprop="review" itemscope itemtype="https://schema.org/Review">
                              <div itemprop="itemReviewed" itemscope itemtype="https://schema.org/Product">
-                                 <meta itemprop="image"
-                                     content="{{ asset('storage/tryout/' . $row->product_thumbnail) }}" />
+                                 <meta itemprop="image" content="{{ asset('storage/' . $row->product_thumbnail) }}" />
                                  <meta itemprop="name" content="{{ $row->product_name }}" />
                                  <meta itemprop="url"
                                      content="{{ route('mainweb.product-show', ['id' => $row->product_id]) }}" />

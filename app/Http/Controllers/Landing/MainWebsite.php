@@ -583,7 +583,7 @@ class MainWebsite extends Controller
 
             }
             $images = [];
-            $thumbnail = 'storage/tryout/' . $item->thumbnail;
+            $thumbnail = 'storage/' . $item->thumbnail;
             if (is_file($thumbnail)) {
                 array_push($images, asset($thumbnail));
             } else {

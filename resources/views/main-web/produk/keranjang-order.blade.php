@@ -81,9 +81,9 @@
                                                 {{ $no }}
                                             </td>
                                             <td>
-                                                <div class="d-flex align-items-center mb-0 ms-3 fw-bold">
+                                                <span class="fw-bold">
                                                     {{ $row->nama_tryout }}
-                                                </div>
+                                                </span>
                                             </td>
                                             <td class="text-center">
                                                 Rp. {{ number_format($price, 0) }}
@@ -94,7 +94,7 @@
                                                 @endif
                                             </td>
                                             </td>
-                                            <td class="text-center">
+                                            <td class="d-flex justify-content-center">
                                                 <div class="d-flex flex-nowrap gap-1">
                                                     <button onclick="hapusItem({{ $no }})"
                                                         class="btn btn-pills btn-soft-danger">Hapus
@@ -108,7 +108,6 @@
                                                     @csrf
                                                     @method('DELETE')
                                                 </form>
-
                                             </td>
                                         </tr>
                                         @php
@@ -166,7 +165,7 @@
                             <div class="card pricing pricing-primary business-rate border-0 p-4 rounded-md shadow">
                                 <div class="card-body p-0">
                                     <div class="d-inline-block">
-                                        <img class="img-fluid mb-3" src="{{ asset('storage/tryout/' . $row->thumbnail) }}"
+                                        <img class="img-fluid mb-3" src="{{ asset('storage/' . $row->thumbnail) }}"
                                             alt="Thumbnail {{ $row->nama_tryout }}"
                                             title="Thumbnail {{ $row->nama_tryout }}" loading="lazy" />
                                     </div>

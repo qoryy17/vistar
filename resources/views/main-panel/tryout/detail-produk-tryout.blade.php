@@ -31,7 +31,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <img src="{{ asset('storage/tryout/' . $tryout->thumbnail) }}" class="img-fluid"
+                                        <img src="{{ asset('storage/' . $tryout->thumbnail) }}" class="img-fluid"
                                             alt="Thumbnail {{ $tryout->nama_tryout }}"
                                             title="Thumbnail {{ $tryout->nama_tryout }}" loading="lazy" />
                                     </div>

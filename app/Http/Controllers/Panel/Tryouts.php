@@ -116,6 +116,7 @@ class Tryouts extends Controller
         ];
 
         $updatedId = null;
+        $uploadedDir = 'images/tryout/';
 
         if (Crypt::decrypt($request->input('formParameter')) == 'add') {
             $pengaturanTryout = PengaturanTryout::create($savedDataPengaturanTryout);
@@ -128,14 +129,16 @@ class Tryouts extends Controller
                 return redirect()->back()->with('error', 'Thumbnail belum di unggah ulang !')->withInput();
             }
             $fileThumbnail = $request->file('thumbnail');
-            $fileHashname = $fileThumbnail->hashName();
 
-            $fileUpload = $fileThumbnail->storeAs('public/tryout', $fileHashname);
+            $uploadedFileName = time() . '-' . $fileThumbnail->hashName();
+            $uploadedPath = $uploadedDir . $uploadedFileName;
+
+            $fileUpload = $fileThumbnail->storeAs($uploadedDir, $uploadedFileName, 'public');
             if (!$fileUpload) {
                 return back()->with('error', 'Unggah thumbnail gagal !')->withInput();
             }
 
-            $savedDataProdukTryout['thumbnail'] = $fileHashname;
+            $savedDataProdukTryout['thumbnail'] = $uploadedPath;
             $savedDataProdukTryout['user_id'] = $users->id;
             $savedDataProdukTryout['pengaturan_tryout_id'] = $pengaturanTryout->id;
             $savedDataProdukTryout['kode_soal'] = Str::random(5) . rand(1, 999);
@@ -161,16 +164,20 @@ class Tryouts extends Controller
             if ($request->hasFile('thumbnail')) {
                 // Upload thumbnail produk tryout
                 $fileThumbnail = $request->file('thumbnail');
-                $fileHashname = $fileThumbnail->hashName();
-                $fileUpload = $fileThumbnail->storeAs('public/tryout', $fileHashname);
 
+                $uploadedFileName = time() . '-' . $fileThumbnail->hashName();
+                $uploadedPath = $uploadedDir . $uploadedFileName;
+
+                $fileUpload = $fileThumbnail->storeAs($uploadedDir, $uploadedFileName, 'public');
                 if (!$fileUpload) {
                     return back()->with('error', 'Unggah thumbnail gagal !')->withInput();
                 }
 
                 // Hapus thumbnail yang lama
-                Storage::disk('public')->delete('tryout/' . $produkTryout->thumbnail);
-                $savedDataProdukTryout['thumbnail'] = $fileHashname;
+                if ($produkTryout->thumbnail && Storage::disk('public')->exists($produkTryout->thumbnail)) {
+                    Storage::disk('public')->delete($produkTryout->thumbnail);
+                }
+                $savedDataProdukTryout['thumbnail'] = $uploadedPath;
             }
 
             $saveProdukTryout = $produkTryout->update($savedDataProdukTryout);
@@ -226,12 +233,12 @@ class Tryouts extends Controller
             ->where('kode_soal', $produkTryout->kode_soal)
             ->get();
         foreach ($soalUjian as $soal) {
-            array_push($deletedImages, 'soal/' . $soal->gambar);
+            array_push($deletedImages, $soal->gambar);
 
             $soal->delete();
         }
 
-        array_push($deletedImages, 'tryout/' . $produkTryout->thumbnail);
+        array_push($deletedImages, $produkTryout->thumbnail);
 
         $delete = $produkTryout->delete();
         if (!$delete) {
@@ -443,16 +450,20 @@ class Tryouts extends Controller
         $message = 'Soal ujian berhasil disimpan !';
         $error = 'Soal ujian gagal disimpan !';
 
+        $uploadedDir = 'images/question/';
+
         if ($formParameter === 'add') {
             if ($request->hasFile('gambar')) {
                 $fileSoalGambar = $request->file('gambar');
-                $fileHashname = $fileSoalGambar->hashName();
 
-                $fileUpload = $fileSoalGambar->storeAs('public/soal', $fileHashname);
+                $uploadedFileName = time() . '-' . $fileSoalGambar->hashName();
+                $uploadedPath = $uploadedDir . $uploadedFileName;
+
+                $fileUpload = $fileSoalGambar->storeAs($uploadedDir, $uploadedFileName, 'public');
                 if (!$fileUpload) {
                     return redirect()->back()->with('error', 'Unggah gambar gagal !')->withInput();
                 }
-                $savedData['gambar'] = $fileHashname;
+                $savedData['gambar'] = $uploadedPath;
             }
 
             $save = SoalUjian::create($savedData);
@@ -470,17 +481,21 @@ class Tryouts extends Controller
             if ($request->hasFile('gambar')) {
                 // Upload gambar produk tryout
                 $fileSoalGambar = $request->file('gambar');
-                $fileHashname = $fileSoalGambar->hashName();
-                $fileUpload = $fileSoalGambar->storeAs('public/soal', $fileHashname);
 
+                $uploadedFileName = time() . '-' . $fileSoalGambar->hashName();
+                $uploadedPath = $uploadedDir . $uploadedFileName;
+
+                $fileUpload = $fileSoalGambar->storeAs($uploadedDir, $uploadedFileName, 'public');
                 if (!$fileUpload) {
                     return redirect()->back()->with('error', 'Unggah gambar gagal !')->withInput();
                 }
 
                 // Hapus gambar yang lama
-                Storage::disk('public')->delete('soal/' . $soalUjian->gambar);
+                if ($soalUjian->gambar && Storage::disk('public')->exists($soalUjian->gambar)) {
+                    Storage::disk('public')->delete($soalUjian->gambar);
+                }
 
-                $savedData['gambar'] = $fileHashname;
+                $savedData['gambar'] = $uploadedPath;
             }
 
             $save = $soalUjian->update($savedData);
@@ -521,8 +536,8 @@ class Tryouts extends Controller
         }
 
         // Hapus gambar
-        if ($gambar && Storage::disk('public')->exists('soal/' . $gambar)) {
-            Storage::disk('public')->delete('soal/' . $gambar);
+        if ($gambar && Storage::disk('public')->exists($gambar)) {
+            Storage::disk('public')->delete($gambar);
         }
 
         Cache::tags(['user_exam_question:' . $questionCode])->flush();
@@ -562,13 +577,17 @@ class Tryouts extends Controller
             }
 
             $thumbnail = $produkTryout->thumbnail;
-            $fileThumbnail = null;
-            if ($thumbnail && Storage::disk('public')->exists('tryout/' . $thumbnail)) {
-                $fileThumbnail = 'copy--' . time() . '-' . $thumbnail;
-                $path = 'tryout/' . $fileThumbnail;
-                Storage::disk('public')->copy('tryout/' . $thumbnail, $path);
+            $newThumbnail = null;
+            if ($thumbnail && Storage::disk('public')->exists($thumbnail)) {
 
-                array_push($deletedImages, $path);
+                $filePath = Storage::disk('public')->path($thumbnail);
+                $extension = pathinfo($filePath)['extension'];
+                $fileHashname = sha1_file($filePath) . '.' . $extension;
+
+                $newThumbnail = 'images/tryout/' . time() . '-' . $fileHashname;
+                Storage::disk('public')->copy($thumbnail, $newThumbnail);
+
+                array_push($deletedImages, $newThumbnail);
             }
 
             $kodeSoalGenerate = Str::random(5) . rand(1, 999);
@@ -581,7 +600,7 @@ class Tryouts extends Controller
                 'user_id' => $users->id,
                 'kategori_produk_id' => $produkTryout->kategori_produk_id,
                 'status' => 'Tidak Tersedia',
-                'thumbnail' => $fileThumbnail,
+                'thumbnail' => $newThumbnail,
             ]);
             if (!$createProdukTryout) {
                 throw new Exception('Gagal menduplikat Produk Tryout');
@@ -612,16 +631,19 @@ class Tryouts extends Controller
                     'updated_at' => now(),
                 ];
 
-                $gambar = $soalDuplikat->gambar;
-                $newGambar = null;
-                if ($gambar && Storage::disk('public')->exists('soal/' . $gambar)) {
-                    $newGambar = 'copy--' . time() . '-' . $gambar;
-                    $path = 'soal/' . $newGambar;
-                    Storage::disk('public')->copy('soal/' . $gambar, $path);
+                $image = $soalDuplikat->gambar;
+                $newImage = null;
+                if ($image && Storage::disk('public')->exists($image)) {
+                    $filePath = Storage::disk('public')->path($image);
+                    $extension = pathinfo($filePath)['extension'];
+                    $fileHashname = sha1_file($filePath) . '.' . $extension;
 
-                    array_push($deletedImages, $path);
+                    $newImage = 'images/question/' . time() . '-' . $fileHashname;
+                    Storage::disk('public')->copy($image, $newImage);
+
+                    array_push($deletedImages, $newImage);
                 }
-                $savedDataQuestion['gambar'] = $newGambar;
+                $savedDataQuestion['gambar'] = $newImage;
 
                 array_push($savedDataQuestions, $savedDataQuestion);
             }

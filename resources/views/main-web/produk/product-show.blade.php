@@ -20,7 +20,7 @@
  @endphp
  @extends('main-web.layout.main')
  @section('title', $title)
- @section('image', asset('storage/tryout/' . $product->thumbnail))
+ @section('image', asset('storage/' . $product->thumbnail))
  @section('description', $descriptionPlainText)
  @section('keywords', implode(', ', $keywords))
  @section('content')
@@ -71,7 +71,7 @@
                      }
                  }
 
-                 $image = asset('storage/tryout/' . $product->thumbnail);
+                 $image = asset('storage/' . $product->thumbnail);
              @endphp
              <div itemscope itemtype="https://schema.org/Product">
                  <div class="row">
@@ -257,7 +257,7 @@
                                  }
                              }
 
-                             $image = asset('storage/tryout/' . $row->thumbnail);
+                             $image = asset('storage/' . $row->thumbnail);
                              $url = route('mainweb.product-show', ['id' => $row->id]);
                          @endphp
 

@@ -181,31 +181,39 @@
                                                     <td style="vertical-align: top;" class="text-center">
                                                         @if ($row->gambar)
                                                             @php
-                                                                $image = asset('storage/soal/' . $row->gambar);
+                                                                $image = asset('storage/' . $row->gambar);
                                                             @endphp
-                                                            <img src="{{ $image }}" alt="img"
+                                                            <img src="{{ $image }}"
                                                                 data-bs-target="#modalImg{{ $no }}"
-                                                                data-bs-toggle="modal">
+                                                                data-bs-toggle="modal"
+                                                                alt="Gambar Soal ID: {{ $row->id }}"
+                                                                title="Gambar Soal ID: {{ $row->id }}"
+                                                                loading="lazy" />
                                                             <!-- Preview modal -->
                                                             <div class="modal fade" id="modalImg{{ $no }}">
                                                                 <div class="modal-dialog modal-lg">
                                                                     <div class="modal-content modal-content-demo">
                                                                         <div class="modal-header">
-                                                                            <h6 class="modal-title"><i
-                                                                                    class="fa fa-book"></i>
+                                                                            <h6 class="modal-title">
+                                                                                <i class="fa fa-book"></i>
                                                                                 Gambar Soal
-                                                                            </h6><button aria-label="Close"
-                                                                                class="btn-close" data-bs-dismiss="modal"
-                                                                                type="button"></button>
+                                                                            </h6>
+                                                                            <button aria-label="Close" class="btn-close"
+                                                                                data-bs-dismiss="modal" type="button">
+                                                                            </button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <img src="{{ $image }}"
-                                                                                alt="img" />
+                                                                                alt="Gambar Soal ID: {{ $row->id }}"
+                                                                                title="Gambar Soal ID: {{ $row->id }}"
+                                                                                loading="lazy" />
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button class="btn btn-sm ripple btn-danger"
-                                                                                data-bs-dismiss="modal" type="button"><i
-                                                                                    class="fa fa-times"></i> Tutup</button>
+                                                                                data-bs-dismiss="modal" type="button">
+                                                                                <i class="fa fa-times"></i>
+                                                                                Tutup
+                                                                            </button>
                                                                         </div>
                                                                     </div>
                                                                 </div>

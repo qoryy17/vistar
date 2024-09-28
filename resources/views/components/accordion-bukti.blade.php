@@ -8,8 +8,8 @@
         <div aria-labelledby="buktiShare" class="collapse" data-bs-parent="#accordion" id="collapseBuktiShare"
             role="tabpanel">
             <div class="card-body">
-                <img width="400px" src="{{ asset('storage/share-follow/' . $buktiShare) }}" alt="Bukti Share"
-                    title="Bukti Share" loading="lazy" />
+                <img width="400px" src="{{ asset('storage/' . $buktiShare) }}" alt="Bukti Share" title="Bukti Share"
+                    loading="lazy" />
             </div>
         </div>
     </div>
@@ -22,8 +22,8 @@
         <div aria-labelledby="buktiFollow" class="collapse" data-bs-parent="#accordion" id="collapseBuktiFollow"
             role="tabpanel">
             <div class="card-body">
-                <img width="400px" src="{{ asset('storage/share-follow/' . $buktiFollow) }}" alt="Bukti Follow"
-                    title="Bukti Follow" loading="lazy" />
+                <img width="400px" src="{{ asset('storage/' . $buktiFollow) }}" alt="Bukti Follow" title="Bukti Follow"
+                    loading="lazy" />
             </div>
         </div>
     </div>

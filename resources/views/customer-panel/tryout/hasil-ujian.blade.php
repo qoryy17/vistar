@@ -83,9 +83,9 @@
                                             </p>
                                             @if (!empty($review->gambar))
                                                 <img height="300px" width="img img-thumbnail"
-                                                    src="{{ asset('storage/soal/' . $review->gambar) }}"
-                                                    data-bs-target="#modalImg-id-{{ $review->id }}" data-bs-toggle="modal"
-                                                    alt="Soal ID: {{ $review->id }}"
+                                                    src="{{ asset('storage/' . $review->gambar) }}"
+                                                    data-bs-target="#modalImg-id-{{ $review->id }}"
+                                                    data-bs-toggle="modal" alt="Soal ID: {{ $review->id }}"
                                                     title="Soal ID: {{ $review->id }}" loading="lazy" />
                                                 <!-- Preview modal -->
                                                 <div class="modal fade" id="modalImg-id-{{ $review->id }}">
@@ -98,7 +98,7 @@
                                                                     data-bs-dismiss="modal" type="button"></button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <img src="{{ asset('storage/soal/' . $review->gambar) }}"
+                                                                <img src="{{ asset('storage/' . $review->gambar) }}"
                                                                     alt="Soal ID: {{ $review->id }}"
                                                                     title="Soal ID: {{ $review->id }}" loading="lazy" />
                                                             </div>
@@ -195,7 +195,7 @@
                                                 </p>
                                                 @if (!empty($review->gambar))
                                                     <img height="300px" width="img img-thumbnail"
-                                                        src="{{ asset('storage/soal/' . $review->gambar) }}"
+                                                        src="{{ asset('storage/' . $review->gambar) }}"
                                                         data-bs-target="#modalImg-id-{{ $review->id }}"
                                                         data-bs-toggle="modal" alt="Soal ID: {{ $review->id }}"
                                                         title="Soal ID: {{ $review->id }}" loading="lazy" />
@@ -210,7 +210,7 @@
                                                                         data-bs-dismiss="modal" type="button"></button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    <img src="{{ asset('storage/soal/' . $review->gambar) }}"
+                                                                    <img src="{{ asset('storage/' . $review->gambar) }}"
                                                                         alt="Soal ID: {{ $review->id }}"
                                                                         title="Soal ID: {{ $review->id }}"
                                                                         loading="lazy" />

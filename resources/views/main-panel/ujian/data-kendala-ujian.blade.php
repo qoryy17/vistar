@@ -133,7 +133,7 @@
                                                                                 type="button"></button>
                                                                         </div>
                                                                         <div class="modal-body">
-                                                                            <img src="{{ asset('storage/ujian/' . $row->screenshot) }}"
+                                                                            <img src="{{ asset('storage/' . $row->screenshot) }}"
                                                                                 class="img-fluid"
                                                                                 alt="Screenshot Laporan ID: {{ $row->id }}"
                                                                                 title="Screenshot Laporan ID: {{ $row->id }}"
