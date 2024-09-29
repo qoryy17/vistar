@@ -19,7 +19,7 @@
         $metaImage = View::getSection('image');
     }
 
-    $title = View::getSection('title');
+    $title = strip_tags(View::getSection('title'));
 
     $keywords = implode(
         ', ',
@@ -27,7 +27,7 @@
             array_unique(
                 array_merge(
                     explode(', ', strtolower($web->meta_keyword ? $web->meta_keyword : '')),
-                    explode(', ', strtolower(View::getSection('keywords'))),
+                    explode(', ', strtolower(strip_tags(View::getSection('keywords')))),
                 ),
                 SORT_REGULAR,
             ),
@@ -37,7 +37,7 @@
 
     $metaDescription = $web->meta_description ? $web->meta_description : '';
     if (View::hasSection('description')) {
-        $metaDescriptionSection = View::getSection('description');
+        $metaDescriptionSection = strip_tags(View::getSection('description'));
         if (strlen($metaDescriptionSection) < 170) {
             $metaDescription = $metaDescriptionSection . ' :. ' . $metaDescription;
         }
@@ -57,7 +57,7 @@
     <meta name="author" content="{{ $web->meta_author ? $web->meta_author : '' }}">
     <meta name="keywords" content="{{ $keywords }}">
 
-    <meta name="description" content="{{ $metaDescription }}">
+    <meta name="description" content="{!! $metaDescription !!}">
 
     <link rel="canonical" href="{{ url()->current() }}" />
 
@@ -95,24 +95,24 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ url()->full() }}" />
-    <meta property="og:title" content="{{ $title }}" />
+    <meta property="og:title" content="{!! $title !!}" />
     <meta property="og:image" content="{{ $metaImage }}" />
-    <meta property="og:description" content="{{ $metaDescription }}" />
+    <meta property="og:description" content="{!! $metaDescription !!}" />
 
     {{--  Twitter Meta Tags  --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta property="twitter:domain" content="{{ request()->getHost() }}">
     <meta property="twitter:url" content="{{ url()->full() }}">
-    <meta name="twitter:title" content="{{ $title }}">
+    <meta name="twitter:title" content="{!! $title !!}">
     <meta name="twitter:image" content="{{ $metaImage }}">
-    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:description" content="{!! $metaDescription !!}">
 
     {{--  Note: Create App Config APP ID after vistar using social account login with facebook --}}
     <meta property="fb:app_id" content="1235512704325801" />
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title }}</title>
+    <title>{!! $title !!}</title>
 
     <!-- Bootstrap Css -->
     <link href="{{ asset('resources/web/dist/assets/css/bootstrap.min.css') }}" id="bootstrap-style"
