@@ -2,7 +2,7 @@
 @section('title', $title)
 @section('content')
     <!-- Start Kebijakan Privasi -->
-    <section class="section d-table w-100">
+    <section class="mt-5 pt-5 pb-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-9">
