@@ -432,3 +432,24 @@
     </section><!--end section-->
     <!-- End Privacy -->
 @endsection
+@section('scripts')
+    @php
+        $breadcrumbItemListPosition = 0;
+        $breadcrumbItemList = [
+            [
+                '@type' => 'ListItem',
+                'position' => ++$breadcrumbItemListPosition,
+                'name' => 'Home',
+                'item' => route('mainweb.index'),
+            ],
+            [
+                '@type' => 'ListItem',
+                'position' => ++$breadcrumbItemListPosition,
+                'name' => 'Kebijakan Privasi',
+                'item' => url()->current(),
+            ],
+        ];
+    @endphp
+    {{--  Rich Text BreadcrumbList  --}}
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":<?= json_encode($breadcrumbItemList) ?>}</script>
+@endsection

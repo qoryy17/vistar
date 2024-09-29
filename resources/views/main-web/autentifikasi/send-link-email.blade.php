@@ -66,6 +66,28 @@
     <!-- Hero End -->
 
     <x-web.footer-auth />
+
+
+    @php
+        $breadcrumbItemListPosition = 0;
+        $breadcrumbItemList = [
+            [
+                '@type' => 'ListItem',
+                'position' => ++$breadcrumbItemListPosition,
+                'name' => 'Home',
+                'item' => route('mainweb.index'),
+            ],
+            [
+                '@type' => 'ListItem',
+                'position' => ++$breadcrumbItemListPosition,
+                'name' => 'Reset Password',
+                'item' => url()->current(),
+            ],
+        ];
+    @endphp
+    {{--  Rich Text BreadcrumbList  --}}
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":<?= json_encode($breadcrumbItemList) ?>}</script>
+
 </body>
 
 </html>

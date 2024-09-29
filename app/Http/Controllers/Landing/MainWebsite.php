@@ -458,13 +458,13 @@ class MainWebsite extends Controller
         return view('main-web.profile.profile', $data);
     }
 
-    public function kebijakanPrivasi()
+    public function privacyPolicy()
     {
         $data = [
             'title' => 'Kebijakan Privasi - ' . config('app.name'),
             'web' => BerandaUI::web(),
         ];
-        return view('main-web.tentang.kebijakan-privasi', $data);
+        return view('main-web.pages.privacy-policy', $data);
     }
 
     public function termOfService()
@@ -473,25 +473,25 @@ class MainWebsite extends Controller
             'title' => 'Syarat & Ketentuan - ' . config('app.name'),
             'web' => BerandaUI::web(),
         ];
-        return view('main-web.tentang.term-of-service', $data);
+        return view('main-web.pages.term-of-service', $data);
     }
 
-    public function tentang()
+    public function aboutUs()
     {
         $data = [
             'title' => 'Tentang - ' . config('app.name'),
             'web' => BerandaUI::web(),
         ];
-        return view('main-web.tentang.tentang', $data);
+        return view('main-web.pages.about-us', $data);
     }
 
-    public function kontak()
+    public function contactUs()
     {
         $data = [
             'title' => 'Kontak - ' . config('app.name'),
             'web' => BerandaUI::web(),
         ];
-        return view('main-web.tentang.kontak', $data);
+        return view('main-web.pages.contact-us', $data);
     }
 
     public function sitemap()
@@ -518,7 +518,7 @@ class MainWebsite extends Controller
                 'lastmod' => '2024-09-25',
                 'priority' => 0.5,
                 'title' => 'Tentang',
-                'loc' => route('mainweb.tentang'),
+                'loc' => route('mainweb.about-us'),
                 'images' => [$defaultImage],
             ],
             [
@@ -526,7 +526,7 @@ class MainWebsite extends Controller
                 'lastmod' => '2024-09-25',
                 'priority' => 0.5,
                 'title' => 'Hubungi ' . config('app.name'),
-                'loc' => route('mainweb.kontak'),
+                'loc' => route('mainweb.contact-us'),
                 'images' => [$defaultImage],
             ],
             [
@@ -534,7 +534,7 @@ class MainWebsite extends Controller
                 'lastmod' => '2024-09-25',
                 'priority' => 0.5,
                 'title' => 'Kebijakan Privasi' . config('app.name'),
-                'loc' => route('mainweb.kebijakan-privasi'),
+                'loc' => route('mainweb.privacy-policy'),
                 'images' => [$defaultImage],
             ],
             [

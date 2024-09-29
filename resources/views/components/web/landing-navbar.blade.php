@@ -10,11 +10,11 @@
         ],
         [
             'title' => 'Tentang',
-            'url' => route('mainweb.tentang'),
+            'url' => route('mainweb.about-us'),
         ],
         [
             'title' => 'Kontak',
-            'url' => route('mainweb.kontak'),
+            'url' => route('mainweb.contact-us'),
         ],
     ];
 
@@ -22,7 +22,7 @@
 @endphp
 <!-- Navbar Start -->
 <header id="topnav" class="defaultscroll sticky d-print-none">
-    <div class="container" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <div class="container">
         <!-- Logo container-->
         <a title="Beranda {{ config('app.name') }}" class="logo" href="{{ url('/') }}">
             <img src="{{ $web->logo ? asset('storage/' . $web->logo) : '' }}" height="40" class="logo-light-mode"
@@ -60,11 +60,9 @@
                     </form>
                 </li>
             @else
-                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
-                    class="list-inline-item ps-1 mb-0">
-                    <a itemprop="item" typeof="WebPage" href="{{ route('auth.signin') }}"
-                        class="btn btn-primary btn-pills">
-                        <span itemprop="name">
+                <li class="list-inline-item ps-1 mb-0">
+                    <a href="{{ route('auth.signin') }}" class="btn btn-primary btn-pills">
+                        <span>
                             Masuk
                         </span>
                     </a>
@@ -78,10 +76,9 @@
             <!-- Navigation Menu-->
             <ul class="navigation-menu nav-right">
                 @foreach ($navigationUrls as $navigation)
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a itemprop="item" typeof="WebPage" title="{{ $navigation['title'] }}"
-                            href="{{ $navigation['url'] }}" class="sub-menu-item">
-                            <span itemprop="name">
+                    <li>
+                        <a title="{{ $navigation['title'] }}" href="{{ $navigation['url'] }}" class="sub-menu-item">
+                            <span>
                                 {{ $navigation['title'] }}
                             </span>
                         </a>
@@ -96,38 +93,34 @@
                         </a>
                         <span class="menu-arrow"></span>
                         <ul class="submenu">
-                            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                <a itemprop="item" typeof="WebPage" href="{{ route('user.dashboard') }}"
-                                    class="sub-menu-item">
-                                    <span itemprop="name">
+                            <li>
+                                <a href="{{ route('user.dashboard') }}" class="sub-menu-item">
+                                    <span>
                                         Dashboard
                                     </span>
                                 </a>
                                 <meta itemprop="position" content="{{ $noNavigation++ }}" />
                             </li>
-                            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                <a itemprop="item" typeof="WebPage" href="{{ route('mainweb.profile') }}"
-                                    class="sub-menu-item">
-                                    <span itemprop="name">
+                            <li>
+                                <a href="{{ route('mainweb.profile') }}" class="sub-menu-item">
+                                    <span>
                                         Profil
                                     </span>
                                 </a>
                                 <meta itemprop="position" content="{{ $noNavigation++ }}" />
                             </li>
                             @if (Auth::user()->role == 'Customer')
-                                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                    <a itemprop="item" typeof="WebPage" href="{{ route('mainweb.keranjang') }}"
-                                        class="sub-menu-item">
-                                        <span itemprop="name">
+                                <li>
+                                    <a href="{{ route('mainweb.keranjang') }}" class="sub-menu-item">
+                                        <span>
                                             Keranjang Pesanan
                                         </span>
                                     </a>
                                     <meta itemprop="position" content="{{ $noNavigation++ }}" />
                                 </li>
-                                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                    <a itemprop="item" typeof="WebPage" href="{{ route('mainweb.free-product') }}"
-                                        class="sub-menu-item">
-                                        <span itemprop="name">
+                                <li>
+                                    <a href="{{ route('mainweb.free-product') }}" class="sub-menu-item">
+                                        <span>
                                             Tryout Gratis
                                         </span>
                                     </a>
@@ -137,9 +130,9 @@
                         </ul>
                     </li>
                 @else
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a itemprop="item" typeof="WebPage" href="{{ route('auth.signup') }}" class="sub-menu-item">
-                            <span itemprop="name">
+                    <li>
+                        <a href="{{ route('auth.signup') }}" class="sub-menu-item">
+                            <span>
                                 Daftar
                             </span>
                         </a>

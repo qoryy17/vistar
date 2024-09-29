@@ -61,7 +61,7 @@
                                 @if (!Auth::check())
                                     <li>
                                         <a href="{{ route('auth.signin') }}" class="text-foot">
-                                            <i class="uil uil-angle-right-b me-1"></i> Sign In
+                                            <i class="uil uil-angle-right-b me-1"></i> Masuk
                                         </a>
                                     </li>
                                 @endif
@@ -71,11 +71,11 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('mainweb.kontak') }}" class="text-foot">
+                                    <a href="{{ route('mainweb.contact-us') }}" class="text-foot">
                                         <i class="uil uil-angle-right-b me-1"></i> Kontak</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('mainweb.kebijakan-privasi') }}" class="text-foot">
+                                    <a href="{{ route('mainweb.privacy-policy') }}" class="text-foot">
                                         <i class="uil uil-angle-right-b me-1"></i> Kebijakan & Privasi
                                     </a>
                                 </li>

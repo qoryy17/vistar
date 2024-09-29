@@ -87,10 +87,10 @@ Route::controller(MainWebsite::class)->group(function () {
     Route::get('/free-product', 'freeProducts')->name('mainweb.free-product');
     Route::get('/product/{id}', 'productShow')->name('mainweb.product-show');
 
-    Route::get('/kebijakan-privasi', 'kebijakanPrivasi')->name('mainweb.kebijakan-privasi');
+    Route::get('/privacy-policy', 'privacyPolicy')->name('mainweb.privacy-policy');
     Route::get('/term-of-service', 'termOfService')->name('mainweb.term-of-service');
-    Route::get('/tentang', 'tentang')->name('mainweb.tentang');
-    Route::get('/kontak', 'kontak')->name('mainweb.kontak');
+    Route::get('/about-us', 'aboutUs')->name('mainweb.about-us');
+    Route::get('/contact-us', 'contactUs')->name('mainweb.contact-us');
 
     Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/profile', 'profile')->name('mainweb.profile');

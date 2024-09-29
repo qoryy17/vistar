@@ -136,3 +136,18 @@
     <!-- Tiny Slider -->
     <script src="{{ asset('resources/web/dist/assets/libs/tiny-slider/min/tiny-slider.js') }}"></script>
 @endsection
+@section('scripts')
+    @php
+        $breadcrumbItemListPosition = 0;
+        $breadcrumbItemList = [
+            [
+                '@type' => 'ListItem',
+                'position' => ++$breadcrumbItemListPosition,
+                'name' => 'Home',
+                'item' => url()->current(),
+            ],
+        ];
+    @endphp
+    {{--  Rich Text BreadcrumbList  --}}
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":<?= json_encode($breadcrumbItemList) ?>}</script>
+@endsection
