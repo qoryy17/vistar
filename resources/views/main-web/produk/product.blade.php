@@ -104,7 +104,10 @@
                                 array_push($features, 'Review Pembahasan Soal');
                             }
 
-                            $url = route('mainweb.product-show', ['id' => $row->id]);
+                            $url = route('mainweb.product.tryout.show', [
+                                'feature' => \App\Enums\FeatureEnum::TRYOUT->value,
+                                'id' => $row->id,
+                            ]);
                             $image = asset('storage/' . $row->thumbnail);
                         @endphp
                         <div class="col-lg-4 col-md-6 mt-4 pt-2">

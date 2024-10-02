@@ -27,7 +27,7 @@
                                  <meta itemprop="image" content="{{ asset('storage/' . $row->product_thumbnail) }}" />
                                  <meta itemprop="name" content="{{ $row->product_name }}" />
                                  <meta itemprop="url"
-                                     content="{{ route('mainweb.product-show', ['id' => $row->product_id]) }}" />
+                                     content="{{ route('mainweb.product.tryout.show', ['feature' => \App\Enums\FeatureEnum::TRYOUT->value, 'id' => $row->product_id]) }}" />
                                  <div itemscope itemprop="aggregateRating"
                                      itemtype="https://schema.org/AggregateRating">
                                      <meta itemprop="ratingValue" content="5" />

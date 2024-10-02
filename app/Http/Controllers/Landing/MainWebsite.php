@@ -164,7 +164,12 @@ class MainWebsite extends Controller
         return view('main-web.produk.product', $data);
     }
 
-    public function productShow(int $id)
+    public function productShowDeprecated(int $id)
+    {
+        return $this->productShow(\App\Enums\FeatureEnum::TRYOUT, $id);
+    }
+
+    public function productShow(\App\Enums\FeatureEnum $feature, int $id)
     {
         $product = Cache::remember('product_show_main_web:' . $id, 7 * 24 * 60 * 60, function () use ($id) {
             $data = ProdukTryout::where('id', $id)
@@ -594,7 +599,7 @@ class MainWebsite extends Controller
                 'lastmod' => $itemUpdatedAt,
                 'priority' => 0.8,
                 'title' => $item->nama_tryout . ' - Produk ' . config('app.name'),
-                'loc' => route('mainweb.product-show', ['id' => $item->id]),
+                'loc' => route('mainweb.product.tryout.show', ['feature' => \App\Enums\FeatureEnum::TRYOUT->value, 'id' => $item->id]),
                 'images' => $images,
             ]);
         }

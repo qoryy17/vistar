@@ -85,7 +85,9 @@ Route::controller(MainWebsite::class)->group(function () {
 
     Route::get('/product', 'products')->name('mainweb.product');
     Route::get('/free-product', 'freeProducts')->name('mainweb.free-product');
-    Route::get('/product/{id}', 'productShow')->name('mainweb.product-show');
+    Route::get('/product/{id}', 'productShowDeprecated')->name('mainweb.product.show');
+    // New Way to show product by defining the feature
+    Route::get('/product/{feature}/{id}', 'productShow')->name('mainweb.product.tryout.show');
 
     Route::get('/privacy-policy', 'privacyPolicy')->name('mainweb.privacy-policy');
     Route::get('/term-of-service', 'termOfService')->name('mainweb.term-of-service');

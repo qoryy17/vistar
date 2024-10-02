@@ -258,7 +258,10 @@
                             }
 
                             $image = asset('storage/' . $row->thumbnail);
-                            $url = route('mainweb.product-show', ['id' => $row->id]);
+                            $url = route('mainweb.product.tryout.show', [
+                                'feature' => \App\Enums\FeatureEnum::TRYOUT->value,
+                                'id' => $row->id,
+                            ]);
                         @endphp
 
                         <div class="col-lg-4 col-md-6" itemscope itemtype="https://schema.org/Product">
