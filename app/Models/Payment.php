@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Sertikom\OrderPelatihanSeminarModel;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -69,5 +70,10 @@ class Payment extends Model
     public function orderTryout(): BelongsTo
     {
         return $this->belongsTo(OrderTryout::class);
+    }
+
+    public function orderSertikom(): BelongsTo
+    {
+        return $this->belongsTo(OrderPelatihanSeminarModel::class);
     }
 }

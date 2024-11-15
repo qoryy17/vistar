@@ -54,6 +54,8 @@
     <link rel="stylesheet"
         href="{{ asset('resources/spruha/assets/plugins/bootstrap-datepicker/bootstrap-datepicker.css') }}">
 
+    <!-- Internal Gallery css-->
+    <link href="{{ asset('resources/spruha/assets/plugins/gallery/gallery.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('resources/spruha/assets/css/vistar.css') }}">
 
     @yield('styles')

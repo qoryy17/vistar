@@ -82,6 +82,7 @@ return new class extends Migration
             $table->uuid('id')->primary()->default(Str::uuid());
             $table->string('faktur_id', 12)->nullable();
             $table->unsignedBigInteger('customer_id');
+            $table->string('nama');
             $table->unsignedBigInteger('produk_tryout_id');
             $table->uuid('payment_id')->nullable();
             $table->string('status_order')->nullable();

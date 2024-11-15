@@ -16,7 +16,6 @@ class KeranjangOrder extends Model
     protected $fillable = [
         'id',
         'produk_tryout_id',
-        'produk_bimbel_id',
         'customer_id',
     ];
 

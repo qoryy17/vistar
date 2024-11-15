@@ -215,7 +215,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="Thumbnail">Thumbail @if ($tryout)
+                                                <label for="Thumbnail">Thumbnail @if ($tryout)
                                                         <small>(Kosongkan jika tidak ingin
                                                             mengganti/ Max. 2MB)</small>
                                                     @endif <span class="text-danger">*</span></label>

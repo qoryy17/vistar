@@ -22,7 +22,7 @@
                         <p class="text-muted" style="text-align: justify">
                             Selamat datang di {{ $web->nama_bisnis }}, Pusat Kegiatan Akademik yang menghadirkan inovasi
                             dan keunggulan di
-                            bidang ICT dan Science. Kami bangga menjadi bagian dari perjalanan pendidikan Anda, dengan
+                            bidang ICT dan Science. Kami bangga menjadi bagian dari perjalanan pendidikan Kamu, dengan
                             fokus untuk mencetak generasi yang siap bersaing di era digital.
                         </p>
 
@@ -48,22 +48,21 @@
             <div class="row justify-content-center wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
                 <div class="col-12 text-center">
                     <div class="section-title">
-                        <h2 class="fs-2 title mb-3">
-                            Dimana Lokasi Kami &#x3f;
+                        <h2 class="fs-5 mb-3">
+                            Lokasi Alamat Kami
                         </h2>
                         <p class="text-muted mx-auto">
-                            Berkantor pusat di Sumatera Utara, kami bangga menjadi bagian dari komunitas lokal sambil
-                            menjangkau seluruh nusantara dengan layanan kami. Selain itu, kami menyediakan fitur lengkap
-                            untuk pembahasan ujian tryout berbayar yang dirancang untuk memberikan pengalaman belajar
-                            terbaik, membantu Anda memahami setiap materi dengan lebih baik dan meningkatkan peluang
-                            keberhasilan Anda.
+                            Berkantor pusat di Sumatera Utara, kami bangga menjadi bagian dari komunitas lokal sekaligus
+                            menjangkau seluruh nusantara dengan layanan kami. Selain menyediakan fitur lengkap untuk
+                            pelatihan, seminar, dan workshop eksklusif kami juga menyediakan pembahasan ujian tryout
+                            berbayar yang dirancang untuk memberikan pengalaman belajar terbaik, Semua kegiatan ini didesain
+                            khusus untuk membantu Kamu memahami setiap materi dengan lebih mendalam, memaksimalkan potensi,
+                            dan meningkatkan peluang sukses.
                         </p>
-
                         <p class="text-muted">
-                            Bersama {{ $web->nama_bisnis }}, persiapan ujian Anda lebih terarah, lebih efektif, dan tentu
-                            saja
-                            lebih menyenangkan. Bergabunglah dengan ribuan peserta lainnya dan wujudkan impian Anda menjadi
-                            kenyataan!
+                            Bersama {{ $web->nama_bisnis }}, persiapan karir Kamu lebih terarah, lebih efektif, dan tentu
+                            saja lebih menyenangkan. Ayo, jadilah bagian dari mereka yang telah meraih prestasi
+                            bersama kami!
                         </p>
                     </div>
                 </div><!--end col-->
@@ -77,7 +76,7 @@
                         <div class="content mt-4">
                             <h5 class="fw-bold">Telepon</h5>
                             <p class="text-muted">Jangan ragu untuk
-                                menghubungi kami, kami selalu di sini untuk Anda</p>
+                                menghubungi kami, kami selalu di sini untuk Kamu</p>
                             <a onclick="analyticsContactEvent({contact_type: 'phone', value: '{{ $web->kontak }}'})"
                                 href="tel:{{ $web->kontak }}" class="read-more">
                                 {{ $web->kontak }}
@@ -93,7 +92,7 @@
                         <div class="content mt-4">
                             <h5 class="fw-bold">Email</h5>
                             <p class="text-muted">
-                                Butuh solusi &#x3f; Kirimkan email Anda dan kami akan segera merespon
+                                Butuh solusi &#x3f; Kirimkan email Kamu dan kami akan segera merespon
                             </p>
                             <a onclick="analyticsContactEvent({contact_type: 'email', value: '{{ $web->email }}'})"
                                 href="mailto:{{ $web->email }}" class="read-more">

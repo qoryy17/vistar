@@ -141,7 +141,6 @@ class PaymentService
                             'balances' => $userMitra->balances + $totalIncome,
                         ]);
                     }
-
                 } elseif ($payment->promo_type === 'referral') {
                     /* NOTE: Skip for now */
                 }

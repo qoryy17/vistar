@@ -13,7 +13,7 @@
                 <div class="col-12 text-center">
                     <div class="section-title mb-4 pb-2">
                         <h1 class="fs-3 title mb-4">Pembayaran</h1>
-                        <p class="text-muted para-desc mb-0 mx-auto">
+                        <p class="text-muted mb-0 mx-auto">
                             Berikut informasi detail pesanan anda, periksa terlebih dahulu sebelum melakukan pembayaran,
                             jika informasi sudah benar silahkan klik tombol <strong>Bayar Sekarang</strong> untuk melakukan
                             proses pembayaran

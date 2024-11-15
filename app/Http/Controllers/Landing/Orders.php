@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers\Landing;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\PromoCodeController;
-use App\Http\Requests\Customer\TryoutGratisRequest;
+use Exception;
+use App\Models\User;
+use App\Models\Payment;
 use App\Models\Customer;
-use App\Models\KeranjangOrder;
 use App\Models\LimitTryout;
 use App\Models\OrderTryout;
-use App\Models\Payment;
-use App\Models\User;
-use App\Services\Payment\MidtransService;
-use Exception;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\KeranjangOrder;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
+use App\Services\Payment\MidtransService;
+use App\Http\Controllers\PromoCodeController;
+use App\Models\Sertikom\KeranjangOrderSertikom;
+use App\Http\Requests\Customer\TryoutGratisRequest;
+use App\Models\Sertikom\OrderPelatihanSeminarModel;
 
 class Orders extends Controller
 {
@@ -340,6 +342,211 @@ class Orders extends Controller
                 'status' => 'error',
                 'message' => 'Kode referral tidak valid',
             ], 400);
+        }
+    }
+
+
+    // Add Sertikom : Pelatihan, Seminar/Workshop
+    public function orderSertikom(Request $request)
+    {
+        $param = $request->params;
+        if ($request->category == 'pelatihan') {
+            $viewPage = 'main-web.sertikom.payment-order-training';
+        } elseif ($request->category == 'seminar') {
+            $viewPage = 'main-web.sertikom.payment-order-seminar';
+        } elseif ($request->category == 'workshop') {
+            $viewPage = 'main-web.sertikom.payment-order-workshop';
+        } else {
+            return redirect()->back()->with('errorMessage', 'Kategori tidak valid !');
+        }
+        $categorySertikom = ucfirst($request->category);
+        try {
+            $param = Crypt::decrypt($param);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Pesanan Tidak ditemukan!');
+        }
+
+        $orders = DB::table('keranjang_order_sertikom')->select(
+            'keranjang_order_sertikom.*',
+            'produk_pelatihan_seminar.id as idProduk',
+            'produk_pelatihan_seminar.produk',
+            'produk_pelatihan_seminar.harga',
+            'produk_pelatihan_seminar.deskripsi',
+            'produk_pelatihan_seminar.tanggal_mulai',
+            'produk_pelatihan_seminar.tanggal_selesai',
+            'topik_keahlian.topik',
+            'kategori_produk.judul',
+            'kategori_produk.status'
+        )
+            ->leftJoin('produk_pelatihan_seminar', 'keranjang_order_sertikom.produk_pelatihan_seminar_id', '=', 'produk_pelatihan_seminar.id')
+            ->leftJoin('topik_keahlian', 'produk_pelatihan_seminar.topik_keahlian_id', '=', 'topik_keahlian.id')
+            ->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
+            ->where('keranjang_order_sertikom.customer_id', '=', Auth::user()->customer_id)
+            ->where('keranjang_order_sertikom.id', '=', $param)
+            ->where('kategori_produk.judul', $categorySertikom)
+            ->whereNot('kategori_produk.status', 'Gratis')
+            ->orderBy('keranjang_order_sertikom.updated_at', 'DESC')
+            ->get();
+
+        if ($orders->count() <= 0) {
+            return redirect()->route('site.pembelian-sertikom', ['category' => $categorySertikom]);
+        }
+
+        $data = [
+            'title' => 'Pembayaran Pesanan',
+            'orders' => $orders,
+        ];
+
+        return view($viewPage, $data);
+    }
+
+    public function payOrderSertikom(Request $request)
+    {
+        $cartId = Crypt::decrypt($request->id);
+
+        // Search customer by id
+        $customer = Customer::findOrFail(Auth::user()->customer_id);
+
+        // Checking category product sertikom
+        if ($request->category == 'pelatihan') {
+            $viewPage = 'main-web.sertikom.payment-order-training';
+        } elseif ($request->category == 'seminar') {
+            $viewPage = 'main-web.sertikom.payment-order-seminar';
+        } elseif ($request->category == 'workshop') {
+            $viewPage = 'main-web.sertikom.payment-order-workshop';
+        } else {
+            return redirect()->back()->with('errorMessage', 'Kategori tidak valid !');
+        }
+        $categorySertikom = ucfirst($request->category);
+
+        // Search product training or seminar/workshop
+        $sertikom = DB::table('keranjang_order_sertikom')->select(
+            'keranjang_order_sertikom.*',
+            'produk_pelatihan_seminar.id as idProduk',
+            'produk_pelatihan_seminar.produk',
+            'produk_pelatihan_seminar.harga',
+            'produk_pelatihan_seminar.deskripsi',
+            'produk_pelatihan_seminar.tanggal_mulai',
+            'produk_pelatihan_seminar.tanggal_selesai',
+            'topik_keahlian.topik',
+            'kategori_produk.judul',
+            'kategori_produk.status'
+        )
+            ->leftJoin('produk_pelatihan_seminar', 'keranjang_order_sertikom.produk_pelatihan_seminar_id', '=', 'produk_pelatihan_seminar.id')
+            ->leftJoin('topik_keahlian', 'produk_pelatihan_seminar.topik_keahlian_id', '=', 'topik_keahlian.id')
+            ->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
+            ->where('keranjang_order_sertikom.customer_id', '=', Auth::user()->customer_id)
+            ->where('keranjang_order_sertikom.id', '=', $cartId)
+            ->where('kategori_produk.judul', $categorySertikom)
+            ->whereNot('kategori_produk.status', 'Gratis')
+            ->first();
+        if (!$sertikom) {
+            return response()->json([
+                'result' => 'error',
+                'title' => "Keranjang tidak ditemukan, Silahkan muat ulang halaman.",
+            ]);
+        }
+
+        $referensiOrderID = $sertikom->idProduk;
+        $orderID = Str::uuid();
+
+        $subTotal = $sertikom->harga;
+        $total = $subTotal;
+
+
+        $purchaseItems = [
+            [
+                'item_id' => $sertikom->idProduk,
+                'item_name' => $sertikom->produk,
+                'discount' => 0,
+                'price' => $total,
+                'quantity' => 1,
+            ],
+        ];
+
+        $midtransService = new MidtransService();
+        $snapToken = $midtransService->createOrder([
+            'orderID' => $orderID,
+            'grossAmount' => $total,
+            'customerFullName' => $customer->nama_lengkap,
+            'customerEmail' => Auth::user()->email,
+            'customerPhone' => $customer->kontak,
+            'customerBillingAddress' => $customer->alamat,
+            'itemDetails' => [
+                [
+                    'id' => $referensiOrderID,
+                    'price' => intval($total),
+                    'quantity' => 1,
+                    'name' => 'Pembayaran : ' . $sertikom->produk,
+                ],
+            ],
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $status = 'pending';
+
+            // Add Order Data
+            $buatOrder = new OrderPelatihanSeminarModel();
+            $buatOrder->id = $orderID;
+            $buatOrder->faktur_id = 'F' . rand(1, 999);
+            $buatOrder->customer_id = Auth::user()->customer_id;
+            $buatOrder->nama = $customer->nama_lengkap;
+            $buatOrder->produk_pelatihan_seminar_id = $referensiOrderID;
+            $buatOrder->status_order = $status;
+
+            if (!$buatOrder->save()) {
+                throw new Exception('Order gagal disimpan');
+            }
+
+            // Add Payment Data
+            $savePayment = Payment::create([
+                'id' => Str::uuid(),
+                'customer_id' => Auth::user()->customer_id,
+                'ref_order_id' => $orderID,
+                'snap_token' => $snapToken,
+                'transaksi_id' => null,
+                'subtotal' => $subTotal,
+                'promo_type' => null,
+                'promo_code' => null,
+                'promo_data' => null,
+                'discount' => 0,
+                'nominal' => $total,
+                'status_transaksi' => $status,
+            ]);
+            if (!$savePayment) {
+                throw new Exception('Pembayaran gagal disimpan');
+            }
+
+            // Remove item on cart
+            KeranjangOrderSertikom::where('id', $cartId)->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'result' => 'success',
+                'title' => 'Order berhasil dibuat',
+                'data' => [
+                    'transaction_id' => $orderID,
+                    'total_price' => $total,
+                    'total_tax' => 0,
+                    'total_shipping' => 0,
+                    'currency' => 'IDR',
+                    'coupon' => null,
+                    'purchase_items' => $purchaseItems,
+                    'user_data' => [
+                        'id' => Auth::id(),
+                        'full_name' => Auth::user()->name,
+                        'email' => Auth::user()->email,
+                    ],
+                    'snap_token' => $snapToken,
+                ],
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            return response()->json(['result' => 'error', 'title' => $th->getMessage()], 500);
         }
     }
 }

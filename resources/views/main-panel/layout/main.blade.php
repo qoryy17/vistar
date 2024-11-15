@@ -31,7 +31,7 @@
                         {{ $web->tagline ? $web->tagline : '' }}
                     </h5>
                     <span class="address-web">
-                        {{ $web->tagline ? $web->alamat : '' }}
+                        Pusat Kegiatan Akademik Bidang ICT dan Science Terbaik #1 di Indonesia
                     </span>
                 </div>
             </div>
@@ -164,7 +164,7 @@
                                     <span class="shape1"></span>
                                     <span class="shape2"></span>
                                     <i class="ti-user sidemenu-icon menu-icon "></i>
-                                    <span class="sidemenu-label">Manajemen Pengguna</span>
+                                    <span class="sidemenu-label">Kelola Pengguna</span>
                                     <i class="angle fe fe-chevron-right"></i>
                                 </a>
                                 <ul class="nav-sub">
@@ -183,7 +183,7 @@
                                 <span class="shape1"></span>
                                 <span class="shape2"></span>
                                 <i class="ti-desktop sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Manajemen Tryout</span>
+                                <span class="sidemenu-label">Kelola Tryout</span>
                                 <i class="angle fe fe-chevron-right"></i>
                             </a>
                             <ul class="nav-sub">
@@ -212,27 +212,12 @@
                                 </li>
                             </ul>
                         </li>
-                        {{-- <li class="nav-item">
-                            <a class="nav-link with-sub" href="javascript:void(0)">
-                                <span class="shape1"></span>
-                                <span class="shape2"></span>
-                                <i class="ti-calendar sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Manajemen Event</span>
-                                <i class="angle fe fe-chevron-right"></i>
-                            </a>
-                            <ul class="nav-sub">
-                                <li class="side-menu-label1"><a href="javascript:void(0)">Submenu</a></li>
-                                <li class="nav-sub-item">
-                                    <a class="nav-sub-link" href="javascript:void(0)">Tryout</a>
-                                </li>
-                            </ul>
-                        </li> --}}
                         <li class="nav-item">
                             <a class="nav-link with-sub" href="javascript:void(0)">
                                 <span class="shape1"></span>
                                 <span class="shape2"></span>
                                 <i class="ti-book sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Manajemen Ujian</span>
+                                <span class="sidemenu-label">Kelola Ujian</span>
                                 <i class="angle fe fe-chevron-right"></i>
                             </a>
                             <ul class="nav-sub">
@@ -240,8 +225,10 @@
                                 <li class="nav-sub-item"><a class="nav-sub-link"
                                         href="{{ route('report.exams') }}">Laporan Kendala</a>
                                 </li>
-                                <li class="nav-sub-item"><a class="nav-sub-link"
-                                        href="{{ route('exam-special.products') }}">Partisipan Ujian</a>
+                                <li class="nav-sub-item">
+                                    <a class="nav-sub-link" href="{{ route('exam-special.products') }}">
+                                        Partisipan Ujian
+                                    </a>
                                 </li>
                             </ul>
                         </li>
@@ -254,12 +241,93 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('testimoni.main') }}">
+                            <a class="nav-link with-sub" href="javascript:void(0)">
                                 <span class="shape1"></span>
                                 <span class="shape2"></span>
-                                <i class="ti-medall sidemenu-icon menu-icon "></i>
-                                <span class="sidemenu-label">Testimoni</span>
+                                <i class="ti-desktop sidemenu-icon menu-icon "></i>
+                                <span class="sidemenu-label"> Sertikom</span>
+                                <i class="angle fe fe-chevron-right"></i>
                             </a>
+                            <ul class="nav-sub">
+                                <li class="side-menu-label1"><a href="javascript:void(0)">Submenu</a></li>
+                                <li class="nav-sub-item">
+                                    <a class="nav-sub-link sub-with-sub" href="javascript:void(0)">
+                                        <span class="sidemenu-label">Produk</span>
+                                        <i class="angle fe fe-chevron-right"></i>
+                                    </a>
+                                    <ul class="sub-nav-sub">
+                                        <li class="nav-sub-item">
+                                            <a class="nav-sub-link"
+                                                href="{{ route('sertikom.product', ['category' => 'pelatihan']) }}">
+                                                Pelatihan
+                                            </a>
+                                        </li>
+                                        <li class="nav-sub-item">
+                                            <a class="nav-sub-link"
+                                                href="{{ route('sertikom.product', ['category' => 'seminar']) }}">
+                                                Seminar
+                                            </a>
+                                        </li>
+                                        <li class="nav-sub-item">
+                                            <a class="nav-sub-link"
+                                                href="{{ route('sertikom.product', ['category' => 'workshop']) }}">
+                                                Workshop
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-sub-item">
+                                    <a class="nav-sub-link sub-with-sub" href="javascript:void(0)">
+                                        <span class="sidemenu-label">List Order</span>
+                                        <i class="angle fe fe-chevron-right"></i>
+                                    </a>
+                                    <ul class="sub-nav-sub">
+                                        <li class="nav-sub-item">
+                                            <a class="nav-sub-link"
+                                                href="{{ route('sertikom.list-order', ['category' => 'pelatihan']) }}">Pelatihan</a>
+                                        </li>
+                                        <li class="nav-sub-item">
+                                            <a class="nav-sub-link"
+                                                href="{{ route('sertikom.list-order', ['category' => 'seminar']) }}">Seminar</a>
+                                        </li>
+                                        <li class="nav-sub-item">
+                                            <a class="nav-sub-link"
+                                                href="{{ route('sertikom.list-order', ['category' => 'workshop']) }}">Workshop</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-sub-item">
+                                    <a class="nav-sub-link" href="{{ route('sertikom.expertise') }}">
+                                        Topik Keahlian
+                                    </a>
+                                </li>
+                                <li class="nav-sub-item">
+                                    <a class="nav-sub-link" href="{{ route('sertikom.instructor') }}">Instruktur</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link with-sub" href="javascript:void(0)">
+                                <span class="shape1"></span>
+                                <span class="shape2"></span>
+                                <i class="ti-desktop sidemenu-icon menu-icon"></i>
+                                <span class="sidemenu-label"> Testimoni</span>
+                                <i class="angle fe fe-chevron-right"></i>
+                            </a>
+                            <ul class="nav-sub">
+                                {{-- <li class="nav-sub-item">
+                                    <a class="nav-sub-link" href="">Pelatihan</a>
+                                </li>
+                                <li class="nav-sub-item">
+                                    <a class="nav-sub-link" href="">Seminar</a>
+                                </li>
+                                <li class="nav-sub-item">
+                                    <a class="nav-sub-link" href="">Workshop</a>
+                                </li> --}}
+                                <li class="nav-sub-item">
+                                    <a class="nav-sub-link" href="{{ route('testimoni.main') }}">Tryout</a>
+                                </li>
+                            </ul>
                         </li>
                         @if (Auth::user()->role == 'Superadmin')
                             <li class="nav-item">

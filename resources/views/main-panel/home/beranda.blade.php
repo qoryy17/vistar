@@ -162,19 +162,76 @@
                             </div>
                         @endif
 
-                        {{-- Statistik Produk Penjualan Tryout --}}
+                        <!--- Statistik Produk Penjualan -->
                         <div class="card custom-card">
                             <div class="card-header border-bottom-0 pb-0">
                                 <div>
                                     <div class="d-flex">
                                         <label class="main-content-label my-auto pt-2">Statistik Produk</label>
                                     </div>
-                                    <span class="d-block tx-12 mt-2 mb-0 text-muted"> Penjualan Produk Tryout Bulan Ini
+                                    <span class="d-block tx-12 mt-2 mb-0 text-muted"> Penjualan Produk Bulan Ini
                                     </span>
                                 </div>
                             </div>
                             <div class="card-body">
                                 <div class="row mt-1">
+                                    <div class="col-6">
+                                        <span class="">Pelatihan</span>
+                                    </div>
+                                    <div class="col-3 my-auto">
+                                        <div class="progress ht-6 my-auto">
+                                            <div style="background-color: #0075B8;"
+                                                class="progress-bar ht-6 wd-{{ $countSertikomTraining->count() }}p"
+                                                role="progressbar" aria-valuenow="{{ $countSertikomTraining->count() }}"
+                                                aria-valuemin="0" aria-valuemax="1000">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="d-flex">
+                                            <span class="tx-13"><b>{{ $countSertikomTraining->count() }}</b></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <span class="">Seminar</span>
+                                    </div>
+                                    <div class="col-3 my-auto">
+                                        <div class="progress ht-6 my-auto">
+                                            <div style="background-color: #0075B8;"
+                                                class="progress-bar ht-6 wd-{{ $countSertikomSeminar->count() }}p"
+                                                role="progressbar" aria-valuenow="{{ $countSertikomSeminar->count() }}"
+                                                aria-valuemin="0" aria-valuemax="1000">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="d-flex">
+                                            <span class="tx-13"><b>{{ $countSertikomSeminar->count() }}</b></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <span class="">Workshop</span>
+                                    </div>
+                                    <div class="col-3 my-auto">
+                                        <div class="progress ht-6 my-auto">
+                                            <div style="background-color: #0075B8;"
+                                                class="progress-bar ht-6 wd-{{ $countSertikomWorkshop->count() }}p"
+                                                role="progressbar" aria-valuenow="{{ $countSertikomWorkshop->count() }}"
+                                                aria-valuemin="0" aria-valuemax="1000">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="d-flex">
+                                            <span class="tx-13"><b>{{ $countSertikomWorkshop->count() }}</b></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
                                     <div class="col-6">
                                         <span class="">Tryout : CPNS</span>
                                     </div>
@@ -234,6 +291,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- End Statistik Penjuana -->
                     </div>
                 </div>
                 <!-- End Row -->
@@ -244,7 +302,7 @@
     <script src="{{ url('resources/spruha/assets/plugins/jquery/jquery.min.js') }}"></script>
     <!-- Internal Chartjs charts js-->
     <script src="{{ url('resources/spruha/assets/plugins/chart.js/Chart.bundle.min.js') }}"></script>
-    <script>
+    <script type="text/javascript">
         function loadChart(data) {
             var ctx = document.getElementById("chartBar1").getContext('2d');
             var myChart = new Chart(ctx, {
@@ -310,6 +368,66 @@
                         borderWidth: 2,
                         backgroundColor: '#2ECA8B',
                         borderColor: '#2ECA8B',
+                        pointBackgroundColor: '#ffffff',
+                    }, {
+                        label: 'Pelatihan',
+                        data: [
+                            data.Pelatihan[1] || 0,
+                            data.Pelatihan[2] || 0,
+                            data.Pelatihan[3] || 0,
+                            data.Pelatihan[4] || 0,
+                            data.Pelatihan[5] || 0,
+                            data.Pelatihan[6] || 0,
+                            data.Pelatihan[7] || 0,
+                            data.Pelatihan[8] || 0,
+                            data.Pelatihan[9] || 0,
+                            data.Pelatihan[10] || 0,
+                            data.Pelatihan[11] || 0,
+                            data.Pelatihan[12] || 0
+                        ],
+                        borderWidth: 2,
+                        backgroundColor: '#9A2109',
+                        borderColor: '#9A2109',
+                        pointBackgroundColor: '#ffffff',
+                    }, {
+                        label: 'Seminar',
+                        data: [
+                            data.Seminar[1] || 0,
+                            data.Seminar[2] || 0,
+                            data.Seminar[3] || 0,
+                            data.Seminar[4] || 0,
+                            data.Seminar[5] || 0,
+                            data.Seminar[6] || 0,
+                            data.Seminar[7] || 0,
+                            data.Seminar[8] || 0,
+                            data.Seminar[9] || 0,
+                            data.Seminar[10] || 0,
+                            data.Seminar[11] || 0,
+                            data.Seminar[12] || 0
+                        ],
+                        borderWidth: 2,
+                        backgroundColor: '#313131',
+                        borderColor: '#313131',
+                        pointBackgroundColor: '#ffffff',
+                    }, {
+                        label: 'Workshop',
+                        data: [
+                            data.Workshop[1] || 0,
+                            data.Workshop[2] || 0,
+                            data.Workshop[3] || 0,
+                            data.Workshop[4] || 0,
+                            data.Workshop[5] || 0,
+                            data.Workshop[6] || 0,
+                            data.Workshop[7] || 0,
+                            data.Workshop[8] || 0,
+                            data.Workshop[9] || 0,
+                            data.Workshop[10] || 0,
+                            data.Workshop[11] || 0,
+                            data.Workshop[12] || 0
+                        ],
+                        borderWidth: 2,
+                        backgroundColor: '#FE6F2D',
+                        borderColor: '#FE6F2D',
                         pointBackgroundColor: '#ffffff',
                     }],
                 },

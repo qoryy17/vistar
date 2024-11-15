@@ -27,6 +27,10 @@
 <!-- Sidebar js -->
 <script src="{{ asset('resources/spruha/assets/plugins/sidebar/sidebar.js') }}"></script>
 
+<!-- Internal Jquery.maskedinput js-->
+<script src="{{ asset('resources/spruha/assets/plugins/jquery.maskedinput/jquery.maskedinput.js') }}"></script>
+
+
 <!-- Internal Data Table js -->
 <script src="{{ asset('resources/spruha/assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('resources/spruha/assets/plugins/datatable/js/dataTables.bootstrap5.js') }}"></script>
@@ -40,6 +44,17 @@
 <script src="{{ asset('resources/spruha/assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ asset('resources/spruha/assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
 <script src="{{ asset('resources/spruha/assets/plugins/datatable/responsive.bootstrap5.min.js') }}"></script>
+
+<!-- Internal Gallery js-->
+<script src="{{ asset('resources/spruha/assets/plugins/gallery/picturefill.js') }}"></script>
+<script src="{{ asset('resources/spruha/assets/plugins/gallery/lightgallery.js') }}"></script>
+<script src="{{ asset('resources/spruha/assets/plugins/gallery/lightgallery-1.js') }}"></script>
+<script src="{{ asset('resources/spruha/assets/plugins/gallery/lg-pager.js') }}"></script>
+<script src="{{ asset('resources/spruha/assets/plugins/gallery/lg-autoplay.js') }}"></script>
+<script src="{{ asset('resources/spruha/assets/plugins/gallery/lg-fullscreen.js') }}"></script>
+<script src="{{ asset('resources/spruha/assets/plugins/gallery/lg-zoom.js') }}"></script>
+<script src="{{ asset('resources/spruha/assets/plugins/gallery/lg-hash.js') }}"></script>
+<script src="{{ asset('resources/spruha/assets/plugins/gallery/lg-share.js') }}"></script>
 
 <!-- Select2 js-->
 <script src="{{ asset('resources/spruha/assets/plugins/select2/js/select2.min.js') }}"></script>

@@ -32,7 +32,9 @@
                     <p class="title-web text-primary fs-6 fw-bold mb-0">
                         {{ $web->tagline }}
                     </p>
-                    <span class="address-web">{{ $web->alamat }}</span>
+                    <span class="address-web">
+                        Pusat Kegiatan Akademik Bidang ICT dan Science Terbaik #1 di Indonesia
+                    </span>
                 </div>
             </div>
             <div class="main-header-center">
@@ -95,9 +97,6 @@
                                     <a class="dropdown-item" href="{{ route('mainweb.profile') }}">
                                         <i class="fe fe-user"></i> Profile
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('site.pembelian') }}">
-                                        <i class="fe fe-shopping-cart"></i> Pembelian
-                                    </a>
                                     <form id="formLogout" action="{{ route('auth.signout-proses') }}" method="POST">
                                         @csrf
                                         @method('POST')
@@ -133,11 +132,64 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('site.pembelian') }}">
+                                <a class="nav-link with-sub" href="javascript:void(0)">
                                     <span class="shape1"></span>
                                     <span class="shape2"></span>
-                                    <i class="ti-shopping-cart sidemenu-icon menu-icon "></i>
-                                    <span class="sidemenu-label">Pembelian</span>
+                                    <i class="ti-desktop sidemenu-icon menu-icon"></i>
+                                    <span class="sidemenu-label"> Pembelian</span>
+                                    <i class="angle fe fe-chevron-right"></i>
+                                </a>
+                                <ul class="nav-sub">
+                                    <li class="nav-sub-item">
+                                        <a class="nav-sub-link"
+                                            href="{{ route('site.pembelian-sertikom', ['category' => 'pelatihan']) }}">
+                                            Pelatihan
+                                        </a>
+                                    </li>
+                                    <li class="nav-sub-item">
+                                        <a class="nav-sub-link"
+                                            href="{{ route('site.pembelian-sertikom', ['category' => 'seminar']) }}">
+                                            Seminar
+                                        </a>
+                                    </li>
+                                    <li class="nav-sub-item">
+                                        <a class="nav-sub-link"
+                                            href="{{ route('site.pembelian-sertikom', ['category' => 'workshop']) }}">
+                                            Workshop
+                                        </a>
+                                    </li>
+                                    <li class="nav-sub-item">
+                                        <a class="nav-sub-link" href="{{ route('site.pembelian') }}"">
+                                            Simulasi Tryout
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                    href="{{ route('customer.get-sertikom', ['category' => 'pelatihan']) }}">
+                                    <span class="shape1"></span>
+                                    <span class="shape2"></span>
+                                    <i class="ti-book sidemenu-icon menu-icon "></i>
+                                    <span class="sidemenu-label">Pelatihan</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                    href="{{ route('customer.get-sertikom', ['category' => 'seminar']) }}">
+                                    <span class="shape1"></span>
+                                    <span class="shape2"></span>
+                                    <i class="ti-user sidemenu-icon menu-icon "></i>
+                                    <span class="sidemenu-label">Seminar</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                    href="{{ route('customer.get-sertikom', ['category' => 'workshop']) }}">
+                                    <span class="shape1"></span>
+                                    <span class="shape2"></span>
+                                    <i class="ti-user sidemenu-icon menu-icon "></i>
+                                    <span class="sidemenu-label">Workshop</span>
                                 </a>
                             </li>
                             <li class="nav-item">

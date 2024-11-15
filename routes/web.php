@@ -1,38 +1,41 @@
 <?php
 
-use App\Http\Controllers\Cron\JobsController;
+use App\Http\Controllers\Panel\Main;
+use App\Http\Controllers\Panel\Users;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Customer\Site;
-use App\Http\Controllers\Customer\Tryoutc;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Exam\ExamParticipantController;
-use App\Http\Controllers\Exam\ReportExamController;
-use App\Http\Controllers\Landing\Autentifikasi;
+use App\Http\Controllers\Panel\Tryouts;
+use App\Http\Middleware\AuthMiddleware;
 use App\Http\Controllers\Landing\Emails;
-use App\Http\Controllers\Landing\GoogleOauth;
-use App\Http\Controllers\Landing\MainWebsite;
 use App\Http\Controllers\Landing\Orders;
+use App\Http\Controllers\Panel\Referral;
 use App\Http\Controllers\Landing\Profils;
-use App\Http\Controllers\Mitra\DashboardMitraController;
-use App\Http\Controllers\Mitra\MitraTransactionController;
 use App\Http\Controllers\Panel\Customers;
 use App\Http\Controllers\Panel\Kategoris;
-use App\Http\Controllers\Panel\Klasifikasis;
-use App\Http\Controllers\Panel\ListOrders;
-use App\Http\Controllers\Panel\Main;
-use App\Http\Controllers\Panel\Pengaturan;
-use App\Http\Controllers\Panel\Referral;
-use App\Http\Controllers\Panel\Testimonis;
-use App\Http\Controllers\Panel\Tryouts;
-use App\Http\Controllers\Panel\Users;
-use App\Http\Controllers\Payment\TransactionController;
-use App\Http\Controllers\PromoCodeController;
-use App\Http\Middleware\AuthMiddleware;
-use App\Http\Middleware\Auth\UserAdminMiddleware;
-use App\Http\Middleware\Auth\UserCustomerMiddleware;
-use App\Http\Middleware\Auth\UserMitraMiddleware;
 use App\Http\Middleware\NoAuthMiddleware;
+use App\Http\Controllers\Customer\Tryoutc;
+use App\Http\Controllers\Panel\ListOrders;
+use App\Http\Controllers\Panel\Pengaturan;
+use App\Http\Controllers\Panel\Testimonis;
 use App\Http\Middleware\ProfileCompletion;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Panel\Klasifikasis;
+use App\Http\Controllers\Cron\JobsController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Landing\GoogleOauth;
+use App\Http\Controllers\Landing\MainWebsite;
+use App\Http\Controllers\PromoCodeController;
+use App\Http\Controllers\Landing\Autentifikasi;
+use App\Http\Middleware\Auth\UserAdminMiddleware;
+use App\Http\Middleware\Auth\UserMitraMiddleware;
+use App\Http\Controllers\Exam\ReportExamController;
+use App\Http\Middleware\Auth\UserCustomerMiddleware;
+use App\Http\Controllers\Sertikom\SertikomController;
+use App\Http\Controllers\Payment\TransactionController;
+use App\Http\Controllers\Exam\ExamParticipantController;
+use App\Http\Controllers\Mitra\DashboardMitraController;
+use App\Http\Controllers\Mitra\MitraTransactionController;
+use App\Http\Controllers\Customer\SertikomCustomerController;
+use App\Http\Controllers\Sertikom\SertikomListOrderController;
 
 // Routing untuk autentifikasi menggunakan Google OAuth
 Route::controller(GoogleOauth::class)->group(function () {
@@ -42,8 +45,8 @@ Route::controller(GoogleOauth::class)->group(function () {
 
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(JobsController::class)->group(function () {
-        Route::get('/delete/logs', 'deleteLogs')->name('cron.delete-logs');
-        Route::get('/delete/cache', 'deleteCache')->name('cron.delete-cache');
+        Route::get('/job/delete/logs', 'deleteLogs')->name('cron.delete-logs');
+        Route::get('/job/delete/cache', 'deleteCache')->name('cron.delete-cache');
     });
 });
 
@@ -85,9 +88,15 @@ Route::controller(MainWebsite::class)->group(function () {
 
     Route::get('/product', 'products')->name('mainweb.product');
     Route::get('/free-product', 'freeProducts')->name('mainweb.free-product');
-    Route::get('/product/{id}', 'productShowDeprecated')->name('mainweb.product.show');
+    Route::get('/product/{id}/', 'productShowDeprecated')->name('mainweb.product.show');
     // New Way to show product by defining the feature
     Route::get('/product/{feature}/{id}', 'productShow')->name('mainweb.product.tryout.show');
+
+
+    // Add : Sertikom (Pelatihan dan Seminar/Workshop)
+    Route::get('/products/{category}', 'productsSertikom')->name('mainweb.product-sertikom');
+    Route::get('/products/{category}/{id}', 'productSertikomShowDeprecated')->name('mainweb.product-sertikom.show');
+    Route::get('/products/{feature}/{id}', 'productSertikomShow')->name('mainweb.product-sertikom.training-seminar.show');
 
     Route::get('/privacy-policy', 'privacyPolicy')->name('mainweb.privacy-policy');
     Route::get('/term-of-service', 'termOfService')->name('mainweb.term-of-service');
@@ -102,8 +111,16 @@ Route::controller(MainWebsite::class)->group(function () {
             Route::post('/pesan-tryout-berbayar', 'pesanTryoutBerbayar')->name('mainweb.pesan-tryout-berbayar');
 
             Route::get('/daftar-tryout-gratis', 'daftarTryoutGratis')->name('mainweb.daftar-tryout-gratis')->middleware(ProfileCompletion::class);
+
+            // Add : Sertikom (Pelatihan dan Seminar/Workshop)
+            Route::get('/keranjang/{category}', 'cartSertikom')->name('mainweb.cart-sertikom');
+            Route::delete('/hapus-item-keranjang', 'deleteCartSertikom')->name('mainweb.cart-sertikom-delete');
+            Route::post('/pesan-item', 'addCartSertikom')->name('mainweb.cart-sertikom-add');
         });
     });
+
+    // Check verification certificate
+    Route::get('/certificate/verification', 'certificateSertikom')->name('mainweb.certificate-sertikom');
 });
 
 // Routing untuk untuk order produk tryout dan pembayaran order tryout
@@ -116,6 +133,10 @@ Route::middleware([AuthMiddleware::class, UserCustomerMiddleware::class])->group
         Route::post('/pesan-tryout-gratis', 'pesanTryoutGratis')->name('mainweb.pesan-tryout-gratis');
 
         Route::post('/check-referral', 'checkReferral')->name('orders.check-referral');
+
+        // Add Sertikom : Pelatihan, Seminar/Workshop
+        Route::get('/pembayaran/{params}/{category}', 'orderSertikom')->name('orders.sertikom-payment');
+        Route::post('/proses-pembayaran', 'payOrderSertikom')->name('orders.sertikom-pay-order');
     });
 });
 
@@ -205,7 +226,7 @@ Route::middleware([AuthMiddleware::class, UserAdminMiddleware::class])->group(fu
 Route::middleware([AuthMiddleware::class, UserAdminMiddleware::class])->group(function () {
     Route::controller(ListOrders::class)->group(function () {
         Route::get('/order-tryout', 'index')->name('listOrders.main');
-        Route::get('/detil-order/{orderID}', 'detilOrder')->name('listOrders.detil');
+        Route::get('/detail-order/{orderID}', 'detilOrder')->name('listOrders.detil');
 
         Route::get('/export-order-pdf', 'exportOrderToPDF')->name('listOrders.export-to-pdf');
         Route::get('/export-order-excel', 'exportOrderToExcel')->name('listOrders.export-to-excel');
@@ -275,6 +296,9 @@ Route::middleware([AuthMiddleware::class, UserCustomerMiddleware::class])->group
 
         Route::get('/pembelian-produk', 'pembelian')->name('site.pembelian');
         Route::get('/pembelian/search', 'searchPembelian')->name('site.search-pembelian');
+
+        Route::get('/pembelian/{category}', 'orderProductSertikom')->name('site.pembelian-sertikom');
+        Route::get('/pembelian/search/{category}', 'searchOrderSertikom')->name('site.search-pembelian-sertikom');
     });
 });
 
@@ -325,5 +349,66 @@ Route::middleware([AuthMiddleware::class, UserMitraMiddleware::class])->group(fu
         Route::controller(MitraTransactionController::class)->prefix('transactions')->as('transactions.')->group(function () {
             Route::get('/', 'index')->name('index');
         });
+    });
+});
+
+// Route untuk main panel Sertikom (Pelatihan, Seminar, Workshop)
+Route::middleware([AuthMiddleware::class, UserAdminMiddleware::class])->group(function () {
+    Route::controller(SertikomController::class)->group(function () {
+        // Pelatihan
+        Route::get('/produk-sertikom/{category}', 'sertikomProduct')->name('sertikom.product');
+        Route::get('/produk-sertikom/form/{param}/{id}/{category}', 'formSertikom')->name('sertikom.form');
+
+        Route::get('/produk-pelatihan/detail/{id}/{category}', 'getDetailSertikom')->name('sertikom.training-detail');
+        Route::post('/pelatihan/save', 'saveSertikomTraining')->name('sertikom.training-save');
+        Route::delete('/pelatihan/delete', 'deleteSertikomTraining')->name('sertikom.training-delete');
+
+        // Seminar 
+        Route::get('/produk-seminar/detail/{id}/{category}', 'getDetailSertikom')->name('sertikom.seminar-detail');
+        Route::post('/seminar/save', 'saveSertikomSeminar')->name('sertikom.seminar-save');
+        Route::delete('/seminar/delete', 'deleteSertikomSeminar')->name('sertikom.seminar-delete');
+
+        // Workshop
+        Route::get('/produk-workshop/detail/{id}/{category}', 'getDetailSertikom')->name('sertikom.workshop-detail');
+        Route::post('/workshop/save', 'saveSertikomWorkshop')->name('sertikom.workshop-save');
+        Route::delete('/workshop/delete', 'deleteSertikomWorkshop')->name('sertikom.workshop-delete');
+
+        // Tahapan proses
+        Route::post('/sertikom/create-step', 'createStepSertikom')->name('sertikom.create-step');
+        Route::delete('/sertikom/delete-step', 'deleteStepSertikom')->name('sertikom.delete-step');
+        Route::delete('/sertikom/delete-participant', 'deleteParticipantSertikom')->name('sertikom.delete-participant');
+
+        // Topik keahlian
+        Route::get('/topik-keahlian', 'sertikomExpertise')->name('sertikom.expertise');
+        Route::get('/topik-keahlian/form/{param}/{id}', 'formSertikomExpertise')->name('sertikom.expertise-form');
+        Route::post('/topik-keahlian/save', 'saveSertikomExpertise')->name('sertikom.expertise-save');
+        Route::delete('/topik-keahlian/delete', 'deleteSertikomExpertise')->name('sertikom.expertise-delete');
+
+        // Instruktur
+        Route::get('/instruktur', 'sertikomInstructor')->name('sertikom.instructor');
+        Route::get('/instruktur/form/{param}/{id}', 'formSertikomInstructor')->name('sertikom.instructor-form');
+        Route::post('/instruktur/save', 'saveSertikomInstructor')->name('sertikom.instructor-save');
+        Route::delete('/instuktur/delete', 'deleteSertikomInstructor')->name('sertikom.instructor-delete');
+    });
+});
+
+Route::middleware([AuthMiddleware::class, UserAdminMiddleware::class])->group(function () {
+    Route::controller(SertikomListOrderController::class)->group(function () {
+        // List Order Sertikom
+        Route::get('/list-order-sertikom/{category}', 'index')->name('sertikom.list-order');
+        Route::get('/detail-order-sertikom/{id}', 'detailListOrderSertikom')->name('sertikom.detail-order');
+        Route::get('/export-order-sertikom-pdf', 'exportOrderSertikomToPDF')->name('sertikom.export-to-pdf');
+        Route::get('/export-order-sertikom-excel', 'exportOrderSertikomToExcel')->name('sertikom.export-to-excel');
+    });
+});
+
+// Route untuk customer Sertikom (Pelatihan, Seminar, Workshop)
+Route::middleware([AuthMiddleware::class, UserCustomerMiddleware::class])->group(function () {
+    Route::controller(SertikomCustomerController::class)->group(function () {
+        Route::get('/sertikom/{category}', 'getSertikom')->name('customer.get-sertikom');
+        Route::get('/sertikom/detail/{category}/{id}', 'getDetailSertikom')->name('customer.detail-sertikom');
+
+        Route::post('/upload/assignment/', 'uploadAssignment')->name('customer.upload-assignment-sertikom');
+        Route::get('/certificate/{category}/{id}/{param}', 'generateCertificate')->name('customer.get-certificate-sertikom');
     });
 });

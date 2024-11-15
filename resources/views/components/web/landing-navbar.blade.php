@@ -1,12 +1,8 @@
 @php
     $navigationUrls = [
         [
-            'title' => 'Home',
-            'url' => route('mainweb.index'),
-        ],
-        [
-            'title' => 'Produk',
-            'url' => route('mainweb.product'),
+            'title' => 'Cek Sertifikat',
+            'url' => route('mainweb.certificate-sertikom'),
         ],
         [
             'title' => 'Tentang',
@@ -15,6 +11,25 @@
         [
             'title' => 'Kontak',
             'url' => route('mainweb.contact-us'),
+        ],
+    ];
+
+    $navigationSubUrls = [
+        [
+            'title' => 'Pelatihan',
+            'url' => route('mainweb.product-sertikom', ['category' => 'pelatihan']),
+        ],
+        [
+            'title' => 'Seminar',
+            'url' => route('mainweb.product-sertikom', ['category' => 'seminar']),
+        ],
+        [
+            'title' => 'Workshop',
+            'url' => route('mainweb.product-sertikom', ['category' => 'workshop']),
+        ],
+        [
+            'title' => 'Tryout Simulasi CAT',
+            'url' => route('mainweb.product'),
         ],
     ];
 
@@ -75,6 +90,34 @@
         <div id="navigation">
             <!-- Navigation Menu-->
             <ul class="navigation-menu nav-right">
+                <li>
+                    <a title="Home" href="{{ route('mainweb.index') }}" class="sub-menu-item">
+                        <span>
+                            Home
+                        </span>
+                    </a>
+                    <meta itemprop="position" content="{{ $noNavigation++ }}" />
+                </li>
+                <!-- Menu Produk -->
+                <li class="has-submenu parent-parent-menu-item">
+                    <a href="javascript:void(0)">
+                        Produk
+                    </a>
+                    <span class="menu-arrow"></span>
+                    <ul class="submenu">
+                        @foreach ($navigationSubUrls as $navigationSub)
+                            <li>
+                                <a title="{{ $navigationSub['title'] }}" href="{{ $navigationSub['url'] }}"
+                                    class="sub-menu-item">
+                                    <span>
+                                        {{ $navigationSub['title'] }}
+                                    </span>
+                                </a>
+                                <meta itemprop="position" content="{{ $noNavigation++ }}" />
+                            </li>
+                        @endforeach
+                    </ul>
+                </li>
                 @foreach ($navigationUrls as $navigation)
                     <li>
                         <a title="{{ $navigation['title'] }}" href="{{ $navigation['url'] }}" class="sub-menu-item">
@@ -94,14 +137,6 @@
                         <span class="menu-arrow"></span>
                         <ul class="submenu">
                             <li>
-                                <a href="{{ route('user.dashboard') }}" class="sub-menu-item">
-                                    <span>
-                                        Dashboard
-                                    </span>
-                                </a>
-                                <meta itemprop="position" content="{{ $noNavigation++ }}" />
-                            </li>
-                            <li>
                                 <a href="{{ route('mainweb.profile') }}" class="sub-menu-item">
                                     <span>
                                         Profil
@@ -109,15 +144,56 @@
                                 </a>
                                 <meta itemprop="position" content="{{ $noNavigation++ }}" />
                             </li>
+                            <li>
+                                <a href="{{ route('user.dashboard') }}" class="sub-menu-item">
+                                    <span>
+                                        Dashboard
+                                    </span>
+                                </a>
+                                <meta itemprop="position" content="{{ $noNavigation++ }}" />
+                            </li>
                             @if (Auth::user()->role == 'Customer')
-                                <li>
-                                    <a href="{{ route('mainweb.keranjang') }}" class="sub-menu-item">
-                                        <span>
-                                            Keranjang Pesanan
-                                        </span>
-                                    </a>
-                                    <meta itemprop="position" content="{{ $noNavigation++ }}" />
+                                <li class="has-submenu parent-menu-item"><a href="javascript:void(0)"> Keranjang
+                                    </a><span class="submenu-arrow"></span>
+                                    <ul class="submenu">
+                                        <li>
+                                            <a href="{{ route('mainweb.cart-sertikom', ['category' => 'pelatihan']) }}"
+                                                class="sub-menu-item">
+                                                <span>
+                                                    Keranjang Pelatihan
+                                                </span>
+                                            </a>
+                                            <meta itemprop="position" content="{{ $noNavigation++ }}" />
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('mainweb.cart-sertikom', ['category' => 'seminar']) }}"
+                                                class="sub-menu-item">
+                                                <span>
+                                                    Keranjang Seminar
+                                                </span>
+                                            </a>
+                                            <meta itemprop="position" content="{{ $noNavigation++ }}" />
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('mainweb.cart-sertikom', ['category' => 'workshop']) }}"
+                                                class="sub-menu-item">
+                                                <span>
+                                                    Keranjang Workshop
+                                                </span>
+                                            </a>
+                                            <meta itemprop="position" content="{{ $noNavigation++ }}" />
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('mainweb.keranjang') }}" class="sub-menu-item">
+                                                <span>
+                                                    Keranjang Tryout
+                                                </span>
+                                            </a>
+                                            <meta itemprop="position" content="{{ $noNavigation++ }}" />
+                                        </li>
+                                    </ul>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('mainweb.free-product') }}" class="sub-menu-item">
                                         <span>

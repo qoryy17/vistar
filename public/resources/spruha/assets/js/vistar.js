@@ -42,6 +42,10 @@ $(function () {
         autoclose: true,
     });
 
+    $('#timeStart').mask('99:99');
+
+    $('#timeEnd').mask('99:99');
+
     $(".selectPendidikan").select2({
         placeholder: "Pilih Pendidikan",
         searchInputPlaceholder: "Search",
@@ -98,6 +102,18 @@ $(function () {
     
     $(".selectCustomer").select2({
         placeholder: "Pilih Customer",
+        searchInputPlaceholder: "Search",
+        width: "100%",
+    });
+
+    $(".selectInstructor").select2({
+        placeholder: "Pilih Instruktur",
+        searchInputPlaceholder: "Search",
+        width: "100%",
+    });
+
+    $(".selectExpertise").select2({
+        placeholder: "Pilih Topik Keahlian",
         searchInputPlaceholder: "Search",
         width: "100%",
     });

@@ -316,7 +316,7 @@
                 @else
                     <div class="row">
                         <div class="col-md-4 d-none d-md-flex justify-content-center">
-                            <img height="300px" style="max-width: 100%; object-fit: contain;" class="img"
+                            <img height="300px" style="max-width: 100%; object-fit: contain;" class="img-fluid"
                                 src="{{ asset('resources/images/model-4.png') }}"
                                 alt="Banner Model 4 {{ config('app.name') }}"
                                 title="Banner Model 4 {{ config('app.name') }}" loading="eager" />

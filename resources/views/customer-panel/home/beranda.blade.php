@@ -22,152 +22,294 @@
                 </div>
                 <!-- End Page Header -->
 
+                <div class="alert alert-primary" role="alert">
+                    <marquee> <strong>Informasi !</strong>
+                        Upgrade skill kamu dengan mengikuti pelatihan pada platform kami dapatkan pembelajaran yang
+                        menarik dan interaktif atau kamu bisa ikuti seminar ataupun workshop untuk menambah wawasan dan
+                        relasi kamu > Dapatkan akses menyeluruh untuk paket simulasi tryout CPNS, PPPK, dan
+                        Kedinasan dengan hanya sekali beli !
+                    </marquee>
+                </div>
                 <!-- Row -->
                 <div class="row sidemenu-height">
-                    <div class="col-lg-8">
-
-                        <div class="alert alert-warning" role="alert">
-                            <marquee> <strong>Informasi !</strong> Dapatkan akses menyeluruh untuk paket tryout CPNS, PPPK,
-                                dan Kedinasan dengan hanya sekali beli !
-                            </marquee>
-                        </div>
-
-                        @if ($testimoni->count() > 0)
-                            {{-- Testimoni --}}
-                            <div class="card custom-card d-none d-sm-block">
+                    <div class="col-lg-9">
+                        <!-- Notifikasi Produk Terbaru -->
+                        @if ($trainingTerbaru)
+                            <div class="card custom-card">
                                 <div class="card-body">
-                                    <div class="row row-sm">
-                                        <div class="col-12">
-                                            <div class="carousel slide" data-bs-ride="carousel" id="slideTestimoni">
-
-                                                <div class="carousel-inner bg-dark">
-                                                    @php
-                                                        $no = 1;
-                                                    @endphp
-                                                    @foreach ($testimoni as $slideTestimoni)
-                                                        <div class="carousel-item {{ $no === 1 ? 'active' : '' }}">
-                                                            <img class="d-block w-100 op-3"
-                                                                src="{{ url('resources/images/bg-img.jpg') }}"
-                                                                alt="Background Testimoni" title="Background Testimoni"
-                                                                loading="eager" />
-                                                            <div class="carousel-caption">
-                                                                <p>{{ $slideTestimoni->nama_tryout }}</p>
-                                                                <p class="tx-14 mb-0">
-                                                                    {{ $slideTestimoni->testimoni }}
-                                                                </p>
-                                                                @for ($i = 0; $i < $slideTestimoni->rating; $i++)
-                                                                    <i class="fa fa-star"
-                                                                        style="color: rgb(255, 207, 16);"></i>
-                                                                @endfor
-                                                            </div>
-                                                        </div>
-                                                        @php
-                                                            $no++;
-                                                        @endphp
-                                                    @endforeach
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div id="lightgallery">
+                                                <div data-responsive="{{ asset('storage/' . $trainingTerbaru->thumbnail) }}"
+                                                    data-src="{{ asset('storage/' . $trainingTerbaru->thumbnail) }}"
+                                                    data-sub-html="<h4>{{ $trainingTerbaru->produk }}</h4><p>{{ $trainingTerbaru->topik }}</p>">
+                                                    <a href="" class="wd-100p">
+                                                        <img class="img-fluid"
+                                                            src="{{ asset('storage/' . $trainingTerbaru->thumbnail) }}"
+                                                            alt="Thumbnail {{ $trainingTerbaru->produk }}"
+                                                            title="Thumbnail {{ $trainingTerbaru->produk }}"
+                                                            loading="eager" />
+                                                    </a>
                                                 </div>
-
-                                                <button class="carousel-control-prev" type="button"
-                                                    data-bs-target="#slideTestimoni" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                    <span class="visually-hidden">Previous</span>
-                                                </button>
-                                                <button class="carousel-control-next" type="button"
-                                                    data-bs-target="#slideTestimoni" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                    <span class="visually-hidden">Next</span>
-                                                </button>
                                             </div>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <h2 class="fs-5 mt-2 text-primary">Pelatihan Terbaru</h2>
+                                            <h3 style="padding: 0px; margin:0px;" class="mb-2 fs-20 me-2">
+                                                {{ $trainingTerbaru->produk }}
+                                            </h3>
+                                            <p>
+                                                <span class="badge bg-primary mb-2">
+                                                    <i class="fa fa-calendar"></i>
+                                                    {{ \Carbon\Carbon::parse($trainingTerbaru->tanggal_mulai)->translatedFormat('F') }}
+                                                </span>
+                                                <br>
+                                                Topik : <span class="text-primary">{{ $trainingTerbaru->topik }}</span>
+                                            </p>
+                                            @php
+                                                $checkOrderTraining = App\Models\Sertikom\OrderPelatihanSeminarModel::where(
+                                                    'produk_pelatihan_seminar_id',
+                                                    $trainingTerbaru->id,
+                                                )
+                                                    ->where('customer_id', Auth::user()->customer_id)
+                                                    ->first();
+                                            @endphp
+                                            @if (!$checkOrderTraining)
+                                                <a href="{{ route('mainweb.product-sertikom', ['category' => 'pelatihan']) }}"
+                                                    class="btn btn-primary btn-sm d-block d-md-inline-block">
+                                                    Daftar Sekarang
+                                                    <i class="fa fa-arrow-right"></i>
+                                                </a>
+                                            @else
+                                                <a href="{{ route('customer.detail-sertikom', ['category' => 'pelatihan', 'id' => Crypt::encrypt($checkOrderTraining->id)]) }}"
+                                                    class="btn btn-primary btn-sm d-block d-md-inline-block">
+                                                    Lihat Pelatihan
+                                                    <i class="fa fa-arrow-right"></i>
+                                                </a>
+                                            @endif
+                                            <h6 class="mt-3">Jadwal Pelatihan</h6>
+                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $trainingTerbaru->tanggal_mulai)->format('d/m/Y') }}
+                                            sampai
+                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $trainingTerbaru->tanggal_selesai)->format('d/m/Y') }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         @endif
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <a href="{{ route('mainweb.product') }}">
-                                    <div class="card custom-card">
-                                        <div class="card-body">
-                                            <div class="row row-sm">
-                                                <div class="col-12">
-                                                    <div class="card-item-title">
-                                                        <h2 class="fs-4 main-content-label tx-13 font-weight-bold mb-2">
-                                                            Paket Tryout
-                                                        </h2>
-                                                        <span class="d-block tx-12 mb-0 text-muted">
-                                                            Tersedia Untuk CPNS, PPPK, Kedinasan
-                                                        </span>
-                                                    </div>
-                                                    <h3 class="mb-0 tx-24 mt-2" style="color: #0075B8;">
-                                                        Mulai dari Rp. {{ number_format(49000, 0) }}
-                                                    </h3>
+                        @if ($seminarTerbaru)
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div id="lightgallery1">
+                                                <div data-responsive="{{ asset('storage/' . $seminarTerbaru->thumbnail) }}"
+                                                    data-src="{{ asset('storage/' . $seminarTerbaru->thumbnail) }}"
+                                                    data-sub-html="<h4>{{ $seminarTerbaru->produk }}</h4><p>{{ $seminarTerbaru->topik }}</p>">
+                                                    <a href="" class="wd-100p">
+                                                        <img class="img-fluid"
+                                                            src="{{ asset('storage/' . $seminarTerbaru->thumbnail) }}"
+                                                            alt="Thumbnail {{ $seminarTerbaru->produk }}"
+                                                            title="Thumbnail {{ $seminarTerbaru->produk }}"
+                                                            loading="eager" />
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-md-6">
-                                <a href="{{ route('mainweb.index') }}">
-                                    <div class="card custom-card">
-                                        <div class="card-body">
-                                            <div class="row row-sm">
-                                                <div class="col-12">
-                                                    <div class="card-item-title">
-                                                        <h2 class="fs-4 main-content-label tx-13 font-weight-bold mb-2">
-                                                            Tryout Gratis
-                                                        </h2>
-                                                        <span class="d-block tx-12 mb-0 text-muted">
-                                                            Tersedia Untuk CPNS, PPPK, Kedinasan
-                                                        </span>
-                                                    </div>
-                                                    <h3 style="text-decoration: line-through;" class="mb-0 tx-24 mt-2"
-                                                        style="color: #0075B8;">
-                                                        Rp. 0
-                                                    </h3>
-                                                </div>
-                                            </div>
+                                        <div class="col-md-7">
+                                            <h2 class="fs-5 mt-2 text-primary">Seminar Terbaru</h2>
+                                            <h3 style="padding: 0px; margin:0px;" class="mb-2 fs-20 me-2">
+                                                {{ $seminarTerbaru->produk }}
+                                            </h3>
+                                            <p>
+                                                <span class="badge bg-primary mb-2">
+                                                    <i class="fa fa-calendar"></i>
+                                                    {{ \Carbon\Carbon::parse($seminarTerbaru->tanggal_mulai)->translatedFormat('F') }}
+                                                </span>
+                                                <br>
+                                                Topik : <span class="text-primary">{{ $seminarTerbaru->topik }}</span>
+                                            </p>
+                                            @php
+                                                $checkOrderSeminar = App\Models\Sertikom\OrderPelatihanSeminarModel::where(
+                                                    'produk_pelatihan_seminar_id',
+                                                    $seminarTerbaru->id,
+                                                )
+                                                    ->where('customer_id', Auth::user()->customer_id)
+                                                    ->first();
+                                            @endphp
+                                            @if (!$checkOrderSeminar)
+                                                <a href="{{ route('mainweb.product-sertikom', ['category' => 'seminar']) }}"
+                                                    class="btn btn-primary btn-sm d-block d-md-inline-block">
+                                                    Daftar Sekarang
+                                                    <i class="fa fa-arrow-right"></i>
+                                                </a>
+                                            @else
+                                                <a href="{{ route('customer.detail-sertikom', ['category' => 'seminar', 'id' => Crypt::encrypt($checkOrderSeminar->id)]) }}"
+                                                    class="btn btn-primary btn-sm d-block d-md-inline-block">
+                                                    Lihat Seminar
+                                                    <i class="fa fa-arrow-right"></i>
+                                                </a>
+                                            @endif
+                                            <h6 class="mt-3">Jadwal Workshop</h6>
+                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $seminarTerbaru->tanggal_mulai)->format('d/m/Y') }}
+                                            sampai
+                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $seminarTerbaru->tanggal_selesai)->format('d/m/Y') }}
                                         </div>
                                     </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        {{-- Pembelian --}}
-                        <div class="card custom-card" style="background-color: #F8AA3B">
-                            <div class="card-body">
-                                <div>
-                                    <h2 class="fs-6 text-white">Pembelian Anda</h2>
-                                    <h3 style="padding: 0px; margin:0px;" class="mb-2 fs-30 me-2">
-                                        Total : {{ $countPembelian }} Pembelian
-                                    </h3>
-                                    <span class="text-white tx-14">Klik tombol dibawah untuk melihat pembelian</span>
-                                    <a href="{{ route('site.pembelian') }}"
-                                        class="btn btn-block btn-default btn-white mt-2"><i class="fa fa-list"></i>
-                                        Lihat Semua</a>
                                 </div>
                             </div>
-                        </div>
-                        {{-- Notif Event --}}
+                        @endif
+                        @if ($workshopTerbaru)
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div id="lightgallery2">
+                                                <div data-responsive="{{ asset('storage/' . $workshopTerbaru->thumbnail) }}"
+                                                    data-src="{{ asset('storage/' . $workshopTerbaru->thumbnail) }}"
+                                                    data-sub-html="<h4>{{ $workshopTerbaru->produk }}</h4><p>{{ $workshopTerbaru->topik }}</p>">
+                                                    <a href="" class="wd-100p">
+                                                        <img class="img-fluid"
+                                                            src="{{ asset('storage/' . $workshopTerbaru->thumbnail) }}"
+                                                            alt="Thumbnail {{ $workshopTerbaru->produk }}"
+                                                            title="Thumbnail {{ $workshopTerbaru->produk }}"
+                                                            loading="eager" />
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <h2 class="fs-5 mt-2 text-primary">Workshop Terbaru</h2>
+                                            <h3 style="padding: 0px; margin:0px;" class="mb-2 fs-20 me-2">
+                                                {{ $workshopTerbaru->produk }}
+                                            </h3>
+                                            <p>
+                                                <span class="badge bg-primary mb-2">
+                                                    <i class="fa fa-calendar"></i>
+                                                    {{ \Carbon\Carbon::parse($workshopTerbaru->tanggal_mulai)->translatedFormat('F') }}
+                                                </span>
+                                                <br>
+                                                Topik : <span class="text-primary">{{ $workshopTerbaru->topik }}</span>
+                                            </p>
+                                            @php
+                                                $checkOrderWorkshop = App\Models\Sertikom\OrderPelatihanSeminarModel::where(
+                                                    'produk_pelatihan_seminar_id',
+                                                    $workshopTerbaru->id,
+                                                )
+                                                    ->where('customer_id', Auth::user()->customer_id)
+                                                    ->first();
+                                            @endphp
+                                            @if (!$checkOrderWorkshop)
+                                                <a href="{{ route('mainweb.product-sertikom', ['category' => 'workshop']) }}"
+                                                    class="btn btn-primary btn-sm d-block d-md-inline-block">
+                                                    Daftar Sekarang
+                                                    <i class="fa fa-arrow-right"></i>
+                                                </a>
+                                            @else
+                                                <a href="{{ route('customer.detail-sertikom', ['category' => 'workshop', 'id' => Crypt::encrypt($checkOrderWorkshop->id)]) }}"
+                                                    class="btn btn-primary btn-sm d-block d-md-inline-block">
+                                                    Lihat Workshop
+                                                    <i class="fa fa-arrow-right"></i>
+                                                </a>
+                                            @endif
+                                            <h6 class="mt-3">Jadwal Workshop</h6>
+                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $workshopTerbaru->tanggal_mulai)->format('d/m/Y') }}
+                                            sampai
+                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $workshopTerbaru->tanggal_selesai)->format('d/m/Y') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                         @if ($tryoutTerbaru)
                             <div class="card custom-card">
                                 <div class="card-body">
-                                    <div>
-                                        <h2 class="fs-6">Tryout Terbaru</h2>
-                                        <h3 style="padding: 0px; margin:0px;color: #F8AA3B;" class="mb-2 fs-20 me-2">
-                                            {{ $tryoutTerbaru->nama_tryout }}
-                                        </h3>
-                                        <span class="text-muted tx-14">{{ $tryoutTerbaru->keterangan }}</span>
-                                        <a href="{{ route('mainweb.product') }}"
-                                            class="btn btn-block btn-default mt-2 btn-web1"><i
-                                                class="fa fa-shopping-cart"></i>
-                                            Beli Sekarang</a>
-                                    </div>
+                                    <h2 class="fs-6">Simulasi Tryout Terbaru</h2>
+                                    <h3 style="padding: 0px; margin:0px;" class="mb-2 fs-20 me-2">
+                                        {{ $tryoutTerbaru->nama_tryout }}
+                                    </h3>
+                                    <span class="text-muted tx-14">{{ $tryoutTerbaru->keterangan }}</span>
+                                    <br>
+                                    <a href="{{ route('mainweb.product') }}"
+                                        class="btn btn-primary btn-sm mt-2 d-block d-md-inline-block">
+                                        Beli Sekarang
+                                        <i class="fa fa-arrow-right"></i>
+                                    </a>
                                 </div>
                             </div>
                         @endif
+                        <!-- End Notifikasi Produk Terbaru -->
+                    </div>
+                    <div class="col-lg-3">
+                        <!-- Pembelian Pelatihan  -->
+                        <a href="{{ route('site.pembelian-sertikom', ['category' => 'pelatihan']) }}"
+                            title="Pembelian Pelatihan Kamu">
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <div class="card-order">
+                                        <label class="main-content-label mb-3 pt-1">Total Beli Pelatihan</label>
+                                        <h2 class="text-end">
+                                            <i class="mdi mdi-cart icon-size float-start text-primary"></i>
+                                            <span class="font-weight-bold">{{ $countPelatihan }}</span>
+                                        </h2>
+                                        <p class="mb-0 mt-4 text-muted">Pembelian Pelatihan Kamu</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- End Pembelian Pelatihan -->
+
+                        <!-- Pembelian Seminar  -->
+                        <a href="{{ route('site.pembelian-sertikom', ['category' => 'seminar']) }}"
+                            title="Pembelian Seminar Kamu">
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <div class="card-order">
+                                        <label class="main-content-label mb-3 pt-1">Total Beli Seminar</label>
+                                        <h2 class="text-end">
+                                            <i class="mdi mdi-cart icon-size float-start text-primary"></i>
+                                            <span class="font-weight-bold">{{ $countSeminar }}</span>
+                                        </h2>
+                                        <p class="mb-0 mt-4 text-muted">Pembelian Seminar Kamu</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- End Pembelian Seminar -->
+
+                        <!-- Pembelian Workshop  -->
+                        <a href="{{ route('site.pembelian-sertikom', ['category' => 'workshop']) }}"
+                            title="Pembelian Workshop Kamu">
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <div class="card-order">
+                                        <label class="main-content-label mb-3 pt-1">Total Beli Workshop</label>
+                                        <h2 class="text-end">
+                                            <i class="mdi mdi-cart icon-size float-start text-primary"></i>
+                                            <span class="font-weight-bold">{{ $countWorkshop }}</span>
+                                        </h2>
+                                        <p class="mb-0 mt-4 text-muted">Pembelian Workshop Kamu</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- End Pembelian Workshop -->
+
+                        <!-- Pembelian Simulasi Tryout  -->
+                        <a href="{{ route('site.pembelian') }}" title="Pembelian Tryout Kamu">
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <div class="card-order">
+                                        <label class="main-content-label mb-3 pt-1">Total Beli Simulasi Tryout</label>
+                                        <h2 class="text-end">
+                                            <i class="mdi mdi-cart icon-size float-start text-primary"></i>
+                                            <span class="font-weight-bold">{{ $countTryout }}</span>
+                                        </h2>
+                                        <p class="mb-0 mt-4 text-muted">Pembelian Simulasi Tryout Kamu</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- End Pembelian Simulasi Tryout -->
                     </div>
                 </div>
                 <!-- End Row -->

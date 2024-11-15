@@ -15,9 +15,10 @@
                                     alt="{{ config('app.name') }} Logo" title="{{ config('app.name') }} Logo"
                                     loading="lazy" />
                             </a>
-                            <p class="mt-4">{{ $web->nama_bisnis }} {{ $web->tagline }}, Ujian Tryout untuk CPNS, PPPK
-                                dan
-                                Kedinasan Terpercaya Seluruh Indonesia.</p>
+                            <p class="mt-4">
+                                {{ $web->nama_bisnis }} {{ $web->tagline }}, Pusat Kegiatan Akademik
+                                Bidang ICT dan Science Terbaik #1 di Indonesia
+                            </p>
                             <ul class="list-unstyled social-icon foot-social-icon mb-0 mt-3">
                                 @if ($web->facebook && $web->facebook !== '')
                                     <li class="list-inline-item mb-0">

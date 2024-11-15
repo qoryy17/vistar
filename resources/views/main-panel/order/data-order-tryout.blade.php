@@ -176,9 +176,7 @@
                                                         </p>
                                                     </td>
                                                     <td>
-                                                        <a href="">
-                                                            {{ $row->payment_id }}
-                                                        </a>
+                                                        {{ $row->payment_id }}
                                                     </td>
                                                     <td>
                                                         {{ $row->created_at }}

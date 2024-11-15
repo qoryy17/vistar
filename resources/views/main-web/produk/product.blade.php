@@ -10,7 +10,7 @@
                 <div class="col-12 text-center">
                     <div class="section-title mb-4 pb-2">
                         <h1 class="title mb-4">{{ $title }}</h1>
-                        <p class="text-muted para-desc mb-0 mx-auto">
+                        <p class="text-muted mb-0 mx-auto">
                             Temukan produk yang sempurna untuk Anda!
                             Dengan berbagai pilihan paket yang dirancang sesuai kebutuhan,
                             <span class="text-primary fw-bold">Vistar Indonesia</span>
@@ -120,7 +120,7 @@
                                     </a>
                                     <h2>
                                         <a itemprop="url" title="{{ $row->nama_tryout }}" href="{{ $url }}"
-                                            class="text-center py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-lg">
+                                            class="py-2 px-2 d-inline-block h5 mb-0 text-primary">
                                             <span itemprop="name">{{ $row->nama_tryout }}</span>
                                         </a>
                                     </h2>
@@ -146,7 +146,7 @@
                                     @endphp
                                     <div class="mb-3" itemscope itemprop="offers" itemtype="https://schema.org/Offer">
                                         <meta itemprop="availability" content="https://schema.org/OnlineOnly" />
-                                        <p class="fs-2 fw-bold mb-0 mt-3 d-flex gap-2 lh-1">
+                                        <p class="fs-2 fw-bold mb-0 d-flex gap-2 lh-1">
                                             <span itemprop="priceCurrency" content="IDR">Rp.</span>
                                             <span itemprop="price" content="{{ $price }}">
                                                 {{ number_format($price, 0) }}
@@ -232,7 +232,7 @@
             [
                 '@type' => 'ListItem',
                 'position' => ++$breadcrumbItemListPosition,
-                'name' => 'Produk',
+                'name' => 'Produk Tryout Simulasi CAT',
                 'item' => url()->current(),
             ],
         ];

@@ -3,24 +3,32 @@
 namespace App\Http\Controllers\Landing;
 
 use App\Enums\UserRole;
-use App\Helpers\BerandaUI;
-use App\Http\Controllers\Controller;
 use App\Models\Customer;
-use App\Models\KategoriProduk;
-use App\Models\KeranjangOrder;
+use App\Helpers\BerandaUI;
 use App\Models\LimitTryout;
 use App\Models\OrderTryout;
 use App\Models\ProdukTryout;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Helpers\RecordVisitor;
+use App\Models\KategoriProduk;
+use App\Models\KeranjangOrder;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\Sertikom\TopikKeahlianModel;
+use App\Models\Sertikom\PesertaSertikomModel;
+use App\Models\Sertikom\KeranjangOrderSertikom;
+use App\Models\Sertikom\SertifikatSertikomModel;
+use App\Models\Sertikom\OrderPelatihanSeminarModel;
+use App\Models\Sertikom\ProdukPelatihanSeminarModel;
 
 class MainWebsite extends Controller
 {
+
     public function index()
     {
         $web = BerandaUI::web();
@@ -63,9 +71,51 @@ class MainWebsite extends Controller
             'title' => $web->nama_bisnis . " " . $web->tagline,
             'web' => $web,
             'productCategories' => $productCategories,
+            'productTraining' => $this->getProductSertikom(\App\Enums\FeatureEnum::TRAINING),
+            'productSeminar' => $this->getProductSertikom(\App\Enums\FeatureEnum::SEMINAR),
+            'productWorkshop' => $this->getProductSertikom(\App\Enums\FeatureEnum::WORKSHOP),
         ];
 
         return view('main-web.home.beranda', $data);
+    }
+
+    protected function getProductSertikom(\App\Enums\FeatureEnum $feature)
+    {
+        if ($feature->value == 'pelatihan') {
+            $sertikomCategory = 'Pelatihan';
+            $cacheTags = 'products_training_main_web';
+            $cacheRemember = 'products_training_main_web_limit';
+        } elseif ($feature->value == 'seminar') {
+            $sertikomCategory = 'Seminar';
+            $cacheTags = 'products_seminar_main_web';
+            $cacheRemember = 'products_seminar_main_web_limit';
+        } elseif ($feature->value == 'workshop') {
+            $sertikomCategory = 'Workshop';
+            $cacheTags = 'products_workshop_main_web';
+            $cacheRemember = 'products_workshop_main_web_limit';
+        } else {
+            return redirect()->route('mainweb.index')->with('error', 'Kategori tidak valid !');
+        }
+
+        return Cache::tags([$cacheTags])->remember($cacheRemember . ',sertikom:' . $sertikomCategory, 7 * 24 * 60 * 60, function () use ($sertikomCategory) {
+            return DB::table('produk_pelatihan_seminar')
+                ->select(
+                    'produk_pelatihan_seminar.*',
+                    'instruktur.instruktur',
+                    'instruktur.keahlian',
+                    'instruktur.deskripsi as instruktur_deskripsi',
+                    'topik_keahlian.topik',
+                    'kategori_produk.judul',
+                    'kategori_produk.status as produk_status'
+                )->leftJoin('instruktur', 'produk_pelatihan_seminar.instruktur_id', '=', 'instruktur.id')
+                ->leftJoin('topik_keahlian', 'produk_pelatihan_seminar.topik_keahlian_id', '=', 'topik_keahlian.id')
+                ->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
+                ->where('produk_pelatihan_seminar.publish', 'Y')
+                ->where('produk_pelatihan_seminar.status', 'Tersedia')
+                ->where('kategori_produk.judul', $sertikomCategory)
+                ->where('kategori_produk.status', 'Berbayar')
+                ->orderBy('produk_pelatihan_seminar.updated_at', 'DESC')->get();
+        });
     }
 
     protected function getProductCategory(string $status, null | string $categoryId = null)
@@ -88,7 +138,7 @@ class MainWebsite extends Controller
 
     public function products(Request $request)
     {
-        $title = 'Produk ' . config('app.name');
+        $title = 'Tryout Simulasi CAT ' . config('app.name');
         $searchCategoryId = $request->category_id ? htmlentities($request->category_id) : null;
         $searchName = $request->search_name ? htmlentities($request->search_name) : null;
         $page = intval(request()->get('page', 1));
@@ -585,7 +635,6 @@ class MainWebsite extends Controller
             $itemUpdatedAt = date('Y-m-d', strtotime($item->updated_at));
             if (strtotime($lastModProduct) < strtotime($itemUpdatedAt)) {
                 $lastModProduct = $itemUpdatedAt;
-
             }
             $images = [];
             $thumbnail = 'storage/' . $item->thumbnail;
@@ -603,6 +652,111 @@ class MainWebsite extends Controller
                 'images' => $images,
             ]);
         }
+
+        // Product Sertikom (Pelatihan, Seminar, Workshop)
+        $productsTraining = Cache::remember('products_sertikom_training_sitemap_all', 7 * 24 * 60 * 60, function () {
+            return \App\Models\Sertikom\ProdukPelatihanSeminarModel::select(
+                'produk_pelatihan_seminar.id',
+                'produk_pelatihan_seminar.produk',
+                'produk_pelatihan_seminar.thumbnail',
+                'produk_pelatihan_seminar.updated_at',
+                'kategori_produk.judul'
+            )->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
+                ->where('produk_pelatihan_seminar.status', 'Tersedia')
+                ->where('kategori_produk.judul', 'Pelatihan')
+                ->orderBy('produk_pelatihan_seminar.created_at', 'DESC')
+                ->get();
+        });
+        $productsSeminar = Cache::remember('products_sertikom_seminar_sitemap_all', 7 * 24 * 60 * 60, function () {
+            return \App\Models\Sertikom\ProdukPelatihanSeminarModel::select(
+                'produk_pelatihan_seminar.id',
+                'produk_pelatihan_seminar.produk',
+                'produk_pelatihan_seminar.thumbnail',
+                'produk_pelatihan_seminar.updated_at',
+                'kategori_produk.judul'
+            )->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
+                ->where('produk_pelatihan_seminar.status', 'Tersedia')
+                ->where('kategori_produk.judul', 'Seminar')
+                ->orderBy('produk_pelatihan_seminar.created_at', 'DESC')
+                ->get();
+        });
+        $productsWorkshop = Cache::remember('products_sertikom_workshop_sitemap_all', 7 * 24 * 60 * 60, function () {
+            return \App\Models\Sertikom\ProdukPelatihanSeminarModel::select(
+                'produk_pelatihan_seminar.id',
+                'produk_pelatihan_seminar.produk',
+                'produk_pelatihan_seminar.thumbnail',
+                'produk_pelatihan_seminar.updated_at',
+                'kategori_produk.judul'
+            )->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
+                ->where('produk_pelatihan_seminar.status', 'Tersedia')
+                ->where('kategori_produk.judul', 'Workshop')
+                ->orderBy('produk_pelatihan_seminar.created_at', 'DESC')
+                ->get();
+        });
+        $lastModProductSertikom = '2024-11-15';
+        foreach ($productsTraining as $itemTraining) {
+            $itemUpdatedAtTraining = date('Y-m-d', strtotime($itemTraining->updated_at));
+            if (strtotime($lastModProductSertikom) < strtotime($itemUpdatedAtTraining)) {
+                $lastModProductSertikom = $itemUpdatedAtTraining;
+            }
+            $imagesTraining = [];
+            $thumbnailTraining = 'storage/' . $itemTraining->thumbnail;
+            if (is_file($thumbnailTraining)) {
+                array_push($imagesTraining, asset($thumbnailTraining));
+            } else {
+                array_push($imagesTraining, $defaultImage);
+            }
+            array_push($urls, [
+                'changefreq' => 'weekly',
+                'lastmod' => $itemUpdatedAtTraining,
+                'priority' => 0.8,
+                'title' => $itemTraining->produk . ' - Produk ' . config('app.name'),
+                'loc' => route('mainweb.product-sertikom.training-seminar.show', ['feature' => \App\Enums\FeatureEnum::TRAINING->value, 'id' => $itemTraining->id]),
+                'images' => $imagesTraining,
+            ]);
+        }
+        foreach ($productsSeminar as $itemSeminar) {
+            $itemUpdatedAtSeminar = date('Y-m-d', strtotime($itemSeminar->updated_at));
+            if (strtotime($lastModProductSertikom) < strtotime($itemUpdatedAtSeminar)) {
+                $lastModProductSertikom = $itemUpdatedAtSeminar;
+            }
+            $imagesSeminar = [];
+            $thumbnailSeminar = 'storage/' . $itemSeminar->thumbnail;
+            if (is_file($thumbnailSeminar)) {
+                array_push($imagesSeminar, asset($thumbnailSeminar));
+            } else {
+                array_push($imagesSeminar, $defaultImage);
+            }
+            array_push($urls, [
+                'changefreq' => 'weekly',
+                'lastmod' => $itemUpdatedAtSeminar,
+                'priority' => 0.8,
+                'title' => $itemSeminar->produk . ' - Produk ' . config('app.name'),
+                'loc' => route('mainweb.product-sertikom.training-seminar.show', ['feature' => \App\Enums\FeatureEnum::SEMINAR->value, 'id' => $itemSeminar->id]),
+                'images' => $imagesSeminar,
+            ]);
+        }
+        foreach ($productsWorkshop as $itemWorkshop) {
+            $itemUpdatedAtWorkshop = date('Y-m-d', strtotime($itemWorkshop->updated_at));
+            if (strtotime($lastModProductSertikom) < strtotime($itemUpdatedAtWorkshop)) {
+                $lastModProductSertikom = $itemUpdatedAtWorkshop;
+            }
+            $imagesWorkshop = [];
+            $thumbnailWorkshop = 'storage/' . $itemWorkshop->thumbnail;
+            if (is_file($thumbnailWorkshop)) {
+                array_push($imagesWorkshop, asset($thumbnailWorkshop));
+            } else {
+                array_push($imagesWorkshop, $defaultImage);
+            }
+            array_push($urls, [
+                'changefreq' => 'weekly',
+                'lastmod' => $itemUpdatedAtWorkshop,
+                'priority' => 0.8,
+                'title' => $itemWorkshop->produk . ' - Produk ' . config('app.name'),
+                'loc' => route('mainweb.product-sertikom.training-seminar.show', ['feature' => \App\Enums\FeatureEnum::WORKSHOP->value, 'id' => $itemWorkshop->id]),
+                'images' => $imagesWorkshop,
+            ]);
+        }
         array_push($urls, [
             'changefreq' => 'weekly',
             'lastmod' => date('Y-m-d', strtotime($lastModProduct)),
@@ -617,5 +771,402 @@ class MainWebsite extends Controller
                 'Content-Type',
                 'application/xml'
             );
+    }
+
+    // Add : Pelatihan dan Seminar/Workshop
+    protected function getExpertiseCategory(string $publish, null | string $expertiseId = null)
+    {
+        if (!$expertiseId) {
+            return null;
+        }
+
+        return Cache::tags(['product_expertise_category_main_web:' . $expertiseId])->remember('product_expertise_category_main_web:' . $expertiseId . ',publish:' . $publish, 7 * 24 * 60 * 60, function () use ($expertiseId, $publish) {
+            return DB::table('topik_keahlian')
+                ->select(
+                    'topik_keahlian.id',
+                    'topik_keahlian.topik',
+                    'topik_keahlian.deskripsi'
+                )
+                ->where('topik_keahlian.publish', $publish)
+                ->where('topik_keahlian.id', $expertiseId)
+                ->first();
+        });
+    }
+
+    public function productSertikomShowDeprecated(string $category, int $id)
+    {
+        if ($category == 'pelatihan') {
+            return $this->productSertikomShow(\App\Enums\FeatureEnum::TRAINING, $id);
+        } elseif ($category == 'seminar') {
+            return $this->productSertikomShow(\App\Enums\FeatureEnum::SEMINAR, $id);
+        } elseif ($category == 'workshop') {
+            return $this->productSertikomShow(\App\Enums\FeatureEnum::WORKSHOP, $id);
+        } else {
+            return redirect()->route('mainweb.index')->with('error', 'Kategori produk tidak ditemukan !');
+        }
+    }
+
+    public function productSertikomShow(\App\Enums\FeatureEnum $feature, int $id)
+    {
+        if ($feature->value == 'pelatihan') {
+            $cacheRemember = 'product_training_show_main_web:';
+            $cacheTag = 'products_training_main_web';
+            $cacheTagRecommendation = 'products_training_recomendation_main_web:';
+            $cacheTagExcept = 'products_training_main_web:except:';
+            $routingBack = 'mainweb.product-training';
+            $errorMessageBack = 'Produk pelatihan tidak ditemukan';
+            $viewPage = 'main-web.sertikom.product-training-show';
+        } elseif ($feature->value == 'seminar') {
+            $cacheRemember = 'product_seminar_show_main_web:';
+            $cacheTag = 'products_seminar_main_web';
+            $cacheTagRecommendation = 'products_seminar_recomendation_main_web:';
+            $cacheTagExcept = 'products_seminar_main_web:except:';
+            $routingBack = 'mainweb.product-seminar';
+            $errorMessageBack = 'Produk seminar tidak ditemukan';
+            $viewPage = 'main-web.sertikom.product-seminar-show';
+        } elseif ($feature->value == 'workshop') {
+            $cacheRemember = 'product_workshop_show_main_web:';
+            $cacheTag = 'products_workshop_main_web';
+            $cacheTagRecommendation = 'products_workshop_recomendation_main_web:';
+            $cacheTagExcept = 'products_workshop_main_web:except:';
+            $routingBack = 'mainweb.product-workshop';
+            $errorMessageBack = 'Produk workshop tidak ditemukan';
+            $viewPage = 'main-web.sertikom.product-workshop-show';
+        } else {
+            return redirect()->route('mainweb.index')->with('error', 'Kategori tidak valid !');
+        }
+        $product = Cache::remember($cacheRemember . $id, 7 * 24 * 60 * 60, function () use ($id) {
+            $data = ProdukPelatihanSeminarModel::where('id', $id)
+                ->select(
+                    'id',
+                    'produk',
+                    'deskripsi',
+                    'thumbnail',
+                    'harga',
+                    'tanggal_mulai',
+                    'tanggal_selesai',
+                    'instruktur_id',
+                    'kategori_produk_id',
+                    'topik_keahlian_id',
+                )->with('instructor', function ($query) {
+                    $query->select('id', 'instruktur', 'keahlian', 'deskripsi', 'publish');
+                })
+                ->with('category', function ($query) {
+                    $query->select('id', 'judul', 'status');
+                })
+                ->with('expertise', function ($query) {
+                    $query->select('id', 'topik', 'deskripsi', 'publish');
+                });
+
+            return $data->first();
+        });
+
+        if (!$product) {
+            return redirect()->route($routingBack)->with(['errorMessage' => $errorMessageBack . ' silahkan pilih produk yang tersedia']);
+        }
+
+        $order = null;
+        if (Auth::check()) {
+            $order = OrderPelatihanSeminarModel::where('produk_pelatihan_seminar_id', $product->id)
+                ->where('customer_id', Auth::user()->customer_id)
+                ->where('status_order', 'paid')
+                ->first();
+        }
+
+        $title = 'Produk ' . ucfirst($feature->value) . ' - ' . $product->produk;
+
+        $categorySertikom = $feature->value;
+
+        $productStatus = 'Berbayar';
+        $recommendProducts = Cache::tags([$cacheTag, $cacheTagRecommendation . $id])->remember($cacheTagExcept . $id . ',status:' . $productStatus . ',kategori_sertikom:' . $categorySertikom, 7 * 24 * 60 * 60, function () use ($id, $productStatus, $categorySertikom) {
+            $data = DB::table('produk_pelatihan_seminar')
+                ->select(
+                    'produk_pelatihan_seminar.*',
+                    'instruktur.instruktur',
+                    'instruktur.keahlian',
+                    'instruktur.deskripsi as instruktur_deskripsi',
+                    'topik_keahlian.topik',
+                    'kategori_produk.judul',
+                    'kategori_produk.status as produk_status'
+                )->leftJoin('instruktur', 'produk_pelatihan_seminar.instruktur_id', '=', 'instruktur.id')
+                ->leftJoin('topik_keahlian', 'produk_pelatihan_seminar.topik_keahlian_id', '=', 'topik_keahlian.id')
+                ->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
+                ->where('produk_pelatihan_seminar.publish', 'Y')
+                ->where('kategori_produk.judul', $categorySertikom)
+                ->where('kategori_produk.status', $productStatus)
+                ->where('produk_pelatihan_seminar.status', 'Tersedia')
+                ->orderBy('produk_pelatihan_seminar.updated_at', 'DESC');
+
+            return $data->limit(3)->get();
+        });
+
+        $data = [
+            'title' => $title,
+            'product' => $product,
+            'order' => $order,
+            'recommendProducts' => $recommendProducts,
+        ];
+
+        // Record record visitor on click prouct
+        RecordVisitor::saveRecord([
+            'ref_produk_id' => $product->id,
+            'nama_produk' => $product->produk,
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'tanggal' => date('Y-m-d')
+        ]);
+        return view($viewPage, $data);
+    }
+
+    public function productsSertikom(Request $request)
+    {
+        if ($request->category == 'pelatihan') {
+            $sertikomCategory = 'Pelatihan';
+            $cacheTags = 'products_training_main_web';
+            $cacheRemember = 'products_training_main_web:expertise_id:';
+            $viewPage = 'main-web.sertikom.product-training';
+            $descriptionPage = 'Temukan produk yang sempurna untuk Kamu! Dengan berbagai pilihan paket yang dirancang sesuai kebutuhan, ' . config('app.name') . ' Indonesia memberikan solusi terbaik untuk upgrade skill dan karir kamu';
+        } elseif ($request->category == 'seminar') {
+            $sertikomCategory = 'Seminar';
+            $cacheTags = 'products_seminar_main_web';
+            $cacheRemember = 'products_seminar_main_web:expertise_id:';
+            $viewPage = 'main-web.sertikom.product-seminar';
+            $descriptionPage = 'Temukan produk yang sempurna untuk Kamu! Dengan berbagai pilihan paket yang dirancang sesuai kebutuhan, ' . config('app.name') . ' memberikan solusi terbaik untuk update pengetahuan kamu dan perbanyak relasi dengan peserta seminar';
+        } elseif ($request->category == 'workshop') {
+            $sertikomCategory = 'Workshop';
+            $cacheTags = 'products_workshop_main_web';
+            $cacheRemember = 'products_workshop_main_web:expertise_id:';
+            $viewPage = 'main-web.sertikom.product-workshop';
+            $descriptionPage = 'Temukan produk yang sempurna untuk Kamu! Dengan berbagai pilihan paket yang dirancang sesuai kebutuhan, ' . config('app.name') . ' memberikan solusi terbaik untuk update pengetahuan kamu dan perbanyak relasi dengan peserta workshop';
+        } else {
+            return redirect()->route('mainweb.index')->with('error', 'Kategori produk tidak ditemukan !');
+        }
+
+        $title = ucfirst($request->category) . ' ' . config('app.name');
+
+        $searchExpertiseId = $request->expertise_id ? htmlentities($request->expertise_id) : null;
+        $searchName = $request->search_name ? htmlentities($request->search_name) : null;
+        $page = intval(request()->get('page', 1));
+        if (!is_numeric($page) || $page < 1) {
+            $page = 1;
+        }
+
+        $expertisePublish = 'Y';
+        $expertiseCategory = $this->getExpertiseCategory($expertisePublish, $searchExpertiseId);
+
+        if ($expertiseCategory || $searchName) {
+            $additionalTitle = [];
+            if ($searchName) {
+                array_push($additionalTitle, '`' . $searchName . '`');
+            }
+            if ($expertiseCategory) {
+                array_push($additionalTitle, 'Topik ' . $sertikomCategory . ' `' . $expertiseCategory->topik . '`');
+            }
+            $title = 'Cari ' . implode(' ', $additionalTitle) . ' Produk ' . $sertikomCategory . ' ' . config('app.name');
+        }
+
+        $products = Cache::tags([$cacheTags])->remember($cacheRemember . $searchExpertiseId . ',sertikom:' . $sertikomCategory . ',publish:' . $expertisePublish . ',search:' . $searchName . ',page:' . $page, 7 * 24 * 60 * 60, function () use ($searchExpertiseId, $sertikomCategory, $expertisePublish, $searchName) {
+            $data = DB::table('produk_pelatihan_seminar')
+                ->select(
+                    'produk_pelatihan_seminar.*',
+                    'instruktur.instruktur',
+                    'instruktur.keahlian',
+                    'instruktur.deskripsi as instruktur_deskripsi',
+                    'topik_keahlian.topik',
+                    'kategori_produk.judul',
+                    'kategori_produk.status as produk_status'
+                )->leftJoin('instruktur', 'produk_pelatihan_seminar.instruktur_id', '=', 'instruktur.id')
+                ->leftJoin('topik_keahlian', 'produk_pelatihan_seminar.topik_keahlian_id', '=', 'topik_keahlian.id')
+                ->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
+                ->where('produk_pelatihan_seminar.publish', 'Y')
+                ->where('kategori_produk.judul', $sertikomCategory)
+                ->where('kategori_produk.status', 'Berbayar')
+                ->where('produk_pelatihan_seminar.status', 'Tersedia')
+                ->orderBy('produk_pelatihan_seminar.updated_at', 'DESC');
+
+            if ($searchExpertiseId) {
+                $data = $data->where('topik_keahlian.id', '=', $searchExpertiseId);
+            }
+            if ($searchName) {
+                $data = $data->whereLike('produk_pelatihan_seminar.produk', "%{$searchName}%");
+            }
+
+            return $data->paginate(9);
+        });
+
+        $expertisePublish = 'Y';
+        $expertise = Cache::tags(['product_expertise_main_web'])->remember('product_expertise_main_web:publish' . $expertisePublish, 7 * 24 * 60 * 60, function () use ($expertisePublish) {
+            return TopikKeahlianModel::where('publish', $expertisePublish)
+                ->select('id', 'topik', 'deskripsi')
+                ->get();
+        });
+
+        // Check Page
+        if ($page > 1) {
+            $title .= " - Halaman $page";
+        }
+
+        $data = [
+            'title' => $title,
+            'expertises' => $expertise,
+            'searchExpertiseId' => $searchExpertiseId,
+            'searchName' => $searchName,
+            'products' => $products,
+            'descriptionPage' => $descriptionPage
+        ];
+
+        return view($viewPage, $data);
+    }
+
+    public function addCartSertikom(Request $request): RedirectResponse
+    {
+        $userRole = Auth::user()->role;
+        if ($userRole !== 'Customer') {
+            return redirect()->back()->with('errorMessage', 'Jenis Akun Anda tidak dapat melakukan transaksi !');
+        }
+
+        try {
+            $categorySertikom = $request->category;
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Kategori tidak ditemukan !');
+        }
+
+        // Checking if product order same
+        $sertikom = OrderPelatihanSeminarModel::where('produk_pelatihan_seminar_id', Crypt::decrypt($request->idProdukSertikom))->where('status_order', 'paid')->where('customer_id', Auth::user()->customer_id)->first();
+        if ($sertikom) {
+            return redirect()->route('mainweb.cart-sertikom', ['category' => $categorySertikom])->with('errorMessage', 'Tidak dapat memesan pelatihan yang sama sebelumnya !');
+        }
+
+        $cart = KeranjangOrderSertikom::where('produk_pelatihan_seminar_id', Crypt::decrypt($request->idProdukSertikom))->where('customer_id', Auth::user()->customer_id)->first();
+        if ($cart) {
+            return redirect()->route('mainweb.cart-sertikom', ['category' => $categorySertikom])->with('errorMessage', 'Tidak dapat menambahkan pelatihan yang sama pada keranjang pesanan !');
+        }
+
+        $createCart = [
+            'produk_pelatihan_seminar_id' => Crypt::decrypt($request->idProdukSertikom),
+            'customer_id' => Auth::user()->customer_id
+        ];
+
+        $saveCart = KeranjangOrderSertikom::create($createCart);
+
+        if (!$saveCart) {
+            return redirect()->back()->with('errorMessage', 'Pelatihan gagal ditambahkan dikeranjang !');
+        }
+
+        return redirect()->route('mainweb.cart-sertikom', ['category' => $categorySertikom]);
+    }
+
+    public function cartSertikom(Request $request)
+    {
+
+        if ($request->category == 'pelatihan') {
+            $viewPage = 'main-web.sertikom.order-cart-training';
+        } elseif ($request->category == 'seminar') {
+            $viewPage = 'main-web.sertikom.order-cart-seminar';
+        } elseif ($request->category == 'workshop') {
+            $viewPage = 'main-web.sertikom.order-cart-workshop';
+        } else {
+            return redirect()->back()->with('errorMessage', 'Kategori tidak valid !');
+        }
+
+        $categorySertikom = ucfirst($request->category);
+
+        $cartItems = DB::table('keranjang_order_sertikom')->select(
+            'keranjang_order_sertikom.*',
+            'produk_pelatihan_seminar.id as idProduk',
+            'produk_pelatihan_seminar.produk',
+            'produk_pelatihan_seminar.harga',
+            'produk_pelatihan_seminar.deskripsi',
+            'topik_keahlian.topik',
+            'kategori_produk.judul',
+            'kategori_produk.status'
+        )
+            ->leftJoin('produk_pelatihan_seminar', 'keranjang_order_sertikom.produk_pelatihan_seminar_id', '=', 'produk_pelatihan_seminar.id')
+            ->leftJoin('topik_keahlian', 'produk_pelatihan_seminar.topik_keahlian_id', '=', 'topik_keahlian.id')
+            ->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
+            ->where('keranjang_order_sertikom.customer_id', '=', Auth::user()->customer_id)
+            ->where('kategori_produk.judul', $categorySertikom)
+            ->whereNot('kategori_produk.status', 'Gratis')
+            ->where('produk_pelatihan_seminar.status', 'Tersedia')
+            ->orderBy('keranjang_order_sertikom.updated_at', 'DESC')
+            ->get();
+
+        $productIdsSelected = [];
+        foreach ($cartItems as $item) {
+            array_push($productIdsSelected, $item->idProduk);
+        }
+
+        $recommendProducts =  DB::table('produk_pelatihan_seminar')
+            ->select(
+                'produk_pelatihan_seminar.*',
+                'instruktur.instruktur',
+                'instruktur.keahlian',
+                'instruktur.deskripsi as instruktur_deskripsi',
+                'topik_keahlian.topik',
+                'kategori_produk.judul',
+                'kategori_produk.status as produk_status'
+            )->leftJoin('instruktur', 'produk_pelatihan_seminar.instruktur_id', '=', 'instruktur.id')
+            ->leftJoin('topik_keahlian', 'produk_pelatihan_seminar.topik_keahlian_id', '=', 'topik_keahlian.id')
+            ->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
+            ->where('produk_pelatihan_seminar.publish', 'Y')
+            ->where('kategori_produk.judul', $categorySertikom)
+            ->where('kategori_produk.status', 'Berbayar')
+            ->where('produk_pelatihan_seminar.status', 'Tersedia')
+            ->whereNotIn('produk_pelatihan_seminar.id', $productIdsSelected)
+            ->orderBy('produk_pelatihan_seminar.updated_at', 'DESC')
+            ->limit(3)->get();
+
+        $data = [
+            'title' => 'Keranjang Pesanan ' . $categorySertikom,
+            'cartItems' => $cartItems,
+            'recommendProducts' => $recommendProducts,
+        ];
+
+        return view($viewPage, $data);
+    }
+
+    public function deleteCartSertikom(Request $request): RedirectResponse
+    {
+        $itemSertikom = KeranjangOrderSertikom::findOrFail(Crypt::decrypt($request->id));
+        if ($itemSertikom) {
+            $itemSertikom->delete();
+            return redirect()->route('mainweb.cart-sertikom', ['category' => $request->category])->with('successMessage', 'Item pesanan berhasil dihapus !');
+        } else {
+            return redirect()->route('mainweb.cart-sertikom', ['category' => $request->category])->with('errorMessage', 'Item pesanan gagal dihapus !');
+        }
+    }
+
+    public function certificateSertikom(Request $request)
+    {
+        $participantCode = $request->kode_peserta ? $request->kode_peserta : null;
+        $resultCertificate = null;
+        $infoCertificate = null;
+
+        if ($participantCode) {
+            $searchParticipant = PesertaSertikomModel::where('kode_peserta', htmlentities($participantCode))->first();
+            if ($searchParticipant) {
+                $order = OrderPelatihanSeminarModel::find($searchParticipant->order_pelatihan_seminar_id);
+                $product = ProdukPelatihanSeminarModel::find($order->produk_pelatihan_seminar_id);
+                $certificate = SertifikatSertikomModel::where('peserta_sertikom_id', $searchParticipant->id)->first();
+
+                $infoCertificate = [
+                    'participant' => $searchParticipant,
+                    'order' => $order,
+                    'product' => $product,
+                    'certificateNumber' => $certificate->nomor_sertifikat
+                ];
+                $resultCertificate = 'Found';
+            } else {
+                $resultCertificate = 'Not Found';
+            }
+        }
+
+        $data = [
+            'title' => 'Cek Sertifikat - ' . config('app.name'),
+            'web' => BerandaUI::web(),
+            'result' => $resultCertificate,
+            'certificate' => $infoCertificate
+        ];
+
+        return view('main-web.sertikom.check-certificate', $data);
     }
 }

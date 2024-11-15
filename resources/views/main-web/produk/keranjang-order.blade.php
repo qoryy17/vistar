@@ -11,7 +11,7 @@
                 <div class="col-12 text-center">
                     <div class="section-title mb-4 pb-2">
                         <h1 class="fs-3 title mb-4">Keranjang Pesanan Anda</h1>
-                        <p class="text-muted para-desc mb-0 mx-auto">
+                        <p class="text-muted mb-0 mx-auto">
                             Berikut keranjang pesanan produk, anda dapat melakukan pembayaran dan juga menghapus
                             item produk keranjang
                         </p>
@@ -45,7 +45,7 @@
                             <thead>
                                 <tr>
                                     <th class="border-bottom text-start py-3" style="min-width: 10px;">No</th>
-                                    <th class="border-bottom text-start py-3" style="min-width: 300px;">Produk</th>
+                                    <th class="border-bottom text-start py-3" style="min-width: 300px;">Produk Item</th>
                                     <th class="border-bottom text-center py-3" style="min-width: 150px;">Harga</th>
                                     <th class="border-bottom text-center py-3" style="min-width: 150px;">Aksi</th>
                                 </tr>
@@ -84,6 +84,8 @@
                                                 <span class="fw-bold">
                                                     {{ $row->nama_tryout }}
                                                 </span>
+                                                <br>
+                                                {{ $row->keterangan }}
                                             </td>
                                             <td class="text-center">
                                                 Rp. {{ number_format($price, 0) }}
@@ -94,13 +96,16 @@
                                                 @endif
                                             </td>
                                             </td>
-                                            <td class="d-flex justify-content-center">
+                                            <td style="justify-items: center;">
                                                 <div class="d-flex flex-nowrap gap-1">
                                                     <button onclick="hapusItem({{ $no }})"
-                                                        class="btn btn-pills btn-soft-danger">Hapus
+                                                        class="btn btn-pills btn-soft-danger">
+                                                        Hapus <i class="mdi mdi-delete-outline"></i>
                                                     </button>
                                                     <a href="{{ route('orders.detail-pesanan', ['params' => Crypt::encrypt($row->id)]) }}"
-                                                        class="btn btn-pills btn-soft-primary">Bayar</a>
+                                                        class="btn btn-pills btn-soft-primary">
+                                                        Bayar <i class="mdi mdi-cash-sync"></i>
+                                                    </a>
                                                 </div>
                                                 <form id="formHapusItem{{ $no }}"
                                                     action="{{ route('mainweb.hapus-item', ['id' => Crypt::encrypt($row->id)]) }}"
@@ -121,7 +126,6 @@
                                                     class="uil uil-info-circle fs-5 align-middle me-1"></i>
                                                 Anda belum menambahkan produk apapun dikeranjang ini !
                                             </div>
-
                                         </td>
                                     </tr>
                                 @endif
@@ -169,11 +173,10 @@
                                             alt="Thumbnail {{ $row->nama_tryout }}"
                                             title="Thumbnail {{ $row->nama_tryout }}" loading="lazy" />
                                     </div>
-                                    <h3
-                                        class="text-center py-2 px-2 d-inline-block bg-soft-primary h6 mb-0 text-primary rounded-md">
+                                    <h3 class="py-2 px-2 d-inline-block h6 mb-0 text-primary">
                                         {{ $row->nama_tryout }}
                                     </h3>
-                                    <p class="fs-4 fw-bold mb-0 mt-3">
+                                    <p class="py-2 px-2 fs-4 fw-bold mb-0">
                                         Rp. {{ number_format($price, 0) }}</h2>
                                         @if ($normalPrice > $price)
                                             <p class="text-muted text-decoration-line-through">
@@ -236,7 +239,7 @@
                                                 @csrf
                                                 @method('POST')
                                                 <button type="submit" class="btn btn-pills btn-primary">
-                                                    Beli Sekarang
+                                                    Beli Sekarang <i class="mdi mdi-arrow-right"></i>
                                                 </button>
                                             </form>
                                         </div>

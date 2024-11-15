@@ -158,7 +158,8 @@
                                         method="POST">
                                         @csrf
                                         @method('POST')
-                                        <button type="submit" class="btn btn-pills btn-primary d-block d-md-inline-block">
+                                        <button type="submit"
+                                            class="btn btn-pills btn-soft-primary d-block d-md-inline-block">
                                             Mulai Ujian <i class="mdi mdi-arrow-right"></i>
                                         </button>
                                     </form>
@@ -169,7 +170,8 @@
                                         @csrf
                                         @method('POST')
 
-                                        <button type="submit" class="btn btn-pills btn-primary d-block d-md-inline-block">
+                                        <button type="submit"
+                                            class="btn btn-pills btn-soft-primary d-block d-md-inline-block">
                                             Beli Sekarang <i class="mdi mdi-arrow-right"></i>
                                         </button>
                                     </form>
@@ -179,7 +181,8 @@
                     </div>
                 </div><!--end row-->
 
-                <div class="mt-4 border-top">
+                <div class="mt-4 mb-2 border-top">
+                    <h5 class="mt-2">Informasi Produk Simulasi Tryout</h5>
                     @php
                         $features = [];
                         if ($product->setting) {
@@ -198,7 +201,7 @@
                         }
                     @endphp
                     @if (count($features) > 0)
-                        <ul class="list-unstyled pt-3">
+                        <ul class="list-unstyled">
                             @foreach ($features as $item)
                                 <li class="h6 text-muted mb-0">
                                     <span class="icon h5 me-2">
@@ -210,18 +213,17 @@
                         </ul>
                     @endif
                     <div itemprop="description">
-                        {!! $product->keterangan !!}
+                        Keterangan : {!! $product->keterangan !!}
                     </div>
                 </div><!--end row-->
             </div>
 
             @if ($recommendProducts->isNotEmpty())
-                <br />
                 <div class="row mt-6 border-top">
                     <div class="col-lg-12 col-md-12 mt-4 pt-2">
                         <h2 class="fs-5">Rekomendasi Produk Pilihan</h2>
                         <p class="text-muted">
-                            Jangan Lewatkan Kesempatan Ini! Pilih Produk yang Sesuai dengan Target Anda dan
+                            Jangan Lewatkan Kesempatan Ini! Pilih Produk yang Sesuai dengan Target Kamu dan
                             Bersiaplah untuk Sukses!
                         </p>
                     </div>
@@ -273,8 +275,7 @@
                                             alt="Thumbnail {{ $row->nama_tryout }}"
                                             title="Thumbnail {{ $row->nama_tryout }}" loading="lazy" />
                                     </div>
-                                    <h3 itemprop="name"
-                                        class="text-center py-2 px-2 d-inline-block bg-soft-primary fs-6 mb-0 text-primary rounded-md">
+                                    <h3 itemprop="name" class="py-2 px-2 d-inline-block fs-6 mb-0 text-primary">
                                         {{ $row->nama_tryout }}
                                     </h3>
                                     {{--  IDEA: get testimoni data from user testimoni, currently set to manual  --}}
@@ -346,7 +347,7 @@
                                         <div class="d-grid">
                                             <a itemprop="url" title="Lihat Produk {{ $row->nama_tryout }}"
                                                 href="{{ $url }}" class="btn btn-pills btn-primary">
-                                                Lihat <i class="fa fa-chevron-right"></i>
+                                                Lihat <i class="mdi mdi-arrow-right"></i>
                                             </a>
                                         </div>
                                     </div>

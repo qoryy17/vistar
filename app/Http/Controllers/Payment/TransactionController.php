@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use App\Services\Payment\PaymentSertikomService;
 use App\Services\Payment\PaymentService;
 use Illuminate\Http\Request;
 
@@ -45,6 +46,9 @@ class TransactionController extends Controller
         $paymentService = new PaymentService();
         $updateStatus = $paymentService->updateStatus($paymentData->id, $transaction['transaction_status'], $transaction);
 
+        $paymentSertikomService = new PaymentSertikomService();
+        $updateStatus = $paymentSertikomService->updateStatus($paymentData->id, $transaction['transaction_status'], $transaction);
+
         if ($updateStatus['result'] !== 'success') {
             return response()->json($updateStatus, 500);
         }
@@ -67,5 +71,4 @@ class TransactionController extends Controller
         /* IDEA: Create Page for error transaction and get the esential information from midtrans data and show to the user  */
         return response()->json(['result' => 'success', 'title' => 'Error'], 200);
     }
-
 }

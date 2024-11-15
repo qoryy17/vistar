@@ -22,6 +22,9 @@ class Main extends Controller
             'breadcumb' => 'Beranda Vistar Indonesia',
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),
+            'countSertikomTraining' => BerandaUI::statistikSertikom('Pelatihan'),
+            'countSertikomSeminar' => BerandaUI::statistikSertikom('Seminar'),
+            'countSertikomWorkshop' => BerandaUI::statistikSertikom('Workshop'),
             'countStatistikCPNS' => BerandaUI::statistikTryout('CPNS'),
             'countStatistikPPPK' => BerandaUI::statistikTryout('PPPK'),
             'countStatistikKedinasan' => BerandaUI::statistikTryout('Kedinasan'),
@@ -44,8 +47,11 @@ class Main extends Controller
         $year = $request->year;
         $data = [
             'CPNS' => BerandaUI::countPenjualan('CPNS', $year),
-            'PPK' => BerandaUI::countPenjualan('PPPK', $year),
+            'PPPK' => BerandaUI::countPenjualan('PPPK', $year),
             'Kedinasan' => BerandaUI::countPenjualan('Kedinasan', $year),
+            'Pelatihan' => BerandaUI::countOrderSertikom('Pelatihan', $year),
+            'Seminar' => BerandaUI::countOrderSertikom('Seminar', $year),
+            'Workshop' => BerandaUI::countOrderSertikom('Workshop', $year),
         ];
 
         // Fill missing months with 0

@@ -19,10 +19,14 @@ class Kategoris extends Controller
 {
     public function index($produk = null)
     {
+        $words = explode('-', $produk);
+        $words = array_map('ucfirst', $words);
+        $result = implode(' ', $words);
+
         $data = [
             'page_title' => 'Kategori Produk',
             'bc1' => 'Manajemen Produk',
-            'bc2' => 'Produk ' . ucfirst($produk),
+            'bc2' => 'Produk ' . ucfirst($result),
             'kategori' => KategoriProduk::all(),
             'notifTryoutGratis' => Notifikasi::tryoutGratis(),
             'countNotitTryoutGratis' => LimitTryout::where('status_validasi', 'Menunggu')->count(),

@@ -57,6 +57,9 @@
     <!-- Internal richtext css-->
     <link rel="stylesheet" href="{{ asset('resources/spruha/assets/plugins/wysiwyag/richtext.css') }}">
 
+    <!-- Internal Gallery css-->
+    <link href="{{ asset('resources/spruha/assets/plugins/gallery/gallery.css') }}" rel="stylesheet">
+
     <!-- Custome Vi Star CSS -->
     <link rel="stylesheet" href="{{ asset('resources/spruha/assets/css/vistar.css') }}">
 
