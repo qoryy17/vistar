@@ -236,7 +236,7 @@ Route::middleware([AuthMiddleware::class, UserAdminMiddleware::class])->group(fu
 // Routing untuk main panel kategori
 Route::middleware([AuthMiddleware::class, UserAdminMiddleware::class])->group(function () {
     Route::controller(Kategoris::class)->group(function () {
-        Route::get('/kategori-produk-tryout/{produk}', 'index')->name('kategori.index');
+        Route::get('/kategori-produk/{produk}', 'index')->name('kategori.index');
         Route::get('/form-kategori-produk/{param}/{id}', 'formKategori')->name('kategori.form-kategori');
 
         Route::post('/simpan-kategori-produk', 'simpanKategori')->name('kategori.simpan');

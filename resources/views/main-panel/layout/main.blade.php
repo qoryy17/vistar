@@ -297,6 +297,26 @@
                                     </ul>
                                 </li>
                                 <li class="nav-sub-item">
+                                    <a class="nav-sub-link sub-with-sub" href="javascript:void(0)">
+                                        <span class="sidemenu-label">Kategori</span>
+                                        <i class="angle fe fe-chevron-right"></i>
+                                    </a>
+                                    <ul class="sub-nav-sub">
+                                        <li class="nav-sub-item"><a class="nav-sub-link"
+                                                href="{{ route('kategori.index', ['produk' => 'pelatihan']) }}">Pelatihan
+                                            </a>
+                                        </li>
+                                        <li class="nav-sub-item"><a class="nav-sub-link"
+                                                href="{{ route('kategori.index', ['produk' => 'seminar']) }}">Seminar
+                                            </a>
+                                        </li>
+                                        <li class="nav-sub-item"><a class="nav-sub-link"
+                                                href="{{ route('kategori.index', ['produk' => 'workshop']) }}">Workshop
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-sub-item">
                                     <a class="nav-sub-link" href="{{ route('sertikom.expertise') }}">
                                         Topik Keahlian
                                     </a>
