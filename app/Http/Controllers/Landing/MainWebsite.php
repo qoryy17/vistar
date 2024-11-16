@@ -83,39 +83,31 @@ class MainWebsite extends Controller
     {
         if ($feature->value == 'pelatihan') {
             $sertikomCategory = 'Pelatihan';
-            $cacheTags = 'products_training_main_web';
-            $cacheRemember = 'products_training_main_web_limit';
         } elseif ($feature->value == 'seminar') {
             $sertikomCategory = 'Seminar';
-            $cacheTags = 'products_seminar_main_web';
-            $cacheRemember = 'products_seminar_main_web_limit';
         } elseif ($feature->value == 'workshop') {
             $sertikomCategory = 'Workshop';
-            $cacheTags = 'products_workshop_main_web';
-            $cacheRemember = 'products_workshop_main_web_limit';
         } else {
             return redirect()->route('mainweb.index')->with('error', 'Kategori tidak valid !');
         }
 
-        return Cache::tags([$cacheTags])->remember($cacheRemember . ',sertikom:' . $sertikomCategory, 7 * 24 * 60 * 60, function () use ($sertikomCategory) {
-            return DB::table('produk_pelatihan_seminar')
-                ->select(
-                    'produk_pelatihan_seminar.*',
-                    'instruktur.instruktur',
-                    'instruktur.keahlian',
-                    'instruktur.deskripsi as instruktur_deskripsi',
-                    'topik_keahlian.topik',
-                    'kategori_produk.judul',
-                    'kategori_produk.status as produk_status'
-                )->leftJoin('instruktur', 'produk_pelatihan_seminar.instruktur_id', '=', 'instruktur.id')
-                ->leftJoin('topik_keahlian', 'produk_pelatihan_seminar.topik_keahlian_id', '=', 'topik_keahlian.id')
-                ->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
-                ->where('produk_pelatihan_seminar.publish', 'Y')
-                ->where('produk_pelatihan_seminar.status', 'Tersedia')
-                ->where('kategori_produk.judul', $sertikomCategory)
-                ->where('kategori_produk.status', 'Berbayar')
-                ->orderBy('produk_pelatihan_seminar.updated_at', 'DESC')->get();
-        });
+        return DB::table('produk_pelatihan_seminar')
+            ->select(
+                'produk_pelatihan_seminar.*',
+                'instruktur.instruktur',
+                'instruktur.keahlian',
+                'instruktur.deskripsi as instruktur_deskripsi',
+                'topik_keahlian.topik',
+                'kategori_produk.judul',
+                'kategori_produk.status as produk_status'
+            )->leftJoin('instruktur', 'produk_pelatihan_seminar.instruktur_id', '=', 'instruktur.id')
+            ->leftJoin('topik_keahlian', 'produk_pelatihan_seminar.topik_keahlian_id', '=', 'topik_keahlian.id')
+            ->leftJoin('kategori_produk', 'produk_pelatihan_seminar.kategori_produk_id', '=', 'kategori_produk.id')
+            ->where('produk_pelatihan_seminar.publish', 'Y')
+            ->where('produk_pelatihan_seminar.status', 'Tersedia')
+            ->where('kategori_produk.judul', $sertikomCategory)
+            ->where('kategori_produk.status', 'Berbayar')
+            ->orderBy('produk_pelatihan_seminar.updated_at', 'DESC')->limit(3)->get();
     }
 
     protected function getProductCategory(string $status, null | string $categoryId = null)
